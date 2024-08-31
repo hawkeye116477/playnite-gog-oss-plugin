@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35130.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GogLibrary", "GogLibrary.csproj", "{BAB4A671-CFD8-4629-99B3-DCD5057FC2B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAB4A671-CFD8-4629-99B3-DCD5057FC2B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB4A671-CFD8-4629-99B3-DCD5057FC2B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB4A671-CFD8-4629-99B3-DCD5057FC2B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB4A671-CFD8-4629-99B3-DCD5057FC2B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2CB6AE10-A13B-4122-BE0F-B551E2858784}
+	EndGlobalSection
+EndGlobal
