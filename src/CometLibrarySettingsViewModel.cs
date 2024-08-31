@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Playnite.SDK;
-using GogLibrary.Services;
+using CometLibrary.Services;
 
-namespace GogLibrary
+namespace CometLibrary
 {
     public class GogLibrarySettings
     {
@@ -16,7 +16,7 @@ namespace GogLibrary
         public bool UseVerticalCovers { get; set; } = true;
         public string Locale { get; set; } = "en";
     }
-    public class GogLibrarySettingsViewModel : PluginSettingsViewModel<GogLibrarySettings, GogLibrary>
+    public class CometLibrarySettingsViewModel : PluginSettingsViewModel<GogLibrarySettings, CometLibrary>
     {
         public bool IsFirstRunUse { get; set; }
 
@@ -40,7 +40,7 @@ namespace GogLibrary
             });
         }
 
-        public GogLibrarySettingsViewModel(GogLibrary library, IPlayniteAPI api) : base(library, api)
+        public CometLibrarySettingsViewModel(CometLibrary library, IPlayniteAPI api) : base(library, api)
         {
             var savedSettings = LoadSavedSettings();
             if (savedSettings != null)

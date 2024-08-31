@@ -1,6 +1,5 @@
 MIT License
 
-Copyright (c) 2024 hawkeye116477
 Copyright (c) 2020 Josef Nemec
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

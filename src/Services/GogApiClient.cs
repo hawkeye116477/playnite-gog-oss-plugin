@@ -1,4 +1,4 @@
-﻿using GogLibrary.Models;
+﻿using CometLibrary.Models;
 using Playnite.Common;
 using Playnite.Common.Web;
 using Playnite.SDK;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GogLibrary.Services
+namespace CometLibrary.Services
 {
     public class GogApiClient
     {
@@ -26,7 +26,7 @@ namespace GogLibrary.Services
 
             try
             {
-                data = HttpDownloader.DownloadString(gameUrl, new List<System.Net.Cookie>() { new System.Net.Cookie("gog_lc", Gog.EnStoreLocaleString) }).Split('\n');
+                data = HttpDownloader.DownloadString(gameUrl, new List<System.Net.Cookie>() { new System.Net.Cookie("gog_lc", Comet.EnStoreLocaleString) }).Split('\n');
             }
             catch (WebException)
             {
@@ -72,7 +72,7 @@ namespace GogLibrary.Services
 
             try
             {
-                var stringData = HttpDownloader.DownloadString(string.Format(baseUrl, id, locale), new List<Cookie>() { new Cookie("gog_lc", Gog.EnStoreLocaleString) });
+                var stringData = HttpDownloader.DownloadString(string.Format(baseUrl, id, locale), new List<Cookie>() { new Cookie("gog_lc", Comet.EnStoreLocaleString) });
                 return Serialization.FromJson<ProductApiDetail>(stringData);
             }
             catch (WebException exc)

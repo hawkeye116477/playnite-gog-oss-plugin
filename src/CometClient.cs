@@ -9,19 +9,19 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GogLibrary
+namespace CometLibrary
 {
-    public class GogClient : LibraryClient
+    public class CometClient : LibraryClient
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
         public override string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\galaxyIcon.png");
 
-        public override bool IsInstalled => Gog.IsInstalled;
+        public override bool IsInstalled => Comet.IsInstalled;
 
         public override void Open()
         {
-            ProcessStarter.StartProcess(Gog.ClientExecPath, string.Empty);
+            ProcessStarter.StartProcess(Comet.ClientExecPath, string.Empty);
         }
 
         public override void Shutdown()
@@ -33,7 +33,7 @@ namespace GogLibrary
                 return;
             }
 
-            ProcessStarter.StartProcessWait(Gog.ClientExecPath, "/command=shutdown", null);
+            ProcessStarter.StartProcessWait(Comet.ClientExecPath, "/command=shutdown", null);
         }
     }
 }

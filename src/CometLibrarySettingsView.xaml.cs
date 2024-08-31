@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GogLibrary
+namespace CometLibrary
 {
     /// <summary>
-    /// Interaction logic for GogLibrarySettingsView.xaml
+    /// Interaction logic for CometLibrarySettingsView.xaml
     /// </summary>
-    public partial class GogLibrarySettingsView : UserControl
+    public partial class CometLibrarySettingsView : UserControl
     {
-        public GogLibrarySettingsView()
+        public CometLibrarySettingsView()
         {
             InitializeComponent();
         }

@@ -13,17 +13,17 @@ using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 
-namespace GogLibrary
+namespace CometLibrary
 {
     public class GogInstallController : InstallController
     {
         private CancellationTokenSource watcherToken;
-        private readonly GogLibrary gogLibrary;
+        private readonly CometLibrary gogLibrary;
 
-        public GogInstallController(Game game, GogLibrary gogLibrary) : base(game)
+        public GogInstallController(Game game, CometLibrary gogLibrary) : base(game)
         {
             this.gogLibrary = gogLibrary;
-            if (Gog.IsInstalled)
+            if (Comet.IsInstalled)
             {
                 Name = "Install using Galaxy";
             }
@@ -40,12 +40,12 @@ namespace GogLibrary
 
         public override void Install(InstallActionArgs args)
         {
-            if (Gog.IsInstalled)
+            if (Comet.IsInstalled)
             {
                 var startedAutomaticInstall = false;
                 if (gogLibrary.SettingsViewModel.Settings.UseAutomaticGameInstalls)
                 {
-                    var clientPath = Gog.ClientInstallationPath;
+                    var clientPath = Comet.ClientInstallationPath;
                     if (FileSystem.FileExists(clientPath))
                     {
                         var arguments = string.Format(@"/gameId={0} /command=installGame", Game.GameId);
@@ -54,7 +54,7 @@ namespace GogLibrary
                         // Starting a game install via command will add the game to a queue but Galaxy itself
                         // won't be started to initiate the download process so we need to start it if it's
                         // not running already
-                        if (!Gog.IsRunning)
+                        if (!Comet.IsRunning)
                         {
                             ProcessStarter.StartProcess(clientPath);
                         }
@@ -88,7 +88,7 @@ namespace GogLibrary
                         return;
                     }
 
-                    var games = GogLibrary.GetInstalledGames();
+                    var games = CometLibrary.GetInstalledGames();
                     if (games.ContainsKey(Game.GameId))
                     {
                         var game = games[Game.GameId];
@@ -144,7 +144,7 @@ namespace GogLibrary
                     return;
                 }
 
-                var games = GogLibrary.GetInstalledGames();
+                var games = CometLibrary.GetInstalledGames();
                 if (!games.ContainsKey(Game.GameId))
                 {
                     InvokeOnUninstalled(new GameUninstalledEventArgs());

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GogLibrary")]
-[assembly: AssemblyDescription("GOG library support plugin for Playnite")]
+[assembly: AssemblyTitle("CometLibrary")]
+[assembly: AssemblyDescription("GOG library integration with Comet for Playnite")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GogLibrary")]
-[assembly: AssemblyCopyright("Copyright © Josef Nemec 2018")]
+[assembly: AssemblyProduct("CometLibrary")]
+[assembly: AssemblyCopyright("Copyright © 2023-2024 hawkeye116477\n Copyright © 2020 Josef Nemec")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2e4f6f47-c3ac-4650-936a-09e675b9b3b3")]
+[assembly: Guid("03689811-3F33-4DFB-A121-2EE168FB9A5C")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.19.0.*")]
-[assembly: InternalsVisibleTo("GogLibrary.Tests")]
+[assembly: InternalsVisibleTo("CometLibrary.Tests")]

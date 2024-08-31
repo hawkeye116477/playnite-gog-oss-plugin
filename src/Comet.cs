@@ -6,9 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace GogLibrary
+namespace CometLibrary
 {
-    public class Gog
+    public class Comet
     {
         public const string EnStoreLocaleString = "US_USD_en-US";
 

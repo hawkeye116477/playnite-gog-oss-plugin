@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GogLibrary.Models
+namespace CometLibrary.Models
 {
     public class GetOwnedGamesResult
     {

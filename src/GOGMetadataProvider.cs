@@ -5,18 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Playnite.SDK;
-using GogLibrary.Models;
+using CometLibrary.Models;
 using System.IO;
 using Playnite;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using GogLibrary.Services;
+using CometLibrary.Services;
 using System.Text.RegularExpressions;
 using AngleSharp.Parser.Html;
 using AngleSharp.Dom.Html;
 using AngleSharp.Dom;
 
-namespace GogLibrary
+namespace CometLibrary
 {
     public class GogMetadataProvider : LibraryMetadataProvider
     {

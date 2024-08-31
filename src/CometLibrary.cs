@@ -1,5 +1,5 @@
-﻿using GogLibrary.Models;
-using GogLibrary.Services;
+﻿using CometLibrary.Models;
+using CometLibrary.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -17,23 +17,23 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace GogLibrary
+namespace CometLibrary
 {
     [LoadPlugin]
-    public class GogLibrary : LibraryPluginBase<GogLibrarySettingsViewModel>
+    public class CometLibrary : LibraryPluginBase<CometLibrarySettingsViewModel>
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        public GogLibrary(IPlayniteAPI api) : base(
-            "GOG",
-            Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E"),
+        public CometLibrary(IPlayniteAPI api) : base(
+            "Comet (GOG)",
+            Guid.Parse("03689811-3F33-4DFB-A121-2EE168FB9A5C"),
             new LibraryPluginProperties { CanShutdownClient = true, HasSettings = true },
-            new GogClient(),
-            Gog.Icon,
-            (_) => new GogLibrarySettingsView(),
+            new CometClient(),
+            Comet.Icon,
+            (_) => new CometLibrarySettingsView(),
             api)
         {
-            SettingsViewModel = new GogLibrarySettingsViewModel(this, api);
+            SettingsViewModel = new CometLibrarySettingsViewModel(this, api);
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
@@ -82,7 +82,7 @@ namespace GogLibrary
                     Name = ResourceProvider.GetString(LOC.GOGStartUsingClient).Format("Galaxy"),
                     TrackingPath = installEntry.InstallDirectory,
                     Arguments = string.Format(@"/launchViaAutostart /gameId={0} /command=runGame /path=""{1}""", args.Game.GameId, installEntry.InstallDirectory),
-                    Path = Gog.ClientInstallationPath
+                    Path = Comet.ClientInstallationPath
                 };
             }
             else
