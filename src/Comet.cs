@@ -22,7 +22,7 @@ namespace CometLibraryNS
         {
             get
             {
-                var path = InstallationPath;
+                var path = ClientInstallationPath;
                 return string.IsNullOrEmpty(path) ? string.Empty : path;
             }
         }
@@ -31,7 +31,7 @@ namespace CometLibraryNS
         {
             get
             {
-                if (string.IsNullOrEmpty(InstallationPath) || !File.Exists(InstallationPath))
+                if (string.IsNullOrEmpty(ClientInstallationPath) || !File.Exists(ClientInstallationPath))
                 {
                     return false;
                 }
@@ -42,7 +42,7 @@ namespace CometLibraryNS
             }
         }
 
-        public static string InstallationPath
+        public static string ClientInstallationPath
         {
             get
             {
@@ -106,7 +106,6 @@ namespace CometLibraryNS
             }
         }
 
-        public static string ClientInstallationPath => InstallationPath;
         public static string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\gogicon.png");
 
         public static string GamesInstallationPath
@@ -161,7 +160,7 @@ namespace CometLibraryNS
 
         public static string GetUserAgent()
         {
-            return @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Vivaldi/5.5.2805.50";
+            return @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
         }
 
         public static async Task<LauncherVersion> GetVersionInfoContent()
