@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Allgemein</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Erweitert</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Ausführbare Datei</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Aktualisierung verfügbar</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Nach Aktualisierungen suchen</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Fehler bei der Suche nach Aktualisierungen.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Datei auswählen …</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Ordner auswählen …</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Öffnen</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Installierte Spiele importieren</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Nicht installierte Spiele importieren</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Nutzerkonto verbinden</sys:String>

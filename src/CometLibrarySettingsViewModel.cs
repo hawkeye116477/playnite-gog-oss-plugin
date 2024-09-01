@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Playnite.SDK;
-using CometLibrary.Services;
+using CometLibraryNS.Services;
 
-namespace CometLibrary
+namespace CometLibraryNS
 {
     public class CometLibrarySettings
     {

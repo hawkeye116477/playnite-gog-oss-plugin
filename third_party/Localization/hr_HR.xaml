@@ -4,9 +4,14 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Općenito</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Napredno</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Fajl za pokretanje</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Dostupna su ažuriranja</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Provjeri ima li ažuriranja</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Nesupjelo provjeravanje ima li nove verzije.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Odaberi datoteku…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Odaberi mapu…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen"></sys:String>
 </ResourceDictionary>

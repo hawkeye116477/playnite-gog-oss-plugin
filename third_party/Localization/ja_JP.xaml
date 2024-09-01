@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">一般設定</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">詳細設定</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">実行ファイル</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">更新が利用可能です</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">更新を確認</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">新しいバージョンを確認できませんでした。</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">ファイルを選択</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">フォルダを選択…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">開く</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">インストール済みのゲームをインポート</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">インストールされていないゲームをインポート</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">アカウントに接続</sys:String>

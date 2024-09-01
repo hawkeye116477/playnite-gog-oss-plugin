@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">ОК</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Опште</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Напредно</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Покретни фајл</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Доступно је ажурирање</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Провери да ли постоје ажурирања</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Неуспешна провера нових ажурирања.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Изаберите фајл...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Изаберите фасциклу...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Отвори</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Увези инсталиране игре</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Увези неинсталиране игре</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Повежи налог</sys:String>

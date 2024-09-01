@@ -2,4 +2,17 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCCometLauncherCustomPath">Başlatıcı Yolu</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Oyunların Kurulum Yolu</sys:String>
+  <sys:String x:Key="LOCCometPathNotExistsError">Belirtilen yol mevcut değil.</sys:String>
+  <sys:String x:Key="LOCCometTroubleshootingInformation">Sorun giderme bilgisi</sys:String>
+  <sys:String x:Key="LOCCometPlayniteVersion">Playnite sürümü</sys:String>
+  <sys:String x:Key="LOCCometPluginVersion">Eklenti sürümü</sys:String>
+  <sys:String x:Key="LOCCometLauncherVersion">Başlatıcı sürümü</sys:String>
+  <sys:String x:Key="LOCCometLauncherBinary">Başlatıcı binary</sys:String>
+  <sys:String x:Key="LOCCometCopyRawDataToClipboard">Ham verileri panoya kopyala</sys:String>
+  <sys:String x:Key="LOCCometLogFilesPath">Günlük Dosyaları Yolu</sys:String>
+  <sys:String x:Key="LOCCometReportBug">Bir hata bildir</sys:String>
+  <sys:String x:Key="LOCCometLauncherNotInstalled">Comet Launcher kurulu değil.</sys:String>
+  <sys:String x:Key="LOCCometNewVersionAvailable">Yeni bir sürüm mevcut: {0} {1}.</sys:String>
+  <sys:String x:Key="LOCCometNoUpdatesAvailable">Güncelleme yok.</sys:String>
+  <sys:String x:Key="LOCCometViewChangelog">Değişiklikleri görüntüle</sys:String>
 </ResourceDictionary>

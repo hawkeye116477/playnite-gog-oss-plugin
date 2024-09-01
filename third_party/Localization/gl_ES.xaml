@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Xeral</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avanzado</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Executábel</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Actualización dispoñible</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Buscar actualizacións</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Error ó comprobar actualizacións.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Selecciona o ficheiro…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Selecciona o cartafol…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Abrir</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Importar xogos instalados</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Importar xogos non instalados</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Vincular conta</sys:String>

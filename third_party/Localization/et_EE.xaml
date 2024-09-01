@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Üldine</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Täpsem</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Täitmisprogramm</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Värskendus on saadaval</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Otsi värskendusi</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Uue versiooni olemasolu kontroll ebaõnnestus.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Vali fail…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Vali kaust…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Ava</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Impordi paigaldatud mängud</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Impordi paigaldamata mängud</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Ühenda konto</sys:String>

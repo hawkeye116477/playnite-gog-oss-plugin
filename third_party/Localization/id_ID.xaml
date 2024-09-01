@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Umum</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Opsi Lanjut</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">File program (file .exe/.sh/.bat, dll..)</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Update Tersedia</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Periksa Pembaruan</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Gagal memeriksa pembaruan.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Pilih file…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Pilih folder…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Buka</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Impor game yang terpasang</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Impor game tidak terpasang</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Hubungkan akun</sys:String>

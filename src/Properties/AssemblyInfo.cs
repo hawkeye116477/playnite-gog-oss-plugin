@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("GOG library integration with Comet for Playnite")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CometLibrary")]
+[assembly: AssemblyProduct("CometLibraryNS")]
 [assembly: AssemblyCopyright("Copyright © 2023-2024 hawkeye116477\n Copyright © 2020 Josef Nemec")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.19.0.*")]
-[assembly: InternalsVisibleTo("CometLibrary.Tests")]
+[assembly: AssemblyVersion("0.0.*")]
+[assembly: InternalsVisibleTo("CometLibraryNS.Tests")]

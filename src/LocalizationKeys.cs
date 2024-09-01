@@ -6,6 +6,10 @@ namespace System
     public static class LOC
     {
         /// <summary>
+        /// OK
+        /// </summary>
+        public const string Comet3P_PlayniteOKLabel = "LOCComet3P_PlayniteOKLabel";
+        /// <summary>
         /// General
         /// </summary>
         public const string Comet3P_PlayniteSettingsGeneralLabel = "LOCComet3P_PlayniteSettingsGeneralLabel";
@@ -18,6 +22,18 @@ namespace System
         /// </summary>
         public const string Comet3P_PlayniteExecutableTitle = "LOCComet3P_PlayniteExecutableTitle";
         /// <summary>
+        /// Update Available
+        /// </summary>
+        public const string Comet3P_PlayniteUpdaterWindowTitle = "LOCComet3P_PlayniteUpdaterWindowTitle";
+        /// <summary>
+        /// Check for Updates
+        /// </summary>
+        public const string Comet3P_PlayniteCheckForUpdates = "LOCComet3P_PlayniteCheckForUpdates";
+        /// <summary>
+        /// Failed to check for new version.
+        /// </summary>
+        public const string Comet3P_PlayniteUpdateCheckFailMessage = "LOCComet3P_PlayniteUpdateCheckFailMessage";
+        /// <summary>
         /// Select file…
         /// </summary>
         public const string Comet3P_PlayniteSelectFileTooltip = "LOCComet3P_PlayniteSelectFileTooltip";
@@ -25,6 +41,10 @@ namespace System
         /// Select folder…
         /// </summary>
         public const string Comet3P_PlayniteSelectDirectoryTooltip = "LOCComet3P_PlayniteSelectDirectoryTooltip";
+        /// <summary>
+        /// Open
+        /// </summary>
+        public const string Comet3P_PlayniteOpen = "LOCComet3P_PlayniteOpen";
         /// <summary>
         /// Import installed games
         /// </summary>
@@ -85,5 +105,57 @@ namespace System
         /// Games Installation Path
         /// </summary>
         public const string CometGamesInstallationPath = "LOCCometGamesInstallationPath";
+        /// <summary>
+        /// The specified path does not exist.
+        /// </summary>
+        public const string CometPathNotExistsError = "LOCCometPathNotExistsError";
+        /// <summary>
+        /// Troubleshooting information
+        /// </summary>
+        public const string CometTroubleshootingInformation = "LOCCometTroubleshootingInformation";
+        /// <summary>
+        /// Playnite version
+        /// </summary>
+        public const string CometPlayniteVersion = "LOCCometPlayniteVersion";
+        /// <summary>
+        /// Plugin version
+        /// </summary>
+        public const string CometPluginVersion = "LOCCometPluginVersion";
+        /// <summary>
+        /// Launcher version
+        /// </summary>
+        public const string CometLauncherVersion = "LOCCometLauncherVersion";
+        /// <summary>
+        /// Launcher binary
+        /// </summary>
+        public const string CometLauncherBinary = "LOCCometLauncherBinary";
+        /// <summary>
+        /// Copy raw data to clipboard
+        /// </summary>
+        public const string CometCopyRawDataToClipboard = "LOCCometCopyRawDataToClipboard";
+        /// <summary>
+        /// Log Files Path
+        /// </summary>
+        public const string CometLogFilesPath = "LOCCometLogFilesPath";
+        /// <summary>
+        /// Report a bug
+        /// </summary>
+        public const string CometReportBug = "LOCCometReportBug";
+        /// <summary>
+        /// Comet Launcher is not installed.
+        /// </summary>
+        public const string CometLauncherNotInstalled = "LOCCometLauncherNotInstalled";
+        /// <summary>
+        /// A new version is available: {0} {1}.
+        /// </summary>
+        public const string CometNewVersionAvailable = "LOCCometNewVersionAvailable";
+        /// <summary>
+        /// No updates available.
+        /// </summary>
+        public const string CometNoUpdatesAvailable = "LOCCometNoUpdatesAvailable";
+        /// <summary>
+        /// View changelog
+        /// </summary>
+        public const string CometViewChangelog = "LOCCometViewChangelog";
     }
 }

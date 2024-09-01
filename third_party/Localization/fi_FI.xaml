@@ -4,9 +4,14 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Yleiset</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Lisäasetukset</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Suoritettava ohjelma</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Päivitys saatavilla</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Tarkista päivitykset</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Uuden version tarkistaminen epäonnistui.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Valitse tiedosto…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Valitse kansio...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Avaa</sys:String>
 </ResourceDictionary>

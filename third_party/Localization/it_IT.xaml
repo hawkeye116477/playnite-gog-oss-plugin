@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Generale</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avanzate</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Eseguibili</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Aggiornamento disponibile</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Controlla aggiornamenti</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Controllo della nuova versione fallito.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Seleziona un file...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Seleziona cartella...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Apri</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Importa i giochi installati</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Importa giochi non installati</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Connetti l'account</sys:String>

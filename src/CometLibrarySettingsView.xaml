@@ -1,15 +1,14 @@
-﻿<UserControl x:Class="CometLibrary.CometLibrarySettingsView"
+﻿<UserControl x:Class="CometLibraryNS.CometLibrarySettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CometLibrary"
+             xmlns:local="clr-namespace:CometLibraryNS"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:pcon="clr-namespace:Playnite.Converters"
              xmlns:pcmd="clr-namespace:Playnite.Commands"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=local:CometLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="320">
-
+             d:DataContext="{d:DesignInstance Type=local:CometLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="320" x:Name="CometSettingsUC" Loaded="CometSettingsUC_Loaded">
     <UserControl.Resources>
         <pcon:NegateConverter x:Key="NegateConverter" />
         <sys:Boolean x:Key="True">True</sys:Boolean>
@@ -78,14 +77,6 @@
                                   SelectedValue="{Binding Settings.Locale}" ItemsSource="{Binding Path=Languages}"
                                   IsEditable="false" MinWidth="150"/>
                 </StackPanel>
-
-                <TextBlock VerticalAlignment="Center" Margin="0,20,0,0">
-            <Hyperlink NavigateUri="https://github.com/JosefNemec/PlayniteExtensions/wiki/GOG-troubleshooting"
-                        Command="{x:Static pcmd:GlobalCommands.NavigateUrlCommand}"
-                        CommandParameter="{Binding NavigateUri, RelativeSource={RelativeSource Self}}">
-                <Run Text="{DynamicResource LOCComet3P_GOGTroubleShootingIssues}" />
-            </Hyperlink>
-                </TextBlock>
             </StackPanel>
         </TabItem>
         <TabItem Header="{DynamicResource LOCComet3P_PlayniteSettingsAdvancedLabel}" VerticalAlignment="Bottom">
@@ -118,6 +109,75 @@
                             Name="ChooseGamePathBtn" Click="ChooseGamePathBtn_Click" Content="&#xec5b;" 
                             FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCComet3P_PlayniteSelectDirectoryTooltip}"
                             Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="{DynamicResource LOCCometTroubleshootingInformation}">
+            <StackPanel Margin="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{DynamicResource LOCCometPlayniteVersion}" Grid.Column="0" Grid.Row="0"
+                               Margin="0,0,10,5" VerticalAlignment="Center">
+                    </TextBlock>
+                    <TextBox x:Name="PlayniteVersionTxt" Grid.Column="1" Grid.Row="0" Margin="0,0,0,5" 
+                             VerticalAlignment="Bottom" IsReadOnly="True" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{DynamicResource LOCCometPluginVersion}" Grid.Column="0" Grid.Row="1"
+                               Margin="0,0,10,5" VerticalAlignment="Center" />
+                    <TextBox x:Name="PluginVersionTxt" Grid.Column="1" Grid.Row="1" Margin="0,0,0,5" 
+                             VerticalAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{DynamicResource LOCCometLauncherVersion}" Grid.Column="0" Grid.Row="2"
+                               Margin="0,0,10,5" VerticalAlignment="Center" />
+                    <TextBox x:Name="LauncherVersionTxt" Grid.Column="1" Grid.Row="2" Margin="0,0,0,5" VerticalAlignment="Center" 
+                             IsReadOnly="True" HorizontalAlignment="Left"/>
+                    <Button x:Name="CheckForUpdatesBtn" Grid.Column="2" Grid.Row="2" Margin="10,0,0,5" VerticalAlignment="Center"
+                            Content="{DynamicResource LOCComet3P_PlayniteCheckForUpdates}" Click="CheckForUpdatesBtn_Click" />
+                    <TextBlock Text="{DynamicResource LOCCometLauncherBinary}" Grid.Column="0" Grid.Row="3"
+                               Margin="0,0,10,5" VerticalAlignment="Center"/>
+                    <TextBox x:Name="LauncherBinaryTxt" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="3" Margin="0,0,0,5"/>
+                    <Button x:Name="OpenLauncherBinaryBtn" Margin="10,0,0,5" Content="{DynamicResource LOCComet3P_PlayniteOpen}" 
+                                VerticalAlignment="Center" Click="OpenLauncherBinaryBtn_Click" Grid.Column="2" Grid.Row="3" />
+                    <TextBlock Text="{DynamicResource LOCCometGamesInstallationPath}" Grid.Row="4" Grid.Column="0"
+                               Margin="0,0,10,5" VerticalAlignment="Center"/>
+                    <TextBox x:Name="GamesInstallationPathTxt" Margin="0,0,0,5" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="4" />
+                    <Button x:Name="OpenGamesInstallationPathBtn" Margin="10,0,0,5" Content="{DynamicResource LOCComet3P_PlayniteOpen}" 
+                                VerticalAlignment="Center" Click="OpenGamesInstallationPathBtn_Click" Grid.Column="2" Grid.Row="4" />
+                    <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="5" Margin="0,0,10,5" Text="{DynamicResource LOCCometLogFilesPath}"/>
+                    <TextBox x:Name="LogFilesPathTxt" Margin="0,0,0,5" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="5" />
+                    <Button x:Name="OpenLogFilesPathBtn" Margin="10,0,0,5" Content="{DynamicResource LOCComet3P_PlayniteOpen}" 
+                                VerticalAlignment="Center" Grid.Column="2"  Grid.Row="5" Click="OpenLogFilesPathBtn_Click" />
+                    <Button Margin="0,10,5,5" Grid.Column="0" Grid.Row="6" Name="CopyRawDataBtn" Click="CopyRawDataBtn_Click" 
+                            Grid.ColumnSpan="2" HorizontalAlignment="Left" Content="{DynamicResource LOCCometCopyRawDataToClipboard}"/>
+                    <TextBlock VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="0" Grid.Row="7" Margin="0,10,0,0">
+                    <Hyperlink
+                        NavigateUri="https://github.com/hawkeye116477/playnite-comet-plugin/wiki/troubleshooting"
+                        Command="{x:Static pcmd:GlobalCommands.NavigateUrlCommand}"
+                        CommandParameter="{Binding NavigateUri, RelativeSource={RelativeSource Self}}">
+                        <Run Text="{DynamicResource LOCComet3P_GOGTroubleShootingIssues}" />
+                    </Hyperlink>
+                    </TextBlock>
+                    <TextBlock VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="0" Grid.Row="8" Margin="0,10,0,0">
+                    <Hyperlink 
+                        Name="ReportBugHyp"
+                        Command="{x:Static pcmd:GlobalCommands.NavigateUrlCommand}"
+                        CommandParameter="{Binding NavigateUri, RelativeSource={RelativeSource Self}}">
+                        <Run Text="{DynamicResource LOCCometReportBug}" />
+                    </Hyperlink>
+                    </TextBlock>
                 </Grid>
             </StackPanel>
         </TabItem>

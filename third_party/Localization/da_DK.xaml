@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Generelt</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avanceret</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Eksekverings-fil</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle"></sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates"></sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage"></sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip"></sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip"></sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen"></sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Importer installerede spil</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Importer ikke installerede spil</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Forbind konto</sys:String>

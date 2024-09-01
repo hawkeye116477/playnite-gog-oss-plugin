@@ -23,9 +23,19 @@ GOG_LOC_KEYS = ["LOCSettingsGOGUseGalaxy", "LOCGOGSettingsImportInstalledLabel",
                 "LOCGOGMetadataLanguageLabel", "LOCGOGSettingsUseVerticalCovers", "LOCGOGLoggedIn", "LOCGOGMetadataLanguageLabel"]
 
 PLAYNITE_LOC_KEYS = ["LOCSettingsGeneralLabel", "LOCSettingsAdvancedLabel",
-                    "LOCSelectDirectoryTooltip", "LOCSelectFileTooltip", "LOCExecutableTitle"]
+                    "LOCSelectDirectoryTooltip", "LOCSelectFileTooltip", "LOCExecutableTitle", "LOCCheckForUpdates",
+                    "LOCOpen", "LOCOKLabel",
+                    "LOCUpdaterWindowTitle", "LOCUpdateCheckFailMessage"]
 
-LEGENDARY_LOC_KEYS = ["LOCLegendaryLauncherCustomPath", "LOCLegendaryGamesInstallationPath"]
+LEGENDARY_LOC_KEYS = ["LOCLegendaryLauncherCustomPath", "LOCLegendaryGamesInstallationPath", 
+                    "LOCLegendaryTroubleshootingInformation", "LOCLegendaryPlayniteVersion", 
+                    "LOCLegendaryPluginVersion", "LOCLegendaryLauncherVersion",
+                    "LOCLegendaryLauncherBinary", "LOCLegendaryLogFilesPath",
+                    "LOCLegendaryCopyRawDataToClipboard", "LOCLegendaryReportBug",
+                    "LOCLegendaryLauncherNotInstalled", "LOCLegendaryPathNotExistsError",
+                    "LOCLegendaryViewChangelog", "LOCLegendaryNewVersionAvailable",
+                    "LOCLegendaryNoUpdatesAvailable"
+                    ]
 
 if os.path.exists(localization_path):
     shutil.rmtree(localization_path)

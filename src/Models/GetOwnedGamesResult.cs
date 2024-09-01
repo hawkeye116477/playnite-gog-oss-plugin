@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibrary.Models
+namespace CometLibraryNS.Models
 {
     public class GetOwnedGamesResult
     {

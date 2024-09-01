@@ -1,4 +1,4 @@
-﻿using CometLibrary.Models;
+﻿using CometLibraryNS.Models;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 
-namespace CometLibrary.Services
+namespace CometLibraryNS.Services
 {
     public class GogAccountClient
     {

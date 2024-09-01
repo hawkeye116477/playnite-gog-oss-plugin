@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibrary
+namespace CometLibraryNS
 {
     public class CometClient : LibraryClient
     {
@@ -19,10 +19,7 @@ namespace CometLibrary
 
         public override void Open()
         {
-            if (!Comet.ClientExecPath.IsNullOrEmpty())
-            {
-                ProcessStarter.StartProcess("cmd", $"/K {Comet.ClientExecPath} -h");
-            }
+            Comet.StartClient();
         }
 
         public override void Shutdown()

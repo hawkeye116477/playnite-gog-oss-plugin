@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">بله</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">عمومی</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">پیشرفته</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">قابل اجرا</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">به روزرسانی موجود است</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">بررسی برای بروزرسانی</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">بررسی نسخه جدید انجام نشد.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">انتخاب فایل…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">انتخاب پوشه…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">باز کن</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">وارد کردن بازی های نصب شده</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">واردات بازی های نصب نشده</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">اتصال حساب</sys:String>

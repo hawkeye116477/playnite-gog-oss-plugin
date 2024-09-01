@@ -2,4 +2,17 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCCometLauncherCustomPath">Ścieżka launchera</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Ścieżka instalacji gier</sys:String>
+  <sys:String x:Key="LOCCometPathNotExistsError">Podana ścieżka nie istnieje.</sys:String>
+  <sys:String x:Key="LOCCometTroubleshootingInformation">Informacje do rozwiązywania problemów</sys:String>
+  <sys:String x:Key="LOCCometPlayniteVersion">Wersja Playnite</sys:String>
+  <sys:String x:Key="LOCCometPluginVersion">Wersja wtyczki</sys:String>
+  <sys:String x:Key="LOCCometLauncherVersion">Wersja launchera</sys:String>
+  <sys:String x:Key="LOCCometLauncherBinary">Plik binarny launchera</sys:String>
+  <sys:String x:Key="LOCCometCopyRawDataToClipboard">Skopiuj nieprzetworzone dane do schowka</sys:String>
+  <sys:String x:Key="LOCCometLogFilesPath">Ścieżka plików log</sys:String>
+  <sys:String x:Key="LOCCometReportBug">Zgłoś błąd</sys:String>
+  <sys:String x:Key="LOCCometLauncherNotInstalled">Program uruchamiający Comet nie jest zainstalowany.</sys:String>
+  <sys:String x:Key="LOCCometNewVersionAvailable">Dostępna jest nowa wersja: {0} {1}.</sys:String>
+  <sys:String x:Key="LOCCometNoUpdatesAvailable">Brak dostępnych aktualizacji.</sys:String>
+  <sys:String x:Key="LOCCometViewChangelog">Zobacz listę zmian</sys:String>
 </ResourceDictionary>

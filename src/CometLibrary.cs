@@ -1,5 +1,5 @@
-﻿using CometLibrary.Models;
-using CometLibrary.Services;
+﻿using CometLibraryNS.Models;
+using CometLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CometLibrary
+namespace CometLibraryNS
 {
     [LoadPlugin]
     public class CometLibrary : LibraryPluginBase<CometLibrarySettingsViewModel>
@@ -431,6 +431,16 @@ namespace CometLibrary
                     loadString(langXaml);
                 }
             }
+        }
+
+        public string GetCachePath(string dirName)
+        {
+            var cacheDir = Path.Combine(GetPluginUserDataPath(), "cache", dirName);
+            if (!Directory.Exists(cacheDir))
+            {
+                Directory.CreateDirectory(cacheDir);
+            }
+            return cacheDir;
         }
     }
 }

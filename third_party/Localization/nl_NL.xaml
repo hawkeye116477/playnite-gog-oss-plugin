@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">Oké</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Algemeen</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Geavanceerd</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Uitvoerbaar bestand</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Update Beschikbaar</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Controleer op updates</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Controleren op nieuwe versie mislukt.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Selecteer bestand...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Selecteer map...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Open</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Importeer geïnstalleerde spellen</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Importeer niet-geïnstalleerde spellen</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Accounts koppelen</sys:String>

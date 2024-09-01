@@ -4,11 +4,16 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Generelt</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avansert</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Kjørbar fil</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Oppdatering er tilgjengelig</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Se etter oppdateringer</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Oppdateringssjekk mislyktes.</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Velg fil …</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Velg mappe …</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteOpen">Åpne</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Importer installerte spill</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Importer spill som ikke er installert</sys:String>
   <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Tilknytt konto</sys:String>
