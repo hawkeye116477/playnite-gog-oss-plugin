@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace CometLibrary
@@ -23,6 +24,7 @@ namespace CometLibrary
     public class CometLibrary : LibraryPluginBase<CometLibrarySettingsViewModel>
     {
         private static readonly ILogger logger = LogManager.GetLogger();
+        public static CometLibrary Instance { get; set; }
 
         public CometLibrary(IPlayniteAPI api) : base(
             "Comet (GOG)",
@@ -33,7 +35,9 @@ namespace CometLibrary
             (_) => new CometLibrarySettingsView(),
             api)
         {
+            Instance = this;
             SettingsViewModel = new CometLibrarySettingsViewModel(this, api);
+            Load3pLocalization();
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
@@ -73,13 +77,13 @@ namespace CometLibrary
                 yield break;
             }
 
-            if (SettingsViewModel.Settings.StartGamesUsingGalaxy)
+            if (SettingsViewModel.Settings.StartGamesUsingComet)
             {
                 yield return new AutomaticPlayController(args.Game)
                 {
                     Type = AutomaticPlayActionType.File,
                     TrackingMode = TrackingMode.Directory,
-                    Name = ResourceProvider.GetString(LOC.GOGStartUsingClient).Format("Galaxy"),
+                    Name = ResourceProvider.GetString(LOC.Comet3P_GOGStartUsingClient).Format("Comet"),
                     TrackingPath = installEntry.InstallDirectory,
                     Arguments = string.Format(@"/launchViaAutostart /gameId={0} /command=runGame /path=""{1}""", args.Game.GameId, installEntry.InstallDirectory),
                     Path = Comet.ClientInstallationPath
@@ -100,6 +104,11 @@ namespace CometLibrary
                     };
                 }
             }
+        }
+
+        public static CometLibrarySettings GetSettings()
+        {
+            return Instance.SettingsViewModel?.Settings ?? null;
         }
 
         internal static List<GameAction> GetPlayTasks(string gameId, string installDir)
@@ -373,10 +382,55 @@ namespace CometLibrary
             return allGames;
         }
 
-        public override ISettings GetSettings(bool firstRunSettings)
+        public void Load3pLocalization()
         {
-            SettingsViewModel.IsFirstRunUse = firstRunSettings;
-            return SettingsViewModel;
+            var currentLanguage = PlayniteApi.ApplicationSettings.Language;
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
+
+            void loadString(string xamlPath)
+            {
+                ResourceDictionary res = null;
+                try
+                {
+                    res = Xaml.FromFile<ResourceDictionary>(xamlPath);
+                    res.Source = new Uri(xamlPath, UriKind.Absolute);
+                    foreach (var key in res.Keys)
+                    {
+                        if (res[key] is string locString && locString.IsNullOrEmpty())
+                        {
+                            res.Remove(key);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, $"Failed to parse localization file {xamlPath}");
+                    return;
+                }
+                dictionaries.Add(res);
+            }
+
+            var extraLocDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Localization\third_party");
+            if (!Directory.Exists(extraLocDir))
+            {
+                return;
+            }
+
+            var enXaml = Path.Combine(extraLocDir, "en_US.xaml");
+            if (!File.Exists(enXaml))
+            {
+                return;
+            }
+
+            loadString(enXaml);
+            if (currentLanguage != "en_US")
+            {
+                var langXaml = Path.Combine(extraLocDir, $"{currentLanguage}.xaml");
+                if (File.Exists(langXaml))
+                {
+                    loadString(langXaml);
+                }
+            }
         }
     }
 }

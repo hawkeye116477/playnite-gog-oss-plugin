@@ -1,6 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Playnite.SDK;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -17,7 +16,7 @@ namespace CometLibrary
             get
             {
                 var path = InstallationPath;
-                return string.IsNullOrEmpty(path) ? string.Empty : Path.Combine(path, "GalaxyClient.exe");
+                return string.IsNullOrEmpty(path) ? string.Empty : path;
             }
         }
 
@@ -25,7 +24,7 @@ namespace CometLibrary
         {
             get
             {
-                if (string.IsNullOrEmpty(InstallationPath) || !Directory.Exists(InstallationPath))
+                if (string.IsNullOrEmpty(InstallationPath) || !File.Exists(InstallationPath))
                 {
                     return false;
                 }
@@ -40,26 +39,53 @@ namespace CometLibrary
         {
             get
             {
-                RegistryKey key = null;
-                try
+                var launcherPath = "";
+                var heroicCometBinary = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                                           @"Programs\heroic\resources\app.asar.unpacked\build\bin\x64\win32\comet.exe");
+                if(File.Exists(heroicCometBinary))
                 {
-                    key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\GOG.com\GalaxyClient\paths");
-                    if (key == null)
-                    {
-                        key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\GOG.com\GalaxyClient\paths");
-                    }
-
-                    if (key?.GetValueNames().Contains("client") == true)
-                    {
-                        return key.GetValue("client").ToString();
-                    }
-
-                    return string.Empty;
+                    launcherPath = heroicCometBinary;
                 }
-                finally
+                else
                 {
-                    key?.Dispose();
+                    var pf64 = Environment.GetEnvironmentVariable("ProgramW6432");
+                    if (string.IsNullOrEmpty(pf64))
+                    {
+                        pf64 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                    }
+                    launcherPath = Path.Combine(pf64, "Comet", "comet-x86_64-pc-windows-msvc.exe");
+                    if (!File.Exists(launcherPath))
+                    {
+                        var playniteAPI = API.Instance;
+                        if (playniteAPI.ApplicationInfo.IsPortable)
+                        {
+                            launcherPath = Path.Combine(playniteAPI.Paths.ApplicationPath, "Comet", "comet-x86_64-pc-windows-msvc.exe");
+                        }
+                    }
                 }
+                var savedSettings = CometLibrary.GetSettings();
+                if (savedSettings != null)
+                {
+                    var savedLauncherPath = savedSettings.SelectedLauncherPath;
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    if (savedLauncherPath != "")
+                    {
+                        if (savedLauncherPath.Contains(playniteDirectoryVariable))
+                        {
+                            var playniteAPI = API.Instance;
+                            savedLauncherPath = savedLauncherPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+                        }
+                        if (Directory.Exists(savedLauncherPath))
+                        {
+                            launcherPath = savedLauncherPath;
+                        }
+                    }
+                }
+                if (!File.Exists(launcherPath))
+                {
+                    launcherPath = "";
+                }
+                return launcherPath;
             }
         }
 
@@ -73,7 +99,7 @@ namespace CometLibrary
             }
         }
 
-        public static string ClientInstallationPath => Path.Combine(InstallationPath, "GalaxyClient.exe");
+        public static string ClientInstallationPath => InstallationPath;
         public static string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\gogicon.png");
     }
 }

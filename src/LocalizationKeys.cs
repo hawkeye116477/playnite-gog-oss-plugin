@@ -1,117 +1,89 @@
 ///
-/// DO NOT MODIFY! Automatically generated via UpdateLocExtFiles.ps1 script.
-/// 
+/// DO NOT MODIFY! Automatically generated via update_localization_keys.py script.
+///
 namespace System
 {
     public static class LOC
     {
         /// <summary>
+        /// General
+        /// </summary>
+        public const string Comet3P_PlayniteSettingsGeneralLabel = "LOCComet3P_PlayniteSettingsGeneralLabel";
+        /// <summary>
+        /// Advanced
+        /// </summary>
+        public const string Comet3P_PlayniteSettingsAdvancedLabel = "LOCComet3P_PlayniteSettingsAdvancedLabel";
+        /// <summary>
+        /// Executable
+        /// </summary>
+        public const string Comet3P_PlayniteExecutableTitle = "LOCComet3P_PlayniteExecutableTitle";
+        /// <summary>
+        /// Select file…
+        /// </summary>
+        public const string Comet3P_PlayniteSelectFileTooltip = "LOCComet3P_PlayniteSelectFileTooltip";
+        /// <summary>
+        /// Select folder…
+        /// </summary>
+        public const string Comet3P_PlayniteSelectDirectoryTooltip = "LOCComet3P_PlayniteSelectDirectoryTooltip";
+        /// <summary>
         /// Import installed games
         /// </summary>
-        public const string GOGSettingsImportInstalledLabel = "LOCGOGSettingsImportInstalledLabel";
+        public const string Comet3P_GOGSettingsImportInstalledLabel = "LOCComet3P_GOGSettingsImportInstalledLabel";
         /// <summary>
         /// Import not installed games
         /// </summary>
-        public const string GOGSettingsImportUninstalledLabel = "LOCGOGSettingsImportUninstalledLabel";
+        public const string Comet3P_GOGSettingsImportUninstalledLabel = "LOCComet3P_GOGSettingsImportUninstalledLabel";
         /// <summary>
         /// Connect account
         /// </summary>
-        public const string GOGSettingsConnectAccount = "LOCGOGSettingsConnectAccount";
+        public const string Comet3P_GOGSettingsConnectAccount = "LOCComet3P_GOGSettingsConnectAccount";
         /// <summary>
         /// Checking authentication status…
         /// </summary>
-        public const string GOGLoginChecking = "LOCGOGLoginChecking";
+        public const string Comet3P_GOGLoginChecking = "LOCComet3P_GOGLoginChecking";
         /// <summary>
         /// User is authenticated
         /// </summary>
-        public const string GOGLoggedIn = "LOCGOGLoggedIn";
+        public const string Comet3P_GOGLoggedIn = "LOCComet3P_GOGLoggedIn";
         /// <summary>
         /// Requires authentication
         /// </summary>
-        public const string GOGNotLoggedIn = "LOCGOGNotLoggedIn";
+        public const string Comet3P_GOGNotLoggedIn = "LOCComet3P_GOGNotLoggedIn";
         /// <summary>
         /// Failed to authenticate user.
         /// </summary>
-        public const string GOGNotLoggedInError = "LOCGOGNotLoggedInError";
+        public const string Comet3P_GOGNotLoggedInError = "LOCComet3P_GOGNotLoggedInError";
         /// <summary>
         /// Authenticate
         /// </summary>
-        public const string GOGAuthenticateLabel = "LOCGOGAuthenticateLabel";
-        /// <summary>
-        /// Start games directly without running official client
-        /// </summary>
-        public const string GOGSettingsStartGameDirectly = "LOCGOGSettingsStartGameDirectly";
-        /// <summary>
-        /// Troubleshooting account sync issues
-        /// </summary>
-        public const string GOGTroubleShootingAccountLink = "LOCGOGTroubleShootingAccountLink";
+        public const string Comet3P_GOGAuthenticateLabel = "LOCComet3P_GOGAuthenticateLabel";
         /// <summary>
         /// Troubleshooting issues
         /// </summary>
-        public const string GOGTroubleShootingIssues = "LOCGOGTroubleShootingIssues";
-        /// <summary>
-        /// Import all games
-        /// </summary>
-        public const string GOGSettingsImportLibraryLabel = "LOCGOGSettingsImportLibraryLabel";
-        /// <summary>
-        /// Private Account
-        /// </summary>
-        public const string GOGPrivateAccount = "LOCGOGPrivateAccount";
-        /// <summary>
-        /// Public Account
-        /// </summary>
-        public const string GOGPublicAccount = "LOCGOGPublicAccount";
-        /// <summary>
-        /// API Key
-        /// </summary>
-        public const string GOGAPIKey = "LOCGOGAPIKey";
+        public const string Comet3P_GOGTroubleShootingIssues = "LOCComet3P_GOGTroubleShootingIssues";
         /// <summary>
         /// Start using {0} client
         /// </summary>
-        public const string GOGStartUsingClient = "LOCGOGStartUsingClient";
-        /// <summary>
-        /// Import play time
-        /// </summary>
-        public const string GOGImportPlaytime = "LOCGOGImportPlaytime";
-        /// <summary>
-        /// Account ID
-        /// </summary>
-        public const string GOGAccountID = "LOCGOGAccountID";
+        public const string Comet3P_GOGStartUsingClient = "LOCComet3P_GOGStartUsingClient";
         /// <summary>
         /// Metadata language:
         /// </summary>
-        public const string GOGMetadataLanguageLabel = "LOCGOGMetadataLanguageLabel";
+        public const string Comet3P_GOGMetadataLanguageLabel = "LOCComet3P_GOGMetadataLanguageLabel";
         /// <summary>
-        /// Account Login
+        /// Launch games using Comet client
         /// </summary>
-        public const string GOGUseLogin = "LOCGOGUseLogin";
-        /// <summary>
-        /// Account Name
-        /// </summary>
-        public const string GOGUseAccountName = "LOCGOGUseAccountName";
-        /// <summary>
-        /// Login to your account or use your public account name to sync your full library.
-        /// </summary>
-        public const string GOGAccountSyncDescription = "LOCGOGAccountSyncDescription";
-        /// <summary>
-        /// Launch games using GOG Galaxy client
-        /// </summary>
-        public const string SettingsGOGUseGalaxy = "LOCSettingsGOGUseGalaxy";
-        /// <summary>
-        /// This will enable GOG Galaxy features like cloud saves, game time tracking, etc.
-        /// </summary>
-        public const string SettingsGOGUseGalaxyTooltip = "LOCSettingsGOGUseGalaxyTooltip";
-        /// <summary>
-        /// Automatically initiate the install process when installing games on GOG Galaxy
-        /// </summary>
-        public const string GOGSettingsUseAutomaticGameInstalls = "LOCGOGSettingsUseAutomaticGameInstalls";
-        /// <summary>
-        /// If enabled, the install process will be automatically started without needing user interaction to the configured default install location.
-        /// </summary>
-        public const string GOGSettingsUseAutomaticGameInstallsTooltip = "LOCGOGSettingsUseAutomaticGameInstallsTooltip";
+        public const string Comet3P_GOGUseComet = "LOCComet3P_GOGUseComet";
         /// <summary>
         /// Use vertical covers
         /// </summary>
-        public const string GOGSettingsUseVerticalCovers = "LOCGOGSettingsUseVerticalCovers";
+        public const string Comet3P_GOGSettingsUseVerticalCovers = "LOCComet3P_GOGSettingsUseVerticalCovers";
+        /// <summary>
+        /// Launcher Path
+        /// </summary>
+        public const string CometLauncherCustomPath = "LOCCometLauncherCustomPath";
+        /// <summary>
+        /// Games Installation Path
+        /// </summary>
+        public const string CometGamesInstallationPath = "LOCCometGamesInstallationPath";
     }
 }

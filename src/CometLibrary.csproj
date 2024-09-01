@@ -7,8 +7,8 @@
     <ProjectGuid>{2E4F6F47-C3AC-4650-936A-09E675B9B3B3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GogLibrary</RootNamespace>
-    <AssemblyName>GogLibrary</AssemblyName>
+    <RootNamespace>CometLibrary</RootNamespace>
+    <AssemblyName>CometLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -151,6 +151,9 @@
     <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\ProcessStarter.cs">
       <Link>Shared\Playnite\ProcessStarter.cs</Link>
     </Compile>
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\Playnite\Common\Xaml.cs">
+      <Link>Shared\Playnite\Xaml.cs</Link>
+    </Compile>
     <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\Programs.cs">
       <Link>Shared\Playnite\Programs.cs</Link>
     </Compile>
@@ -184,7 +187,6 @@
     <Compile Include="Comet.cs" />
     <Compile Include="CometGameController.cs" />
     <Compile Include="CometLibrary.cs" />
-    <Compile Include="Environment.cs" />
     <Compile Include="CometLibrarySettingsView.xaml.cs">
       <DependentUpon>CometLibrarySettingsView.xaml</DependentUpon>
     </Compile>
@@ -209,12 +211,25 @@
     <None Include="extension.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="$(LocalAppData)\Playnite\Templates\Themes\Fonts\icofont.ttf">
+      <Link>Fonts/icofont.ttf</Link>
+    </None>
+    <None Include="..\LICENSE">
+      <Link>LICENSE</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Localization\*.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\third_party\Localization\*.xaml">
+      <Link>Localization\third_party\%(Filename)%(Extension)</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>

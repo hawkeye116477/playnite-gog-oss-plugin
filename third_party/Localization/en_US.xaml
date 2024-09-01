@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Automatically generated via update_3p_localization.py script using files from https://github.com/JosefNemec/PlayniteExtensions/tree/d59a97d5bce1c35a55c7dc01000684169b76fd96 and https://github.com/JosefNemec/Playnite/tree/2afc8359d8c45e80c66404add4221037ce600d43.
+  DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">General</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Advanced</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Executable</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Select file…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Select folder…</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Import installed games</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Import not installed games</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Connect account</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGLoginChecking">Checking authentication status…</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGLoggedIn">User is authenticated</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGNotLoggedIn">Requires authentication</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGNotLoggedInError">Failed to authenticate user.</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGAuthenticateLabel">Authenticate</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGTroubleShootingIssues">Troubleshooting issues</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGStartUsingClient">Start using {0} client</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGMetadataLanguageLabel">Metadata language:</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGUseComet">Launch games using Comet client</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsUseVerticalCovers">Use vertical covers</sys:String>
+</ResourceDictionary>

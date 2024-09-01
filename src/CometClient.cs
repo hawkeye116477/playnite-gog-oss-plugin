@@ -15,25 +15,26 @@ namespace CometLibrary
     {
         private static readonly ILogger logger = LogManager.GetLogger();
 
-        public override string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\galaxyIcon.png");
-
         public override bool IsInstalled => Comet.IsInstalled;
 
         public override void Open()
         {
-            ProcessStarter.StartProcess(Comet.ClientExecPath, string.Empty);
+            if (!Comet.ClientExecPath.IsNullOrEmpty())
+            {
+                ProcessStarter.StartProcess("cmd", $"/K {Comet.ClientExecPath} -h");
+            }
         }
 
         public override void Shutdown()
         {
-            var mainProc = Process.GetProcessesByName("GalaxyClient").FirstOrDefault();
-            if (mainProc == null)
-            {
-                logger.Info("Galaxy client is no longer running, no need to shut it down.");
-                return;
-            }
+            //var mainProc = Process.GetProcessesByName("GalaxyClient").FirstOrDefault();
+            //if (mainProc == null)
+            //{
+            //    logger.Info("Galaxy client is no longer running, no need to shut it down.");
+            //    return;
+            //}
 
-            ProcessStarter.StartProcessWait(Comet.ClientExecPath, "/command=shutdown", null);
+            //ProcessStarter.StartProcessWait(Comet.ClientExecPath, "/command=shutdown", null);
         }
     }
 }

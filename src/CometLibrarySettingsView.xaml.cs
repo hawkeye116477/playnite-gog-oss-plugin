@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Playnite.SDK;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CometLibrary
 {
@@ -20,9 +11,24 @@ namespace CometLibrary
     /// </summary>
     public partial class CometLibrarySettingsView : UserControl
     {
+        private IPlayniteAPI playniteAPI = API.Instance;
         public CometLibrarySettingsView()
         {
             InitializeComponent();
+        }
+
+        private void ChooseGamePathBtn_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ChooseLauncherBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.Comet3P_PlayniteExecutableTitle)}|*.exe");
+            if (file != "")
+            {
+                SelectedLauncherPathTxt.Text = file;
+            }
         }
     }
 }

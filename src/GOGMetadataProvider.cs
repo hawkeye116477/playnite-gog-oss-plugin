@@ -23,9 +23,9 @@ namespace CometLibrary
         private GogApiClient apiClient = new GogApiClient();
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI api;
-        private readonly GogLibrarySettings settings;
+        private readonly CometLibrarySettings settings;
 
-        public GogMetadataProvider(IPlayniteAPI api, GogLibrarySettings settings)
+        public GogMetadataProvider(IPlayniteAPI api, CometLibrarySettings settings)
         {
             this.api = api;
             this.settings = settings;

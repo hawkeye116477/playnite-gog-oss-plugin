@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Automatically generated via update_3p_localization.py script using files from https://github.com/JosefNemec/PlayniteExtensions/tree/d59a97d5bce1c35a55c7dc01000684169b76fd96 and https://github.com/JosefNemec/Playnite/tree/2afc8359d8c45e80c66404add4221037ce600d43.
+  DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">General</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avanzado</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Ejecutable</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Selecciona archivo…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Selecciona carpeta...</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsImportInstalledLabel">Importar juegos instalados</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsImportUninstalledLabel">Importar juegos no instalados</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGSettingsConnectAccount">Conectar cuenta</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGLoginChecking">Comprobando el estado de la autenticación…</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGLoggedIn">El usuario está autenticado</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGNotLoggedIn">Requiere autenticación</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGNotLoggedInError">Fallo al autenticar usuario.</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGAuthenticateLabel">Autenticar</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGTroubleShootingIssues">Resolución de problemas</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGStartUsingClient">Iniciar usando el cliente {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGMetadataLanguageLabel">Idioma de metadatos:</sys:String>
+  <sys:String x:Key="LOCComet3P_GOGUseComet">Lanzar juegos usando el cliente Comet</sys:String>
+</ResourceDictionary>

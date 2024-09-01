@@ -5,21 +5,20 @@ using CometLibrary.Services;
 
 namespace CometLibrary
 {
-    public class GogLibrarySettings
+    public class CometLibrarySettings
     {
-        public int Version { get; set; }
         public bool ImportInstalledGames { get; set; } = true;
         public bool ConnectAccount { get; set; } = false;
         public bool ImportUninstalledGames { get; set; } = false;
-        public bool StartGamesUsingGalaxy { get; set; } = false;
+        public bool StartGamesUsingComet { get; set; } = false;
         public bool UseAutomaticGameInstalls { get; set; } = false;
         public bool UseVerticalCovers { get; set; } = true;
         public string Locale { get; set; } = "en";
+        public string GamesInstallationPath { get; set; } = "";
+        public string SelectedLauncherPath { get; set; } = "";
     }
-    public class CometLibrarySettingsViewModel : PluginSettingsViewModel<GogLibrarySettings, CometLibrary>
+    public class CometLibrarySettingsViewModel : PluginSettingsViewModel<CometLibrarySettings, CometLibrary>
     {
-        public bool IsFirstRunUse { get; set; }
-
         public bool IsUserLoggedIn
         {
             get
@@ -42,30 +41,7 @@ namespace CometLibrary
 
         public CometLibrarySettingsViewModel(CometLibrary library, IPlayniteAPI api) : base(library, api)
         {
-            var savedSettings = LoadSavedSettings();
-            if (savedSettings != null)
-            {
-                if (savedSettings.Version == 0)
-                {
-                    Logger.Debug("Updating GOG settings from version 0.");
-                    if (savedSettings.ImportUninstalledGames)
-                    {
-                        savedSettings.ConnectAccount = true;
-                    }
-                }
-
-                savedSettings.Version = 1;
-                Settings = savedSettings;
-            }
-            else
-            {
-                Settings = new GogLibrarySettings { Version = 1 };
-                var languageCode = api.ApplicationSettings.Language.Substring(0, 2);
-                if (Languages.ContainsKey(languageCode))
-                {
-                    Settings.Locale = languageCode;
-                }
-            }
+            Settings = LoadSavedSettings() ?? new CometLibrarySettings();
         }
 
         private void Login()
@@ -81,7 +57,7 @@ namespace CometLibrary
 
                 OnPropertyChanged(nameof(IsUserLoggedIn));
             }
-            catch (Exception e) when (!Environment.IsDebugBuild)
+            catch (Exception e)
             {
                 Logger.Error(e, "Failed to authenticate user.");
             }
