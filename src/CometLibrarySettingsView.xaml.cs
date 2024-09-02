@@ -1,9 +1,11 @@
 ﻿using CometLibrary.Models;
+using CometLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -19,10 +21,12 @@ namespace CometLibraryNS
     {
         private IPlayniteAPI playniteAPI = API.Instance;
         public CometTroubleshootingInformation troubleshootingInformation;
+        private ILogger logger = LogManager.GetLogger();
 
         public CometLibrarySettingsView()
         {
             InitializeComponent();
+            UpdateAuthStatus();
         }
 
         private void ChooseGamePathBtn_Click(object sender, RoutedEventArgs e)
@@ -125,6 +129,81 @@ namespace CometLibraryNS
         private void OpenLogFilesPathBtn_Click(object sender, RoutedEventArgs e)
         {
             ProcessStarter.StartProcess("explorer.exe", playniteAPI.Paths.ConfigurationPath);
+        }
+
+        private async void UpdateAuthStatus()
+        {
+            if (CometLibrary.GetSettings().ConnectAccount == true)
+            {
+                LoginBtn.IsEnabled = false;
+                AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGLoginChecking);
+                var clientApi = new GogAccountClient(playniteAPI);
+                var userLoggedIn = await clientApi.GetIsUserLoggedIn();
+                if (userLoggedIn)
+                {
+                    var accountInfo = await clientApi.GetAccountInfo();
+                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.CometSignedInAs).Format(accountInfo.username);
+                    LoginBtn.Content = ResourceProvider.GetString(LOC.CometSignOut);
+                    LoginBtn.IsChecked = true;
+                }
+                else
+                {
+                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGNotLoggedIn);
+                    LoginBtn.Content = ResourceProvider.GetString(LOC.Comet3P_GOGAuthenticateLabel);
+                    LoginBtn.IsChecked = false;
+                }
+                LoginBtn.IsEnabled = true;
+            }
+            else
+            {
+                AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGNotLoggedIn);
+                LoginBtn.IsEnabled = true;
+            }
+        }
+
+        private async void LoginBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var clientApi = new GogAccountClient(playniteAPI);
+            var userLoggedIn = LoginBtn.IsChecked;
+            if (!userLoggedIn == false)
+            {
+                try
+                {
+                    await clientApi.Login();
+                }
+                catch (Exception ex) when (!Debugger.IsAttached)
+                {
+                    playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.Comet3P_GOGNotLoggedInError), "");
+                    logger.Error(ex, "Failed to authenticate user.");
+                }
+                UpdateAuthStatus();
+            }
+            else
+            {
+                var answer = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.CometSignOutConfirm), LOC.CometSignOut, MessageBoxButton.YesNo);
+                if (answer == MessageBoxResult.Yes)
+                {
+                    using (var view = playniteAPI.WebViews.CreateView(new WebViewSettings
+                    {
+                        WindowWidth = 580,
+                        WindowHeight = 700,
+                    }))
+                    {
+                        view.DeleteDomainCookies(".gog.com");
+                    }
+                    File.Delete(Comet.TokensPath);
+                    UpdateAuthStatus();
+                }
+                else
+                {
+                    LoginBtn.IsChecked = true;
+                }
+            }
+        }
+
+        private void CheckGOGConnectAccount_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateAuthStatus();
         }
     }
 }

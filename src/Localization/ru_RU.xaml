@@ -3,6 +3,7 @@
   <sys:String x:Key="LOCCometLauncherCustomPath">Путь к Лаунчеру</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Путь установки игр</sys:String>
   <sys:String x:Key="LOCCometPathNotExistsError">Указанный путь не существует.</sys:String>
+  <sys:String x:Key="LOCCometSignOut">Выйти</sys:String>
   <sys:String x:Key="LOCCometTroubleshootingInformation">Информация о поиске неисправностей</sys:String>
   <sys:String x:Key="LOCCometPlayniteVersion">Версия Playnite</sys:String>
   <sys:String x:Key="LOCCometPluginVersion">Версия плагина Comet</sys:String>
@@ -15,4 +16,6 @@
   <sys:String x:Key="LOCCometNewVersionAvailable">Доступна новая версия: {0} {1}.</sys:String>
   <sys:String x:Key="LOCCometNoUpdatesAvailable">Обновления отсутствуют.</sys:String>
   <sys:String x:Key="LOCCometViewChangelog">Список изменений</sys:String>
+  <sys:String x:Key="LOCCometSignedInAs">Вы вошли как {0}</sys:String>
+  <sys:String x:Key="LOCCometSignOutConfirm">Вы действительно хотите выйти?</sys:String>
 </ResourceDictionary>

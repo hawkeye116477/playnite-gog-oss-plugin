@@ -248,12 +248,12 @@ namespace CometLibraryNS
             return games;
         }
 
-        internal List<GameMetadata> GetLibraryGames()
+        internal async Task<List<GameMetadata>> GetLibraryGames()
         {
             using (var view = PlayniteApi.WebViews.CreateOffscreenView())
             {
-                var api = new GogAccountClient(view);
-                if (!api.GetIsUserLoggedIn())
+                var api = new GogAccountClient(view, PlayniteApi);
+                if (!await api.GetIsUserLoggedIn())
                 {
                     throw new Exception("User is not logged in to GOG account.");
                 }
@@ -264,7 +264,8 @@ namespace CometLibraryNS
                     throw new Exception("Failed to obtain library data.");
                 }
 
-                var libGamesStats = api.GetOwnedGames(api.GetAccountInfo());
+                var accountInfo = await api.GetAccountInfo();
+                var libGamesStats = api.GetOwnedGames(accountInfo);
                 if (libGamesStats != null)
                 {
                     foreach (LibraryGameResponse libGame in libGames)
@@ -337,7 +338,7 @@ namespace CometLibraryNS
             {
                 try
                 {
-                    var libraryGames = GetLibraryGames();
+                    var libraryGames = GetLibraryGames().GetAwaiter().GetResult();
                     Logger.Debug($"Found {libraryGames.Count} library GOG games.");
 
                     if (!SettingsViewModel.Settings.ImportUninstalledGames)

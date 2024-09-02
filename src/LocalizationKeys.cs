@@ -110,6 +110,10 @@ namespace System
         /// </summary>
         public const string CometPathNotExistsError = "LOCCometPathNotExistsError";
         /// <summary>
+        /// Sign out
+        /// </summary>
+        public const string CometSignOut = "LOCCometSignOut";
+        /// <summary>
         /// Troubleshooting information
         /// </summary>
         public const string CometTroubleshootingInformation = "LOCCometTroubleshootingInformation";
@@ -157,5 +161,13 @@ namespace System
         /// View changelog
         /// </summary>
         public const string CometViewChangelog = "LOCCometViewChangelog";
+        /// <summary>
+        /// Signed in as {0}
+        /// </summary>
+        public const string CometSignedInAs = "LOCCometSignedInAs";
+        /// <summary>
+        /// Are you sure you want to sign out?
+        /// </summary>
+        public const string CometSignOutConfirm = "LOCCometSignOutConfirm";
     }
 }

@@ -1,10 +1,18 @@
-﻿using CometLibraryNS.Models;
+﻿using CometLibrary.Models;
+using CometLibraryNS.Models;
+using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using PlayniteExtensions.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.UI.WebControls;
 
 namespace CometLibraryNS.Services
@@ -13,40 +21,108 @@ namespace CometLibraryNS.Services
     {
         private ILogger logger = LogManager.GetLogger();
         private IWebView webView;
+        private IPlayniteAPI playniteAPI;
+        public string clientId;
+        public string clientSecret;
 
-        public GogAccountClient(IWebView webView)
+        public GogAccountClient(IPlayniteAPI api)
         {
+            playniteAPI = api;
+            clientId = "46899977096215655";
+            clientSecret = "9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9";
+        }
+
+        public GogAccountClient(IWebView webView, IPlayniteAPI api)
+        {
+            playniteAPI = api;
             this.webView = webView;
         }
 
-        public bool GetIsUserLoggedIn() => GetIsUserLoggedIn(webView);
-
-        private static bool GetIsUserLoggedIn(IWebView webView)
+        public async Task<bool> GetIsUserLoggedIn()
         {
-            var account = GetAccountInfo(webView);
+            var account = await GetAccountInfo();
             return account?.isLoggedIn ?? false;
         }
 
-        public void Login(IWebView backgroundWebView)
+        public async Task Login()
         {
-            var loginUrl = "https://www.gog.com/account/";
+            var loggedIn = false;
 
-            webView.LoadingChanged += async (s, e) =>
+            var loginUrl = "https://auth.gog.com/auth?";
+            var loginUriBuilder = new UriBuilder(loginUrl);
+            var query = HttpUtility.ParseQueryString(loginUriBuilder.Query);
+            query["client_id"] = clientId;
+            query["layout"] = "galaxy";
+            query["redirect_uri"] = "https://embed.gog.com/on_login_success?origin=client";
+            query["response_type"] = "code";
+            loginUriBuilder.Query = query.ToString();
+            loginUrl = loginUriBuilder.Uri.AbsoluteUri;
+            var code = "";
+
+            using (var view = playniteAPI.WebViews.CreateView(new WebViewSettings
             {
-                var url = webView.GetCurrentAddress();
-                if (!url.EndsWith("#openlogin"))
+                WindowWidth = 580,
+                WindowHeight = 700,
+                UserAgent = Comet.GetUserAgent()
+            }))
+            {
+                view.LoadingChanged += (s, e) =>
                 {
-                    var loggedIn = await Task.Run(() => GetIsUserLoggedIn(backgroundWebView));
-                    if (loggedIn)
+                    var address = view.GetCurrentAddress();
+                    if (address.StartsWith(query["redirect_uri"]))
                     {
-                        webView.Close();
+                        var redirectUri = new Uri(address);
+                        code = HttpUtility.ParseQueryString(redirectUri.Query).Get("code");
+                        if (code.IsNullOrEmpty())
+                        {
+                            logger.Error("Can't get auth code from GOG");
+                            return;
+                        }
+                        loggedIn = true;
+                        view.Close();
                     }
-                }
-            };
+                };
 
-            webView.DeleteDomainCookies(".gog.com");
-            webView.Navigate(loginUrl);
-            webView.OpenDialog();
+                view.DeleteDomainCookies(".gog.com");
+                view.Navigate(loginUrl);
+                view.OpenDialog();
+            }
+            if (!loggedIn)
+            {
+                return;
+            }
+            else
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var tokenUrl = "https://auth.gog.com/token?";
+                    var tokenUriBuilder = new UriBuilder(tokenUrl);
+                    var tokenQuery = HttpUtility.ParseQueryString(tokenUriBuilder.Query);
+                    tokenQuery["client_id"] = clientId;
+                    tokenQuery["client_secret"] = clientSecret;
+                    tokenQuery["grant_type"] = "authorization_code";
+                    tokenQuery["code"] = code;
+                    tokenQuery["redirect_uri"] = "https://embed.gog.com/on_login_success?origin=client";
+                    tokenUriBuilder.Query = tokenQuery.ToString();
+                    tokenUrl = tokenUriBuilder.Uri.AbsoluteUri;
+                    var response = await httpClient.GetAsync(tokenUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        FileSystem.CreateDirectory(Path.GetDirectoryName(Comet.TokensPath));
+                        Encryption.EncryptToFile(
+                            Comet.TokensPath,
+                            responseContent,
+                            Encoding.UTF8,
+                            WindowsIdentity.GetCurrent().User.Value);
+                    }
+                    else
+                    {
+                        logger.Error($"Failed to authenticate with GOG. Error: {response.ReasonPhrase}");
+                    }
+
+                }
+            }
         }
 
         public void ForceWebLanguage(string localeCode)
@@ -54,14 +130,44 @@ namespace CometLibraryNS.Services
             webView.Navigate(@"https://www.gog.com/user/changeLanguage/" + localeCode);
         }
 
-        public AccountBasicResponse GetAccountInfo() => GetAccountInfo(webView);
-
-        private static AccountBasicResponse GetAccountInfo(IWebView webView)
+        public async Task<AccountBasicResponse> GetAccountInfo()
         {
-            webView.NavigateAndWait(@"https://menu.gog.com/v1/account/basic");
-            var stringInfo = webView.GetPageText();
+            var tokens = LoadTokens();
+            if (tokens == null)
+            {
+                return new AccountBasicResponse();
+            }
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("User-Agent", Comet.GetUserAgent());
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+            var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.Debug("Can't get GOG account info");
+                return new AccountBasicResponse();
+            }
+            var stringInfo = await response.Content.ReadAsStringAsync();
             var accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
             return accountInfo;
+        }
+
+        private TokenResponse LoadTokens()
+        {
+            if (File.Exists(Comet.TokensPath))
+            {
+                try
+                {
+                    return Serialization.FromJson<TokenResponse>(Encryption.DecryptFromFile
+                        (Comet.TokensPath,
+                         Encoding.UTF8,
+                         WindowsIdentity.GetCurrent().User.Value));
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, "Failed to load saved tokens.");
+                }
+            }
+            return null;
         }
 
         public List<LibraryGameResponse> GetOwnedGames(AccountBasicResponse account)

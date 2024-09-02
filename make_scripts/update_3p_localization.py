@@ -34,7 +34,8 @@ LEGENDARY_LOC_KEYS = ["LOCLegendaryLauncherCustomPath", "LOCLegendaryGamesInstal
                     "LOCLegendaryCopyRawDataToClipboard", "LOCLegendaryReportBug",
                     "LOCLegendaryLauncherNotInstalled", "LOCLegendaryPathNotExistsError",
                     "LOCLegendaryViewChangelog", "LOCLegendaryNewVersionAvailable",
-                    "LOCLegendaryNoUpdatesAvailable"
+                    "LOCLegendaryNoUpdatesAvailable", "LOCLegendarySignedInAs",
+                    "LOCLegendarySignOut", "LOCLegendarySignOutConfirm"
                     ]
 
 if os.path.exists(localization_path):

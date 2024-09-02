@@ -19,48 +19,9 @@ namespace CometLibraryNS
     }
     public class CometLibrarySettingsViewModel : PluginSettingsViewModel<CometLibrarySettings, CometLibrary>
     {
-        public bool IsUserLoggedIn
-        {
-            get
-            {
-                using (var view = PlayniteApi.WebViews.CreateOffscreenView())
-                {
-                    var api = new GogAccountClient(view);
-                    return api.GetIsUserLoggedIn();
-                }
-            }
-        }
-
-        public RelayCommand<object> LoginCommand
-        {
-            get => new RelayCommand<object>((a) =>
-            {
-                Login();
-            });
-        }
-
         public CometLibrarySettingsViewModel(CometLibrary library, IPlayniteAPI api) : base(library, api)
         {
             Settings = LoadSavedSettings() ?? new CometLibrarySettings();
-        }
-
-        private void Login()
-        {
-            try
-            {
-                using (var view = PlayniteApi.WebViews.CreateView(500, 500))
-                using (var backgroundView = PlayniteApi.WebViews.CreateOffscreenView())
-                {
-                    var api = new GogAccountClient(view);
-                    api.Login(backgroundView);
-                }
-
-                OnPropertyChanged(nameof(IsUserLoggedIn));
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e, "Failed to authenticate user.");
-            }
         }
 
         public Dictionary<string, string> Languages { get; } = new Dictionary<string, string>

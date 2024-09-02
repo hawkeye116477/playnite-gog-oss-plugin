@@ -3,6 +3,7 @@
   <sys:String x:Key="LOCCometLauncherCustomPath">Ścieżka launchera</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Ścieżka instalacji gier</sys:String>
   <sys:String x:Key="LOCCometPathNotExistsError">Podana ścieżka nie istnieje.</sys:String>
+  <sys:String x:Key="LOCCometSignOut">Wyloguj się</sys:String>
   <sys:String x:Key="LOCCometTroubleshootingInformation">Informacje do rozwiązywania problemów</sys:String>
   <sys:String x:Key="LOCCometPlayniteVersion">Wersja Playnite</sys:String>
   <sys:String x:Key="LOCCometPluginVersion">Wersja wtyczki</sys:String>
@@ -15,4 +16,6 @@
   <sys:String x:Key="LOCCometNewVersionAvailable">Dostępna jest nowa wersja: {0} {1}.</sys:String>
   <sys:String x:Key="LOCCometNoUpdatesAvailable">Brak dostępnych aktualizacji.</sys:String>
   <sys:String x:Key="LOCCometViewChangelog">Zobacz listę zmian</sys:String>
+  <sys:String x:Key="LOCCometSignedInAs">Zalogowano jako {0}</sys:String>
+  <sys:String x:Key="LOCCometSignOutConfirm">Czy na pewno chcesz się wylogować?</sys:String>
 </ResourceDictionary>

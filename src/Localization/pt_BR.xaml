@@ -3,6 +3,7 @@
   <sys:String x:Key="LOCCometLauncherCustomPath">Caminho do inicializador</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Caminho de Instalação dos Jogos</sys:String>
   <sys:String x:Key="LOCCometPathNotExistsError">O caminho especificado não existe.</sys:String>
+  <sys:String x:Key="LOCCometSignOut">Encerrar sessão</sys:String>
   <sys:String x:Key="LOCCometTroubleshootingInformation">Informações para solução de problemas</sys:String>
   <sys:String x:Key="LOCCometPlayniteVersion">Versão do Playnite</sys:String>
   <sys:String x:Key="LOCCometPluginVersion">Versão do plugin</sys:String>
@@ -15,4 +16,6 @@
   <sys:String x:Key="LOCCometNewVersionAvailable">Uma nova versão está disponível: {0} {1}.</sys:String>
   <sys:String x:Key="LOCCometNoUpdatesAvailable">Não há atualizações disponíveis.</sys:String>
   <sys:String x:Key="LOCCometViewChangelog">Ver alterações</sys:String>
+  <sys:String x:Key="LOCCometSignedInAs">Conectado como {0}</sys:String>
+  <sys:String x:Key="LOCCometSignOutConfirm">Tem certeza de que deseja sair?</sys:String>
 </ResourceDictionary>
