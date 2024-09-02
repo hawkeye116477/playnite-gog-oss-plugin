@@ -252,7 +252,7 @@ namespace CometLibraryNS
         {
             using (var view = PlayniteApi.WebViews.CreateOffscreenView())
             {
-                var api = new GogAccountClient(view, PlayniteApi);
+                var api = new GogAccountClient(view);
                 if (!await api.GetIsUserLoggedIn())
                 {
                     throw new Exception("User is not logged in to GOG account.");

@@ -194,7 +194,6 @@ namespace CometLibraryNS
                 var response = await httpClient.GetAsync("https://api.github.com/repos/imLinguin/comet/releases/latest");
                 if (response.IsSuccessStatusCode)
                 {
-                    logger.Info("Hura");
                     content = await response.Content.ReadAsStringAsync();
                     if (!Directory.Exists(cacheVersionPath))
                     {

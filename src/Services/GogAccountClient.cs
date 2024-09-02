@@ -21,19 +21,16 @@ namespace CometLibraryNS.Services
     {
         private ILogger logger = LogManager.GetLogger();
         private IWebView webView;
-        private IPlayniteAPI playniteAPI;
         private readonly string clientId = "46899977096215655";
         private string clientSecret = "9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9";
         private readonly string tokenUrl = "https://auth.gog.com/token?";
 
-        public GogAccountClient(IPlayniteAPI api)
+        public GogAccountClient()
         {
-            playniteAPI = api;
         }
 
-        public GogAccountClient(IWebView webView, IPlayniteAPI api)
+        public GogAccountClient(IWebView webView)
         {
-            playniteAPI = api;
             this.webView = webView;
         }
 
@@ -47,45 +44,36 @@ namespace CometLibraryNS.Services
         {
             var loggedIn = false;
 
-            var loginUrl = "https://auth.gog.com/auth?";
-            var loginUriBuilder = new UriBuilder(loginUrl);
-            var query = HttpUtility.ParseQueryString(loginUriBuilder.Query);
-            query["client_id"] = clientId;
-            query["layout"] = "galaxy";
-            query["redirect_uri"] = "https://embed.gog.com/on_login_success?origin=client";
-            query["response_type"] = "code";
-            loginUriBuilder.Query = query.ToString();
-            loginUrl = loginUriBuilder.Uri.AbsoluteUri;
+            var loginUrlParams = new Dictionary<string, string>
+            {
+                { "client_id", clientId },
+                { "layout", "galaxy" },
+                { "redirect_uri", "https://embed.gog.com/on_login_success?origin=client" },
+                { "response_type", "code" }
+            };
+            var loginUrl = FormatUrl(loginUrlParams, "https://auth.gog.com/auth?");
             var code = "";
 
-            using (var view = playniteAPI.WebViews.CreateView(new WebViewSettings
+            webView.LoadingChanged += (s, e) =>
             {
-                WindowWidth = 580,
-                WindowHeight = 700,
-                UserAgent = Comet.GetUserAgent()
-            }))
-            {
-                view.LoadingChanged += (s, e) =>
+                var address = webView.GetCurrentAddress();
+                if (address.StartsWith(loginUrlParams["redirect_uri"]))
                 {
-                    var address = view.GetCurrentAddress();
-                    if (address.StartsWith(query["redirect_uri"]))
+                    var redirectUri = new Uri(address);
+                    code = HttpUtility.ParseQueryString(redirectUri.Query).Get("code");
+                    if (code.IsNullOrEmpty())
                     {
-                        var redirectUri = new Uri(address);
-                        code = HttpUtility.ParseQueryString(redirectUri.Query).Get("code");
-                        if (code.IsNullOrEmpty())
-                        {
-                            logger.Error("Can't get auth code from GOG");
-                            return;
-                        }
-                        loggedIn = true;
-                        view.Close();
+                        logger.Error("Can't get auth code from GOG");
+                        return;
                     }
-                };
+                    loggedIn = true;
+                    webView.Close();
+                }
+            };
+            webView.DeleteDomainCookies(".gog.com");
+            webView.Navigate(loginUrl);
+            webView.OpenDialog();
 
-                view.DeleteDomainCookies(".gog.com");
-                view.Navigate(loginUrl);
-                view.OpenDialog();
-            }
             if (!loggedIn)
             {
                 return;
@@ -99,7 +87,8 @@ namespace CometLibraryNS.Services
                         { "client_id", clientId },
                         { "client_secret", clientSecret },
                         { "grant_type", "authorization_code" },
-                        { "redirect_uri", "https://embed.gog.com/on_login_success?origin=client" }
+                        { "redirect_uri", "https://embed.gog.com/on_login_success?origin=client" },
+                        { "code", code }
                     };
                     var newTokenUrl = FormatUrl(urlParams, tokenUrl);
                     var response = await httpClient.GetAsync(newTokenUrl);
@@ -187,7 +176,6 @@ namespace CometLibraryNS.Services
             }
 
             using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("User-Agent", Comet.GetUserAgent());
             httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
             var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
             if (!response.IsSuccessStatusCode)

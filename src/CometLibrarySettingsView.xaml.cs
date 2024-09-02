@@ -133,11 +133,11 @@ namespace CometLibraryNS
 
         private async void UpdateAuthStatus()
         {
-            if (CometLibrary.GetSettings().ConnectAccount == true)
+            if (CometLibrary.GetSettings().ConnectAccount)
             {
                 LoginBtn.IsEnabled = false;
                 AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGLoginChecking);
-                var clientApi = new GogAccountClient(playniteAPI);
+                var clientApi = new GogAccountClient();
                 var userLoggedIn = await clientApi.GetIsUserLoggedIn();
                 if (userLoggedIn)
                 {
@@ -163,7 +163,12 @@ namespace CometLibraryNS
 
         private async void LoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            var clientApi = new GogAccountClient(playniteAPI);
+            using var view = playniteAPI.WebViews.CreateView(new WebViewSettings
+            {
+                WindowWidth = 580,
+                WindowHeight = 700,
+            });
+            var clientApi = new GogAccountClient(view);
             var userLoggedIn = LoginBtn.IsChecked;
             if (!userLoggedIn == false)
             {
@@ -183,14 +188,7 @@ namespace CometLibraryNS
                 var answer = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.CometSignOutConfirm), LOC.CometSignOut, MessageBoxButton.YesNo);
                 if (answer == MessageBoxResult.Yes)
                 {
-                    using (var view = playniteAPI.WebViews.CreateView(new WebViewSettings
-                    {
-                        WindowWidth = 580,
-                        WindowHeight = 700,
-                    }))
-                    {
-                        view.DeleteDomainCookies(".gog.com");
-                    }
+                    view.DeleteDomainCookies(".gog.com");
                     File.Delete(Comet.TokensPath);
                     UpdateAuthStatus();
                 }
