@@ -22,14 +22,13 @@ namespace CometLibraryNS.Services
         private ILogger logger = LogManager.GetLogger();
         private IWebView webView;
         private IPlayniteAPI playniteAPI;
-        public string clientId;
-        public string clientSecret;
+        private readonly string clientId = "46899977096215655";
+        private string clientSecret = "9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9";
+        private readonly string tokenUrl = "https://auth.gog.com/token?";
 
         public GogAccountClient(IPlayniteAPI api)
         {
             playniteAPI = api;
-            clientId = "46899977096215655";
-            clientSecret = "9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9";
         }
 
         public GogAccountClient(IWebView webView, IPlayniteAPI api)
@@ -95,17 +94,15 @@ namespace CometLibraryNS.Services
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var tokenUrl = "https://auth.gog.com/token?";
-                    var tokenUriBuilder = new UriBuilder(tokenUrl);
-                    var tokenQuery = HttpUtility.ParseQueryString(tokenUriBuilder.Query);
-                    tokenQuery["client_id"] = clientId;
-                    tokenQuery["client_secret"] = clientSecret;
-                    tokenQuery["grant_type"] = "authorization_code";
-                    tokenQuery["code"] = code;
-                    tokenQuery["redirect_uri"] = "https://embed.gog.com/on_login_success?origin=client";
-                    tokenUriBuilder.Query = tokenQuery.ToString();
-                    tokenUrl = tokenUriBuilder.Uri.AbsoluteUri;
-                    var response = await httpClient.GetAsync(tokenUrl);
+                    var urlParams = new Dictionary<string, string>
+                    {
+                        { "client_id", clientId },
+                        { "client_secret", clientSecret },
+                        { "grant_type", "authorization_code" },
+                        { "redirect_uri", "https://embed.gog.com/on_login_success?origin=client" }
+                    };
+                    var newTokenUrl = FormatUrl(urlParams, tokenUrl);
+                    var response = await httpClient.GetAsync(newTokenUrl);
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
@@ -120,14 +117,52 @@ namespace CometLibraryNS.Services
                     {
                         logger.Error($"Failed to authenticate with GOG. Error: {response.ReasonPhrase}");
                     }
-
                 }
             }
         }
 
-        public void ForceWebLanguage(string localeCode)
+        public static string FormatUrl(IDictionary<string, string> dict, string url)
         {
-            webView.Navigate(@"https://www.gog.com/user/changeLanguage/" + localeCode);
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            foreach (var item in dict)
+            {
+                query.Add(item.Key, item.Value);
+            }
+            uriBuilder.Query = query.ToString();
+            return uriBuilder.Uri.AbsoluteUri;
+        }
+
+        public async Task<bool> RenewTokens(string refreshToken)
+        {
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Clear();
+
+            var urlParams = new Dictionary<string, string>
+            {
+                { "client_id", clientId },
+                { "client_secret", clientSecret },
+                { "grant_type", "refresh_token" },
+                { "refresh_token", refreshToken }
+            };
+            var newTokenUrl = FormatUrl(urlParams, tokenUrl);
+            var response = await httpClient.GetAsync(newTokenUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                FileSystem.CreateDirectory(Path.GetDirectoryName(Comet.TokensPath));
+                Encryption.EncryptToFile(
+                    Comet.TokensPath,
+                    responseContent,
+                    Encoding.UTF8,
+                    WindowsIdentity.GetCurrent().User.Value);
+                return true;
+            }
+            else
+            {
+                logger.Error("Failed to renew tokens.");
+                return false;
+            }
         }
 
         public async Task<AccountBasicResponse> GetAccountInfo()
@@ -137,14 +172,44 @@ namespace CometLibraryNS.Services
             {
                 return new AccountBasicResponse();
             }
+
+            var tokenLastUpdateTime = File.GetLastWriteTime(Comet.TokensPath);
+            var tokenExpirySeconds = tokens.expires_in;
+            DateTime tokenExpiryTime = tokenLastUpdateTime.AddSeconds(tokenExpirySeconds);
+
+            if (DateTime.Now > tokenExpiryTime)
+            {
+                var renewSuccess = await RenewTokens(tokens.refresh_token);
+                if (renewSuccess)
+                {
+                    tokens = LoadTokens();
+                }
+            }
+
             using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Add("User-Agent", Comet.GetUserAgent());
             httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
             var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
             if (!response.IsSuccessStatusCode)
             {
-                logger.Debug("Can't get GOG account info");
-                return new AccountBasicResponse();
+                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    var renewSuccess = await RenewTokens(tokens.refresh_token);
+                    if (renewSuccess)
+                    {
+                        await GetAccountInfo();
+                    }
+                    else
+                    {
+                        logger.Debug("Can't get GOG account info");
+                        return new AccountBasicResponse();
+                    }
+                }
+                else
+                {
+                    logger.Debug("Can't get GOG account info");
+                    return new AccountBasicResponse();
+                }
             }
             var stringInfo = await response.Content.ReadAsStringAsync();
             var accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
@@ -166,6 +231,7 @@ namespace CometLibraryNS.Services
                 {
                     logger.Error(e, "Failed to load saved tokens.");
                 }
+
             }
             return null;
         }
