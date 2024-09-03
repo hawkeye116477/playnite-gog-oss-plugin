@@ -77,33 +77,7 @@ namespace CometLibraryNS
                 yield break;
             }
 
-            if (SettingsViewModel.Settings.StartGamesUsingComet)
-            {
-                yield return new AutomaticPlayController(args.Game)
-                {
-                    Type = AutomaticPlayActionType.File,
-                    TrackingMode = TrackingMode.Directory,
-                    Name = ResourceProvider.GetString(LOC.Comet3P_GOGStartUsingClient).Format("Comet"),
-                    TrackingPath = installEntry.InstallDirectory,
-                    Arguments = string.Format(@"/launchViaAutostart /gameId={0} /command=runGame /path=""{1}""", args.Game.GameId, installEntry.InstallDirectory),
-                    Path = Comet.ClientInstallationPath
-                };
-            }
-            else
-            {
-                foreach (var task in GetPlayTasks(args.Game.GameId, installEntry.InstallDirectory))
-                {
-                    yield return new AutomaticPlayController(args.Game)
-                    {
-                        Type = task.Type == GameActionType.URL ? AutomaticPlayActionType.Url : AutomaticPlayActionType.File,
-                        TrackingMode = TrackingMode.Process,
-                        Arguments = task.Arguments,
-                        Path = task.Path,
-                        WorkingDir = task.WorkingDir,
-                        Name = task.Name
-                    };
-                }
-            }
+            yield return new CometPlayController(args.Game);
         }
 
         public static CometLibrarySettings GetSettings()

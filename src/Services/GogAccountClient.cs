@@ -204,7 +204,7 @@ namespace CometLibraryNS.Services
             return accountInfo;
         }
 
-        private TokenResponse LoadTokens()
+        public TokenResponse LoadTokens()
         {
             if (File.Exists(Comet.TokensPath))
             {
