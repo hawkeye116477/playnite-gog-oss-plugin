@@ -4,13 +4,37 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteFilterActiveLabel">Filter aktif</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteFilters">Filter</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallError">Gagal menginstal game: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDisabledTitle">Dinonaktifkan</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteVersionLabel">Versi</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallSizeLabel">Besar Instalasi</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteAddedLabel">Ditambahkan</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCancelLabel">Batal</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteYesLabel">Ya</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteNoLabel">Tidak</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDownloadingLabel">Mengunduh…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoadingLabel">Memuat...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuRestartSystem">Restart Sistem</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuShutdownSystem">Matikan Sistem</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuSuspendSystem">Suspend System</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuHibernateSystem">Hibernasikan Sistem</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Umum</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Opsi Lanjut</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoginRequired">Login dibutuhkan</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">File program (file .exe/.sh/.bat, dll..)</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameNameTitle">Nama</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallDirTitle">Direktori Instalasi</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMetadataDownloadError">Gagal mendownload metadata: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDoNothing">Diamkan aplikasi</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Update Tersedia</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Periksa Pembaruan</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Gagal memeriksa pembaruan.</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallGame">Instal</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUninstallGame">Uninstal</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDontShowAgainTitle">Jangan Tampilkan Lagi</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Pilih file…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Pilih folder…</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOpen">Buka</sys:String>

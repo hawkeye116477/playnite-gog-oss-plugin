@@ -4,13 +4,37 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteFilterActiveLabel">필터 적용 중</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteFilters">필터</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallError">게임을 설치할 수 없습니다: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDisabledTitle">비활성화</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteVersionLabel">버전</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallSizeLabel">설치 용량</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteAddedLabel">추가일</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOKLabel">확인</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCancelLabel">취소</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteYesLabel">예</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteNoLabel">아니오</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDownloadingLabel">다운로드 중…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoadingLabel">로딩 중…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuRestartSystem">시스템 재시작</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuShutdownSystem">시스템 종료</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuSuspendSystem">시스템 정지</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuHibernateSystem">시스템 최대 절전</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">일반</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">고급 설정</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoginRequired">인증이 필요함</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">실행파일</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameNameTitle">이름</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallDirTitle">설치 경로</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMetadataDownloadError">메타 데이터 다운로드 실패 : {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDoNothing">아무것도 하지않음</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">업데이트 사용 가능</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">업데이트 확인</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">새로운 버전 확인에 실패했습니다.</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallGame">설치</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUninstallGame">설치 제거</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDontShowAgainTitle">다시 표시 안함</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">파일 선택...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">폴더 선택...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOpen">열기</sys:String>

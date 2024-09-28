@@ -15,28 +15,26 @@ third_party_path = pj(main_path, "third_party")
 localization_path = pj(third_party_path, "Localization")
 src_path = pj(main_path, "src")
 
-GOG_LOC_KEYS = ["LOCSettingsGOGUseGalaxy", "LOCGOGSettingsImportInstalledLabel", 
-                "LOCGOGSettingsImportUninstalledLabel", "LOCGOGSettingsConnectAccount", 
-                "LOCGOGLoginChecking", "LOCGOGNotLoggedIn", "LOCGOGNotLoggedInError", 
-                "LOCGOGAuthenticateLabel",
-                "LOCGOGTroubleShootingIssues", "LOCGOGStartUsingClient", 
-                "LOCGOGMetadataLanguageLabel", "LOCGOGSettingsUseVerticalCovers", "LOCGOGLoggedIn", "LOCGOGMetadataLanguageLabel"]
+gog_loc_keys = {}
+with open(pj(script_path, "config", "gogLocKeys.txt"),
+          "r", encoding="utf-8") as gog_loc_keys_content:
+    for line in gog_loc_keys_content:
+        if line := line.strip():
+            gog_loc_keys[line] = ""
 
-PLAYNITE_LOC_KEYS = ["LOCSettingsGeneralLabel", "LOCSettingsAdvancedLabel",
-                    "LOCSelectDirectoryTooltip", "LOCSelectFileTooltip", "LOCExecutableTitle", "LOCCheckForUpdates",
-                    "LOCOpen", "LOCOKLabel",
-                    "LOCUpdaterWindowTitle", "LOCUpdateCheckFailMessage"]
+legendary_loc_keys = {}
+with open(pj(script_path, "config", "legendaryLocKeys.txt"),
+          "r", encoding="utf-8") as legendary_loc_keys_content:
+    for line in legendary_loc_keys_content:
+        if line := line.strip():
+            legendary_loc_keys[line] = ""
 
-LEGENDARY_LOC_KEYS = ["LOCLegendaryLauncherCustomPath", "LOCLegendaryGamesInstallationPath", 
-                    "LOCLegendaryTroubleshootingInformation", "LOCLegendaryPlayniteVersion", 
-                    "LOCLegendaryPluginVersion", "LOCLegendaryLauncherVersion",
-                    "LOCLegendaryLauncherBinary", "LOCLegendaryLogFilesPath",
-                    "LOCLegendaryCopyRawDataToClipboard", "LOCLegendaryReportBug",
-                    "LOCLegendaryLauncherNotInstalled", "LOCLegendaryPathNotExistsError",
-                    "LOCLegendaryViewChangelog", "LOCLegendaryNewVersionAvailable",
-                    "LOCLegendaryNoUpdatesAvailable", "LOCLegendarySignedInAs",
-                    "LOCLegendarySignOut", "LOCLegendarySignOutConfirm"
-                    ]
+playnite_loc_keys = {}
+with open(pj(script_path, "config", "playniteLocKeys.txt"),
+          "r", encoding="utf-8") as playnite_loc_keys_content:
+    for line in playnite_loc_keys_content:
+        if line := line.strip():
+            playnite_loc_keys[line] = ""
 
 if os.path.exists(localization_path):
     shutil.rmtree(localization_path)
@@ -67,12 +65,12 @@ for filename in os.listdir(legendary_loc_path):
             key = child.get(ET.QName(xmlns_x, "Key"))
             if key:
                 key = key.replace("Comet", "Legendary")
-                if key in LEGENDARY_LOC_KEYS:
+                if key in legendary_loc_keys:
                     comet_tree.remove(child)
 
         for child in legendary_loc.getroot():
             key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in LEGENDARY_LOC_KEYS:
+            if key in legendary_loc_keys:
                 key_text = child.text
                 if not key_text:
                     key_text = ""
@@ -108,7 +106,7 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
                                 "PlayniteRepo", "source", "Playnite", "Localization", new_filename))
         for child in playnite_loc.getroot():
             key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in PLAYNITE_LOC_KEYS:
+            if key in playnite_loc_keys:
                 key_text = child.text
                 if not key_text:
                     key_text = ""
@@ -122,7 +120,7 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
                             "source", "Libraries", "GOGLibrary", "Localization", filename))
         for child in gog_loc.getroot():
             key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in GOG_LOC_KEYS:
+            if key in gog_loc_keys:
                 key_text = child.text
                 if not key_text:
                     key_text = ""

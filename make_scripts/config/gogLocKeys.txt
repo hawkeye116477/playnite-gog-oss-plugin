@@ -1,0 +1,14 @@
+LOCSettingsGOGUseGalaxy
+LOCGOGSettingsImportInstalledLabel
+LOCGOGSettingsImportUninstalledLabel
+LOCGOGSettingsConnectAccount
+LOCGOGLoginChecking
+LOCGOGNotLoggedIn
+LOCGOGNotLoggedInError
+LOCGOGAuthenticateLabel
+LOCGOGTroubleShootingIssues
+LOCGOGStartUsingClient
+LOCGOGMetadataLanguageLabel
+LOCGOGSettingsUseVerticalCovers
+LOCGOGLoggedIn
+LOCGOGMetadataLanguageLabel

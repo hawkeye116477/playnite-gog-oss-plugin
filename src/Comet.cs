@@ -1,6 +1,7 @@
 ﻿using CliWrap;
 using CliWrap.Buffered;
 using CometLibrary.Models;
+using CometLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -73,7 +74,7 @@ namespace CometLibraryNS
                 var savedSettings = CometLibrary.GetSettings();
                 if (savedSettings != null)
                 {
-                    var savedLauncherPath = savedSettings.SelectedLauncherPath;
+                    var savedLauncherPath = savedSettings.SelectedCometPath;
                     var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
                     if (savedLauncherPath != "")
                     {
@@ -132,6 +133,21 @@ namespace CometLibraryNS
             }
         }
 
+        public static string DependenciesInstallationPath
+        {
+            get
+            {
+                var dependPath = Path.Combine(GamesInstallationPath, ".gogRedist");
+                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                if (dependPath.Contains(playniteDirectoryVariable))
+                {
+                    var playniteAPI = API.Instance;
+                    dependPath = dependPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+                }
+                return dependPath;
+            }
+        }
+
         public static async Task<string> GetLauncherVersion()
         {
             var version = "0";
@@ -171,7 +187,7 @@ namespace CometLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.CometLauncherNotInstalled));
+                throw new Exception(ResourceProvider.GetString(LOC.CometCometNotInstalled));
             }
             var cacheVersionPath = CometLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))

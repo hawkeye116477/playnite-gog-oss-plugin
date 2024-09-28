@@ -4,13 +4,37 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteFilterActiveLabel">Filtru activ</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteFilters">Filtre</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallError">Nu se poate instala jocul: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDisabledTitle">Dezactivat</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteVersionLabel">Versiune</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallSizeLabel">Dimensiunea instalării</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteAddedLabel">Adăugat</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCancelLabel">Anulează</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteYesLabel">Da</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteNoLabel">Nu</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDownloadingLabel">Se descarcă...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoadingLabel">Se încarcă...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuRestartSystem">Repornire Sistem</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuShutdownSystem">Închidere Sistem</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuSuspendSystem">Suspendare Sistem</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuHibernateSystem">Hibernează Sistemul</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">General</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avansat</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoginRequired">Autentificare necesară</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Executabil</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameNameTitle">Nume</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallDirTitle">Directorul de instalare</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMetadataDownloadError">Nu s-a putut descărca metadata: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDoNothing">Repaus</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Versiune nouă disponibilă</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Verificați dacă sunt disponibile Actualizări</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Nu s-a putut căuta versiunea nouă.</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallGame">Instalaţi</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUninstallGame">Dezinstalați</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDontShowAgainTitle">Nu mai afișa</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip"></sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip"></sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOpen"></sys:String>

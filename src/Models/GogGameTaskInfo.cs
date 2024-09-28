@@ -54,6 +54,7 @@ namespace CometLibraryNS.Models
             }
         }
 
+        public string buildId;
         public string gameId;
         public string rootGameId;
         public bool standalone;

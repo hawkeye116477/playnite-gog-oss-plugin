@@ -1,4 +1,5 @@
-﻿using CometLibraryNS.Models;
+﻿using CometLibraryNS.Enums;
+using CometLibraryNS.Models;
 using CometLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
@@ -25,6 +26,8 @@ namespace CometLibraryNS
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         public static CometLibrary Instance { get; set; }
+        public CometDownloadManagerView CometDownloadManagerView { get; set; }
+        private readonly SidebarItem downloadManagerSidebarItem;
 
         public CometLibrary(IPlayniteAPI api) : base(
             "Comet (GOG)",
@@ -38,6 +41,29 @@ namespace CometLibraryNS
             Instance = this;
             SettingsViewModel = new CometLibrarySettingsViewModel(this, api);
             Load3pLocalization();
+            downloadManagerSidebarItem = new SidebarItem
+            {
+                Title = ResourceProvider.GetString(LOC.CometPanel),
+                Icon = Comet.Icon,
+                Type = SiderbarItemType.View,
+                Opened = () => GetCometDownloadManager(),
+                ProgressValue = 0,
+                ProgressMaximum = 100,
+            };
+        }
+
+        public static SidebarItem GetPanel()
+        {
+            return Instance.downloadManagerSidebarItem;
+        }
+
+        public static CometDownloadManagerView GetCometDownloadManager()
+        {
+            if (Instance.CometDownloadManagerView == null)
+            {
+                Instance.CometDownloadManagerView = new CometDownloadManagerView();
+            }
+            return Instance.CometDownloadManagerView;
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
@@ -72,7 +98,7 @@ namespace CometLibraryNS
                 yield break;
             }
 
-            if (!GetInstalledEntries().TryGetValue(args.Game.GameId, out var installEntry))
+            if (!GetInstalledAppList().ContainsKey(args.Game.GameId))
             {
                 yield break;
             }
@@ -83,6 +109,21 @@ namespace CometLibraryNS
         public static CometLibrarySettings GetSettings()
         {
             return Instance.SettingsViewModel?.Settings ?? null;
+        }
+
+        public static GogGameActionInfo GetGogGameInfoManifest(string gameId, string installDir)
+        {
+            GogGameActionInfo gameTaskData = null;
+            var gameInfoPath = Path.Combine(installDir, string.Format("goggame-{0}.info", gameId));
+            try
+            {
+                gameTaskData = Serialization.FromJsonFile<GogGameActionInfo>(gameInfoPath);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Failed to read install gog game manifest: {gameInfoPath}.");
+            }
+            return gameTaskData;
         }
 
         internal static List<GameAction> GetPlayTasks(string gameId, string installDir)
@@ -170,9 +211,47 @@ namespace CometLibraryNS
             }
         }
 
-        internal static Dictionary<string, GameMetadata> GetInstalledEntries()
+        internal static Dictionary<string, GameMetadata> GetInstalledGames()
         {
             var games = new Dictionary<string, GameMetadata>();
+            foreach (var entry in GetInstalledAppList())
+            {
+                if (entry.Value.Is_dlc)
+                {
+                    continue;
+                }
+                if (entry.Value.Download_item_type != DownloadItemType.Game)
+                {
+                    continue;
+                }
+                var game = new GameMetadata()
+                {
+                    InstallDirectory = entry.Value.Install_path,
+                    GameId = entry.Key,
+                    Source = new MetadataNameProperty("GOG"),
+                    Name = entry.Value.Title,
+                    IsInstalled = true,
+                    Platforms = new HashSet<MetadataProperty> { new MetadataSpecProperty("pc_windows") }
+                };
+                game.GameActions = GetOtherTasks(game.GameId, game.InstallDirectory);
+                games.Add(game.GameId, game);
+            }
+
+            return games;
+        }
+
+        public static Dictionary<string, Installed> GetInstalledAppList()
+        {
+            var installListPath = Path.Combine(Instance.GetPluginUserDataPath(), "installed.json");
+            var list = new Dictionary<string, Installed>();
+            if (File.Exists(installListPath))
+            {
+                var content = FileSystem.ReadFileAsStringSafe(installListPath);
+                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out Dictionary<string, Installed> nonEmptyList))
+                {
+                    list = nonEmptyList;
+                }
+            }
             var programs = Programs.GetUnistallProgramsList();
             foreach (var program in programs)
             {
@@ -188,38 +267,29 @@ namespace CometLibraryNS
                 }
 
                 var gameId = match.Groups[1].Value;
-                var game = new GameMetadata()
+                if (list.ContainsKey(gameId))
                 {
-                    InstallDirectory = Paths.FixSeparators(program.InstallLocation),
-                    GameId = gameId,
-                    Source = new MetadataNameProperty("GOG"),
-                    Name = program.DisplayName.RemoveTrademarks(),
-                    IsInstalled = true,
-                    Platforms = new HashSet<MetadataProperty> { new MetadataSpecProperty("pc_windows") }
-                };
-
-                games.Add(game.GameId, game);
-            }
-
-            return games;
-        }
-
-        internal static Dictionary<string, GameMetadata> GetInstalledGames()
-        {
-            var games = new Dictionary<string, GameMetadata>();
-            foreach (var entry in GetInstalledEntries())
-            {
-                var game = entry.Value;
-                if (!GetPlayTasks(game.GameId, game.InstallDirectory).HasItems())
-                {
-                    continue; // Empty play task = DLC
+                    continue;
                 }
-
-                game.GameActions = GetOtherTasks(game.GameId, game.InstallDirectory);
-                games.Add(game.GameId, game);
+                var game = new Installed()
+                {
+                    Platform = "windows",
+                    Install_path = Paths.FixSeparators(program.InstallLocation),
+                    Version = program.DisplayVersion,
+                    Title = program.DisplayName.RemoveTrademarks(),
+                };
+                if (!GetPlayTasks(gameId, game.Install_path).HasItems())
+                {
+                    game.Is_dlc = true; // Empty play task = DLC
+                }
+                var infoManifest = GetGogGameInfoManifest(gameId, game.Install_path);
+                if (infoManifest.buildId != null)
+                {
+                    game.Build_id = infoManifest.buildId;
+                }
+                list.Add(gameId, game);
             }
-
-            return games;
+            return list;
         }
 
         internal async Task<List<GameMetadata>> GetLibraryGames()
@@ -416,6 +486,41 @@ namespace CometLibraryNS
                 Directory.CreateDirectory(cacheDir);
             }
             return cacheDir;
+        }
+
+        public override IEnumerable<SidebarItem> GetSidebarItems()
+        {
+            yield return downloadManagerSidebarItem;
+        }
+
+        public bool StopDownloadManager(bool displayConfirm = false)
+        {
+            CometDownloadManagerView downloadManager = GetCometDownloadManager();
+            var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
+                                                                                                     || i.status == DownloadStatus.Queued).ToList();
+            if (runningAndQueuedDownloads.Count > 0)
+            {
+                if (displayConfirm)
+                {
+                    var stopConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.CometInstanceNotice), "", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (stopConfirm == MessageBoxResult.No)
+                    {
+                        return false;
+                    }
+                }
+                foreach (var download in runningAndQueuedDownloads)
+                {
+                    if (download.status == DownloadStatus.Running)
+                    {
+                        downloadManager.gracefulInstallerCTS?.Cancel();
+                        downloadManager.gracefulInstallerCTS?.Dispose();
+                        downloadManager.forcefulInstallerCTS?.Dispose();
+                    }
+                    download.status = DownloadStatus.Paused;
+                }
+                downloadManager.SaveData();
+            }
+            return true;
         }
     }
 }

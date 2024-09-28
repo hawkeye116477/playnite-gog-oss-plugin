@@ -7,7 +7,7 @@
     <ProjectGuid>{2E4F6F47-C3AC-4650-936A-09E675B9B3B3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CometLibrary</RootNamespace>
+    <RootNamespace>CometLibraryNS</RootNamespace>
     <AssemblyName>CometLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -36,6 +36,9 @@
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>packages\AngleSharp.0.9.9\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="ByteSize, Version=2.1.2.0, Culture=neutral, PublicKeyToken=036f71e5fc483cd1, processorArchitecture=MSIL">
+      <HintPath>packages\ByteSize.2.1.2\lib\net45\ByteSize.dll</HintPath>
     </Reference>
     <Reference Include="CliWrap, Version=3.6.6.0, Culture=neutral, PublicKeyToken=1c4a4fc2d6886e5a, processorArchitecture=MSIL">
       <HintPath>packages\CliWrap.3.6.6\lib\net462\CliWrap.dll</HintPath>
@@ -75,6 +78,7 @@
       <HintPath>packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -85,6 +89,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup Label="compileInclude3p">
+    <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\WindowsNotifyIconManager.cs">
+      <Link>Shared\Playnite\WindowsNotifyIconManager.cs</Link>
+    </Compile>
     <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\native\Fileapi.cs">
       <Link>Shared\Playnite\Native\Fileapi.cs</Link>
     </Compile>
@@ -201,18 +208,43 @@
     <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="CometClient.cs" />
     <Compile Include="Comet.cs" />
+    <Compile Include="CometDownloadManagerView.xaml.cs">
+      <DependentUpon>CometDownloadManagerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CometGameController.cs" />
+    <Compile Include="CometGameInstallerView.xaml.cs">
+      <DependentUpon>CometGameInstallerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CometLibrary.cs" />
     <Compile Include="CometLibrarySettingsView.xaml.cs">
       <DependentUpon>CometLibrarySettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CometMessagesSettings.cs" />
     <Compile Include="CometTroubleshootingInformation.cs" />
+    <Compile Include="Converters\DownloadStatusEnumToStringConverter.cs" />
+    <Compile Include="Converters\LongToDateConverter.cs" />
+    <Compile Include="Converters\NumericalSizeToStringConverter.cs" />
+    <Compile Include="Enums\DownloadAction.cs" />
+    <Compile Include="Enums\DownloadCompleteAction.cs" />
+    <Compile Include="Enums\DownloadItemType.cs" />
+    <Compile Include="Enums\DownloadStatus.cs" />
+    <Compile Include="Gogdl.cs" />
     <Compile Include="GOGMetadataProvider.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="LocalizationKeys.cs" />
+    <Compile Include="MessageCheckBoxDialog.xaml.cs">
+      <DependentUpon>MessageCheckBoxDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountBasicResponse.cs" />
+    <Compile Include="Models\DownloadManagerData.cs" />
+    <Compile Include="Models\GogGameMetaManifest.cs" />
+    <Compile Include="Models\GameSettings.cs" />
+    <Compile Include="Models\GogDownloadGameInfo.cs" />
+    <Compile Include="Models\GogDownloadRedistManifest.cs" />
     <Compile Include="Models\GogGameMetadata.cs" />
     <Compile Include="Models\GogGameTaskInfo.cs" />
     <Compile Include="Models\GetOwnedGamesResult.cs" />
+    <Compile Include="Models\Installed.cs" />
     <Compile Include="Models\LauncherVersion.cs" />
     <Compile Include="Models\LibraryGameResponse.cs" />
     <Compile Include="Models\PagedResponse.cs" />
@@ -220,6 +252,9 @@
     <Compile Include="Models\StoreGamesFilteredListResponse.cs" />
     <Compile Include="Models\StorePageResult.cs" />
     <Compile Include="Models\TokenResponse.cs" />
+    <Compile Include="NumericInput.xaml.cs">
+      <DependentUpon>NumericInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CometLibrarySettingsViewModel.cs" />
     <Compile Include="Services\GogAccountClient.cs" />
@@ -253,7 +288,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CometDownloadManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CometGameInstallerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CometLibrarySettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MessageCheckBoxDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NumericInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -261,11 +312,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\gogicon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\galaxyIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

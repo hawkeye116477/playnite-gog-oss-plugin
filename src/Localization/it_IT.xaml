@@ -2,6 +2,63 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCCometLauncherCustomPath">Percorso del launcher</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Percorso giochi</sys:String>
+  <sys:String x:Key="LOCCometDownloadSize">Dimensioni download:</sys:String>
+  <sys:String x:Key="LOCCometInstallSize">Dimensione installazione:</sys:String>
+  <sys:String x:Key="LOCCometUninstallGameConfirm">Confermi di voler disinstallare {0}?</sys:String>
+  <sys:String x:Key="LOCCometDownloadSettings">Impostazioni download</sys:String>
+  <sys:String x:Key="LOCCometDisplayDownloadTaskFinishedNotifications">Visualizza le notifiche sul desktop per le attività terminate</sys:String>
+  <sys:String x:Key="LOCCometDisplayDownloadSpeedInBits">Visualizza la velocità di download in bit al secondo</sys:String>
+  <sys:String x:Key="LOCCometDownloadAllDlcs">Scarica tutti i DLC</sys:String>
+  <sys:String x:Key="LOCCometUnattendedInstall">Abilita la modalità d'installazione automatica</sys:String>
+  <sys:String x:Key="LOCCometUnattendedInstallToolTip">Non sarà necessario scegliere nulla nella finestra d'installazione e l'installazione inizierà automaticamente dopo aver scaricato le informazioni richieste.</sys:String>
+  <sys:String x:Key="LOCCometMaxWorkers">Numero massimo di processi di lavoro</sys:String>
+  <sys:String x:Key="LOCCometAfterDownloadComplete">Dopo il completamento del download:</sys:String>
+  <sys:String x:Key="LOCCometSpaceAvailable">Spazio disponibile:</sys:String>
+  <sys:String x:Key="LOCCometAfterInstalling">Dopo l'installazione:</sys:String>
+  <sys:String x:Key="LOCCometDownloaded">Scaricato</sys:String>
+  <sys:String x:Key="LOCCometETA">Tempo rimanente:</sys:String>
+  <sys:String x:Key="LOCCometDownloadSpeed">Velocità di download:</sys:String>
+  <sys:String x:Key="LOCCometDiskSpeed">Utilizzo del disco:</sys:String>
+  <sys:String x:Key="LOCCometElapsed">Trascorso:</sys:String>
+  <sys:String x:Key="LOCCometDownloadingUpdate">Download aggiornamento...</sys:String>
+  <sys:String x:Key="LOCCometFinishingInstallation">Installazione quasi finita...</sys:String>
+  <sys:String x:Key="LOCCometFinishingUpdate">Aggiornamento quasi finito...</sys:String>
+  <sys:String x:Key="LOCCometFinishingRepair">Ripristino quasi finito...</sys:String>
+  <sys:String x:Key="LOCCometPauseDownload">Pausa</sys:String>
+  <sys:String x:Key="LOCCometResumeDownload">Riprendi</sys:String>
+  <sys:String x:Key="LOCCometDownloadPaused">In pausa</sys:String>
+  <sys:String x:Key="LOCCometInstallationFinished">Installazione finita. Buon divertimento.</sys:String>
+  <sys:String x:Key="LOCCometUpdateFinished">Aggiornamento finito. Divertiti.</sys:String>
+  <sys:String x:Key="LOCCometRepairFinished">Riparazione finita. Divertiti.</sys:String>
+  <sys:String x:Key="LOCCometDownloadManager">Gestore download</sys:String>
+  <sys:String x:Key="LOCCometDownloadStatus">Stato</sys:String>
+  <sys:String x:Key="LOCCometProgress">Progresso</sys:String>
+  <sys:String x:Key="LOCCometDownloadCompletedColumn">Completato</sys:String>
+  <sys:String x:Key="LOCCometDownloadQueued">In coda</sys:String>
+  <sys:String x:Key="LOCCometDownloadRunning">In esecuzione</sys:String>
+  <sys:String x:Key="LOCCometDownloadCanceled">Annullato</sys:String>
+  <sys:String x:Key="LOCCometDownloadCompleted">Completato</sys:String>
+  <sys:String x:Key="LOCCometRemoveEntry">Rimuovi voce</sys:String>
+  <sys:String x:Key="LOCCometRemoveEntryConfirm">Sei sicuro di voler rimuovere {0} dalla lista?</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryTop">Sposta all'inizio</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryUp">Sposta su</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryDown">Sposta giù</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryBottom">Sposta in fondo</sys:String>
+  <sys:String x:Key="LOCCometRemoveCompletedDownloads">Rimuovi i download completati</sys:String>
+  <sys:String x:Key="LOCCometRemoveCompletedDownloadsConfirm">Sei sicuro di voler rimuovere tutti i download completati dalla lista?</sys:String>
+  <sys:String x:Key="LOCCometRemoveSelectedEntriesConfirm">Sei sicuro di voler rimuovere le voci selezionate dalla lista?</sys:String>
+  <sys:String x:Key="LOCCometSelectAllEntries">Seleziona tutto</sys:String>
+  <sys:String x:Key="LOCCometDownloadManagerWhatsUp">Il download inizierà presto. Puoi vederne lo stato accedendo al pannello Comet tramite Menù =&gt; Visualizza o dalla barra laterale.</sys:String>
+  <sys:String x:Key="LOCCometPanel">Pannello Comet</sys:String>
+  <sys:String x:Key="LOCCometDownloadAlreadyExists">{0} è già nella lista dei download. È possibile visualizzare lo stato del download accedendo al pannello Comet tramite Menu =&gt; Visualizza o dalla barra laterale.</sys:String>
+  <sys:String x:Key="LOCCometDownloadAlreadyExistsOther">I seguenti giochi sono già nella lista dei download: {0}. Puoi vedere lo stato del download accedendo al pannello Comet tramite Menu =&gt; Visualizza o dalla barra laterale.</sys:String>
+  <sys:String x:Key="LOCCometRepair">Ripara</sys:String>
+  <sys:String x:Key="LOCCometAdvancedOptions">Opzioni avanzate</sys:String>
+  <sys:String x:Key="LOCCometExtraContent">Contenuti extra</sys:String>
+  <sys:String x:Key="LOCCometCheckLog">Controllare i log per ulteriori informazioni.</sys:String>
+  <sys:String x:Key="LOCCometMemoryError">La cache condivisa attuale è più piccola di quanto richiesto: {0} &lt; {1}. Prova ad abilitare l'ottimizzazione riordinamento per ridurre l'utilizzo della memoria o aumentare la quantità massima di memoria condivisa.</sys:String>
+  <sys:String x:Key="LOCCometEditSelectedDownloadProperties">Modifica proprietà</sys:String>
+  <sys:String x:Key="LOCCometOpenDownloadDirectory">Apri cartella download</sys:String>
   <sys:String x:Key="LOCCometPathNotExistsError">Il percorso specificato non esiste.</sys:String>
   <sys:String x:Key="LOCCometSignOut">Disconnettiti</sys:String>
   <sys:String x:Key="LOCCometTroubleshootingInformation">Informazioni e risoluzione dei problemi</sys:String>
@@ -16,6 +73,13 @@
   <sys:String x:Key="LOCCometNewVersionAvailable">È disponibile una nuova versione: {0} {1}.</sys:String>
   <sys:String x:Key="LOCCometNoUpdatesAvailable">Nessun aggiornamento disponibile.</sys:String>
   <sys:String x:Key="LOCCometViewChangelog">Visualizza changelog</sys:String>
+  <sys:String x:Key="LOCCometCheckAllDlcs">Seleziona tutti i DLC</sys:String>
+  <sys:String x:Key="LOCCometCheckAllContent">Seleziona tutto</sys:String>
+  <sys:String x:Key="LOCCometRemoveGameLaunchSettings">Rimuovi impostazioni di avvio</sys:String>
   <sys:String x:Key="LOCCometSignedInAs">Accesso effettuato come {0}</sys:String>
   <sys:String x:Key="LOCCometSignOutConfirm">Sei sicuro di volerti disconnettere?</sys:String>
+  <sys:String x:Key="LOCCometPermissionError">L'utente non ha accesso in scrittura al percorso specificato. Cambia i permessi o avvia Playnite come amministratore.</sys:String>
+  <sys:String x:Key="LOCCometInstanceNotice">Solo un'istanza di Comet può installare/importare/spostare applicazioni alla volta. Si desidera mettere in pausa le attività del gestore download per continuare?</sys:String>
+  <sys:String x:Key="LOCCometNotEnoughSpace">Non c'è abbastanza spazio libero su disco.</sys:String>
+  <sys:String x:Key="LOCCometGames">Giochi</sys:String>
 </ResourceDictionary>

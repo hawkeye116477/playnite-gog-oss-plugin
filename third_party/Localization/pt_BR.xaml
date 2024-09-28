@@ -4,13 +4,37 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteFilterActiveLabel">Filtro ativado</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteFilters">Filtros</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallError">Não foi possível instalar o jogo: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDisabledTitle">Desabilitado</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteVersionLabel">Versão</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallSizeLabel">Tamanho da Instalação</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteAddedLabel">Adicionado</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOKLabel">OK</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCancelLabel">Cancelar</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteYesLabel">Sim</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteNoLabel">Não</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDownloadingLabel">Baixando…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoadingLabel">Carregando…</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuRestartSystem">Reiniciar o sistema</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuShutdownSystem">Desligar o sistema</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuSuspendSystem">Suspender o sistema</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuHibernateSystem">Hibernar o sistema</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Geral</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Avançado</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoginRequired">Autenticação requerida</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Executável</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameNameTitle">Nome</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallDirTitle">Local de instalação</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMetadataDownloadError">Falha ao baixar metadados: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDoNothing">Não fazer nada</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Atualização disponível</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Verificar se há atualizações</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Falha ao verificar se há uma nova versão.</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallGame">Instalar</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUninstallGame">Desinstalar</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDontShowAgainTitle">Não mostrar novamente</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Selecionar arquivo...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Selecionar pasta...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOpen">Abrir</sys:String>

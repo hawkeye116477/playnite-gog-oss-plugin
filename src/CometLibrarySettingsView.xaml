@@ -67,26 +67,78 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{DynamicResource LOCCometLauncherCustomPath}" Grid.Column="0" Grid.Row="0"
+                    <TextBlock Text="{DynamicResource LOCCometCometCustomPath}" Grid.Column="0" Grid.Row="0"
                                Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                     </TextBlock>
-                    <TextBox Text="{Binding Settings.SelectedLauncherPath, UpdateSourceTrigger=PropertyChanged}" x:Name="SelectedLauncherPathTxt" 
+                    <TextBox Text="{Binding Settings.SelectedCometPath, UpdateSourceTrigger=PropertyChanged}" x:Name="SelectedCometPathTxt" 
                              Grid.Row="0" Grid.Column="1" Margin="10,0,0,5" VerticalAlignment="Center"/>
-                    <Button Name="ChooseLauncherBtn"
-                            Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Click="ChooseLauncherBtn_Click" Grid.Row="0" Grid.Column="2"
+                    <Button Name="ChooseCometBtn"
+                            Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Click="ChooseCometBtn_Click" Grid.Row="0" Grid.Column="2"
                             ToolTip="{DynamicResource LOCComet3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{DynamicResource LOCCometGamesInstallationPath}" Grid.Row="1" Grid.Column="0"
+                    <TextBlock Text="{DynamicResource LOCCometGogdlCustomPath}" Grid.Column="0" Grid.Row="1"
+                               Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    </TextBlock>
+                    <TextBox Text="{Binding Settings.SelectedGogdlPath, UpdateSourceTrigger=PropertyChanged}" x:Name="SelectedGogdlPathTxt" 
+                             Grid.Row="1" Grid.Column="1" Margin="10,0,0,5" VerticalAlignment="Center"/>
+                    <Button Name="ChooseGogdlBtn"
+                            Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}"  Grid.Row="1" Grid.Column="2"
+                            ToolTip="{DynamicResource LOCComet3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource LOCCometGamesInstallationPath}" Grid.Row="2" Grid.Column="0"
                                Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                     </TextBlock>
                     <TextBox Name="SelectedGamePathTxt"
                         Text="{Binding Settings.GamesInstallationPath, UpdateSourceTrigger=PropertyChanged}"
-                        VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" Margin="10,0,0,5"/>
+                        VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" Margin="10,0,0,5"/>
                     <Button Margin="5 0 0 5"
                             Name="ChooseGamePathBtn" Click="ChooseGamePathBtn_Click" Content="&#xec5b;" 
                             FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCComet3P_PlayniteSelectDirectoryTooltip}"
-                            Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"/>
+                            Grid.Row="2" Grid.Column="2" VerticalAlignment="Center"/>
                 </Grid>
+                <StackPanel Margin="0,10,0,0">
+                    <TextBlock Text="{DynamicResource LOCCometDownloadSettings}" FontSize="18"
+                        Margin="0,0,0,2" />
+                    <Separator Margin="0,0,0,10" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="Left" Width="Auto" />
+                            <ColumnDefinition x:Name="Right" Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <CheckBox Grid.Column="0" Grid.Row="0"
+                            Content="{DynamicResource LOCCometDisplayDownloadTaskFinishedNotifications}"
+                            IsChecked="{Binding Settings.DisplayDownloadTaskFinishedNotifications}" Margin="0,0,0,10" />
+                        <CheckBox Grid.Column="0" Grid.Row="1"
+                            Content="{DynamicResource LOCCometDisplayDownloadSpeedInBits}"
+                            IsChecked="{Binding Settings.DisplayDownloadSpeedInBits}" Margin="0,0,0,10" />
+                        <CheckBox Grid.Column="0" Grid.Row="2"
+                            Content="{DynamicResource LOCCometDownloadAllDlcs}"
+                            IsChecked="{Binding Settings.DownloadAllDlcs}" Margin="0,0,0,10" />
+                        <CheckBox Grid.Column="0" Grid.Row="5"
+                            Content="{DynamicResource LOCCometUnattendedInstall}" ToolTip="{DynamicResource LOCCometUnattendedInstallToolTip}"
+                            IsChecked="{Binding Settings.UnattendedInstall}" Margin="0,0,0,10" />
+                        <TextBlock Text="{DynamicResource LOCCometMaxWorkers}" Grid.Column="0"
+                            Grid.Row="6" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                        <local:NumericInput Grid.Row="6" Grid.Column="1" Margin="0,0,0,5" MinValue="0" x:Name="MaxWorkersNI" Value="{Binding Settings.MaxWorkers}" HorizontalAlignment="Left"/>
+                        <TextBlock Grid.Column="0" Grid.Row="10"
+                            Text="{DynamicResource LOCCometAfterDownloadComplete}" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"  />
+                        <ComboBox Grid.Column="1" Grid.Row="10" x:Name="AfterDownloadCompleteCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.DoActionAfterDownloadComplete}" SelectedValuePath="Key"  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                    </Grid>
+                </StackPanel>
             </StackPanel>
         </TabItem>
         <TabItem Header="{DynamicResource LOCCometTroubleshootingInformation}">
@@ -117,7 +169,7 @@
                                Margin="0,0,10,5" VerticalAlignment="Center" />
                     <TextBox x:Name="PluginVersionTxt" Grid.Column="1" Grid.Row="1" Margin="0,0,0,5" 
                              VerticalAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left"/>
-                    <TextBlock Text="{DynamicResource LOCCometLauncherVersion}" Grid.Column="0" Grid.Row="2"
+                    <TextBlock Text="{DynamicResource LOCCometCometVersion}" Grid.Column="0" Grid.Row="2"
                                Margin="0,0,10,5" VerticalAlignment="Center" />
                     <TextBox x:Name="LauncherVersionTxt" Grid.Column="1" Grid.Row="2" Margin="0,0,0,5" VerticalAlignment="Center" 
                              IsReadOnly="True" HorizontalAlignment="Left"/>

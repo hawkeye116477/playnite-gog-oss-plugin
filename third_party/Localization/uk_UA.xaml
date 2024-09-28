@@ -4,13 +4,37 @@
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <sys:String x:Key="LOCComet3P_PlayniteFilterActiveLabel">Фільтр Активний</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteFilters">Фільтри</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallError">Не вдається встановити гру: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDisabledTitle">Вимкнено</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteVersionLabel">Версія</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallSizeLabel">Розмір встановлення</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteAddedLabel">Додано</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOKLabel">ОК</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteCancelLabel">Скасувати</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteYesLabel">Так</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteNoLabel">Ні</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDownloadingLabel">Завантаження...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoadingLabel">Завантаження...</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuRestartSystem">Перезавантажити систему</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuShutdownSystem">Вимкнути систему</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuSuspendSystem">Призупинити систему</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMenuHibernateSystem">Режим глибокого сну</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsGeneralLabel">Загальні</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSettingsAdvancedLabel">Додатково</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteLoginRequired">Необхідна автентифікація</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteExecutableTitle">Виконуваний файл</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameNameTitle">Назва</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteGameInstallDirTitle">Тека встановлення</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteMetadataDownloadError">Не вдалося завантажити метадані: {0}</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDoNothing">Нічого не робити</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdaterWindowTitle">Доступне оновлення</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteCheckForUpdates">Перевірити наявність оновлень</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteUpdateCheckFailMessage">Не вдалося перевірити наявність нової версії.</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteInstallGame">Встановити</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteUninstallGame">Видалити</sys:String>
+  <sys:String x:Key="LOCComet3P_PlayniteDontShowAgainTitle">Не показувати знову</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectFileTooltip">Обрати файл...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteSelectDirectoryTooltip">Обрати теку...</sys:String>
   <sys:String x:Key="LOCComet3P_PlayniteOpen">Відкрити</sys:String>

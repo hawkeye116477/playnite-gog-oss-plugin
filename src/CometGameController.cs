@@ -7,8 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using CliWrap;
 using CliWrap.EventStream;
+using CometLibraryNS.Enums;
+using CometLibraryNS.Models;
 using CometLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
@@ -19,93 +22,56 @@ namespace CometLibraryNS
 {
     public class GogInstallController : InstallController
     {
-        private CancellationTokenSource watcherToken;
         private readonly CometLibrary gogLibrary;
 
         public GogInstallController(Game game, CometLibrary gogLibrary) : base(game)
         {
             this.gogLibrary = gogLibrary;
-            if (Comet.IsInstalled)
-            {
-                Name = "Install using Galaxy";
-            }
-            else
-            {
-                Name = "Dowload offline installer";
-            }
-        }
-
-        public override void Dispose()
-        {
-            watcherToken?.Cancel();
         }
 
         public override void Install(InstallActionArgs args)
         {
-            if (Comet.IsInstalled)
+            var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install };
+            var installData = new List<DownloadManagerData.Download>
             {
-                var startedAutomaticInstall = false;
-                if (gogLibrary.SettingsViewModel.Settings.UseAutomaticGameInstalls)
+                new DownloadManagerData.Download { gameID = Game.GameId, name = Game.Name, downloadProperties = installProperties }
+            };
+            LaunchInstaller(installData);
+            Game.IsInstalling = false;
+        }
+
+        private void LaunchInstaller(List<DownloadManagerData.Download> installData)
+        {
+            var playniteAPI = API.Instance;
+
+            Window window = null;
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Desktop)
+            {
+                window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
                 {
-                    var clientPath = Comet.ClientInstallationPath;
-                    if (FileSystem.FileExists(clientPath))
-                    {
-                        var arguments = string.Format(@"/gameId={0} /command=installGame", Game.GameId);
-                        ProcessStarter.StartProcess(clientPath, arguments);
-
-                        // Starting a game install via command will add the game to a queue but Galaxy itself
-                        // won't be started to initiate the download process so we need to start it if it's
-                        // not running already
-                        if (!Comet.IsRunning)
-                        {
-                            ProcessStarter.StartProcess(clientPath);
-                        }
-
-                        startedAutomaticInstall = true;
-                    }
-                }
-
-                if (!startedAutomaticInstall)
-                {
-                    ProcessStarter.StartUrl(@"goggalaxy://openGameView/" + Game.GameId);
-                }
+                    ShowMaximizeButton = false,
+                });
             }
             else
             {
-                ProcessStarter.StartUrl(@"https://www.gog.com/account");
-            }
-
-            StartInstallWatcher();
-        }
-
-        public async void StartInstallWatcher()
-        {
-            watcherToken = new CancellationTokenSource();
-            await Task.Run(async () =>
-            {
-                while (true)
+                window = new Window
                 {
-                    if (watcherToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    var games = CometLibrary.GetInstalledGames();
-                    if (games.ContainsKey(Game.GameId))
-                    {
-                        var game = games[Game.GameId];
-                        var installInfo = new GameInstallationData()
-                        {
-                            InstallDirectory = game.InstallDirectory
-                        };
-
-                        InvokeOnInstalled(new GameInstalledEventArgs(installInfo));
-                        return;
-                    }
-
-                    await Task.Delay(10000);
-                }
-            });
+                    Background = System.Windows.Media.Brushes.DodgerBlue
+                };
+            }
+            window.DataContext = installData;
+            window.Content = new CometGameInstallerView();
+            window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+            window.SizeToContent = SizeToContent.WidthAndHeight;
+            window.MinWidth = 600;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var title = ResourceProvider.GetString(LOC.Comet3P_PlayniteInstallGame);
+            if (installData.Count == 1)
+            {
+                title = installData[0].name;
+            }
+            window.Title = title;
+            window.ShowDialog();
         }
     }
 
@@ -126,14 +92,42 @@ namespace CometLibraryNS
         public override void Uninstall(UninstallActionArgs args)
         {
             Dispose();
-            var uninstaller = Path.Combine(Game.InstallDirectory, "unins000.exe");
-            if (!File.Exists(uninstaller))
+            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.CometUninstallGameConfirm).Format(Game.Name), LOC.CometRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result.Result)
             {
-                throw new FileNotFoundException("Uninstaller not found.");
-            }
+                var canContinue = CometLibrary.Instance.StopDownloadManager(true);
+                if (!canContinue)
+                {
+                    return;
+                }
+                if (result.CheckboxChecked)
+                {
+                    var gameSettingsFile = Path.Combine(Path.Combine(CometLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{Game.GameId}.json"));
+                    if (File.Exists(gameSettingsFile))
+                    {
+                        File.Delete(gameSettingsFile);
+                    }
+                }
+                var installedAppList = CometLibrary.GetInstalledAppList();
+                if (installedAppList.ContainsKey(Game.GameId))
+                {
+                    installedAppList.Remove(Game.GameId);
+                    Helpers.SaveJsonSettingsToFile(installedAppList, "installed.json");
+                }
+                var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", Game.GameId);
+                if (File.Exists(manifestFile))
+                {
+                    File.Delete(manifestFile);
+                }
+                var uninstaller = Path.Combine(Game.InstallDirectory, "unins000.exe");
+                if (!File.Exists(uninstaller))
+                {
+                    throw new FileNotFoundException("Uninstaller not found.");
+                }
 
-            Process.Start(uninstaller);
-            StartUninstallWatcher();
+                Process.Start(uninstaller);
+                StartUninstallWatcher();
+            }
         }
 
         public async void StartUninstallWatcher()

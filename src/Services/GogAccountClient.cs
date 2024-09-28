@@ -1,5 +1,4 @@
-﻿using CometLibrary.Models;
-using CometLibraryNS.Models;
+﻿using CometLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -14,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
+using static CometLibraryNS.Models.TokenResponse;
 
 namespace CometLibraryNS.Services
 {
@@ -95,12 +95,15 @@ namespace CometLibraryNS.Services
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
+                        var responseJson = Serialization.FromJson<TokenResponsePart>(responseContent);
+                        DateTimeOffset now = DateTime.UtcNow;
+                        responseJson.loginTime = now.ToUnixTimeSeconds();
+                        var tokenResponse = new TokenResponse();
+                        tokenResponse.client_id = new Dictionary<string, TokenResponsePart>();
+                        tokenResponse.client_id.Add(clientId, responseJson);
+                        var strConf = Serialization.ToJson(tokenResponse.client_id, false);
                         FileSystem.CreateDirectory(Path.GetDirectoryName(Comet.TokensPath));
-                        Encryption.EncryptToFile(
-                            Comet.TokensPath,
-                            responseContent,
-                            Encoding.UTF8,
-                            WindowsIdentity.GetCurrent().User.Value);
+                        File.WriteAllText(Comet.TokensPath, strConf);
                     }
                     else
                     {
@@ -139,12 +142,15 @@ namespace CometLibraryNS.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
+                var responseJson = Serialization.FromJson<TokenResponsePart>(responseContent);
+                DateTimeOffset now = DateTime.UtcNow;
+                responseJson.loginTime = now.ToUnixTimeSeconds();
+                var tokenResponse = new TokenResponse();
+                tokenResponse.client_id = new Dictionary<string, TokenResponsePart>();
+                tokenResponse.client_id.Add(clientId, responseJson);
+                var strConf = Serialization.ToJson(tokenResponse.client_id, false);
                 FileSystem.CreateDirectory(Path.GetDirectoryName(Comet.TokensPath));
-                Encryption.EncryptToFile(
-                    Comet.TokensPath,
-                    responseContent,
-                    Encoding.UTF8,
-                    WindowsIdentity.GetCurrent().User.Value);
+                File.WriteAllText(Comet.TokensPath, strConf);
                 return true;
             }
             else
@@ -204,16 +210,15 @@ namespace CometLibraryNS.Services
             return accountInfo;
         }
 
-        public TokenResponse LoadTokens()
+        public TokenResponsePart LoadTokens()
         {
             if (File.Exists(Comet.TokensPath))
             {
                 try
                 {
-                    return Serialization.FromJson<TokenResponse>(Encryption.DecryptFromFile
-                        (Comet.TokensPath,
-                         Encoding.UTF8,
-                         WindowsIdentity.GetCurrent().User.Value));
+                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponsePart>>(File.ReadAllText(Comet.TokensPath));
+                    var firstKey = jsonResponse.First().Value;
+                    return firstKey;
                 }
                 catch (Exception e)
                 {

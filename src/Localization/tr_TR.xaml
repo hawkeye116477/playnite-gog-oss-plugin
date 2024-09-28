@@ -2,6 +2,63 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCCometLauncherCustomPath">Başlatıcı Yolu</sys:String>
   <sys:String x:Key="LOCCometGamesInstallationPath">Oyunların Kurulum Yolu</sys:String>
+  <sys:String x:Key="LOCCometDownloadSize">İndirme Boyutu:</sys:String>
+  <sys:String x:Key="LOCCometInstallSize">Kurulum Boyutu:</sys:String>
+  <sys:String x:Key="LOCCometUninstallGameConfirm">{0} kaldırılacak, bundan emin misiniz?</sys:String>
+  <sys:String x:Key="LOCCometDownloadSettings">İndirme Ayarları</sys:String>
+  <sys:String x:Key="LOCCometDisplayDownloadTaskFinishedNotifications">Tamamlanan görevlerle ilgili masaüstü bildirimlerini görüntüle</sys:String>
+  <sys:String x:Key="LOCCometDisplayDownloadSpeedInBits">İndirme hızını saniyedeki bit cinsinden göster</sys:String>
+  <sys:String x:Key="LOCCometDownloadAllDlcs">Tüm DLC içeriğini indir</sys:String>
+  <sys:String x:Key="LOCCometUnattendedInstall">Katılımsız kurulum modunu etkinleştir</sys:String>
+  <sys:String x:Key="LOCCometUnattendedInstallToolTip">Kurulum penceresinde herhangi bir şey seçmeniz gerekiyor ve gerekli bilgiler indirildikten sonra kurulum otomatik olarak başlayacaktır.</sys:String>
+  <sys:String x:Key="LOCCometMaxWorkers">En fazla çalışan işlem sayısı</sys:String>
+  <sys:String x:Key="LOCCometAfterDownloadComplete">İndirme tamamlandıktan sonra:</sys:String>
+  <sys:String x:Key="LOCCometSpaceAvailable">Mevcut Alan:</sys:String>
+  <sys:String x:Key="LOCCometAfterInstalling">Kurulumdan Sonra:</sys:String>
+  <sys:String x:Key="LOCCometDownloaded">İndirilen</sys:String>
+  <sys:String x:Key="LOCCometETA">TTS:</sys:String>
+  <sys:String x:Key="LOCCometDownloadSpeed">İndirme Hızı:</sys:String>
+  <sys:String x:Key="LOCCometDiskSpeed">Disk Kullanımı:</sys:String>
+  <sys:String x:Key="LOCCometElapsed">Geçen:</sys:String>
+  <sys:String x:Key="LOCCometDownloadingUpdate">Güncelleştirme indiriliyor...</sys:String>
+  <sys:String x:Key="LOCCometFinishingInstallation">Kurulum tamamlanıyor...</sys:String>
+  <sys:String x:Key="LOCCometFinishingUpdate">Güncelleme tamamlanıyor...</sys:String>
+  <sys:String x:Key="LOCCometFinishingRepair">Onarım tamamlanıyor...</sys:String>
+  <sys:String x:Key="LOCCometPauseDownload">Duraklat</sys:String>
+  <sys:String x:Key="LOCCometResumeDownload">Sürdür</sys:String>
+  <sys:String x:Key="LOCCometDownloadPaused">Duraklatıldı</sys:String>
+  <sys:String x:Key="LOCCometInstallationFinished">Kurulum tamamlandı. İyi eğlenceler.</sys:String>
+  <sys:String x:Key="LOCCometUpdateFinished">Güncelleme tamamlandı. İyi eğlenceler.</sys:String>
+  <sys:String x:Key="LOCCometRepairFinished">Onarım tamamlandı. İyi eğlenceler.</sys:String>
+  <sys:String x:Key="LOCCometDownloadManager">İndirme Yöneticisi</sys:String>
+  <sys:String x:Key="LOCCometDownloadStatus">Durum</sys:String>
+  <sys:String x:Key="LOCCometProgress">İlerleyiş</sys:String>
+  <sys:String x:Key="LOCCometDownloadCompletedColumn">Tamamlandı</sys:String>
+  <sys:String x:Key="LOCCometDownloadQueued">Kuyrukta</sys:String>
+  <sys:String x:Key="LOCCometDownloadRunning">Çalışıyor</sys:String>
+  <sys:String x:Key="LOCCometDownloadCanceled">Vazgeçildi</sys:String>
+  <sys:String x:Key="LOCCometDownloadCompleted">Tamamlandı</sys:String>
+  <sys:String x:Key="LOCCometRemoveEntry">Girdiyi kaldır</sys:String>
+  <sys:String x:Key="LOCCometRemoveEntryConfirm">{0} öğesini listeden çıkarmak istediğinizden emin misiniz?</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryTop">Girişi en üste taşı</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryUp">Girişi üste taşı</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryDown">Girişi alta taşı</sys:String>
+  <sys:String x:Key="LOCCometMoveEntryBottom">Girişi en alta taşı</sys:String>
+  <sys:String x:Key="LOCCometRemoveCompletedDownloads">Tamamlanan indirmeleri kaldır</sys:String>
+  <sys:String x:Key="LOCCometRemoveCompletedDownloadsConfirm">Tamamlanan tüm indirmeleri listeden kaldırmak istiyor musunuz?</sys:String>
+  <sys:String x:Key="LOCCometRemoveSelectedEntriesConfirm">Seçilen girişleri listeden kaldırmak istiyor musunuz?</sys:String>
+  <sys:String x:Key="LOCCometSelectAllEntries">Tüm girişleri seç</sys:String>
+  <sys:String x:Key="LOCCometDownloadManagerWhatsUp">İndirme yakında başlayacak. Menü =&gt; Görünüm veya kenar çubuğundan Comet Panel üstünden durumunu görebilirsiniz.</sys:String>
+  <sys:String x:Key="LOCCometPanel">Comet Panel</sys:String>
+  <sys:String x:Key="LOCCometDownloadAlreadyExists">{0} zaten indirme listesinde. Menü =&gt; Görünüm veya kenar çubuğundan Comet Panel üstünden indirmenin durumunu görebilirsiniz.</sys:String>
+  <sys:String x:Key="LOCCometDownloadAlreadyExistsOther">Şu oyunlar zaten indirme listesinde bulunuyor: {0}. Menü =&gt; Görünüm veya kenar çubuğundan Comet Panele erişerek indirme durumunu görebilirsiniz.</sys:String>
+  <sys:String x:Key="LOCCometRepair">Onar</sys:String>
+  <sys:String x:Key="LOCCometAdvancedOptions">Gelişmiş Seçenekler</sys:String>
+  <sys:String x:Key="LOCCometExtraContent">Ekstra İçerik</sys:String>
+  <sys:String x:Key="LOCCometCheckLog">Daha fazla bilgi için günlük dosyalarını kontrol edin.</sys:String>
+  <sys:String x:Key="LOCCometMemoryError">Mevcut paylaşılan bellek önbelleği gerekenden daha küçük: {0} &lt; {1}. Bellek kullanımını azaltmak veya en fazla paylaşılan bellek miktarını artırmak için yeniden sıralama optimizasyonunu etkinleştirmeyi deneyin.</sys:String>
+  <sys:String x:Key="LOCCometEditSelectedDownloadProperties">Girdi özelliklerini düzenle</sys:String>
+  <sys:String x:Key="LOCCometOpenDownloadDirectory">İndirilenler dizinini aç</sys:String>
   <sys:String x:Key="LOCCometPathNotExistsError">Belirtilen yol mevcut değil.</sys:String>
   <sys:String x:Key="LOCCometSignOut">Oturumu kapat</sys:String>
   <sys:String x:Key="LOCCometTroubleshootingInformation">Sorun giderme bilgisi</sys:String>
@@ -16,6 +73,13 @@
   <sys:String x:Key="LOCCometNewVersionAvailable">Yeni bir sürüm mevcut: {0} {1}.</sys:String>
   <sys:String x:Key="LOCCometNoUpdatesAvailable">Güncelleme yok.</sys:String>
   <sys:String x:Key="LOCCometViewChangelog">Değişiklikleri görüntüle</sys:String>
+  <sys:String x:Key="LOCCometCheckAllDlcs">Tüm DLC içerikleri denetle</sys:String>
+  <sys:String x:Key="LOCCometCheckAllContent">Tümünü denetle</sys:String>
+  <sys:String x:Key="LOCCometRemoveGameLaunchSettings">Başlatma ayarlarını kaldır</sys:String>
   <sys:String x:Key="LOCCometSignedInAs">{0} olarak oturum açıldı</sys:String>
   <sys:String x:Key="LOCCometSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>
+  <sys:String x:Key="LOCCometPermissionError">Kullanıcının belirtilen yola yazma erişimi yok. İzinleri değiştirin veya Playnite programını yönetici olarak başlatın.</sys:String>
+  <sys:String x:Key="LOCCometInstanceNotice">Aynı anda yalnızca bir Comet örneği uygulamaları kurulabilir/içe aktarabilir/taşıyabilir. Devam etmek için indirme yöneticisi görevlerini duraklatmak istiyor musunuz?</sys:String>
+  <sys:String x:Key="LOCCometNotEnoughSpace">Yeterli boş disk alanı yok.</sys:String>
+  <sys:String x:Key="LOCCometGames">Oyunlar</sys:String>
 </ResourceDictionary>

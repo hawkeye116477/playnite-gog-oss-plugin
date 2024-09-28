@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Playnite.SDK;
 using CometLibraryNS.Services;
+using CometLibraryNS.Enums;
 
 namespace CometLibraryNS
 {
@@ -11,11 +12,17 @@ namespace CometLibraryNS
         public bool ConnectAccount { get; set; } = false;
         public bool ImportUninstalledGames { get; set; } = false;
         public bool StartGamesUsingComet { get; set; } = false;
-        public bool UseAutomaticGameInstalls { get; set; } = false;
         public bool UseVerticalCovers { get; set; } = true;
         public string Locale { get; set; } = "en";
         public string GamesInstallationPath { get; set; } = "";
-        public string SelectedLauncherPath { get; set; } = "";
+        public string SelectedCometPath { get; set; } = "";
+        public string SelectedGogdlPath { get; set; } = "";
+        public int MaxWorkers { get; set; } = 0;
+        public bool UnattendedInstall { get; set; } = false;
+        public bool DownloadAllDlcs { get; set; } = false;
+        public bool DisplayDownloadSpeedInBits { get; set; } = false;
+        public bool DisplayDownloadTaskFinishedNotifications { get; set; } = true;
+        public DownloadCompleteAction DoActionAfterDownloadComplete { get; set; } = DownloadCompleteAction.Nothing;
     }
     public class CometLibrarySettingsViewModel : PluginSettingsViewModel<CometLibrarySettings, CometLibrary>
     {

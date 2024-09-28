@@ -1,4 +1,5 @@
 ﻿using CometLibrary.Models;
+using CometLibraryNS.Enums;
 using CometLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
@@ -34,17 +35,27 @@ namespace CometLibraryNS
 
         }
 
-        private void ChooseLauncherBtn_Click(object sender, RoutedEventArgs e)
+        private void ChooseCometBtn_Click(object sender, RoutedEventArgs e)
         {
             var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.Comet3P_PlayniteExecutableTitle)}|*.exe");
             if (file != "")
             {
-                SelectedLauncherPathTxt.Text = file;
+                SelectedCometPathTxt.Text = file;
             }
         }
 
         private async void CometSettingsUC_Loaded(object sender, RoutedEventArgs e)
         {
+            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
+            var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
+            {
+                { DownloadCompleteAction.Nothing, ResourceProvider.GetString(LOC.Comet3P_PlayniteDoNothing) },
+                { DownloadCompleteAction.ShutDown, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuShutdownSystem) },
+                { DownloadCompleteAction.Reboot, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuRestartSystem) },
+                { DownloadCompleteAction.Hibernate, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuHibernateSystem) },
+                { DownloadCompleteAction.Sleep, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuSuspendSystem) },
+            };
+            AfterDownloadCompleteCBo.ItemsSource = downloadCompleteActions;
             troubleshootingInformation = new CometTroubleshootingInformation();
             if (Comet.IsInstalled)
             {
@@ -59,8 +70,8 @@ namespace CometLibraryNS
             else
             {
                 troubleshootingInformation.LauncherVersion = "Not%20installed";
-                LauncherVersionTxt.Text = ResourceProvider.GetString(LOC.CometLauncherNotInstalled);
-                LauncherBinaryTxt.Text = ResourceProvider.GetString(LOC.CometLauncherNotInstalled);
+                LauncherVersionTxt.Text = ResourceProvider.GetString(LOC.CometCometNotInstalled);
+                LauncherBinaryTxt.Text = ResourceProvider.GetString(LOC.CometCometNotInstalled);
                 CheckForUpdatesBtn.IsEnabled = false;
                 OpenLauncherBinaryBtn.IsEnabled = false;
             }
