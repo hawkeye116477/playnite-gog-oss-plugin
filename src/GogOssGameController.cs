@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -77,19 +78,14 @@ namespace GogOssLibraryNS
 
     public class GogOssUninstallController : UninstallController
     {
-        private CancellationTokenSource watcherToken;
+        private static ILogger logger = LogManager.GetLogger();
 
         public GogOssUninstallController(Game game) : base(game)
         {
             Name = "Uninstall";
         }
 
-        public override void Dispose()
-        {
-            watcherToken?.Cancel();
-        }
-
-        public override void Uninstall(UninstallActionArgs args)
+        public override async void Uninstall(UninstallActionArgs args)
         {
             Dispose();
             var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(Game.Name), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -112,7 +108,7 @@ namespace GogOssLibraryNS
                 if (installedAppList.ContainsKey(Game.GameId))
                 {
                     installedAppList.Remove(Game.GameId);
-                    Helpers.SaveJsonSettingsToFile(installedAppList, "installed.json");
+                    Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
                 }
                 var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", Game.GameId);
                 if (File.Exists(manifestFile))
@@ -120,45 +116,41 @@ namespace GogOssLibraryNS
                     File.Delete(manifestFile);
                 }
                 var uninstaller = Path.Combine(Game.InstallDirectory, "unins000.exe");
-                if (!File.Exists(uninstaller))
+                if (File.Exists(uninstaller))
                 {
-                    throw new FileNotFoundException("Uninstaller not found.");
+                    var uninstallArgs = new List<string>
+                    {
+                        "/VERYSILENT",
+                        $"/ProductId={Game.GameId}",
+                        "/galaxyclient",
+                        "/KEEPSAVES"
+                    };
+                    await Cli.Wrap(uninstaller)
+                             .WithArguments(uninstallArgs)
+                             .AddCommandToLog()
+                             .ExecuteAsync();
                 }
-
-                Process.Start(uninstaller);
-                StartUninstallWatcher();
-            }
-        }
-
-        public async void StartUninstallWatcher()
-        {
-            watcherToken = new CancellationTokenSource();
-            while (true)
-            {
-                if (watcherToken.IsCancellationRequested)
+                else
                 {
-                    return;
+                    Directory.Delete(Game.InstallDirectory, true);
                 }
-
                 var games = GogOssLibrary.GetInstalledGames();
                 if (!games.ContainsKey(Game.GameId))
                 {
                     InvokeOnUninstalled(new GameUninstalledEventArgs());
                     return;
                 }
-
-                await Task.Delay(5000);
             }
         }
     }
 
-    public class CometPlayController : PlayController
+    public class GogOssPlayController : PlayController
     {
         private static ILogger logger = LogManager.GetLogger();
         private CancellationTokenSource watcherToken;
         public int cometProcessId;
 
-        public CometPlayController(Game game) : base(game)
+        public GogOssPlayController(Game game) : base(game)
         {
             Name = string.Format(ResourceProvider.GetString(LOC.GogOss3P_GOGStartUsingClient), "Comet");
         }
@@ -174,7 +166,7 @@ namespace GogOssLibraryNS
             Dispose();
             if (Directory.Exists(Game.InstallDirectory))
             {
-                BeforeGameStarting();
+                await BeforeGameStarting();
                 LaunchGame();
                 await AfterGameStarting();
             }
@@ -184,9 +176,47 @@ namespace GogOssLibraryNS
             }
         }
 
-        public void BeforeGameStarting()
+        public async Task BeforeGameStarting()
         {
-
+            var gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
+            if (gameSettings.Dependencies.Count > 0)
+            {
+                var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
+                var metaManifest = Gogdl.GetGameMetaManifest(Game.GameId);
+                foreach (var depend in gameSettings.Dependencies.ToList())
+                {
+                    if (depend == "ISI")
+                    {
+                        var isiInstalledInfo = GogOss.GetInstalledInfo("ISI");
+                        var shortLang = installedInfo.language.Split('-')[0];
+                        var langInEnglish = new CultureInfo(shortLang).EnglishName;
+                        foreach (var product in metaManifest.products)
+                        {
+                            var args = new List<string>
+                                {
+                                    "/VERYSILENT",
+                                    $"/DIR={Game.InstallDirectory}",
+                                    $"/Language={langInEnglish}",
+                                    $"/LANG={langInEnglish}",
+                                    $"/ProductId={product.productId}",
+                                    "/galaxyclient",
+                                    $"/buildId={installedInfo.build_id}",
+                                    $"/versionName={installedInfo.version}",
+                                    $"/lang-code={installedInfo.language}",
+                                    "/nodesktopshorctut", // Yes, they made a typo
+                                    "/nodesktopshortcut"
+                                };
+                            await Cli.Wrap(Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe"))
+                                     .WithArguments(args)
+                                     .WithWorkingDirectory(isiInstalledInfo.install_path)
+                                     .AddCommandToLog()
+                                     .ExecuteAsync();
+                        }
+                        gameSettings.Dependencies.Remove("ISI");
+                    }
+                }
+                Helpers.SaveJsonSettingsToFile(gameSettings, Game.GameId, "GamesSettings");
+            }
         }
 
         public async Task AfterGameStarting()

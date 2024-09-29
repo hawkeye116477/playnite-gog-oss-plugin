@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Величина инсталације</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel">Додато</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">ОК</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel">Сачувај</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel">Откажи</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel">Да</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Не</sys:String>

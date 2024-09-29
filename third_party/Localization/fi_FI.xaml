@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Koko asennettuna</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel">Lisätty</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">OK</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel">Tallenna</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel">Peruuta</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel">Kyllä</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Ei</sys:String>

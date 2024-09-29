@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Installationsstørrelse</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel">Tilføjet</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">OK</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel">Gem</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel">Annullér</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel">Ja</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Nej</sys:String>

@@ -103,7 +103,7 @@ namespace GogOssLibraryNS
                 yield break;
             }
 
-            yield return new CometPlayController(args.Game);
+            yield return new GogOssPlayController(args.Game);
         }
 
         public static GogOssLibrarySettings GetSettings()
@@ -220,7 +220,7 @@ namespace GogOssLibraryNS
                 {
                     continue;
                 }
-                if (entry.Value.download_item_type != DownloadItemType.Game)
+                if (entry.Value.item_type != DownloadItemType.Game)
                 {
                     continue;
                 }

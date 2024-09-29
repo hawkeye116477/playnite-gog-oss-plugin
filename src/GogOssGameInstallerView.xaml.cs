@@ -129,11 +129,11 @@ namespace GogOssLibraryNS
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameId);
                 if (wantedItem == null)
                 {
+                    var downloadProperties = GetDownloadProperties(installData, DownloadAction.Install, installPath);
                     if (installData.downloadItemType == DownloadItemType.Dependency)
                     {
-                        installPath = redistInstallPath;
+                        downloadProperties = GetDownloadProperties(installData, DownloadAction.Install, redistInstallPath);
                     }
-                    var downloadProperties = GetDownloadProperties(installData, DownloadAction.Install, installPath);
                     installData.downloadProperties = downloadProperties;
                     downloadTasks.Add(installData);
                 }
@@ -278,6 +278,8 @@ namespace GogOssLibraryNS
                     }
                     GameVersionCBo.ItemsSource = gameVersions;
                     GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault();
+                    MultiInstallData[0].downloadProperties.buildId = gameVersions.FirstOrDefault().Key;
+                    MultiInstallData[0].downloadProperties.version = gameVersions.FirstOrDefault().Value;
                     VersionSP.Visibility = Visibility.Visible;
                 }
                 if (gameVersions.Count > 1)

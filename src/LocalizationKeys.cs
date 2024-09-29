@@ -338,6 +338,14 @@ namespace System
         /// </summary>
         public const string GogOssViewChangelog = "LOCGogOssViewChangelog";
         /// <summary>
+        /// Disable update checking
+        /// </summary>
+        public const string GogOssDisableGameUpdateChecking = "LOCGogOssDisableGameUpdateChecking";
+        /// <summary>
+        /// Startup arguments
+        /// </summary>
+        public const string GogOssStartupArguments = "LOCGogOssStartupArguments";
+        /// <summary>
         /// Check all DLCs
         /// </summary>
         public const string GogOssCheckAllDlcs = "LOCGogOssCheckAllDlcs";
@@ -345,6 +353,34 @@ namespace System
         /// Check all
         /// </summary>
         public const string GogOssCheckAllContent = "LOCGogOssCheckAllContent";
+        /// <summary>
+        /// Save path
+        /// </summary>
+        public const string GogOssSavePath = "LOCGogOssSavePath";
+        /// <summary>
+        /// Sync saves to the cloud
+        /// </summary>
+        public const string GogOssAutoSyncSaves = "LOCGogOssAutoSyncSaves";
+        /// <summary>
+        /// Calculate path
+        /// </summary>
+        public const string GogOssCalculatePath = "LOCGogOssCalculatePath";
+        /// <summary>
+        /// This game doesn't support cloud saves.
+        /// </summary>
+        public const string GogOssCloudSavesNotSupported = "LOCGogOssCloudSavesNotSupported";
+        /// <summary>
+        /// Manual sync saves
+        /// </summary>
+        public const string GogOssManualSyncSaves = "LOCGogOssManualSyncSaves";
+        /// <summary>
+        /// Sync
+        /// </summary>
+        public const string GogOssSync = "LOCGogOssSync";
+        /// <summary>
+        /// Sync playtime to the cloud
+        /// </summary>
+        public const string GogOssSyncPlaytime = "LOCGogOssSyncPlaytime";
         /// <summary>
         /// Remove launch settings
         /// </summary>
@@ -401,6 +437,10 @@ namespace System
         /// OK
         /// </summary>
         public const string GogOss3P_PlayniteOKLabel = "LOCGogOss3P_PlayniteOKLabel";
+        /// <summary>
+        /// Save
+        /// </summary>
+        public const string GogOss3P_PlayniteSaveLabel = "LOCGogOss3P_PlayniteSaveLabel";
         /// <summary>
         /// Cancel
         /// </summary>

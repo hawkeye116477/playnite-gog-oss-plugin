@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Размер игры</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel">Добавлено</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">Окей</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel">Сохранить</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel">Отменить</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel">Да</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Нет</sys:String>

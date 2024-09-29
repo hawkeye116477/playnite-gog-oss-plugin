@@ -215,6 +215,9 @@
     <Compile Include="GogOssGameInstallerView.xaml.cs">
       <DependentUpon>GogOssGameInstallerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GogOssGameSettingsView.xaml.cs">
+      <DependentUpon>GogOssGameSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GogOssLibrary.cs" />
     <Compile Include="GogOssLibrarySettingsView.xaml.cs">
       <DependentUpon>GogOssLibrarySettingsView.xaml</DependentUpon>
@@ -297,6 +300,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GogOssGameInstallerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GogOssGameSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

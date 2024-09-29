@@ -32,3 +32,4 @@ LOCDontShowAgainTitle
 LOCYesLabel
 LOCNoLabel
 LOCUninstallGame
+LOCSaveLabel

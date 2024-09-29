@@ -10,6 +10,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel"></sys:String>

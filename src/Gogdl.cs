@@ -90,10 +90,10 @@ namespace GogOssLibraryNS
             get
             {
                 var envDict = new Dictionary<string, string>();
-                var heroicGogdlConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gogdlConfig");
+                var heroicGogdlConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gogdlConfig", "heroic_gogdl");
                 if (ConfigPath == heroicGogdlConfigPath)
                 {
-                    envDict.Add("GOGDL_CONFIG_PATH", ConfigPath);
+                    envDict.Add("GOGDL_CONFIG_PATH", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gogdlConfig"));
                 }
                 return envDict;
             }
@@ -104,7 +104,7 @@ namespace GogOssLibraryNS
             get
             {
                 var gogdlConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic_gogdl");
-                var heroicGogdlConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gogdlConfig");
+                var heroicGogdlConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gogdlConfig", "heroic_gogdl");
                 if (Directory.Exists(heroicGogdlConfigPath))
                 {
                     gogdlConfigPath = heroicGogdlConfigPath;
@@ -231,10 +231,9 @@ namespace GogOssLibraryNS
 
         public static GogGameMetaManifest GetGameMetaManifest(string gameId)
         {
+            var logger = LogManager.GetLogger();
             var manifest = new GogGameMetaManifest();
             var newManifest = new GogGameMetaManifest();
-            var playniteAPI = API.Instance;
-            var logger = LogManager.GetLogger();
             var cacheInfoFile = Path.Combine(ConfigPath, "manifests", gameId);
             bool correctJson = false;
             if (File.Exists(cacheInfoFile))
@@ -242,7 +241,7 @@ namespace GogOssLibraryNS
                 var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
                 if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out newManifest))
                 {
-                    if (manifest != null && manifest.buildId != null)
+                    if (newManifest != null && newManifest.buildId != null)
                     {
                         correctJson = true;
                     }
@@ -251,6 +250,10 @@ namespace GogOssLibraryNS
             if (correctJson)
             {
                 manifest = newManifest;
+            }
+            else
+            {
+                logger.Error("Can't read game meta manifest");
             }
             return manifest;
         }

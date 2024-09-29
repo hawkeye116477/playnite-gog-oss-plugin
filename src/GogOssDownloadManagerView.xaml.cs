@@ -263,6 +263,7 @@ namespace GogOssLibraryNS
                 bool diskSpaceErrorDisplayed = false;
                 var cmd = Cli.Wrap(Gogdl.ClientInstallationPath)
                              .WithArguments(installCommand)
+                             .WithEnvironmentVariables(Gogdl.DefaultEnvironmentVariables)
                              .AddCommandToLog()
                              .WithValidation(CommandResultValidation.None);
                 var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
@@ -455,7 +456,7 @@ namespace GogOssLibraryNS
                                 {
                                     build_id = downloadProperties.buildId,
                                     version = downloadProperties.version,
-                                    download_item_type = taskData.downloadItemType,
+                                    item_type = taskData.downloadItemType,
                                     title = gameTitle,
                                     platform = downloadProperties.os,
                                     install_path = taskData.fullInstallPath,
@@ -470,6 +471,19 @@ namespace GogOssLibraryNS
 
                                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                                 {
+                                    var gameMetaManifest = Gogdl.GetGameMetaManifest(gameID);
+                                    if (gameMetaManifest.scriptInterpreter)
+                                    {
+                                        var dependsIds = new List<string>
+                                        {
+                                            "ISI"
+                                        };
+                                        var gameSettings = new GameSettings
+                                        {
+                                            Dependencies = dependsIds
+                                        };
+                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
+                                    }
                                     Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
                                     {
                                         game = playniteAPI.Database.Games.FirstOrDefault(item => item.PluginId == GogOssLibrary.Instance.Id
@@ -489,20 +503,6 @@ namespace GogOssLibraryNS
                                         //    }
                                         //}
                                         playniteAPI.Database.Games.Update(game);
-                                    }
-
-                                    var gameMetaManifest = Gogdl.GetGameMetaManifest(gameID);
-                                    if (gameMetaManifest.scriptInterpreter)
-                                    {
-                                        var dependsIds = new List<string>
-                                        {
-                                            "ISI"
-                                        };
-                                        var gameSettings = new GameSettings
-                                        {
-                                            Dependencies = dependsIds
-                                        };
-                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
                                     }
                                 }
 

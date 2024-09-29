@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">설치 용량</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel">추가일</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">확인</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel">저장</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel">취소</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel">예</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">아니오</sys:String>

@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">占用空间</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel">添加日期</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">好的</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSaveLabel">保存</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCancelLabel">取消</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteYesLabel">是</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">否</sys:String>
