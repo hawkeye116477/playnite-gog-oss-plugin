@@ -33,18 +33,18 @@ namespace GogOssLibraryNS
             "GOG OSS",
             Guid.Parse("03689811-3F33-4DFB-A121-2EE168FB9A5C"),
             new LibraryPluginProperties { CanShutdownClient = false, HasSettings = true },
-            new CometClient(),
-            Comet.Icon,
+            default,
+            GogOss.Icon,
             (_) => new GogOssLibrarySettingsView(),
             api)
         {
             Instance = this;
             SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
-            Load3pLocalization();
+            LoadExtraLocalization();
             downloadManagerSidebarItem = new SidebarItem
             {
-                Title = ResourceProvider.GetString(LOC.CometPanel),
-                Icon = Comet.Icon,
+                Title = ResourceProvider.GetString(LOC.GogOssPanel),
+                Icon = GogOss.Icon,
                 Type = SiderbarItemType.View,
                 Opened = () => GetCometDownloadManager(),
                 ProgressValue = 0,
@@ -216,20 +216,20 @@ namespace GogOssLibraryNS
             var games = new Dictionary<string, GameMetadata>();
             foreach (var entry in GetInstalledAppList())
             {
-                if (entry.Value.Is_dlc)
+                if (entry.Value.is_dlc)
                 {
                     continue;
                 }
-                if (entry.Value.Download_item_type != DownloadItemType.Game)
+                if (entry.Value.download_item_type != DownloadItemType.Game)
                 {
                     continue;
                 }
                 var game = new GameMetadata()
                 {
-                    InstallDirectory = entry.Value.Install_path,
+                    InstallDirectory = entry.Value.install_path,
                     GameId = entry.Key,
                     Source = new MetadataNameProperty("GOG"),
-                    Name = entry.Value.Title,
+                    Name = entry.Value.title,
                     IsInstalled = true,
                     Platforms = new HashSet<MetadataProperty> { new MetadataSpecProperty("pc_windows") }
                 };
@@ -273,19 +273,19 @@ namespace GogOssLibraryNS
                 }
                 var game = new Installed()
                 {
-                    Platform = "windows",
-                    Install_path = Paths.FixSeparators(program.InstallLocation),
-                    Version = program.DisplayVersion,
-                    Title = program.DisplayName.RemoveTrademarks(),
+                    platform = "windows",
+                    install_path = Paths.FixSeparators(program.InstallLocation),
+                    version = program.DisplayVersion,
+                    title = program.DisplayName.RemoveTrademarks(),
                 };
-                if (!GetPlayTasks(gameId, game.Install_path).HasItems())
+                if (!GetPlayTasks(gameId, game.install_path).HasItems())
                 {
-                    game.Is_dlc = true; // Empty play task = DLC
+                    game.is_dlc = true; // Empty play task = DLC
                 }
-                var infoManifest = GetGogGameInfoManifest(gameId, game.Install_path);
+                var infoManifest = GetGogGameInfoManifest(gameId, game.install_path);
                 if (infoManifest.buildId != null)
                 {
-                    game.Build_id = infoManifest.buildId;
+                    game.build_id = infoManifest.buildId;
                 }
                 list.Add(gameId, game);
             }
@@ -427,7 +427,7 @@ namespace GogOssLibraryNS
             return allGames;
         }
 
-        public void Load3pLocalization()
+        public void LoadExtraLocalization()
         {
             var currentLanguage = PlayniteApi.ApplicationSettings.Language;
             var dictionaries = Application.Current.Resources.MergedDictionaries;
@@ -476,6 +476,19 @@ namespace GogOssLibraryNS
                     loadString(langXaml);
                 }
             }
+
+            // Load GOG OSS specific strings
+            extraLocDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Localization");
+            enXaml = Path.Combine(extraLocDir, "en_US-gog-oss.xaml");
+            loadString(enXaml);
+            if (currentLanguage != "en_US")
+            {
+                var langXaml = Path.Combine(extraLocDir, $"{currentLanguage}-gog-oss.xaml");
+                if (File.Exists(langXaml))
+                {
+                    loadString(langXaml);
+                }
+            }
         }
 
         public string GetCachePath(string dirName)
@@ -502,7 +515,7 @@ namespace GogOssLibraryNS
             {
                 if (displayConfirm)
                 {
-                    var stopConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.CometInstanceNotice), "", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    var stopConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssInstanceNotice), "", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     if (stopConfirm == MessageBoxResult.No)
                     {
                         return false;

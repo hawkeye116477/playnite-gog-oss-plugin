@@ -13,19 +13,19 @@ namespace GogOssLibraryNS.Converters
             switch (value)
             {
                 case DownloadStatus.Queued:
-                    value = ResourceProvider.GetString(LOC.CometDownloadQueued);
+                    value = ResourceProvider.GetString(LOC.GogOssDownloadQueued);
                     break;
                 case DownloadStatus.Running:
-                    value = ResourceProvider.GetString(LOC.CometDownloadRunning);
+                    value = ResourceProvider.GetString(LOC.GogOssDownloadRunning);
                     break;
                 case DownloadStatus.Canceled:
-                    value = ResourceProvider.GetString(LOC.CometDownloadCanceled);
+                    value = ResourceProvider.GetString(LOC.GogOssDownloadCanceled);
                     break;
                 case DownloadStatus.Paused:
-                    value = ResourceProvider.GetString(LOC.CometDownloadPaused);
+                    value = ResourceProvider.GetString(LOC.GogOssDownloadPaused);
                     break;
                 case DownloadStatus.Completed:
-                    value = ResourceProvider.GetString(LOC.CometDownloadCompleted);
+                    value = ResourceProvider.GetString(LOC.GogOssDownloadCompleted);
                     break;
             }
             return value;

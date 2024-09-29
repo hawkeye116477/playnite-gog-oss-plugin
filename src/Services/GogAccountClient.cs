@@ -102,8 +102,8 @@ namespace GogOssLibraryNS.Services
                         tokenResponse.client_id = new Dictionary<string, TokenResponsePart>();
                         tokenResponse.client_id.Add(clientId, responseJson);
                         var strConf = Serialization.ToJson(tokenResponse.client_id, false);
-                        FileSystem.CreateDirectory(Path.GetDirectoryName(Comet.TokensPath));
-                        File.WriteAllText(Comet.TokensPath, strConf);
+                        FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
+                        File.WriteAllText(GogOss.TokensPath, strConf);
                     }
                     else
                     {
@@ -149,8 +149,8 @@ namespace GogOssLibraryNS.Services
                 tokenResponse.client_id = new Dictionary<string, TokenResponsePart>();
                 tokenResponse.client_id.Add(clientId, responseJson);
                 var strConf = Serialization.ToJson(tokenResponse.client_id, false);
-                FileSystem.CreateDirectory(Path.GetDirectoryName(Comet.TokensPath));
-                File.WriteAllText(Comet.TokensPath, strConf);
+                FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
+                File.WriteAllText(GogOss.TokensPath, strConf);
                 return true;
             }
             else
@@ -168,7 +168,7 @@ namespace GogOssLibraryNS.Services
                 return new AccountBasicResponse();
             }
 
-            var tokenLastUpdateTime = File.GetLastWriteTime(Comet.TokensPath);
+            var tokenLastUpdateTime = File.GetLastWriteTime(GogOss.TokensPath);
             var tokenExpirySeconds = tokens.expires_in;
             DateTime tokenExpiryTime = tokenLastUpdateTime.AddSeconds(tokenExpirySeconds);
 
@@ -212,11 +212,11 @@ namespace GogOssLibraryNS.Services
 
         public TokenResponsePart LoadTokens()
         {
-            if (File.Exists(Comet.TokensPath))
+            if (File.Exists(GogOss.TokensPath))
             {
                 try
                 {
-                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponsePart>>(File.ReadAllText(Comet.TokensPath));
+                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponsePart>>(File.ReadAllText(GogOss.TokensPath));
                     var firstKey = jsonResponse.First().Value;
                     return firstKey;
                 }

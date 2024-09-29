@@ -102,7 +102,7 @@ namespace GogOssLibraryNS
             catch (UnauthorizedAccessException)
             {
                 var playniteAPI = API.Instance;
-                playniteAPI.Dialogs.ShowErrorMessage(LOC.CometPermissionError);
+                playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssPermissionError);
                 return false;
             }
             catch (Exception ex)

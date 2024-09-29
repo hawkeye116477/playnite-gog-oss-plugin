@@ -107,14 +107,14 @@ namespace GogOssLibraryNS
             var installPath = SelectedGamePathTxt.Text;
             if (installPath == "")
             {
-                installPath = Comet.GamesInstallationPath;
+                installPath = Gogdl.GamesInstallationPath;
             }
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
             if (installPath.Contains(playniteDirectoryVariable))
             {
                 installPath = installPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
             }
-            var redistInstallPath = Comet.DependenciesInstallationPath;
+            var redistInstallPath = Gogdl.DependenciesInstallationPath;
             if (!Helpers.IsDirectoryWritable(installPath))
             {
                 return;
@@ -142,12 +142,12 @@ namespace GogOssLibraryNS
             {
                 if (downloadItemsAlreadyAdded.Count == 1)
                 {
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.CometDownloadAlreadyExists), downloadItemsAlreadyAdded[0]), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExists), downloadItemsAlreadyAdded[0]), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
                     string downloadItemsAlreadyAddedComnined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.CometDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             if (downloadTasks.Count > 0)
@@ -222,7 +222,7 @@ namespace GogOssLibraryNS
         private async void CometGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
         {
             var settings = GogOssLibrary.GetSettings();
-            var installPath = Comet.GamesInstallationPath;
+            var installPath = Gogdl.GamesInstallationPath;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
             if (installPath.Contains(playniteDirectoryVariable))
             {
@@ -289,7 +289,7 @@ namespace GogOssLibraryNS
                         {
                             if (branch == null)
                             {
-                                betaChannels.Add("disabled", ResourceProvider.GetString(LOC.Comet3P_PlayniteDisabledTitle));
+                                betaChannels.Add("disabled", ResourceProvider.GetString(LOC.GogOss3P_PlayniteDisabledTitle));
                             }
                             else
                             {
@@ -348,7 +348,7 @@ namespace GogOssLibraryNS
                     MultiInstallData.Insert(0, isiTask);
                 }
             }
-            var redistInstallPath = Comet.DependenciesInstallationPath;
+            var redistInstallPath = Gogdl.DependenciesInstallationPath;
             foreach (var installData in MultiInstallData)
             {
                 manifest = await Gogdl.GetGameInfo(installData);
@@ -378,12 +378,12 @@ namespace GogOssLibraryNS
             {
                 if (downloadItemsAlreadyAdded.Count == 1)
                 {
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.CometDownloadAlreadyExists), downloadItemsAlreadyAdded[0]), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExists), downloadItemsAlreadyAdded[0]), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
                     string downloadItemsAlreadyAddedComnined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.CometDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 

@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <sys:String x:Key="LOCGogOssLauncherCustomPath">Ruta del cliente</sys:String>
   <sys:String x:Key="LOCGogOssGamesInstallationPath">Ruta de instalación de juegos</sys:String>
   <sys:String x:Key="LOCGogOssDownloadSize">Tamaño de descarga:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Tamaño de instalación:</sys:String>
@@ -48,10 +47,6 @@
   <sys:String x:Key="LOCGogOssRemoveCompletedDownloadsConfirm">¿Estás seguro que deseas eliminar todas las descargas completadas de la lista?</sys:String>
   <sys:String x:Key="LOCGogOssRemoveSelectedEntriesConfirm">¿Estás seguro que deseas eliminar las entradas seleccionadas de la lista?</sys:String>
   <sys:String x:Key="LOCGogOssSelectAllEntries">Seleccionar todas las entradas</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">La descarga comenzará pronto. Puedes ver su estado accediendo al panel de Legendart a través del Menú =&gt; Vista o barra lateral.</sys:String>
-  <sys:String x:Key="LOCGogOssPanel">Panel de Comet</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} ya está en la lista de descarga. Puede ver el estado de la descarga accediendo al Panel Legendario desde Menú =&gt; Vista o barra lateral.</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther"></sys:String>
   <sys:String x:Key="LOCGogOssRepair">Reparar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opciones Avanzadas</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Contenido extra</sys:String>
@@ -64,12 +59,9 @@
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Información para solucionar problemas</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Versión de Playnite</sys:String>
   <sys:String x:Key="LOCGogOssPluginVersion">Versión del plugin</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherVersion">Versión del lanzador</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherBinary">Binario del lanzador</sys:String>
   <sys:String x:Key="LOCGogOssCopyRawDataToClipboard">Copiar datos sin procesar al portapapeles</sys:String>
   <sys:String x:Key="LOCGogOssLogFilesPath">Ruta de archivos de registro</sys:String>
   <sys:String x:Key="LOCGogOssReportBug">Reportar un error</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherNotInstalled">El lanzador Comet no está instalado.</sys:String>
   <sys:String x:Key="LOCGogOssNewVersionAvailable">Una nueva versión está disponible: {0} {1}.</sys:String>
   <sys:String x:Key="LOCGogOssNoUpdatesAvailable">No hay actualizaciones disponibles.</sys:String>
   <sys:String x:Key="LOCGogOssViewChangelog">Ver lista de cambios</sys:String>
@@ -79,7 +71,6 @@
   <sys:String x:Key="LOCGogOssSignedInAs">Sesión iniciada como {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">¿Estás seguro de que quieres cerrar sesión?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">El usuario no tiene acceso de escritura a la ruta especificada. Cambie los permisos o ejecute Playnite como administrador.</sys:String>
-  <sys:String x:Key="LOCGogOssInstanceNotice">Sólo una instancia de Comet puede instalar/importar/mover aplicaciones a la vez. ¿Quieres pausar las tareas del administrador de descargas para continuar?</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">No hay suficiente espacio libre en disco.</sys:String>
   <sys:String x:Key="LOCGogOssGames"></sys:String>
 </ResourceDictionary>

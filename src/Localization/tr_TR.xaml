@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <sys:String x:Key="LOCGogOssLauncherCustomPath">Başlatıcı Yolu</sys:String>
   <sys:String x:Key="LOCGogOssGamesInstallationPath">Oyunların Kurulum Yolu</sys:String>
   <sys:String x:Key="LOCGogOssDownloadSize">İndirme Boyutu:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Kurulum Boyutu:</sys:String>
@@ -48,10 +47,6 @@
   <sys:String x:Key="LOCGogOssRemoveCompletedDownloadsConfirm">Tamamlanan tüm indirmeleri listeden kaldırmak istiyor musunuz?</sys:String>
   <sys:String x:Key="LOCGogOssRemoveSelectedEntriesConfirm">Seçilen girişleri listeden kaldırmak istiyor musunuz?</sys:String>
   <sys:String x:Key="LOCGogOssSelectAllEntries">Tüm girişleri seç</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">İndirme yakında başlayacak. Menü =&gt; Görünüm veya kenar çubuğundan Comet Panel üstünden durumunu görebilirsiniz.</sys:String>
-  <sys:String x:Key="LOCGogOssPanel">Comet Panel</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} zaten indirme listesinde. Menü =&gt; Görünüm veya kenar çubuğundan Comet Panel üstünden indirmenin durumunu görebilirsiniz.</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Şu oyunlar zaten indirme listesinde bulunuyor: {0}. Menü =&gt; Görünüm veya kenar çubuğundan Comet Panele erişerek indirme durumunu görebilirsiniz.</sys:String>
   <sys:String x:Key="LOCGogOssRepair">Onar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Gelişmiş Seçenekler</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Ekstra İçerik</sys:String>
@@ -64,12 +59,9 @@
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Sorun giderme bilgisi</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Playnite sürümü</sys:String>
   <sys:String x:Key="LOCGogOssPluginVersion">Eklenti sürümü</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherVersion">Başlatıcı sürümü</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherBinary">Başlatıcı binary</sys:String>
   <sys:String x:Key="LOCGogOssCopyRawDataToClipboard">Ham verileri panoya kopyala</sys:String>
   <sys:String x:Key="LOCGogOssLogFilesPath">Günlük Dosyaları Yolu</sys:String>
   <sys:String x:Key="LOCGogOssReportBug">Bir hata bildir</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherNotInstalled">Comet Launcher kurulu değil.</sys:String>
   <sys:String x:Key="LOCGogOssNewVersionAvailable">Yeni bir sürüm mevcut: {0} {1}.</sys:String>
   <sys:String x:Key="LOCGogOssNoUpdatesAvailable">Güncelleme yok.</sys:String>
   <sys:String x:Key="LOCGogOssViewChangelog">Değişiklikleri görüntüle</sys:String>
@@ -79,7 +71,6 @@
   <sys:String x:Key="LOCGogOssSignedInAs">{0} olarak oturum açıldı</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Kullanıcının belirtilen yola yazma erişimi yok. İzinleri değiştirin veya Playnite programını yönetici olarak başlatın.</sys:String>
-  <sys:String x:Key="LOCGogOssInstanceNotice">Aynı anda yalnızca bir Comet örneği uygulamaları kurulabilir/içe aktarabilir/taşıyabilir. Devam etmek için indirme yöneticisi görevlerini duraklatmak istiyor musunuz?</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Yeterli boş disk alanı yok.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Oyunlar</sys:String>
 </ResourceDictionary>

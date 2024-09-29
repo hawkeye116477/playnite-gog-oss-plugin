@@ -37,7 +37,7 @@ namespace GogOssLibraryNS
 
         private void ChooseCometBtn_Click(object sender, RoutedEventArgs e)
         {
-            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.Comet3P_PlayniteExecutableTitle)}|*.exe");
+            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
             if (file != "")
             {
                 SelectedCometPathTxt.Text = file;
@@ -49,29 +49,29 @@ namespace GogOssLibraryNS
             MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
             {
-                { DownloadCompleteAction.Nothing, ResourceProvider.GetString(LOC.Comet3P_PlayniteDoNothing) },
-                { DownloadCompleteAction.ShutDown, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuShutdownSystem) },
-                { DownloadCompleteAction.Reboot, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuRestartSystem) },
-                { DownloadCompleteAction.Hibernate, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuHibernateSystem) },
-                { DownloadCompleteAction.Sleep, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuSuspendSystem) },
+                { DownloadCompleteAction.Nothing, ResourceProvider.GetString(LOC.GogOss3P_PlayniteDoNothing) },
+                { DownloadCompleteAction.ShutDown, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem) },
+                { DownloadCompleteAction.Reboot, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem) },
+                { DownloadCompleteAction.Hibernate, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem) },
+                { DownloadCompleteAction.Sleep, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem) },
             };
             AfterDownloadCompleteCBo.ItemsSource = downloadCompleteActions;
             troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)
             {
-                var launcherVersion = await Comet.GetLauncherVersion();
-                if (!launcherVersion.IsNullOrEmpty())
+                var cometVersion = await Comet.GetCometVersion();
+                if (!cometVersion.IsNullOrEmpty())
                 {
-                    troubleshootingInformation.LauncherVersion = launcherVersion;
-                    LauncherVersionTxt.Text = troubleshootingInformation.LauncherVersion;
+                    troubleshootingInformation.CometVersion = cometVersion;
+                    LauncherVersionTxt.Text = troubleshootingInformation.CometVersion;
                 }
-                LauncherBinaryTxt.Text = troubleshootingInformation.LauncherBinary;
+                CometBinaryTxt.Text = troubleshootingInformation.CometBinary;
             }
             else
             {
-                troubleshootingInformation.LauncherVersion = "Not%20installed";
-                LauncherVersionTxt.Text = ResourceProvider.GetString(LOC.CometCometNotInstalled);
-                LauncherBinaryTxt.Text = ResourceProvider.GetString(LOC.CometCometNotInstalled);
+                troubleshootingInformation.CometVersion = "Not%20installed";
+                LauncherVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssCometNotInstalled);
+                CometBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssCometNotInstalled);
                 CheckForUpdatesBtn.IsEnabled = false;
                 OpenLauncherBinaryBtn.IsEnabled = false;
             }
@@ -79,7 +79,7 @@ namespace GogOssLibraryNS
             PluginVersionTxt.Text = troubleshootingInformation.PluginVersion;
             GamesInstallationPathTxt.Text = troubleshootingInformation.GamesInstallationPath;
             LogFilesPathTxt.Text = playniteAPI.Paths.ConfigurationPath;
-            ReportBugHyp.NavigateUri = new Uri($"https://github.com/hawkeye116477/playnite-comet-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&cometV={troubleshootingInformation.PluginVersion}&playniteV={troubleshootingInformation.PlayniteVersion}&launcherV={troubleshootingInformation.LauncherVersion}");
+            ReportBugHyp.NavigateUri = new Uri($"https://github.com/hawkeye116477/playnite-comet-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&cometV={troubleshootingInformation.PluginVersion}&playniteV={troubleshootingInformation.PlayniteVersion}&launcherV={troubleshootingInformation.CometVersion}");
         }
 
 
@@ -89,14 +89,14 @@ namespace GogOssLibraryNS
             if (versionInfoContent.Tag_name != null)
             {
                 var newVersion = versionInfoContent.Tag_name.Replace("v", "");
-                if (troubleshootingInformation.LauncherVersion != newVersion)
+                if (troubleshootingInformation.CometVersion != newVersion)
                 {
                     var options = new List<MessageBoxOption>
                     {
-                        new MessageBoxOption(ResourceProvider.GetString(LOC.CometViewChangelog)),
-                        new MessageBoxOption(ResourceProvider.GetString(LOC.Comet3P_PlayniteOKLabel)),
+                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOssViewChangelog)),
+                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel)),
                     };
-                    var result = playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.CometNewVersionAvailable), "Comet Launcher", newVersion), ResourceProvider.GetString(LOC.Comet3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                    var result = playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssNewVersionAvailable), "Comet Launcher", newVersion), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
                     if (result == options[0])
                     {
                         var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
@@ -105,12 +105,12 @@ namespace GogOssLibraryNS
                 }
                 else
                 {
-                    playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.CometNoUpdatesAvailable));
+                    playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable));
                 }
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteUpdateCheckFailMessage), "Comet Launcher");
+                playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), "Comet Launcher");
             }
         }
 
@@ -128,7 +128,7 @@ namespace GogOssLibraryNS
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage(LOC.CometPathNotExistsError);
+                playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssPathNotExistsError);
             }
         }
 
@@ -147,27 +147,27 @@ namespace GogOssLibraryNS
             if (GogOssLibrary.GetSettings().ConnectAccount)
             {
                 LoginBtn.IsEnabled = false;
-                AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGLoginChecking);
+                AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGLoginChecking);
                 var clientApi = new GogAccountClient();
                 var userLoggedIn = await clientApi.GetIsUserLoggedIn();
                 if (userLoggedIn)
                 {
                     var accountInfo = await clientApi.GetAccountInfo();
-                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.CometSignedInAs).Format(accountInfo.username);
-                    LoginBtn.Content = ResourceProvider.GetString(LOC.CometSignOut);
+                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOssSignedInAs).Format(accountInfo.username);
+                    LoginBtn.Content = ResourceProvider.GetString(LOC.GogOssSignOut);
                     LoginBtn.IsChecked = true;
                 }
                 else
                 {
-                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGNotLoggedIn);
-                    LoginBtn.Content = ResourceProvider.GetString(LOC.Comet3P_GOGAuthenticateLabel);
+                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedIn);
+                    LoginBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_GOGAuthenticateLabel);
                     LoginBtn.IsChecked = false;
                 }
                 LoginBtn.IsEnabled = true;
             }
             else
             {
-                AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGNotLoggedIn);
+                AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedIn);
                 LoginBtn.IsEnabled = true;
             }
         }
@@ -189,18 +189,18 @@ namespace GogOssLibraryNS
                 }
                 catch (Exception ex) when (!Debugger.IsAttached)
                 {
-                    playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.Comet3P_GOGNotLoggedInError), "");
+                    playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
                     logger.Error(ex, "Failed to authenticate user.");
                 }
                 UpdateAuthStatus();
             }
             else
             {
-                var answer = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.CometSignOutConfirm), LOC.CometSignOut, MessageBoxButton.YesNo);
+                var answer = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssSignOutConfirm), LOC.GogOssSignOut, MessageBoxButton.YesNo);
                 if (answer == MessageBoxResult.Yes)
                 {
                     view.DeleteDomainCookies(".gog.com");
-                    File.Delete(Comet.TokensPath);
+                    File.Delete(GogOss.TokensPath);
                     UpdateAuthStatus();
                 }
                 else

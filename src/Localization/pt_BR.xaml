@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <sys:String x:Key="LOCGogOssLauncherCustomPath">Caminho do inicializador</sys:String>
   <sys:String x:Key="LOCGogOssGamesInstallationPath">Caminho de Instalação dos Jogos</sys:String>
   <sys:String x:Key="LOCGogOssDownloadSize">Tamanho do Download:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Tamanho da Instalação:</sys:String>
@@ -48,10 +47,6 @@
   <sys:String x:Key="LOCGogOssRemoveCompletedDownloadsConfirm">Tem certeza que deseja remover todos os downloads concluídos da lista?</sys:String>
   <sys:String x:Key="LOCGogOssRemoveSelectedEntriesConfirm">Tem certeza que deseja remover os itens selecionados da lista?</sys:String>
   <sys:String x:Key="LOCGogOssSelectAllEntries">Selecionar todos os itens</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">O download começará em breve. Você pode conferir o progresso pelo Painel Comet através do Menu =&gt; Visualização ou pela Barra Lateral.</sys:String>
-  <sys:String x:Key="LOCGogOssPanel">Painel Comet</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} já está na lista de downloads. Você pode conferir o progresso pelo Painel Comet através do Menu =&gt; Visualização ou pela Barra Lateral.</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Os seguintes jogos já estão na lista de downloads: {0}. Você pode ver o progresso do download acessando o Painel Comet via Menu =&gt; Visualização ou pela barra lateral.</sys:String>
   <sys:String x:Key="LOCGogOssRepair">Reparar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opções Avançadas</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Conteúdo Adicional</sys:String>
@@ -64,12 +59,9 @@
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Informações para solução de problemas</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Versão do Playnite</sys:String>
   <sys:String x:Key="LOCGogOssPluginVersion">Versão do plugin</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherVersion">Versão do inicializador</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherBinary">Executável do inicializador</sys:String>
   <sys:String x:Key="LOCGogOssCopyRawDataToClipboard">Copiar para a área de transferência</sys:String>
   <sys:String x:Key="LOCGogOssLogFilesPath">Caminho para Arquivos de Log</sys:String>
   <sys:String x:Key="LOCGogOssReportBug">Reportar um erro</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherNotInstalled">Inicializador Comet não está instalado.</sys:String>
   <sys:String x:Key="LOCGogOssNewVersionAvailable">Uma nova versão está disponível: {0} {1}.</sys:String>
   <sys:String x:Key="LOCGogOssNoUpdatesAvailable">Não há atualizações disponíveis.</sys:String>
   <sys:String x:Key="LOCGogOssViewChangelog">Ver alterações</sys:String>
@@ -79,7 +71,6 @@
   <sys:String x:Key="LOCGogOssSignedInAs">Conectado como {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Tem certeza de que deseja sair?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Usuário não tem permissão de escrita no caminho especificado. Altere as permissões ou inicie o Playnite como administrador.</sys:String>
-  <sys:String x:Key="LOCGogOssInstanceNotice">Apenas uma instância do Comet pode instalar/importar/mover aplicativos por vez. Você deseja pausar as tarefas do gerenciador de downloads para continuar?</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Espaço em disco insuficiente.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Jogos</sys:String>
 </ResourceDictionary>

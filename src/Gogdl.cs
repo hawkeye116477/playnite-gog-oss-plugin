@@ -85,6 +85,20 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static Dictionary<string, string> DefaultEnvironmentVariables
+        {
+            get
+            {
+                var envDict = new Dictionary<string, string>();
+                var heroicGogdlConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gogdlConfig");
+                if (ConfigPath == heroicGogdlConfigPath)
+                {
+                    envDict.Add("GOGDL_CONFIG_PATH", ConfigPath);
+                }
+                return envDict;
+            }
+        }
+
         public static string ConfigPath
         {
             get
@@ -104,13 +118,53 @@ namespace GogOssLibraryNS
             }
         }
 
+
+        public static string GamesInstallationPath
+        {
+            get
+            {
+                var installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Games");
+                var playniteAPI = API.Instance;
+                if (playniteAPI.ApplicationInfo.IsPortable)
+                {
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    installPath = Path.Combine(playniteDirectoryVariable, "Games");
+                }
+                var savedSettings = GogOssLibrary.GetSettings();
+                if (savedSettings != null)
+                {
+                    var savedGamesInstallationPath = savedSettings.GamesInstallationPath;
+                    if (savedGamesInstallationPath != "")
+                    {
+                        installPath = savedGamesInstallationPath;
+                    }
+                }
+                return installPath;
+            }
+        }
+
+        public static string DependenciesInstallationPath
+        {
+            get
+            {
+                var dependPath = Path.Combine(GamesInstallationPath, ".gogRedist");
+                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                if (dependPath.Contains(playniteDirectoryVariable))
+                {
+                    var playniteAPI = API.Instance;
+                    dependPath = dependPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+                }
+                return dependPath;
+            }
+        }
+
         public static async Task<LauncherVersion> GetVersionInfoContent()
         {
             var newVersionInfoContent = new LauncherVersion();
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.CometCometNotInstalled));
+                throw new Exception(ResourceProvider.GetString(LOC.GogOssCometNotInstalled));
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
@@ -129,7 +183,7 @@ namespace GogOssLibraryNS
             if (!File.Exists(cacheVersionFile))
             {
                 var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("User-Agent", Comet.GetUserAgent());
+                httpClient.DefaultRequestHeaders.Add("User-Agent", GogOss.UserAgent);
                 var response = await httpClient.GetAsync("https://api.github.com/repos/Heroic-Games-Launcher/heroic-gogdl/releases/latest");
                 if (response.IsSuccessStatusCode)
                 {
@@ -241,7 +295,7 @@ namespace GogOssLibraryNS
 
                 BufferedCommandResult result;
                 var infoArgs = new List<string>();
-                infoArgs.AddRange(new[] { "--auth-config-path", Comet.TokensPath });
+                infoArgs.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
                 infoArgs.AddRange(new[] { "info", downloadData.gameID, "--platform", downloadData.downloadProperties.os, "--json" });
 
                 if (downloadData.downloadProperties.buildId != "")
@@ -264,15 +318,15 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.Comet3P_PlayniteLoginRequired)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                         }
                         else if (result.StandardError.Contains("Game doesn't support content system api"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.CometGameNotInstallable).Format(downloadData.name, "https://gog.com/account "));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGameNotInstallable).Format(downloadData.name, "https://gog.com/account "));
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.CometCheckLog)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)));
                         }
                     }
                 }
@@ -296,7 +350,7 @@ namespace GogOssLibraryNS
             {
                 BufferedCommandResult result;
                 var infoArgs = new List<string>();
-                infoArgs.AddRange(new[] { "--auth-config-path", Comet.TokensPath });
+                infoArgs.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
                 infoArgs.AddRange(new[] { "redist", "--ids", downloadData.gameID, "--path", "/", "--print-manifest" });
                
                 result = await Cli.Wrap(ClientInstallationPath)
@@ -315,11 +369,11 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.Comet3P_PlayniteLoginRequired)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.CometCheckLog)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)));
                         }
                     }
                 }

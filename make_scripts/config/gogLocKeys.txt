@@ -1,4 +1,3 @@
-LOCSettingsGOGUseGalaxy
 LOCGOGSettingsImportInstalledLabel
 LOCGOGSettingsImportUninstalledLabel
 LOCGOGSettingsConnectAccount

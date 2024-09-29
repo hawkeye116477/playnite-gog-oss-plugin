@@ -65,7 +65,7 @@ namespace GogOssLibraryNS
             window.SizeToContent = SizeToContent.WidthAndHeight;
             window.MinWidth = 600;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            var title = ResourceProvider.GetString(LOC.Comet3P_PlayniteInstallGame);
+            var title = ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame);
             if (installData.Count == 1)
             {
                 title = installData[0].name;
@@ -92,7 +92,7 @@ namespace GogOssLibraryNS
         public override void Uninstall(UninstallActionArgs args)
         {
             Dispose();
-            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.CometUninstallGameConfirm).Format(Game.Name), LOC.CometRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(Game.Name), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
                 var canContinue = GogOssLibrary.Instance.StopDownloadManager(true);
@@ -160,7 +160,7 @@ namespace GogOssLibraryNS
 
         public CometPlayController(Game game) : base(game)
         {
-            Name = string.Format(ResourceProvider.GetString(LOC.Comet3P_GOGStartUsingClient), "Comet");
+            Name = string.Format(ResourceProvider.GetString(LOC.GogOss3P_GOGStartUsingClient), "Comet");
         }
 
         public override void Dispose()
@@ -191,7 +191,7 @@ namespace GogOssLibraryNS
 
         public async Task AfterGameStarting()
         {
-            if (GogOssLibrary.GetSettings().StartGamesUsingComet && Comet.IsInstalled)
+            if (GogOssLibrary.GetSettings().EnableCometSupport && Comet.IsInstalled)
             {
                 var gogAccountClient = new GogAccountClient();
                 var tokens = gogAccountClient.LoadTokens();
@@ -233,7 +233,7 @@ namespace GogOssLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
-            if (GogOssLibrary.GetSettings().StartGamesUsingComet && Comet.IsInstalled)
+            if (GogOssLibrary.GetSettings().EnableCometSupport && Comet.IsInstalled)
             {
                 Process cometProcess = null;
                 try

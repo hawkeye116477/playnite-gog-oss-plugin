@@ -12,7 +12,8 @@ main_path = pn(script_path + "/..")
 
 third_party_loc_file = pn(
     pj(main_path, "third_party", r"Localization\en_US.xaml"))
-comet_loc_file = pn(pj(main_path, r"src\Localization\en_US.xaml"))
+shared_loc_file = pn(pj(main_path, r"src\Localization\en_US.xaml"))
+gog_oss_loc_file = pn(pj(main_path, r"src\Localization\en_US-gog-oss.xaml"))
 loc_keys_file = pj(main_path, "src", "LocalizationKeys.cs")
 
 loc_keys_file_content = '''\
@@ -27,20 +28,12 @@ namespace System
 '''
 
 x_ns = "{http://schemas.microsoft.com/winfx/2006/xaml}"
-third_party_loc = ET.parse(third_party_loc_file)
-for child in third_party_loc.getroot():
-    key = child.get(x_ns + 'Key')
-    loc_keys_file_content += f'''\
-        /// <summary>
-        /// {child.text}
-        /// </summary>
-        public const string {key.replace("LOC", "")} = "{key}";
-\
-'''
-comet_loc = ET.parse(comet_loc_file)
-for child in comet_loc.getroot():
-    key = child.get(x_ns + 'Key')
-    loc_keys_file_content += f'''\
+loc_files = [gog_oss_loc_file, shared_loc_file, third_party_loc_file]
+for loc_file in loc_files:
+    loc_parse = ET.parse(loc_file)
+    for child in loc_parse.getroot():
+        key = child.get(x_ns + 'Key')
+        loc_keys_file_content += f'''\
         /// <summary>
         /// {child.text}
         /// </summary>

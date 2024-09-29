@@ -3,7 +3,7 @@
   Automatically generated via update_3p_localization.py script using files from https://github.com/JosefNemec/PlayniteExtensions/tree/d59a97d5bce1c35a55c7dc01000684169b76fd96 and https://github.com/JosefNemec/Playnite/tree/2afc8359d8c45e80c66404add4221037ce600d43.
   DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 -->
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">필터 적용 중</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">필터</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">게임을 설치할 수 없습니다: {0}</sys:String>
@@ -49,5 +49,4 @@
   <sys:String x:Key="LOCGogOss3P_GOGTroubleShootingIssues">문제 해결</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGStartUsingClient">{0} 클라이언트 사용 시작</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGMetadataLanguageLabel">메타데이터 언어:</sys:String>
-  <sys:String x:Key="LOCGogOss3P_GOGUseComet">Comet 클라이언트를 사용해서 게임 실행하기</sys:String>
 </ResourceDictionary>

@@ -45,8 +45,8 @@ xmlns_x = "http://schemas.microsoft.com/winfx/2006/xaml"
 xmlns_sys = "clr-namespace:System;assembly=mscorlib"
 
 NSMAP = {None: xmlns,
-        "x":  xmlns_x,
-        "sys": xmlns_sys}
+        "sys": xmlns_sys,
+        "x":  xmlns_x}
 
 # Copy localizations from Legendary
 legendary_loc_path = pj(main_path, "..", "playnite-legendary-plugin", "src", "Localization")
@@ -56,33 +56,26 @@ for filename in os.listdir(legendary_loc_path):
         continue
     legendary_loc = ET.parse(pj(legendary_loc_path, filename))
 
-    comet_i18n_file = pj(src_path, "Localization", f'{filename}')
-    if os.path.exists(comet_i18n_file):
-        comet_tree = ET.parse(comet_i18n_file)
-        comet_tree = comet_tree.getroot()
+    xml_root = ET.Element("ResourceDictionary", nsmap=NSMAP)
+    xml_doc = ET.ElementTree(xml_root)
 
-        for child in comet_tree:
-            key = child.get(ET.QName(xmlns_x, "Key"))
-            if key:
-                key = key.replace("Comet", "Legendary")
-                if key in legendary_loc_keys:
-                    comet_tree.remove(child)
+    gog_oss_i18n_file = pj(src_path, "Localization", f'{filename}')
+    for child in legendary_loc.getroot():
+        key = child.get(ET.QName(xmlns_x, "Key"))
+        if key in legendary_loc_keys:
+            key_text = child.text
+            if not key_text:
+                key_text = ""
+            key = key.replace("Legendary", "GogOss")
+            new_key = ET.Element(ET.QName(xmlns_sys, "String"))
+            new_key.set(ET.QName(xmlns_x, "Key"), key)
+            new_key.text = key_text.replace("Legendary", "GOG OSS")
+            xml_root.append(new_key)
 
-        for child in legendary_loc.getroot():
-            key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in legendary_loc_keys:
-                key_text = child.text
-                if not key_text:
-                    key_text = ""
-                key = key.replace("Legendary", "Comet")
-                new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-                new_key.set(ET.QName(xmlns_x, "Key"), key)
-                new_key.text = key_text.replace("Legendary", "Comet")
-                comet_tree.append(new_key)
-        ET.indent(comet_tree, level=0)
+    ET.indent(xml_doc, level=0)
 
-        with open(pj(src_path, "Localization", f'{filename}'), "w", encoding="utf-8") as i18n_file:
-            i18n_file.write(ET.tostring(comet_tree, encoding="utf-8", xml_declaration=True, pretty_print=True).decode())
+    with open(pj(src_path, "Localization", filename), "w", encoding="utf-8") as i18n_file:
+        i18n_file.write(ET.tostring(xml_doc, encoding="utf-8", xml_declaration=True, pretty_print=True).decode())
 
 # Copy localizations from Playnite
 for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRepo", "source", "Playnite", "Localization")):
@@ -125,7 +118,7 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
                 if not key_text:
                     key_text = ""
                 if key == "LOCSettingsGOGUseGalaxy":
-                    key_text = key_text.replace("GOG Galaxy", "Comet")
+                    key_text = key_text.replace("GOG Galaxy", "GOG OSS")
                     key = key.replace("Galaxy", "Comet")
                 new_key = ET.Element(ET.QName(xmlns_sys, "String"))
                 new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOCGOG", "LOCGogOss3P_GOG").replace("LOCSettingsGOG", "LOCGogOss3P_GOG"))

@@ -206,8 +206,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CliWrapCommandExtensions.cs" />
-    <Compile Include="CometClient.cs" />
     <Compile Include="Comet.cs" />
+    <Compile Include="GogOss.cs" />
     <Compile Include="GogOssDownloadManagerView.xaml.cs">
       <DependentUpon>GogOssDownloadManagerView.xaml</DependentUpon>
     </Compile>

@@ -16,8 +16,6 @@ namespace GogOssLibraryNS
 {
     public class Comet
     {
-        public const string EnStoreLocaleString = "US_USD_en-US";
-
         public static string ClientExecPath
         {
             get
@@ -96,58 +94,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        public static bool IsRunning
-        {
-            get
-            {
-                // The Notifications Renderer process is used because other Galaxy related process can
-                // be running in the background without the client itself being open for the user
-                return Process.GetProcessesByName("GOG Galaxy Notifications Renderer")?.Any() == true;
-            }
-        }
-
-        public static string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\gogicon.png");
-
-        public static string GamesInstallationPath
-        {
-            get
-            {
-                var installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Games");
-                var playniteAPI = API.Instance;
-                if (playniteAPI.ApplicationInfo.IsPortable)
-                {
-                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
-                    installPath = Path.Combine(playniteDirectoryVariable, "Games");
-                }
-                var savedSettings = GogOssLibrary.GetSettings();
-                if (savedSettings != null)
-                {
-                    var savedGamesInstallationPath = savedSettings.GamesInstallationPath;
-                    if (savedGamesInstallationPath != "")
-                    {
-                        installPath = savedGamesInstallationPath;
-                    }
-                }
-                return installPath;
-            }
-        }
-
-        public static string DependenciesInstallationPath
-        {
-            get
-            {
-                var dependPath = Path.Combine(GamesInstallationPath, ".gogRedist");
-                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
-                if (dependPath.Contains(playniteDirectoryVariable))
-                {
-                    var playniteAPI = API.Instance;
-                    dependPath = dependPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
-                }
-                return dependPath;
-            }
-        }
-
-        public static async Task<string> GetLauncherVersion()
+        public static async Task<string> GetCometVersion()
         {
             var version = "0";
             if (IsInstalled)
@@ -167,18 +114,11 @@ namespace GogOssLibraryNS
 
         public static void StartClient()
         {
-            if (!Comet.ClientExecPath.IsNullOrEmpty())
+            if (!ClientExecPath.IsNullOrEmpty())
             {
                 ProcessStarter.StartProcess("cmd", $"/K {ClientExecPath} -h");
             }
         }
-
-        public static string GetUserAgent()
-        {
-            return @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
-        }
-
-        public static string TokensPath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "tokens.json");
 
         public static async Task<LauncherVersion> GetVersionInfoContent()
         {
@@ -186,7 +126,7 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.CometCometNotInstalled));
+                throw new Exception(ResourceProvider.GetString(LOC.GogOssCometNotInstalled));
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
@@ -205,7 +145,7 @@ namespace GogOssLibraryNS
             if (!File.Exists(cacheVersionFile))
             {
                 var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("User-Agent", GetUserAgent());
+                httpClient.DefaultRequestHeaders.Add("User-Agent", GogOss.UserAgent);
                 var response = await httpClient.GetAsync("https://api.github.com/repos/imLinguin/comet/releases/latest");
                 if (response.IsSuccessStatusCode)
                 {

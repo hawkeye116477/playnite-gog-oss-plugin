@@ -26,8 +26,8 @@ namespace GogOssLibraryNS
                 return fvi.FileVersion;
             }
         }
-        public string LauncherVersion { get; set; } = "";
-        public string LauncherBinary => Comet.ClientExecPath;
-        public string GamesInstallationPath => Comet.GamesInstallationPath;
+        public string CometVersion { get; set; } = "";
+        public string CometBinary => Comet.ClientExecPath;
+        public string GamesInstallationPath => Gogdl.GamesInstallationPath;
     }
 }

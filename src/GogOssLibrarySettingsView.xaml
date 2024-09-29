@@ -8,7 +8,7 @@
              xmlns:pcon="clr-namespace:Playnite.Converters"
              xmlns:pcmd="clr-namespace:Playnite.Commands"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=local:GogOssLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="320" x:Name="CometSettingsUC" Loaded="CometSettingsUC_Loaded">
+             d:DataContext="{d:DesignInstance Type=local:GogOssLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="420" x:Name="CometSettingsUC" Loaded="CometSettingsUC_Loaded">
     <UserControl.Resources>
         <pcon:NegateConverter x:Key="NegateConverter" />
         <sys:Boolean x:Key="True">True</sys:Boolean>
@@ -43,8 +43,8 @@
                     </StackPanel>
                 </StackPanel>
 
-                <CheckBox IsChecked="{Binding Settings.StartGamesUsingComet}" DockPanel.Dock="Top" Margin="0,15"
-                  Content="{DynamicResource LOCGogOss3P_GOGUseComet}"/>
+                <CheckBox IsChecked="{Binding Settings.EnableCometSupport}" DockPanel.Dock="Top" Margin="0,15"
+                  Content="{DynamicResource LOCGogOssEnableCometSupport}" ToolTip="{DynamicResource LOCGogOssEnableCometSupportToolTip}"/>
                 <CheckBox IsChecked="{Binding Settings.UseVerticalCovers}" DockPanel.Dock="Top"
                   Content="{DynamicResource LOCGogOss3P_GOGSettingsUseVerticalCovers}"/>
 
@@ -175,9 +175,9 @@
                              IsReadOnly="True" HorizontalAlignment="Left"/>
                     <Button x:Name="CheckForUpdatesBtn" Grid.Column="2" Grid.Row="2" Margin="10,0,0,5" VerticalAlignment="Center"
                             Content="{DynamicResource LOCGogOss3P_PlayniteCheckForUpdates}" Click="CheckForUpdatesBtn_Click" />
-                    <TextBlock Text="{DynamicResource LOCGogOssLauncherBinary}" Grid.Column="0" Grid.Row="3"
+                    <TextBlock Text="{DynamicResource LOCGogOssCometBinary}" Grid.Column="0" Grid.Row="3"
                                Margin="0,0,10,5" VerticalAlignment="Center"/>
-                    <TextBox x:Name="LauncherBinaryTxt" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="3" Margin="0,0,0,5"/>
+                    <TextBox x:Name="CometBinaryTxt" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="3" Margin="0,0,0,5"/>
                     <Button x:Name="OpenLauncherBinaryBtn" Margin="10,0,0,5" Content="{DynamicResource LOCGogOss3P_PlayniteOpen}" 
                                 VerticalAlignment="Center" Click="OpenLauncherBinaryBtn_Click" Grid.Column="2" Grid.Row="3" />
                     <TextBlock Text="{DynamicResource LOCGogOssGamesInstallationPath}" Grid.Row="4" Grid.Column="0"
