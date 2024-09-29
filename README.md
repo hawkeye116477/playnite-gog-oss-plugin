@@ -1,2 +1,2 @@
-# playnite-comet-plugin
-GOG library integration with Comet for Playnite.
+# playnite-gog-oss-plugin
+GOG library integration for Playnite with open-source tools instead of Gog Galaxy.

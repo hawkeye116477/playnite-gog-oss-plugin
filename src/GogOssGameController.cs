@@ -10,21 +10,21 @@ using System.Threading.Tasks;
 using System.Windows;
 using CliWrap;
 using CliWrap.EventStream;
-using CometLibraryNS.Enums;
-using CometLibraryNS.Models;
-using CometLibraryNS.Services;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
-    public class GogInstallController : InstallController
+    public class GogOssInstallController : InstallController
     {
-        private readonly CometLibrary gogLibrary;
+        private readonly GogOssLibrary gogLibrary;
 
-        public GogInstallController(Game game, CometLibrary gogLibrary) : base(game)
+        public GogOssInstallController(Game game, GogOssLibrary gogLibrary) : base(game)
         {
             this.gogLibrary = gogLibrary;
         }
@@ -60,7 +60,7 @@ namespace CometLibraryNS
                 };
             }
             window.DataContext = installData;
-            window.Content = new CometGameInstallerView();
+            window.Content = new GogOssGameInstallerView();
             window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
             window.SizeToContent = SizeToContent.WidthAndHeight;
             window.MinWidth = 600;
@@ -75,11 +75,11 @@ namespace CometLibraryNS
         }
     }
 
-    public class GogUninstallController : UninstallController
+    public class GogOssUninstallController : UninstallController
     {
         private CancellationTokenSource watcherToken;
 
-        public GogUninstallController(Game game) : base(game)
+        public GogOssUninstallController(Game game) : base(game)
         {
             Name = "Uninstall";
         }
@@ -95,20 +95,20 @@ namespace CometLibraryNS
             var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.Comet3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.CometUninstallGameConfirm).Format(Game.Name), LOC.CometRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
-                var canContinue = CometLibrary.Instance.StopDownloadManager(true);
+                var canContinue = GogOssLibrary.Instance.StopDownloadManager(true);
                 if (!canContinue)
                 {
                     return;
                 }
                 if (result.CheckboxChecked)
                 {
-                    var gameSettingsFile = Path.Combine(Path.Combine(CometLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{Game.GameId}.json"));
+                    var gameSettingsFile = Path.Combine(Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{Game.GameId}.json"));
                     if (File.Exists(gameSettingsFile))
                     {
                         File.Delete(gameSettingsFile);
                     }
                 }
-                var installedAppList = CometLibrary.GetInstalledAppList();
+                var installedAppList = GogOssLibrary.GetInstalledAppList();
                 if (installedAppList.ContainsKey(Game.GameId))
                 {
                     installedAppList.Remove(Game.GameId);
@@ -140,7 +140,7 @@ namespace CometLibraryNS
                     return;
                 }
 
-                var games = CometLibrary.GetInstalledGames();
+                var games = GogOssLibrary.GetInstalledGames();
                 if (!games.ContainsKey(Game.GameId))
                 {
                     InvokeOnUninstalled(new GameUninstalledEventArgs());
@@ -191,7 +191,7 @@ namespace CometLibraryNS
 
         public async Task AfterGameStarting()
         {
-            if (CometLibrary.GetSettings().StartGamesUsingComet && Comet.IsInstalled)
+            if (GogOssLibrary.GetSettings().StartGamesUsingComet && Comet.IsInstalled)
             {
                 var gogAccountClient = new GogAccountClient();
                 var tokens = gogAccountClient.LoadTokens();
@@ -233,7 +233,7 @@ namespace CometLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
-            if (CometLibrary.GetSettings().StartGamesUsingComet && Comet.IsInstalled)
+            if (GogOssLibrary.GetSettings().StartGamesUsingComet && Comet.IsInstalled)
             {
                 Process cometProcess = null;
                 try
@@ -256,7 +256,7 @@ namespace CometLibraryNS
             Dispose();
             if (Directory.Exists(Game.InstallDirectory))
             {
-                var task = CometLibrary.GetPlayTasks(Game.GameId, Game.InstallDirectory);
+                var task = GogOssLibrary.GetPlayTasks(Game.GameId, Game.InstallDirectory);
                 var gameExe = task[0].Path;
                 Process proc;
                 if (File.Exists(gameExe))

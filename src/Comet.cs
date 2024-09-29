@@ -1,7 +1,6 @@
 ﻿using CliWrap;
 using CliWrap.Buffered;
-using CometLibrary.Models;
-using CometLibraryNS.Models;
+using GogOssLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -13,7 +12,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     public class Comet
     {
@@ -71,7 +70,7 @@ namespace CometLibraryNS
                         }
                     }
                 }
-                var savedSettings = CometLibrary.GetSettings();
+                var savedSettings = GogOssLibrary.GetSettings();
                 if (savedSettings != null)
                 {
                     var savedLauncherPath = savedSettings.SelectedCometPath;
@@ -120,7 +119,7 @@ namespace CometLibraryNS
                     var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
                     installPath = Path.Combine(playniteDirectoryVariable, "Games");
                 }
-                var savedSettings = CometLibrary.GetSettings();
+                var savedSettings = GogOssLibrary.GetSettings();
                 if (savedSettings != null)
                 {
                     var savedGamesInstallationPath = savedSettings.GamesInstallationPath;
@@ -179,7 +178,7 @@ namespace CometLibraryNS
             return @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
         }
 
-        public static string TokensPath = Path.Combine(CometLibrary.Instance.GetPluginUserDataPath(), "tokens.json");
+        public static string TokensPath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "tokens.json");
 
         public static async Task<LauncherVersion> GetVersionInfoContent()
         {
@@ -189,7 +188,7 @@ namespace CometLibraryNS
             {
                 throw new Exception(ResourceProvider.GetString(LOC.CometCometNotInstalled));
             }
-            var cacheVersionPath = CometLibrary.Instance.GetCachePath("infocache");
+            var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
             {
                 Directory.CreateDirectory(cacheVersionPath);

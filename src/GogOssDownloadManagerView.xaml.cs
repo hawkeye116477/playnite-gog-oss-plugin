@@ -13,31 +13,31 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.IO;
-using CometLibraryNS.Models;
-using CometLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Enums;
 using Playnite.SDK.Data;
 using Playnite.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using CometLibraryNS.Services;
+using GogOssLibraryNS.Services;
 using System.Windows.Input;
 using Playnite.SDK.Plugins;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     /// <summary>
-    /// Interaction logic for CometDownloadManagerView.xaml
+    /// Interaction logic for GogOssDownloadManagerView.xaml
     /// </summary>
-    public partial class CometDownloadManagerView : UserControl
+    public partial class GogOssDownloadManagerView : UserControl
     {
         public CancellationTokenSource forcefulInstallerCTS;
         public CancellationTokenSource gracefulInstallerCTS;
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI playniteAPI = API.Instance;
         public DownloadManagerData.Rootobject downloadManagerData;
-        public SidebarItem gogPanel = CometLibrary.GetPanel();
+        public SidebarItem gogPanel = GogOssLibrary.GetPanel();
 
-        public CometDownloadManagerView()
+        public GogOssDownloadManagerView()
         {
             InitializeComponent();
             SetControlTextBlockStyle();
@@ -78,7 +78,7 @@ namespace CometLibraryNS
 
         public DownloadManagerData.Rootobject LoadSavedData()
         {
-            var dataDir = CometLibrary.Instance.GetPluginUserDataPath();
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
             var dataFile = Path.Combine(dataDir, "downloadManager.json");
             bool correctJson = false;
             if (File.Exists(dataFile))
@@ -128,7 +128,7 @@ namespace CometLibraryNS
             }
             else if (!running)
             {
-                var downloadCompleteSettings = CometLibrary.GetSettings().DoActionAfterDownloadComplete;
+                var downloadCompleteSettings = GogOssLibrary.GetSettings().DoActionAfterDownloadComplete;
                 switch (downloadCompleteSettings)
                 {
                     case DownloadCompleteAction.ShutDown:
@@ -151,14 +151,14 @@ namespace CometLibraryNS
 
         public void DisplayGreeting()
         {
-            var messagesSettings = CometMessagesSettings.LoadSettings();
+            var messagesSettings = GogOssMessagesSettings.LoadSettings();
             if (!messagesSettings.DontShowDownloadManagerWhatsUpMsg)
             {
                 var result = MessageCheckBoxDialog.ShowMessage("", ResourceProvider.GetString(LOC.CometDownloadManagerWhatsUp), ResourceProvider.GetString(LOC.Comet3P_PlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
                 if (result.CheckboxChecked)
                 {
                     messagesSettings.DontShowDownloadManagerWhatsUpMsg = true;
-                    CometMessagesSettings.SaveSettings(messagesSettings);
+                    GogOssMessagesSettings.SaveSettings(messagesSettings);
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace CometLibraryNS
         public async Task Install(DownloadManagerData.Download taskData)
         {
             var installCommand = new List<string>();
-            var settings = CometLibrary.GetSettings();
+            var settings = GogOssLibrary.GetSettings();
             var gameID = taskData.gameID;
             var downloadProperties = taskData.downloadProperties;
             var gameTitle = taskData.name;
@@ -452,7 +452,7 @@ namespace CometLibraryNS
                             }
                             else
                             {
-                                var installedAppList = CometLibrary.GetInstalledAppList();
+                                var installedAppList = GogOssLibrary.GetInstalledAppList();
                                 var installedGameInfo = new Installed
                                 {
                                     Build_id = downloadProperties.buildId,
@@ -474,12 +474,12 @@ namespace CometLibraryNS
                                 {
                                     Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
                                     {
-                                        game = playniteAPI.Database.Games.FirstOrDefault(item => item.PluginId == CometLibrary.Instance.Id
+                                        game = playniteAPI.Database.Games.FirstOrDefault(item => item.PluginId == GogOssLibrary.Instance.Id
                                                                                                  && item.GameId == gameID);
                                         game.InstallDirectory = installedGameInfo.Install_path;
                                         game.Version = installedGameInfo.Version;
                                         game.IsInstalled = true;
-                                        //var playtimeSyncEnabled = CometLibrary.GetSettings().SyncPlaytime;
+                                        //var playtimeSyncEnabled = GogOssLibrary.GetSettings().SyncPlaytime;
                                         //if (playtimeSyncEnabled && downloadProperties.downloadAction != DownloadAction.Update)
                                         //{
                                         //    var accountApi = new GogAccountClient(playniteAPI, CometLauncher.TokensPath);

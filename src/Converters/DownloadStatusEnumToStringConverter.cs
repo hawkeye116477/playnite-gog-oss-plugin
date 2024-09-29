@@ -1,10 +1,10 @@
-﻿using CometLibraryNS.Enums;
+﻿using GogOssLibraryNS.Enums;
 using Playnite.SDK;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace CometLibraryNS.Converters
+namespace GogOssLibraryNS.Converters
 {
     public class DownloadStatusEnumToStringConverter : IValueConverter
     {

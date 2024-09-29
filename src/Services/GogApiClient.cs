@@ -1,4 +1,4 @@
-﻿using CometLibraryNS.Models;
+﻿using GogOssLibraryNS.Models;
 using Playnite.Common;
 using Playnite.Common.Web;
 using Playnite.SDK;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS.Services
+namespace GogOssLibraryNS.Services
 {
     public class GogApiClient
     {

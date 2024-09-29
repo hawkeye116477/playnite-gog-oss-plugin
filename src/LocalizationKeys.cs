@@ -8,554 +8,554 @@ namespace System
         /// <summary>
         /// Filter Active
         /// </summary>
-        public const string Comet3P_PlayniteFilterActiveLabel = "LOCComet3P_PlayniteFilterActiveLabel";
+        public const string GogOss3P_PlayniteFilterActiveLabel = "LOCGogOss3P_PlayniteFilterActiveLabel";
         /// <summary>
         /// Filters
         /// </summary>
-        public const string Comet3P_PlayniteFilters = "LOCComet3P_PlayniteFilters";
+        public const string GogOss3P_PlayniteFilters = "LOCGogOss3P_PlayniteFilters";
         /// <summary>
         /// Cannot install game: {0}
         /// </summary>
-        public const string Comet3P_PlayniteGameInstallError = "LOCComet3P_PlayniteGameInstallError";
+        public const string GogOss3P_PlayniteGameInstallError = "LOCGogOss3P_PlayniteGameInstallError";
         /// <summary>
         /// Disabled
         /// </summary>
-        public const string Comet3P_PlayniteDisabledTitle = "LOCComet3P_PlayniteDisabledTitle";
+        public const string GogOss3P_PlayniteDisabledTitle = "LOCGogOss3P_PlayniteDisabledTitle";
         /// <summary>
         /// Version
         /// </summary>
-        public const string Comet3P_PlayniteVersionLabel = "LOCComet3P_PlayniteVersionLabel";
+        public const string GogOss3P_PlayniteVersionLabel = "LOCGogOss3P_PlayniteVersionLabel";
         /// <summary>
         /// Install Size
         /// </summary>
-        public const string Comet3P_PlayniteInstallSizeLabel = "LOCComet3P_PlayniteInstallSizeLabel";
+        public const string GogOss3P_PlayniteInstallSizeLabel = "LOCGogOss3P_PlayniteInstallSizeLabel";
         /// <summary>
         /// Added
         /// </summary>
-        public const string Comet3P_PlayniteAddedLabel = "LOCComet3P_PlayniteAddedLabel";
+        public const string GogOss3P_PlayniteAddedLabel = "LOCGogOss3P_PlayniteAddedLabel";
         /// <summary>
         /// OK
         /// </summary>
-        public const string Comet3P_PlayniteOKLabel = "LOCComet3P_PlayniteOKLabel";
+        public const string GogOss3P_PlayniteOKLabel = "LOCGogOss3P_PlayniteOKLabel";
         /// <summary>
         /// Cancel
         /// </summary>
-        public const string Comet3P_PlayniteCancelLabel = "LOCComet3P_PlayniteCancelLabel";
+        public const string GogOss3P_PlayniteCancelLabel = "LOCGogOss3P_PlayniteCancelLabel";
         /// <summary>
         /// Yes
         /// </summary>
-        public const string Comet3P_PlayniteYesLabel = "LOCComet3P_PlayniteYesLabel";
+        public const string GogOss3P_PlayniteYesLabel = "LOCGogOss3P_PlayniteYesLabel";
         /// <summary>
         /// No
         /// </summary>
-        public const string Comet3P_PlayniteNoLabel = "LOCComet3P_PlayniteNoLabel";
+        public const string GogOss3P_PlayniteNoLabel = "LOCGogOss3P_PlayniteNoLabel";
         /// <summary>
         /// Downloading…
         /// </summary>
-        public const string Comet3P_PlayniteDownloadingLabel = "LOCComet3P_PlayniteDownloadingLabel";
+        public const string GogOss3P_PlayniteDownloadingLabel = "LOCGogOss3P_PlayniteDownloadingLabel";
         /// <summary>
         /// Loading…
         /// </summary>
-        public const string Comet3P_PlayniteLoadingLabel = "LOCComet3P_PlayniteLoadingLabel";
+        public const string GogOss3P_PlayniteLoadingLabel = "LOCGogOss3P_PlayniteLoadingLabel";
         /// <summary>
         /// Restart System
         /// </summary>
-        public const string Comet3P_PlayniteMenuRestartSystem = "LOCComet3P_PlayniteMenuRestartSystem";
+        public const string GogOss3P_PlayniteMenuRestartSystem = "LOCGogOss3P_PlayniteMenuRestartSystem";
         /// <summary>
         /// Turn Off System
         /// </summary>
-        public const string Comet3P_PlayniteMenuShutdownSystem = "LOCComet3P_PlayniteMenuShutdownSystem";
+        public const string GogOss3P_PlayniteMenuShutdownSystem = "LOCGogOss3P_PlayniteMenuShutdownSystem";
         /// <summary>
         /// Suspend System
         /// </summary>
-        public const string Comet3P_PlayniteMenuSuspendSystem = "LOCComet3P_PlayniteMenuSuspendSystem";
+        public const string GogOss3P_PlayniteMenuSuspendSystem = "LOCGogOss3P_PlayniteMenuSuspendSystem";
         /// <summary>
         /// Hibernate System
         /// </summary>
-        public const string Comet3P_PlayniteMenuHibernateSystem = "LOCComet3P_PlayniteMenuHibernateSystem";
+        public const string GogOss3P_PlayniteMenuHibernateSystem = "LOCGogOss3P_PlayniteMenuHibernateSystem";
         /// <summary>
         /// General
         /// </summary>
-        public const string Comet3P_PlayniteSettingsGeneralLabel = "LOCComet3P_PlayniteSettingsGeneralLabel";
+        public const string GogOss3P_PlayniteSettingsGeneralLabel = "LOCGogOss3P_PlayniteSettingsGeneralLabel";
         /// <summary>
         /// Advanced
         /// </summary>
-        public const string Comet3P_PlayniteSettingsAdvancedLabel = "LOCComet3P_PlayniteSettingsAdvancedLabel";
+        public const string GogOss3P_PlayniteSettingsAdvancedLabel = "LOCGogOss3P_PlayniteSettingsAdvancedLabel";
         /// <summary>
         /// Authentification required
         /// </summary>
-        public const string Comet3P_PlayniteLoginRequired = "LOCComet3P_PlayniteLoginRequired";
+        public const string GogOss3P_PlayniteLoginRequired = "LOCGogOss3P_PlayniteLoginRequired";
         /// <summary>
         /// Executable
         /// </summary>
-        public const string Comet3P_PlayniteExecutableTitle = "LOCComet3P_PlayniteExecutableTitle";
+        public const string GogOss3P_PlayniteExecutableTitle = "LOCGogOss3P_PlayniteExecutableTitle";
         /// <summary>
         /// Name
         /// </summary>
-        public const string Comet3P_PlayniteGameNameTitle = "LOCComet3P_PlayniteGameNameTitle";
+        public const string GogOss3P_PlayniteGameNameTitle = "LOCGogOss3P_PlayniteGameNameTitle";
         /// <summary>
         /// Installation Folder
         /// </summary>
-        public const string Comet3P_PlayniteGameInstallDirTitle = "LOCComet3P_PlayniteGameInstallDirTitle";
+        public const string GogOss3P_PlayniteGameInstallDirTitle = "LOCGogOss3P_PlayniteGameInstallDirTitle";
         /// <summary>
         /// Failed to download metadata: {0}
         /// </summary>
-        public const string Comet3P_PlayniteMetadataDownloadError = "LOCComet3P_PlayniteMetadataDownloadError";
+        public const string GogOss3P_PlayniteMetadataDownloadError = "LOCGogOss3P_PlayniteMetadataDownloadError";
         /// <summary>
         /// Do nothing
         /// </summary>
-        public const string Comet3P_PlayniteDoNothing = "LOCComet3P_PlayniteDoNothing";
+        public const string GogOss3P_PlayniteDoNothing = "LOCGogOss3P_PlayniteDoNothing";
         /// <summary>
         /// Update Available
         /// </summary>
-        public const string Comet3P_PlayniteUpdaterWindowTitle = "LOCComet3P_PlayniteUpdaterWindowTitle";
+        public const string GogOss3P_PlayniteUpdaterWindowTitle = "LOCGogOss3P_PlayniteUpdaterWindowTitle";
         /// <summary>
         /// Check for Updates
         /// </summary>
-        public const string Comet3P_PlayniteCheckForUpdates = "LOCComet3P_PlayniteCheckForUpdates";
+        public const string GogOss3P_PlayniteCheckForUpdates = "LOCGogOss3P_PlayniteCheckForUpdates";
         /// <summary>
         /// Failed to check for new version.
         /// </summary>
-        public const string Comet3P_PlayniteUpdateCheckFailMessage = "LOCComet3P_PlayniteUpdateCheckFailMessage";
+        public const string GogOss3P_PlayniteUpdateCheckFailMessage = "LOCGogOss3P_PlayniteUpdateCheckFailMessage";
         /// <summary>
         /// Install
         /// </summary>
-        public const string Comet3P_PlayniteInstallGame = "LOCComet3P_PlayniteInstallGame";
+        public const string GogOss3P_PlayniteInstallGame = "LOCGogOss3P_PlayniteInstallGame";
         /// <summary>
         /// Uninstall
         /// </summary>
-        public const string Comet3P_PlayniteUninstallGame = "LOCComet3P_PlayniteUninstallGame";
+        public const string GogOss3P_PlayniteUninstallGame = "LOCGogOss3P_PlayniteUninstallGame";
         /// <summary>
         /// Don't Show Again
         /// </summary>
-        public const string Comet3P_PlayniteDontShowAgainTitle = "LOCComet3P_PlayniteDontShowAgainTitle";
+        public const string GogOss3P_PlayniteDontShowAgainTitle = "LOCGogOss3P_PlayniteDontShowAgainTitle";
         /// <summary>
         /// Select file…
         /// </summary>
-        public const string Comet3P_PlayniteSelectFileTooltip = "LOCComet3P_PlayniteSelectFileTooltip";
+        public const string GogOss3P_PlayniteSelectFileTooltip = "LOCGogOss3P_PlayniteSelectFileTooltip";
         /// <summary>
         /// Select folder…
         /// </summary>
-        public const string Comet3P_PlayniteSelectDirectoryTooltip = "LOCComet3P_PlayniteSelectDirectoryTooltip";
+        public const string GogOss3P_PlayniteSelectDirectoryTooltip = "LOCGogOss3P_PlayniteSelectDirectoryTooltip";
         /// <summary>
         /// Open
         /// </summary>
-        public const string Comet3P_PlayniteOpen = "LOCComet3P_PlayniteOpen";
+        public const string GogOss3P_PlayniteOpen = "LOCGogOss3P_PlayniteOpen";
         /// <summary>
         /// Import installed games
         /// </summary>
-        public const string Comet3P_GOGSettingsImportInstalledLabel = "LOCComet3P_GOGSettingsImportInstalledLabel";
+        public const string GogOss3P_GOGSettingsImportInstalledLabel = "LOCGogOss3P_GOGSettingsImportInstalledLabel";
         /// <summary>
         /// Import not installed games
         /// </summary>
-        public const string Comet3P_GOGSettingsImportUninstalledLabel = "LOCComet3P_GOGSettingsImportUninstalledLabel";
+        public const string GogOss3P_GOGSettingsImportUninstalledLabel = "LOCGogOss3P_GOGSettingsImportUninstalledLabel";
         /// <summary>
         /// Connect account
         /// </summary>
-        public const string Comet3P_GOGSettingsConnectAccount = "LOCComet3P_GOGSettingsConnectAccount";
+        public const string GogOss3P_GOGSettingsConnectAccount = "LOCGogOss3P_GOGSettingsConnectAccount";
         /// <summary>
         /// Checking authentication status…
         /// </summary>
-        public const string Comet3P_GOGLoginChecking = "LOCComet3P_GOGLoginChecking";
+        public const string GogOss3P_GOGLoginChecking = "LOCGogOss3P_GOGLoginChecking";
         /// <summary>
         /// User is authenticated
         /// </summary>
-        public const string Comet3P_GOGLoggedIn = "LOCComet3P_GOGLoggedIn";
+        public const string GogOss3P_GOGLoggedIn = "LOCGogOss3P_GOGLoggedIn";
         /// <summary>
         /// Requires authentication
         /// </summary>
-        public const string Comet3P_GOGNotLoggedIn = "LOCComet3P_GOGNotLoggedIn";
+        public const string GogOss3P_GOGNotLoggedIn = "LOCGogOss3P_GOGNotLoggedIn";
         /// <summary>
         /// Failed to authenticate user.
         /// </summary>
-        public const string Comet3P_GOGNotLoggedInError = "LOCComet3P_GOGNotLoggedInError";
+        public const string GogOss3P_GOGNotLoggedInError = "LOCGogOss3P_GOGNotLoggedInError";
         /// <summary>
         /// Authenticate
         /// </summary>
-        public const string Comet3P_GOGAuthenticateLabel = "LOCComet3P_GOGAuthenticateLabel";
+        public const string GogOss3P_GOGAuthenticateLabel = "LOCGogOss3P_GOGAuthenticateLabel";
         /// <summary>
         /// Troubleshooting issues
         /// </summary>
-        public const string Comet3P_GOGTroubleShootingIssues = "LOCComet3P_GOGTroubleShootingIssues";
+        public const string GogOss3P_GOGTroubleShootingIssues = "LOCGogOss3P_GOGTroubleShootingIssues";
         /// <summary>
         /// Start using {0} client
         /// </summary>
-        public const string Comet3P_GOGStartUsingClient = "LOCComet3P_GOGStartUsingClient";
+        public const string GogOss3P_GOGStartUsingClient = "LOCGogOss3P_GOGStartUsingClient";
         /// <summary>
         /// Metadata language:
         /// </summary>
-        public const string Comet3P_GOGMetadataLanguageLabel = "LOCComet3P_GOGMetadataLanguageLabel";
+        public const string GogOss3P_GOGMetadataLanguageLabel = "LOCGogOss3P_GOGMetadataLanguageLabel";
         /// <summary>
         /// Launch games using Comet client
         /// </summary>
-        public const string Comet3P_GOGUseComet = "LOCComet3P_GOGUseComet";
+        public const string GogOss3P_GOGUseComet = "LOCGogOss3P_GOGUseComet";
         /// <summary>
         /// Use vertical covers
         /// </summary>
-        public const string Comet3P_GOGSettingsUseVerticalCovers = "LOCComet3P_GOGSettingsUseVerticalCovers";
+        public const string GogOss3P_GOGSettingsUseVerticalCovers = "LOCGogOss3P_GOGSettingsUseVerticalCovers";
         /// <summary>
         /// Comet Path
         /// </summary>
-        public const string CometCometCustomPath = "LOCCometCometCustomPath";
+        public const string GogOssCometCustomPath = "LOCGogOssCometCustomPath";
         /// <summary>
         /// Gogdl Path
         /// </summary>
-        public const string CometGogdlCustomPath = "LOCCometGogdlCustomPath";
+        public const string GogOssGogdlCustomPath = "LOCGogOssGogdlCustomPath";
         /// <summary>
         /// Comet Launcher is not installed.
         /// </summary>
-        public const string CometCometNotInstalled = "LOCCometCometNotInstalled";
+        public const string GogOssCometNotInstalled = "LOCGogOssCometNotInstalled";
         /// <summary>
         /// Gogdl is not installed.
         /// </summary>
-        public const string CometGogDlNotInstalled = "LOCCometGogDlNotInstalled";
+        public const string GogOssGogDlNotInstalled = "LOCGogOssGogDlNotInstalled";
         /// <summary>
         /// Comet version
         /// </summary>
-        public const string CometCometVersion = "LOCCometCometVersion";
+        public const string GogOssCometVersion = "LOCGogOssCometVersion";
         /// <summary>
         /// Language
         /// </summary>
-        public const string CometLanguage = "LOCCometLanguage";
+        public const string GogOssLanguage = "LOCGogOssLanguage";
         /// <summary>
         /// Beta channel
         /// </summary>
-        public const string CometBetaChannel = "LOCCometBetaChannel";
+        public const string GogOssBetaChannel = "LOCGogOssBetaChannel";
         /// <summary>
         /// {0} doesn't appear to be installable. Check downloadable content at {1}.
         /// </summary>
-        public const string CometGameNotInstallable = "LOCCometGameNotInstallable";
+        public const string GogOssGameNotInstallable = "LOCGogOssGameNotInstallable";
         /// <summary>
         /// Dependencies Installation Path
         /// </summary>
-        public const string CometDependenciesInstallationPath = "LOCCometDependenciesInstallationPath";
+        public const string GogOssDependenciesInstallationPath = "LOCGogOssDependenciesInstallationPath";
         /// <summary>
         /// Launcher Path
         /// </summary>
-        public const string CometLauncherCustomPath = "LOCCometLauncherCustomPath";
+        public const string GogOssLauncherCustomPath = "LOCGogOssLauncherCustomPath";
         /// <summary>
         /// Games Installation Path
         /// </summary>
-        public const string CometGamesInstallationPath = "LOCCometGamesInstallationPath";
+        public const string GogOssGamesInstallationPath = "LOCGogOssGamesInstallationPath";
         /// <summary>
         /// Download Size:
         /// </summary>
-        public const string CometDownloadSize = "LOCCometDownloadSize";
+        public const string GogOssDownloadSize = "LOCGogOssDownloadSize";
         /// <summary>
         /// Install Size:
         /// </summary>
-        public const string CometInstallSize = "LOCCometInstallSize";
+        public const string GogOssInstallSize = "LOCGogOssInstallSize";
         /// <summary>
         /// Are you sure you want to uninstall {0}?
         /// </summary>
-        public const string CometUninstallGameConfirm = "LOCCometUninstallGameConfirm";
+        public const string GogOssUninstallGameConfirm = "LOCGogOssUninstallGameConfirm";
         /// <summary>
         /// Download Settings
         /// </summary>
-        public const string CometDownloadSettings = "LOCCometDownloadSettings";
+        public const string GogOssDownloadSettings = "LOCGogOssDownloadSettings";
         /// <summary>
         /// Display desktop notifications about finished tasks
         /// </summary>
-        public const string CometDisplayDownloadTaskFinishedNotifications = "LOCCometDisplayDownloadTaskFinishedNotifications";
+        public const string GogOssDisplayDownloadTaskFinishedNotifications = "LOCGogOssDisplayDownloadTaskFinishedNotifications";
         /// <summary>
         /// Display download speed in bits per second
         /// </summary>
-        public const string CometDisplayDownloadSpeedInBits = "LOCCometDisplayDownloadSpeedInBits";
+        public const string GogOssDisplayDownloadSpeedInBits = "LOCGogOssDisplayDownloadSpeedInBits";
         /// <summary>
         /// Download all DLCs
         /// </summary>
-        public const string CometDownloadAllDlcs = "LOCCometDownloadAllDlcs";
+        public const string GogOssDownloadAllDlcs = "LOCGogOssDownloadAllDlcs";
         /// <summary>
         /// Enable unattended installation mode
         /// </summary>
-        public const string CometUnattendedInstall = "LOCCometUnattendedInstall";
+        public const string GogOssUnattendedInstall = "LOCGogOssUnattendedInstall";
         /// <summary>
         /// You won't have to choose anything in the installer window and the installation will start automatically after downloading the required information.
         /// </summary>
-        public const string CometUnattendedInstallToolTip = "LOCCometUnattendedInstallToolTip";
+        public const string GogOssUnattendedInstallToolTip = "LOCGogOssUnattendedInstallToolTip";
         /// <summary>
         /// Maximum number of worker processes
         /// </summary>
-        public const string CometMaxWorkers = "LOCCometMaxWorkers";
+        public const string GogOssMaxWorkers = "LOCGogOssMaxWorkers";
         /// <summary>
         /// After download is complete:
         /// </summary>
-        public const string CometAfterDownloadComplete = "LOCCometAfterDownloadComplete";
+        public const string GogOssAfterDownloadComplete = "LOCGogOssAfterDownloadComplete";
         /// <summary>
         /// Space Available:
         /// </summary>
-        public const string CometSpaceAvailable = "LOCCometSpaceAvailable";
+        public const string GogOssSpaceAvailable = "LOCGogOssSpaceAvailable";
         /// <summary>
         /// After Installing:
         /// </summary>
-        public const string CometAfterInstalling = "LOCCometAfterInstalling";
+        public const string GogOssAfterInstalling = "LOCGogOssAfterInstalling";
         /// <summary>
         /// Downloaded
         /// </summary>
-        public const string CometDownloaded = "LOCCometDownloaded";
+        public const string GogOssDownloaded = "LOCGogOssDownloaded";
         /// <summary>
         /// ETA:
         /// </summary>
-        public const string CometETA = "LOCCometETA";
+        public const string GogOssETA = "LOCGogOssETA";
         /// <summary>
         /// Download Speed:
         /// </summary>
-        public const string CometDownloadSpeed = "LOCCometDownloadSpeed";
+        public const string GogOssDownloadSpeed = "LOCGogOssDownloadSpeed";
         /// <summary>
         /// Disk Usage:
         /// </summary>
-        public const string CometDiskSpeed = "LOCCometDiskSpeed";
+        public const string GogOssDiskSpeed = "LOCGogOssDiskSpeed";
         /// <summary>
         /// Elapsed:
         /// </summary>
-        public const string CometElapsed = "LOCCometElapsed";
+        public const string GogOssElapsed = "LOCGogOssElapsed";
         /// <summary>
         /// Downloading update...
         /// </summary>
-        public const string CometDownloadingUpdate = "LOCCometDownloadingUpdate";
+        public const string GogOssDownloadingUpdate = "LOCGogOssDownloadingUpdate";
         /// <summary>
         /// Finishing installation...
         /// </summary>
-        public const string CometFinishingInstallation = "LOCCometFinishingInstallation";
+        public const string GogOssFinishingInstallation = "LOCGogOssFinishingInstallation";
         /// <summary>
         /// Finishing update...
         /// </summary>
-        public const string CometFinishingUpdate = "LOCCometFinishingUpdate";
+        public const string GogOssFinishingUpdate = "LOCGogOssFinishingUpdate";
         /// <summary>
         /// Finishing repair...
         /// </summary>
-        public const string CometFinishingRepair = "LOCCometFinishingRepair";
+        public const string GogOssFinishingRepair = "LOCGogOssFinishingRepair";
         /// <summary>
         /// Pause
         /// </summary>
-        public const string CometPauseDownload = "LOCCometPauseDownload";
+        public const string GogOssPauseDownload = "LOCGogOssPauseDownload";
         /// <summary>
         /// Resume
         /// </summary>
-        public const string CometResumeDownload = "LOCCometResumeDownload";
+        public const string GogOssResumeDownload = "LOCGogOssResumeDownload";
         /// <summary>
         /// Paused
         /// </summary>
-        public const string CometDownloadPaused = "LOCCometDownloadPaused";
+        public const string GogOssDownloadPaused = "LOCGogOssDownloadPaused";
         /// <summary>
         /// Installation finished. Have fun.
         /// </summary>
-        public const string CometInstallationFinished = "LOCCometInstallationFinished";
+        public const string GogOssInstallationFinished = "LOCGogOssInstallationFinished";
         /// <summary>
         /// Update finished. Have fun.
         /// </summary>
-        public const string CometUpdateFinished = "LOCCometUpdateFinished";
+        public const string GogOssUpdateFinished = "LOCGogOssUpdateFinished";
         /// <summary>
         /// Repair finished. Have fun.
         /// </summary>
-        public const string CometRepairFinished = "LOCCometRepairFinished";
+        public const string GogOssRepairFinished = "LOCGogOssRepairFinished";
         /// <summary>
         /// Download Manager
         /// </summary>
-        public const string CometDownloadManager = "LOCCometDownloadManager";
+        public const string GogOssDownloadManager = "LOCGogOssDownloadManager";
         /// <summary>
         /// Status
         /// </summary>
-        public const string CometDownloadStatus = "LOCCometDownloadStatus";
+        public const string GogOssDownloadStatus = "LOCGogOssDownloadStatus";
         /// <summary>
         /// Progress
         /// </summary>
-        public const string CometProgress = "LOCCometProgress";
+        public const string GogOssProgress = "LOCGogOssProgress";
         /// <summary>
         /// Completed
         /// </summary>
-        public const string CometDownloadCompletedColumn = "LOCCometDownloadCompletedColumn";
+        public const string GogOssDownloadCompletedColumn = "LOCGogOssDownloadCompletedColumn";
         /// <summary>
         /// Queued
         /// </summary>
-        public const string CometDownloadQueued = "LOCCometDownloadQueued";
+        public const string GogOssDownloadQueued = "LOCGogOssDownloadQueued";
         /// <summary>
         /// Running
         /// </summary>
-        public const string CometDownloadRunning = "LOCCometDownloadRunning";
+        public const string GogOssDownloadRunning = "LOCGogOssDownloadRunning";
         /// <summary>
         /// Canceled
         /// </summary>
-        public const string CometDownloadCanceled = "LOCCometDownloadCanceled";
+        public const string GogOssDownloadCanceled = "LOCGogOssDownloadCanceled";
         /// <summary>
         /// Completed
         /// </summary>
-        public const string CometDownloadCompleted = "LOCCometDownloadCompleted";
+        public const string GogOssDownloadCompleted = "LOCGogOssDownloadCompleted";
         /// <summary>
         /// Remove entry
         /// </summary>
-        public const string CometRemoveEntry = "LOCCometRemoveEntry";
+        public const string GogOssRemoveEntry = "LOCGogOssRemoveEntry";
         /// <summary>
         /// Are you sure you want to remove {0} from list?
         /// </summary>
-        public const string CometRemoveEntryConfirm = "LOCCometRemoveEntryConfirm";
+        public const string GogOssRemoveEntryConfirm = "LOCGogOssRemoveEntryConfirm";
         /// <summary>
         /// Move entry to top
         /// </summary>
-        public const string CometMoveEntryTop = "LOCCometMoveEntryTop";
+        public const string GogOssMoveEntryTop = "LOCGogOssMoveEntryTop";
         /// <summary>
         /// Move entry up
         /// </summary>
-        public const string CometMoveEntryUp = "LOCCometMoveEntryUp";
+        public const string GogOssMoveEntryUp = "LOCGogOssMoveEntryUp";
         /// <summary>
         /// Move entry down
         /// </summary>
-        public const string CometMoveEntryDown = "LOCCometMoveEntryDown";
+        public const string GogOssMoveEntryDown = "LOCGogOssMoveEntryDown";
         /// <summary>
         /// Move entry to bottom
         /// </summary>
-        public const string CometMoveEntryBottom = "LOCCometMoveEntryBottom";
+        public const string GogOssMoveEntryBottom = "LOCGogOssMoveEntryBottom";
         /// <summary>
         /// Remove completed downloads
         /// </summary>
-        public const string CometRemoveCompletedDownloads = "LOCCometRemoveCompletedDownloads";
+        public const string GogOssRemoveCompletedDownloads = "LOCGogOssRemoveCompletedDownloads";
         /// <summary>
         /// Are you sure you want to remove all completed downloads from list?
         /// </summary>
-        public const string CometRemoveCompletedDownloadsConfirm = "LOCCometRemoveCompletedDownloadsConfirm";
+        public const string GogOssRemoveCompletedDownloadsConfirm = "LOCGogOssRemoveCompletedDownloadsConfirm";
         /// <summary>
         /// Are you sure you want to remove selected entries from list?
         /// </summary>
-        public const string CometRemoveSelectedEntriesConfirm = "LOCCometRemoveSelectedEntriesConfirm";
+        public const string GogOssRemoveSelectedEntriesConfirm = "LOCGogOssRemoveSelectedEntriesConfirm";
         /// <summary>
         /// Select all entries
         /// </summary>
-        public const string CometSelectAllEntries = "LOCCometSelectAllEntries";
+        public const string GogOssSelectAllEntries = "LOCGogOssSelectAllEntries";
         /// <summary>
         /// The download will start soon. You can see its status by accessing Comet Panel via Menu => View or sidebar.
         /// </summary>
-        public const string CometDownloadManagerWhatsUp = "LOCCometDownloadManagerWhatsUp";
+        public const string GogOssDownloadManagerWhatsUp = "LOCGogOssDownloadManagerWhatsUp";
         /// <summary>
         /// Comet Panel
         /// </summary>
-        public const string CometPanel = "LOCCometPanel";
+        public const string GogOssPanel = "LOCGogOssPanel";
         /// <summary>
         /// {0} is already in the download list. You can see status of the download by accessing Comet Panel via Menu => View or sidebar.
         /// </summary>
-        public const string CometDownloadAlreadyExists = "LOCCometDownloadAlreadyExists";
+        public const string GogOssDownloadAlreadyExists = "LOCGogOssDownloadAlreadyExists";
         /// <summary>
         /// Following games are already in the download list: {0}. You can see status of the download by accessing Comet Panel via Menu => View or sidebar.
         /// </summary>
-        public const string CometDownloadAlreadyExistsOther = "LOCCometDownloadAlreadyExistsOther";
+        public const string GogOssDownloadAlreadyExistsOther = "LOCGogOssDownloadAlreadyExistsOther";
         /// <summary>
         /// Repair
         /// </summary>
-        public const string CometRepair = "LOCCometRepair";
+        public const string GogOssRepair = "LOCGogOssRepair";
         /// <summary>
         /// Advanced Options
         /// </summary>
-        public const string CometAdvancedOptions = "LOCCometAdvancedOptions";
+        public const string GogOssAdvancedOptions = "LOCGogOssAdvancedOptions";
         /// <summary>
         /// Extra Content
         /// </summary>
-        public const string CometExtraContent = "LOCCometExtraContent";
+        public const string GogOssExtraContent = "LOCGogOssExtraContent";
         /// <summary>
         /// Check the log files for more information.
         /// </summary>
-        public const string CometCheckLog = "LOCCometCheckLog";
+        public const string GogOssCheckLog = "LOCGogOssCheckLog";
         /// <summary>
         /// Current shared memory cache is smaller than required: {0} < {1}. Try to enable reordering optimization to reduce memory usage or increase maximum amount of shared memory.
         /// </summary>
-        public const string CometMemoryError = "LOCCometMemoryError";
+        public const string GogOssMemoryError = "LOCGogOssMemoryError";
         /// <summary>
         /// Edit entry properties
         /// </summary>
-        public const string CometEditSelectedDownloadProperties = "LOCCometEditSelectedDownloadProperties";
+        public const string GogOssEditSelectedDownloadProperties = "LOCGogOssEditSelectedDownloadProperties";
         /// <summary>
         /// Open download directory
         /// </summary>
-        public const string CometOpenDownloadDirectory = "LOCCometOpenDownloadDirectory";
+        public const string GogOssOpenDownloadDirectory = "LOCGogOssOpenDownloadDirectory";
         /// <summary>
         /// The specified path does not exist.
         /// </summary>
-        public const string CometPathNotExistsError = "LOCCometPathNotExistsError";
+        public const string GogOssPathNotExistsError = "LOCGogOssPathNotExistsError";
         /// <summary>
         /// Sign out
         /// </summary>
-        public const string CometSignOut = "LOCCometSignOut";
+        public const string GogOssSignOut = "LOCGogOssSignOut";
         /// <summary>
         /// Troubleshooting information
         /// </summary>
-        public const string CometTroubleshootingInformation = "LOCCometTroubleshootingInformation";
+        public const string GogOssTroubleshootingInformation = "LOCGogOssTroubleshootingInformation";
         /// <summary>
         /// Playnite version
         /// </summary>
-        public const string CometPlayniteVersion = "LOCCometPlayniteVersion";
+        public const string GogOssPlayniteVersion = "LOCGogOssPlayniteVersion";
         /// <summary>
         /// Plugin version
         /// </summary>
-        public const string CometPluginVersion = "LOCCometPluginVersion";
+        public const string GogOssPluginVersion = "LOCGogOssPluginVersion";
         /// <summary>
         /// Launcher version
         /// </summary>
-        public const string CometLauncherVersion = "LOCCometLauncherVersion";
+        public const string GogOssLauncherVersion = "LOCGogOssLauncherVersion";
         /// <summary>
         /// Launcher binary
         /// </summary>
-        public const string CometLauncherBinary = "LOCCometLauncherBinary";
+        public const string GogOssLauncherBinary = "LOCGogOssLauncherBinary";
         /// <summary>
         /// Copy raw data to clipboard
         /// </summary>
-        public const string CometCopyRawDataToClipboard = "LOCCometCopyRawDataToClipboard";
+        public const string GogOssCopyRawDataToClipboard = "LOCGogOssCopyRawDataToClipboard";
         /// <summary>
         /// Log Files Path
         /// </summary>
-        public const string CometLogFilesPath = "LOCCometLogFilesPath";
+        public const string GogOssLogFilesPath = "LOCGogOssLogFilesPath";
         /// <summary>
         /// Report a bug
         /// </summary>
-        public const string CometReportBug = "LOCCometReportBug";
+        public const string GogOssReportBug = "LOCGogOssReportBug";
         /// <summary>
         /// Comet Launcher is not installed.
         /// </summary>
-        public const string CometLauncherNotInstalled = "LOCCometLauncherNotInstalled";
+        public const string GogOssLauncherNotInstalled = "LOCGogOssLauncherNotInstalled";
         /// <summary>
         /// A new version is available: {0} {1}.
         /// </summary>
-        public const string CometNewVersionAvailable = "LOCCometNewVersionAvailable";
+        public const string GogOssNewVersionAvailable = "LOCGogOssNewVersionAvailable";
         /// <summary>
         /// No updates available.
         /// </summary>
-        public const string CometNoUpdatesAvailable = "LOCCometNoUpdatesAvailable";
+        public const string GogOssNoUpdatesAvailable = "LOCGogOssNoUpdatesAvailable";
         /// <summary>
         /// View changelog
         /// </summary>
-        public const string CometViewChangelog = "LOCCometViewChangelog";
+        public const string GogOssViewChangelog = "LOCGogOssViewChangelog";
         /// <summary>
         /// Check all DLCs
         /// </summary>
-        public const string CometCheckAllDlcs = "LOCCometCheckAllDlcs";
+        public const string GogOssCheckAllDlcs = "LOCGogOssCheckAllDlcs";
         /// <summary>
         /// Check all
         /// </summary>
-        public const string CometCheckAllContent = "LOCCometCheckAllContent";
+        public const string GogOssCheckAllContent = "LOCGogOssCheckAllContent";
         /// <summary>
         /// Remove launch settings
         /// </summary>
-        public const string CometRemoveGameLaunchSettings = "LOCCometRemoveGameLaunchSettings";
+        public const string GogOssRemoveGameLaunchSettings = "LOCGogOssRemoveGameLaunchSettings";
         /// <summary>
         /// Signed in as {0}
         /// </summary>
-        public const string CometSignedInAs = "LOCCometSignedInAs";
+        public const string GogOssSignedInAs = "LOCGogOssSignedInAs";
         /// <summary>
         /// Are you sure you want to sign out?
         /// </summary>
-        public const string CometSignOutConfirm = "LOCCometSignOutConfirm";
+        public const string GogOssSignOutConfirm = "LOCGogOssSignOutConfirm";
         /// <summary>
         /// User doesn't have write access to the specified path. Change permissions or launch Playnite as administrator.
         /// </summary>
-        public const string CometPermissionError = "LOCCometPermissionError";
+        public const string GogOssPermissionError = "LOCGogOssPermissionError";
         /// <summary>
         /// Only one instance of Comet may install/import/move applications at a time. Do you want to pause download manager tasks to continue?
         /// </summary>
-        public const string CometInstanceNotice = "LOCCometInstanceNotice";
+        public const string GogOssInstanceNotice = "LOCGogOssInstanceNotice";
         /// <summary>
         /// Not enough free disk space.
         /// </summary>
-        public const string CometNotEnoughSpace = "LOCCometNotEnoughSpace";
+        public const string GogOssNotEnoughSpace = "LOCGogOssNotEnoughSpace";
         /// <summary>
         /// Games
         /// </summary>
-        public const string CometGames = "LOCCometGames";
+        public const string GogOssGames = "LOCGogOssGames";
     }
 }

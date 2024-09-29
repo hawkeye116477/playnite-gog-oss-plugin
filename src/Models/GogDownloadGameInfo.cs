@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CometLibraryNS.Models
+namespace GogOssLibraryNS.Models
 {
     public class GogDownloadGameInfo
     {

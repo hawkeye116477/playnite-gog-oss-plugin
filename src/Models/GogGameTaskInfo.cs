@@ -8,7 +8,7 @@ using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Models;
 
-namespace CometLibraryNS.Models
+namespace GogOssLibraryNS.Models
 {
     public enum ActionType
     {

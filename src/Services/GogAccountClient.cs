@@ -1,4 +1,4 @@
-﻿using CometLibraryNS.Models;
+﻿using GogOssLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -13,9 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI.WebControls;
-using static CometLibraryNS.Models.TokenResponse;
+using static GogOssLibraryNS.Models.TokenResponse;
 
-namespace CometLibraryNS.Services
+namespace GogOssLibraryNS.Services
 {
     public class GogAccountClient
     {

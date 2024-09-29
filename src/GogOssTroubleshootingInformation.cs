@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
-    public class CometTroubleshootingInformation
+    public class GogOssTroubleshootingInformation
     {
         public string PlayniteVersion
         {

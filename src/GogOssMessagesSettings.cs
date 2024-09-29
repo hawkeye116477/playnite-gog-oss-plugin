@@ -3,19 +3,19 @@ using Playnite.SDK.Data;
 using System;
 using System.IO;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
-    public class CometMessagesSettingsModel
+    public class GogOssMessagesSettingsModel
     {
         public bool DontShowDownloadManagerWhatsUpMsg { get; set; } = false;
     }
 
-    public class CometMessagesSettings
+    public class GogOssMessagesSettings
     {
-        public static CometMessagesSettingsModel LoadSettings()
+        public static GogOssMessagesSettingsModel LoadSettings()
         {
-            CometMessagesSettingsModel messagesSettings = null;
-            var dataDir = CometLibrary.Instance.GetPluginUserDataPath();
+            GogOssMessagesSettingsModel messagesSettings = null;
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
             var dataFile = Path.Combine(dataDir, "messages.json");
             bool correctJson = false;
             if (File.Exists(dataFile))
@@ -28,12 +28,12 @@ namespace CometLibraryNS
             }
             if (!correctJson)
             {
-                messagesSettings = new CometMessagesSettingsModel { };
+                messagesSettings = new GogOssMessagesSettingsModel { };
             }
             return messagesSettings;
         }
 
-        public static void SaveSettings(CometMessagesSettingsModel messagesSettings)
+        public static void SaveSettings(GogOssMessagesSettingsModel messagesSettings)
         {
             Helpers.SaveJsonSettingsToFile(messagesSettings, "messages");
         }

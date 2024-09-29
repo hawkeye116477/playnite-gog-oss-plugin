@@ -7,8 +7,8 @@
     <ProjectGuid>{2E4F6F47-C3AC-4650-936A-09E675B9B3B3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CometLibraryNS</RootNamespace>
-    <AssemblyName>CometLibrary</AssemblyName>
+    <RootNamespace>GogOssLibraryNS</RootNamespace>
+    <AssemblyName>GogOssLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -208,19 +208,19 @@
     <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="CometClient.cs" />
     <Compile Include="Comet.cs" />
-    <Compile Include="CometDownloadManagerView.xaml.cs">
-      <DependentUpon>CometDownloadManagerView.xaml</DependentUpon>
+    <Compile Include="GogOssDownloadManagerView.xaml.cs">
+      <DependentUpon>GogOssDownloadManagerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CometGameController.cs" />
-    <Compile Include="CometGameInstallerView.xaml.cs">
-      <DependentUpon>CometGameInstallerView.xaml</DependentUpon>
+    <Compile Include="GogOssGameController.cs" />
+    <Compile Include="GogOssGameInstallerView.xaml.cs">
+      <DependentUpon>GogOssGameInstallerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CometLibrary.cs" />
-    <Compile Include="CometLibrarySettingsView.xaml.cs">
-      <DependentUpon>CometLibrarySettingsView.xaml</DependentUpon>
+    <Compile Include="GogOssLibrary.cs" />
+    <Compile Include="GogOssLibrarySettingsView.xaml.cs">
+      <DependentUpon>GogOssLibrarySettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CometMessagesSettings.cs" />
-    <Compile Include="CometTroubleshootingInformation.cs" />
+    <Compile Include="GogOssMessagesSettings.cs" />
+    <Compile Include="GogOssTroubleshootingInformation.cs" />
     <Compile Include="Converters\DownloadStatusEnumToStringConverter.cs" />
     <Compile Include="Converters\LongToDateConverter.cs" />
     <Compile Include="Converters\NumericalSizeToStringConverter.cs" />
@@ -256,7 +256,7 @@
       <DependentUpon>NumericInput.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CometLibrarySettingsViewModel.cs" />
+    <Compile Include="GogOssLibrarySettingsViewModel.cs" />
     <Compile Include="Services\GogAccountClient.cs" />
     <Compile Include="Services\GogApiClient.cs" />
   </ItemGroup>
@@ -288,15 +288,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CometDownloadManagerView.xaml">
+    <Page Include="GogOssDownloadManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CometGameInstallerView.xaml">
+    <Page Include="GogOssGameInstallerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CometLibrarySettingsView.xaml">
+    <Page Include="GogOssLibrarySettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

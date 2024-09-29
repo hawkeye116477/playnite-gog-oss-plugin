@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Playnite.SDK;
-using CometLibraryNS.Services;
-using CometLibraryNS.Enums;
+using GogOssLibraryNS.Services;
+using GogOssLibraryNS.Enums;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
-    public class CometLibrarySettings
+    public class GogOssLibrarySettings
     {
         public bool ImportInstalledGames { get; set; } = true;
         public bool ConnectAccount { get; set; } = false;
@@ -24,11 +24,11 @@ namespace CometLibraryNS
         public bool DisplayDownloadTaskFinishedNotifications { get; set; } = true;
         public DownloadCompleteAction DoActionAfterDownloadComplete { get; set; } = DownloadCompleteAction.Nothing;
     }
-    public class CometLibrarySettingsViewModel : PluginSettingsViewModel<CometLibrarySettings, CometLibrary>
+    public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {
-        public CometLibrarySettingsViewModel(CometLibrary library, IPlayniteAPI api) : base(library, api)
+        public GogOssLibrarySettingsViewModel(GogOssLibrary library, IPlayniteAPI api) : base(library, api)
         {
-            Settings = LoadSavedSettings() ?? new CometLibrarySettings();
+            Settings = LoadSavedSettings() ?? new GogOssLibrarySettings();
         }
 
         public Dictionary<string, string> Languages { get; } = new Dictionary<string, string>

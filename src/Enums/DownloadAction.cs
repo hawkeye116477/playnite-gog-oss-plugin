@@ -1,4 +1,4 @@
-﻿namespace CometLibraryNS.Enums
+﻿namespace GogOssLibraryNS.Enums
 {
     public enum DownloadAction
     {

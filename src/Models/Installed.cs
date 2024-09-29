@@ -1,11 +1,11 @@
-﻿using CometLibraryNS.Enums;
+﻿using GogOssLibraryNS.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS.Models
+namespace GogOssLibraryNS.Models
 {
     public class Installed
     {

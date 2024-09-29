@@ -1,6 +1,6 @@
-﻿using CometLibraryNS.Enums;
-using CometLibraryNS.Models;
-using CometLibraryNS.Services;
+﻿using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -19,27 +19,27 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     [LoadPlugin]
-    public class CometLibrary : LibraryPluginBase<CometLibrarySettingsViewModel>
+    public class GogOssLibrary : LibraryPluginBase<GogOssLibrarySettingsViewModel>
     {
         private static readonly ILogger logger = LogManager.GetLogger();
-        public static CometLibrary Instance { get; set; }
-        public CometDownloadManagerView CometDownloadManagerView { get; set; }
+        public static GogOssLibrary Instance { get; set; }
+        public GogOssDownloadManagerView CometDownloadManagerView { get; set; }
         private readonly SidebarItem downloadManagerSidebarItem;
 
-        public CometLibrary(IPlayniteAPI api) : base(
-            "Comet (GOG)",
+        public GogOssLibrary(IPlayniteAPI api) : base(
+            "GOG OSS",
             Guid.Parse("03689811-3F33-4DFB-A121-2EE168FB9A5C"),
-            new LibraryPluginProperties { CanShutdownClient = true, HasSettings = true },
+            new LibraryPluginProperties { CanShutdownClient = false, HasSettings = true },
             new CometClient(),
             Comet.Icon,
-            (_) => new CometLibrarySettingsView(),
+            (_) => new GogOssLibrarySettingsView(),
             api)
         {
             Instance = this;
-            SettingsViewModel = new CometLibrarySettingsViewModel(this, api);
+            SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
             Load3pLocalization();
             downloadManagerSidebarItem = new SidebarItem
             {
@@ -57,11 +57,11 @@ namespace CometLibraryNS
             return Instance.downloadManagerSidebarItem;
         }
 
-        public static CometDownloadManagerView GetCometDownloadManager()
+        public static GogOssDownloadManagerView GetCometDownloadManager()
         {
             if (Instance.CometDownloadManagerView == null)
             {
-                Instance.CometDownloadManagerView = new CometDownloadManagerView();
+                Instance.CometDownloadManagerView = new GogOssDownloadManagerView();
             }
             return Instance.CometDownloadManagerView;
         }
@@ -73,7 +73,7 @@ namespace CometLibraryNS
                 yield break;
             }
 
-            yield return new GogInstallController(args.Game, this);
+            yield return new GogOssInstallController(args.Game, this);
         }
 
         public override IEnumerable<UninstallController> GetUninstallActions(GetUninstallActionsArgs args)
@@ -83,7 +83,7 @@ namespace CometLibraryNS
                 yield break;
             }
 
-            yield return new GogUninstallController(args.Game);
+            yield return new GogOssUninstallController(args.Game);
         }
 
         public override LibraryMetadataProvider GetMetadataDownloader()
@@ -106,7 +106,7 @@ namespace CometLibraryNS
             yield return new CometPlayController(args.Game);
         }
 
-        public static CometLibrarySettings GetSettings()
+        public static GogOssLibrarySettings GetSettings()
         {
             return Instance.SettingsViewModel?.Settings ?? null;
         }
@@ -495,7 +495,7 @@ namespace CometLibraryNS
 
         public bool StopDownloadManager(bool displayConfirm = false)
         {
-            CometDownloadManagerView downloadManager = GetCometDownloadManager();
+            GogOssDownloadManagerView downloadManager = GetCometDownloadManager();
             var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
                                                                                                      || i.status == DownloadStatus.Queued).ToList();
             if (runningAndQueuedDownloads.Count > 0)

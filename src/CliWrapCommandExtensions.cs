@@ -1,7 +1,7 @@
 ﻿using CliWrap;
 using Playnite.SDK;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     internal static class CliWrapCommandExtensions
     {

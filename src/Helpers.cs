@@ -1,12 +1,12 @@
 ﻿using ByteSizeLib;
-using CometLibraryNS.Models;
+using GogOssLibraryNS.Models;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.Globalization;
 using System.IO;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     public class Helpers
     {
@@ -42,7 +42,7 @@ namespace CometLibraryNS
             var strConf = Serialization.ToJson(jsonSettings, true);
             if (!strConf.IsNullOrEmpty())
             {
-                var dataDir = CometLibrary.Instance.GetPluginUserDataPath();
+                var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
                 if (!subDir.IsNullOrEmpty())
                 {
                     dataDir = Path.Combine(dataDir, subDir);

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CometLibrary")]
+[assembly: AssemblyTitle("GogOssLibrary")]
 [assembly: AssemblyDescription("GOG library integration with Comet for Playnite")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CometLibraryNS")]
+[assembly: AssemblyProduct("GogOssLibraryNS")]
 [assembly: AssemblyCopyright("Copyright © 2023-2024 hawkeye116477\n Copyright © 2020 Josef Nemec")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -33,4 +33,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.0.*")]
-[assembly: InternalsVisibleTo("CometLibraryNS.Tests")]
+[assembly: InternalsVisibleTo("GogOssLibraryNS.Tests")]

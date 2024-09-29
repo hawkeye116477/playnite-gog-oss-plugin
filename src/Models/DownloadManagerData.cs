@@ -1,8 +1,8 @@
-﻿using CometLibraryNS.Enums;
+﻿using GogOssLibraryNS.Enums;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace CometLibraryNS.Models
+namespace GogOssLibraryNS.Models
 {
     public class DownloadManagerData
     {

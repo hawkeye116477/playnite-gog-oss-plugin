@@ -1,5 +1,5 @@
-﻿using CometLibraryNS.Enums;
-using CometLibraryNS.Models;
+﻿using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
@@ -19,12 +19,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     /// <summary>
-    /// Interaction logic for CometGameInstallerView.xaml
+    /// Interaction logic for GogOssGameInstallerView.xaml
     /// </summary>
-    public partial class CometGameInstallerView : UserControl
+    public partial class GogOssGameInstallerView : UserControl
     {
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI playniteAPI = API.Instance;
@@ -36,7 +36,7 @@ namespace CometLibraryNS
         private GogDownloadGameInfo manifest;
         public bool uncheckedByUser = true;
 
-        public CometGameInstallerView()
+        public GogOssGameInstallerView()
         {
             InitializeComponent();
             SetControlStyles();
@@ -103,7 +103,7 @@ namespace CometLibraryNS
 
         public async Task Install()
         {
-            var settings = CometLibrary.GetSettings();
+            var settings = GogOssLibrary.GetSettings();
             var installPath = SelectedGamePathTxt.Text;
             if (installPath == "")
             {
@@ -120,7 +120,7 @@ namespace CometLibraryNS
                 return;
             }
             InstallerWindow.Close();
-            CometDownloadManagerView downloadManager = CometLibrary.GetCometDownloadManager();
+            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetCometDownloadManager();
             var downloadTasks = new List<DownloadManagerData.Download>();
             var downloadItemsAlreadyAdded = new List<string>();
             foreach (var installData in MultiInstallData)
@@ -168,7 +168,7 @@ namespace CometLibraryNS
 
         public DownloadProperties GetDownloadProperties(DownloadManagerData.Download installData, DownloadAction downloadAction, string installPath = "")
         {
-            var settings = CometLibrary.GetSettings();
+            var settings = GogOssLibrary.GetSettings();
             int maxWorkers = settings.MaxWorkers;
             if (MaxWorkersNI.Value != "")
             {
@@ -221,7 +221,7 @@ namespace CometLibraryNS
 
         private async void CometGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
         {
-            var settings = CometLibrary.GetSettings();
+            var settings = GogOssLibrary.GetSettings();
             var installPath = Comet.GamesInstallationPath;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
             if (installPath.Contains(playniteDirectoryVariable))
@@ -230,7 +230,7 @@ namespace CometLibraryNS
             }
             SelectedGamePathTxt.Text = installPath;
             UpdateSpaceInfo(installPath);
-            var cacheInfoPath = CometLibrary.Instance.GetCachePath("infocache");
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheInfoPath))
             {
                 Directory.CreateDirectory(cacheInfoPath);
@@ -243,7 +243,7 @@ namespace CometLibraryNS
             downloadSizeNumber = 0;
             installSizeNumber = 0;
 
-            CometDownloadManagerView downloadManager = CometLibrary.GetCometDownloadManager();
+            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetCometDownloadManager();
 
             if (MultiInstallData.Count == 1)
             {
@@ -333,7 +333,7 @@ namespace CometLibraryNS
                 }
             }
 
-            var installedAppList = CometLibrary.GetInstalledAppList();
+            var installedAppList = GogOssLibrary.GetInstalledAppList();
             if (!installedAppList.ContainsKey("ISI"))
             {
                 var isiTask = new DownloadManagerData.Download

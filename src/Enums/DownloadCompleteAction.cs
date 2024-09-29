@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS.Enums
+namespace GogOssLibraryNS.Enums
 {
     public enum DownloadCompleteAction
     {

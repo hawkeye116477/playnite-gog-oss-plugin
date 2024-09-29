@@ -1,8 +1,7 @@
 ﻿using CliWrap;
 using CliWrap.Buffered;
-using CometLibrary.Models;
-using CometLibraryNS.Enums;
-using CometLibraryNS.Models;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Enums;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -13,7 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     public class Gogdl
     {
@@ -60,7 +59,7 @@ namespace CometLibraryNS
                         }
                     }
                 }
-                var savedSettings = CometLibrary.GetSettings();
+                var savedSettings = GogOssLibrary.GetSettings();
                 if (savedSettings != null)
                 {
                     var savedGogdlPath = savedSettings.SelectedGogdlPath;
@@ -113,7 +112,7 @@ namespace CometLibraryNS
             {
                 throw new Exception(ResourceProvider.GetString(LOC.CometCometNotInstalled));
             }
-            var cacheVersionPath = CometLibrary.Instance.GetCachePath("infocache");
+            var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
             {
                 Directory.CreateDirectory(cacheVersionPath);
@@ -189,7 +188,7 @@ namespace CometLibraryNS
             var manifest = new GogDownloadGameInfo();
             var playniteAPI = API.Instance;
             var logger = LogManager.GetLogger();
-            var cacheInfoPath = CometLibrary.Instance.GetCachePath("infocache");
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("infocache");
             var cacheInfoFileName = $"{downloadData.gameID}.json";
             if (downloadData.downloadProperties.buildId != "")
             {

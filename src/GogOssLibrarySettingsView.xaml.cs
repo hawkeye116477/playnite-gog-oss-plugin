@@ -1,6 +1,6 @@
-﻿using CometLibrary.Models;
-using CometLibraryNS.Enums;
-using CometLibraryNS.Services;
+﻿using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -13,18 +13,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     /// <summary>
-    /// Interaction logic for CometLibrarySettingsView.xaml
+    /// Interaction logic for GogOssLibrarySettingsView.xaml
     /// </summary>
-    public partial class CometLibrarySettingsView : UserControl
+    public partial class GogOssLibrarySettingsView : UserControl
     {
         private IPlayniteAPI playniteAPI = API.Instance;
-        public CometTroubleshootingInformation troubleshootingInformation;
+        public GogOssTroubleshootingInformation troubleshootingInformation;
         private ILogger logger = LogManager.GetLogger();
 
-        public CometLibrarySettingsView()
+        public GogOssLibrarySettingsView()
         {
             InitializeComponent();
             UpdateAuthStatus();
@@ -56,7 +56,7 @@ namespace CometLibraryNS
                 { DownloadCompleteAction.Sleep, ResourceProvider.GetString(LOC.Comet3P_PlayniteMenuSuspendSystem) },
             };
             AfterDownloadCompleteCBo.ItemsSource = downloadCompleteActions;
-            troubleshootingInformation = new CometTroubleshootingInformation();
+            troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)
             {
                 var launcherVersion = await Comet.GetLauncherVersion();
@@ -144,7 +144,7 @@ namespace CometLibraryNS
 
         private async void UpdateAuthStatus()
         {
-            if (CometLibrary.GetSettings().ConnectAccount)
+            if (GogOssLibrary.GetSettings().ConnectAccount)
             {
                 LoginBtn.IsEnabled = false;
                 AuthStatusTB.Text = ResourceProvider.GetString(LOC.Comet3P_GOGLoginChecking);

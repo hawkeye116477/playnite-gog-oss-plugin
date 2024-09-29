@@ -111,7 +111,7 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
                 if not key_text:
                     key_text = ""
                 new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOC", "LOCComet3P_Playnite"))
+                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOC", "LOCGogOss3P_Playnite"))
                 new_key.text = key_text
                 xml_root.append(new_key)
 
@@ -128,7 +128,7 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
                     key_text = key_text.replace("GOG Galaxy", "Comet")
                     key = key.replace("Galaxy", "Comet")
                 new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOCGOG", "LOCComet3P_GOG").replace("LOCSettingsGOG", "LOCComet3P_GOG"))
+                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOCGOG", "LOCGogOss3P_GOG").replace("LOCSettingsGOG", "LOCGogOss3P_GOG"))
                 new_key.text = key_text
                 xml_root.append(new_key)
 

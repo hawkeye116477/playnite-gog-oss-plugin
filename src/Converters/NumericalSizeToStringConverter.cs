@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace CometLibraryNS.Converters
+namespace GogOssLibraryNS.Converters
 {
     public class NumericalSizeToStringConverter : IValueConverter
     {

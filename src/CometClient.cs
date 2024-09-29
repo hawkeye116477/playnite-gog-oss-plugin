@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     public class CometClient : LibraryClient
     {
@@ -24,14 +24,6 @@ namespace CometLibraryNS
 
         public override void Shutdown()
         {
-            //var mainProc = Process.GetProcessesByName("GalaxyClient").FirstOrDefault();
-            //if (mainProc == null)
-            //{
-            //    logger.Info("Galaxy client is no longer running, no need to shut it down.");
-            //    return;
-            //}
-
-            //ProcessStarter.StartProcessWait(Comet.ClientExecPath, "/command=shutdown", null);
         }
     }
 }

@@ -5,27 +5,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Playnite.SDK;
-using CometLibraryNS.Models;
+using GogOssLibraryNS.Models;
 using System.IO;
 using Playnite;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using CometLibraryNS.Services;
+using GogOssLibraryNS.Services;
 using System.Text.RegularExpressions;
 using AngleSharp.Parser.Html;
 using AngleSharp.Dom.Html;
 using AngleSharp.Dom;
 
-namespace CometLibraryNS
+namespace GogOssLibraryNS
 {
     public class GogMetadataProvider : LibraryMetadataProvider
     {
         private GogApiClient apiClient = new GogApiClient();
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI api;
-        private readonly CometLibrarySettings settings;
+        private readonly GogOssLibrarySettings settings;
 
-        public GogMetadataProvider(IPlayniteAPI api, CometLibrarySettings settings)
+        public GogMetadataProvider(IPlayniteAPI api, GogOssLibrarySettings settings)
         {
             this.api = api;
             this.settings = settings;
