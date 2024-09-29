@@ -279,7 +279,7 @@ namespace GogOssLibraryNS
                     GameVersionCBo.ItemsSource = gameVersions;
                     GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault();
                     MultiInstallData[0].downloadProperties.buildId = gameVersions.FirstOrDefault().Key;
-                    MultiInstallData[0].downloadProperties.version = gameVersions.FirstOrDefault().Value;
+                    MultiInstallData[0].downloadProperties.version = gameVersions.FirstOrDefault().Value.Split('—')[0].Trim();
                     VersionSP.Visibility = Visibility.Visible;
                 }
                 if (gameVersions.Count > 1)
