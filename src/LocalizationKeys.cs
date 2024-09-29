@@ -20,15 +20,23 @@ namespace System
         /// <summary>
         /// Gogdl is not installed.
         /// </summary>
-        public const string GogOssGogDlNotInstalled = "LOCGogOssGogDlNotInstalled";
+        public const string GogOssGogdlNotInstalled = "LOCGogOssGogdlNotInstalled";
         /// <summary>
         /// Comet version
         /// </summary>
         public const string GogOssCometVersion = "LOCGogOssCometVersion";
         /// <summary>
+        /// Gogdl version
+        /// </summary>
+        public const string GogOssGogdlVersion = "LOCGogOssGogdlVersion";
+        /// <summary>
         /// Comet binary
         /// </summary>
         public const string GogOssCometBinary = "LOCGogOssCometBinary";
+        /// <summary>
+        /// Gogdl binary
+        /// </summary>
+        public const string GogOssGogdlBinary = "LOCGogOssGogdlBinary";
         /// <summary>
         /// Language
         /// </summary>
@@ -61,6 +69,14 @@ namespace System
         /// Only one instance of GOG OSS may install/import/move applications at a time. Do you want to pause download manager tasks to continue?
         /// </summary>
         public const string GogOssInstanceNotice = "LOCGogOssInstanceNotice";
+        /// <summary>
+        /// Enable Comet support
+        /// </summary>
+        public const string GogOssEnableCometSupport = "LOCGogOssEnableCometSupport";
+        /// <summary>
+        /// It's required for achievements, leaderboards and multiplayer mode, but may cause problems with operation of some games.
+        /// </summary>
+        public const string GogOssEnableCometSupportToolTip = "LOCGogOssEnableCometSupportToolTip";
         /// <summary>
         /// Games Installation Path
         /// </summary>

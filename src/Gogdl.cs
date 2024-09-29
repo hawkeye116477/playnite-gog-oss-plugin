@@ -158,20 +158,38 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static async Task<string> GetVersion()
+        {
+            var version = "0";
+            if (IsInstalled)
+            {
+                var versionCmd = await Cli.Wrap(ClientInstallationPath)
+                                          .WithArguments(new[] { "--auth-config-path", "null", "-v" })
+                                          .AddCommandToLog()
+                                          .WithValidation(CommandResultValidation.None)
+                                          .ExecuteBufferedAsync();
+                if (!versionCmd.StandardOutput.IsNullOrEmpty())
+                {
+                    version = versionCmd.StandardOutput.Trim();
+                }
+            }
+            return version;
+        }
+
         public static async Task<LauncherVersion> GetVersionInfoContent()
         {
             var newVersionInfoContent = new LauncherVersion();
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.GogOssCometNotInstalled));
+                throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
             {
                 Directory.CreateDirectory(cacheVersionPath);
             }
-            var cacheVersionFile = Path.Combine(cacheVersionPath, "cometVersion.json");
+            var cacheVersionFile = Path.Combine(cacheVersionPath, "gogdlVersion.json");
             string content = null;
             if (File.Exists(cacheVersionFile))
             {
@@ -202,7 +220,7 @@ namespace GogOssLibraryNS
             }
             if (content.IsNullOrWhiteSpace())
             {
-                logger.Error("An error occurred while downloading Comet's version info.");
+                logger.Error("An error occurred while downloading Gogdl's version info.");
             }
             else if (Serialization.TryFromJson(content, out LauncherVersion versionInfoContent))
             {

@@ -1,0 +1,61 @@
+name: 🐛 Bug report
+description: Report broken functionality.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: checkboxes
+    id: nonDuplicateVerify
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I've looked through [existing issues](https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues) to make sure that this bug hasn't been reported before.
+          required: true
+        - label: I've read the [GitHub Community Guidelines](https://docs.github.com/en/github/site-policy/github-community-guidelines) and know netiquette.
+          required: true
+  - type: input
+    id: playniteV
+    attributes:
+      label: Playnite version
+    validations:
+      required: true
+  - type: input
+    id: pluginV
+    attributes:
+      label: Plugin version
+    validations:
+      required: true
+  - type: input
+    id: cometV
+    attributes:
+      label: Comet version
+    validations:
+      required: true
+  - type: input
+    id: gogdlV
+    attributes:
+      label: Gogdl version
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Bug description
+      description: Describe what happened and tell us also, what did you expect to happen?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log
+      description: Please include any relevant log file or message.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
