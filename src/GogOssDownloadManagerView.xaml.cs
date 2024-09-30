@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Playnite.SDK.Plugins;
+using System.Collections.Specialized;
 
 namespace GogOssLibraryNS
 {
@@ -34,6 +35,7 @@ namespace GogOssLibraryNS
         private IPlayniteAPI playniteAPI = API.Instance;
         public DownloadManagerData.Rootobject downloadManagerData;
         public SidebarItem gogPanel = GogOssLibrary.GetPanel();
+        public bool downloadsChanged = false;
 
         public GogOssDownloadManagerView()
         {
@@ -49,6 +51,11 @@ namespace GogOssLibraryNS
             DownloadPropertiesBtn.ToolTip = GetToolTipWithKey(LOC.GogOssEditSelectedDownloadProperties, "Ctrl+P");
             OpenDownloadDirectoryBtn.ToolTip = GetToolTipWithKey(LOC.GogOssOpenDownloadDirectory, "Ctrl+O");
             LoadSavedData();
+            foreach (DownloadManagerData.Download download in downloadManagerData.downloads)
+            {
+                download.PropertyChanged += OnPropertyChanged;
+            }
+            downloadManagerData.downloads.CollectionChanged += OnCollectionChanged;
             var runningAndQueuedDownloads = downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
                                                                                      || i.status == DownloadStatus.Queued).ToList();
             if (runningAndQueuedDownloads.Count > 0)
@@ -57,8 +64,17 @@ namespace GogOssLibraryNS
                 {
                     download.status = DownloadStatus.Paused;
                 }
-                SaveData();
             }
+        }
+
+        public void OnPropertyChanged(object _, PropertyChangedEventArgs arg)
+        {
+            downloadsChanged = true;
+        }
+
+        public void OnCollectionChanged(object _, NotifyCollectionChangedEventArgs arg)
+        {
+            downloadsChanged = true;
         }
 
         public RelayCommand<object> NavigateBackCommand
@@ -103,7 +119,10 @@ namespace GogOssLibraryNS
 
         public void SaveData()
         {
-            Helpers.SaveJsonSettingsToFile(downloadManagerData, "downloadManager");
+            if (downloadsChanged)
+            {
+                Helpers.SaveJsonSettingsToFile(downloadManagerData, "downloadManager");
+            }
         }
 
         public async Task DoNextJobInQueue()
@@ -127,6 +146,7 @@ namespace GogOssLibraryNS
             else if (!running)
             {
                 SaveData();
+                downloadsChanged = false;
                 var downloadCompleteSettings = GogOssLibrary.GetSettings().DoActionAfterDownloadComplete;
                 switch (downloadCompleteSettings)
                 {
