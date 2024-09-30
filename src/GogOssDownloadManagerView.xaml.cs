@@ -126,6 +126,7 @@ namespace GogOssLibraryNS
             }
             else if (!running)
             {
+                SaveData();
                 var downloadCompleteSettings = GogOssLibrary.GetSettings().DoActionAfterDownloadComplete;
                 switch (downloadCompleteSettings)
                 {
@@ -182,7 +183,6 @@ namespace GogOssLibraryNS
                     wantedItem.status = DownloadStatus.Queued;
                 }
             }
-            SaveData();
             await DoNextJobInQueue();
         }
 
@@ -529,7 +529,6 @@ namespace GogOssLibraryNS
                                     bitmap.Dispose();
                                 }
                             }
-                            SaveData();
                             gracefulInstallerCTS?.Dispose();
                             forcefulInstallerCTS?.Dispose();
                             break;
@@ -565,7 +564,6 @@ namespace GogOssLibraryNS
                         }
                         selectedRow.status = DownloadStatus.Paused;
                     }
-                    SaveData();
                 }
             }
         }
@@ -617,7 +615,6 @@ namespace GogOssLibraryNS
                     DescriptionTB.Text = "";
                     GameTitleTB.Text = "";
                     DiskSpeedTB.Text = "";
-                    SaveData();
                 }
             }
         }
@@ -677,7 +674,6 @@ namespace GogOssLibraryNS
                         RemoveDownloadEntry(selectedRow);
                     }
                 }
-                SaveData();
             }
         }
 
@@ -695,7 +691,6 @@ namespace GogOssLibraryNS
                             RemoveDownloadEntry(row);
                         }
                     }
-                    SaveData();
                 }
             }
         }
@@ -900,7 +895,6 @@ namespace GogOssLibraryNS
                 {
                     DownloadsDG.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                 }
-                SaveData();
             }
         }
 

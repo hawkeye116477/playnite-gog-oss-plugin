@@ -4,6 +4,7 @@ using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using Playnite.SDK.Events;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
@@ -46,7 +47,7 @@ namespace GogOssLibraryNS
                 Title = ResourceProvider.GetString(LOC.GogOssPanel),
                 Icon = GogOss.Icon,
                 Type = SiderbarItemType.View,
-                Opened = () => GetCometDownloadManager(),
+                Opened = () => GetGogOssDownloadManager(),
                 ProgressValue = 0,
                 ProgressMaximum = 100,
             };
@@ -57,7 +58,7 @@ namespace GogOssLibraryNS
             return Instance.downloadManagerSidebarItem;
         }
 
-        public static GogOssDownloadManagerView GetCometDownloadManager()
+        public static GogOssDownloadManagerView GetGogOssDownloadManager()
         {
             if (Instance.CometDownloadManagerView == null)
             {
@@ -507,9 +508,14 @@ namespace GogOssLibraryNS
             yield return downloadManagerSidebarItem;
         }
 
+        public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
+        {
+            StopDownloadManager();
+        }
+
         public bool StopDownloadManager(bool displayConfirm = false)
         {
-            GogOssDownloadManagerView downloadManager = GetCometDownloadManager();
+            GogOssDownloadManagerView downloadManager = GetGogOssDownloadManager();
             var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
                                                                                                      || i.status == DownloadStatus.Queued).ToList();
             if (runningAndQueuedDownloads.Count > 0)
@@ -532,8 +538,8 @@ namespace GogOssLibraryNS
                     }
                     download.status = DownloadStatus.Paused;
                 }
-                downloadManager.SaveData();
             }
+            downloadManager.SaveData();
             return true;
         }
     }

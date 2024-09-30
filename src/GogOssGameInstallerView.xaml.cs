@@ -120,7 +120,7 @@ namespace GogOssLibraryNS
                 return;
             }
             InstallerWindow.Close();
-            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetCometDownloadManager();
+            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
             var downloadTasks = new List<DownloadManagerData.Download>();
             var downloadItemsAlreadyAdded = new List<string>();
             foreach (var installData in MultiInstallData)
@@ -243,7 +243,7 @@ namespace GogOssLibraryNS
             downloadSizeNumber = 0;
             installSizeNumber = 0;
 
-            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetCometDownloadManager();
+            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
             if (MultiInstallData.Count == 1)
             {
