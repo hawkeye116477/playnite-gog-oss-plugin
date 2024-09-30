@@ -130,7 +130,7 @@ namespace GogOssLibraryNS
                              .AddCommandToLog()
                              .ExecuteAsync();
                 }
-                else
+                else if (Directory.Exists(Game.InstallDirectory))
                 {
                     Directory.Delete(Game.InstallDirectory, true);
                 }

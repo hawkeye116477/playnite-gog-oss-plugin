@@ -261,16 +261,17 @@ namespace GogOssLibraryNS
                     continue;
                 }
 
-                if (!Directory.Exists(program.InstallLocation))
-                {
-                    continue;
-                }
-
                 var gameId = match.Groups[1].Value;
                 if (list.ContainsKey(gameId))
                 {
                     continue;
                 }
+
+                if (!Directory.Exists(program.InstallLocation))
+                {
+                    continue;
+                }
+
                 var game = new Installed()
                 {
                     platform = "windows",

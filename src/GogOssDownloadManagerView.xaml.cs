@@ -594,20 +594,11 @@ namespace GogOssLibraryNS
                     {
                         if (selectedRow.status == DownloadStatus.Running)
                         {
-                            gracefulInstallerCTS?.Cancel();
+                            // Gogdl can't properly gracefully cancel, so we need to force it :-)
+                            forcefulInstallerCTS?.Cancel();
                             gracefulInstallerCTS?.Dispose();
                             forcefulInstallerCTS?.Dispose();
                         }
-                        //var resumeFile = Path.Combine(CometLauncher.ConfigPath, "tmp", selectedRow.gameID + ".resume");
-                        //if (File.Exists(resumeFile))
-                        //{
-                        //    File.Delete(resumeFile);
-                        //}
-                        //var repairFile = Path.Combine(CometLauncher.ConfigPath, "tmp", selectedRow.gameID + ".repair");
-                        //if (File.Exists(repairFile))
-                        //{
-                        //    File.Delete(repairFile);
-                        //}
                         if (selectedRow.fullInstallPath != null && selectedRow.downloadProperties.downloadAction == DownloadAction.Install)
                         {
                             if (Directory.Exists(selectedRow.fullInstallPath))
