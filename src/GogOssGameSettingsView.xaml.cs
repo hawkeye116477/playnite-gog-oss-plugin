@@ -65,6 +65,10 @@ namespace GogOssLibraryNS
             {
                 newGameSettings.StartupArguments = StartupArgumentsTxt.Text.Split().ToList();
             }
+            if (SelectedAlternativeExeTxt.Text != "")
+            {
+                newGameSettings.OverrideExe = SelectedAlternativeExeTxt.Text;
+            }
             //if (AutoSyncSavesChk.IsChecked != globalSettings.SyncGameSaves)
             //{
             //    newGameSettings.AutoSyncSaves = AutoSyncSavesChk.IsChecked;
@@ -131,6 +135,10 @@ namespace GogOssLibraryNS
             {
                 StartupArgumentsTxt.Text = string.Join(" ", gameSettings.StartupArguments);
             }
+            if (gameSettings.OverrideExe != null)
+            {
+                SelectedAlternativeExeTxt.Text = gameSettings.OverrideExe;
+            }
             if (gameSettings.AutoSyncSaves != null)
             {
                 AutoSyncSavesChk.IsChecked = gameSettings.AutoSyncSaves;
@@ -166,6 +174,15 @@ namespace GogOssLibraryNS
             //        CloudSavesNotSupportedTB.Visibility = Visibility.Visible;
             //    }
             //}));
+        }
+
+        private void ChooseAlternativeExeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
+            if (file != "")
+            {
+                SelectedAlternativeExeTxt.Text = file;
+            }
         }
     }
 }

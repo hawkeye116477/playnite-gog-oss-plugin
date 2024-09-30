@@ -149,10 +149,14 @@ namespace GogOssLibraryNS
         private static ILogger logger = LogManager.GetLogger();
         private CancellationTokenSource watcherToken;
         public int cometProcessId;
+        public bool cometSupportEnabled = false;
+        public GameSettings gameSettings;
+        public GogOssLibrarySettings globalSettings = GogOssLibrary.GetSettings();
 
         public GogOssPlayController(Game game) : base(game)
         {
             Name = string.Format(ResourceProvider.GetString(LOC.GogOss3P_GOGStartUsingClient), "Comet");
+            gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
         }
 
         public override void Dispose()
@@ -167,8 +171,7 @@ namespace GogOssLibraryNS
             if (Directory.Exists(Game.InstallDirectory))
             {
                 await BeforeGameStarting();
-                LaunchGame();
-                await AfterGameStarting();
+                await LaunchGame();
             }
             else
             {
@@ -178,7 +181,6 @@ namespace GogOssLibraryNS
 
         public async Task BeforeGameStarting()
         {
-            var gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
             if (gameSettings.Dependencies.Count > 0)
             {
                 var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
@@ -221,7 +223,12 @@ namespace GogOssLibraryNS
 
         public async Task AfterGameStarting()
         {
-            if (GogOssLibrary.GetSettings().EnableCometSupport && Comet.IsInstalled)
+            cometSupportEnabled = globalSettings.EnableCometSupport;
+            if (gameSettings.EnableCometSupport != null)
+            {
+                cometSupportEnabled = (bool)gameSettings.EnableCometSupport;
+            }
+            if (cometSupportEnabled && Comet.IsInstalled)
             {
                 var gogAccountClient = new GogAccountClient();
                 var tokens = gogAccountClient.LoadTokens();
@@ -263,7 +270,7 @@ namespace GogOssLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
-            if (GogOssLibrary.GetSettings().EnableCometSupport && Comet.IsInstalled)
+            if (cometSupportEnabled && Comet.IsInstalled)
             {
                 Process cometProcess = null;
                 try
@@ -274,27 +281,48 @@ namespace GogOssLibraryNS
                 {
 
                 }
-                if (!cometProcess.HasExited)
+                if (cometProcess != null && !cometProcess.HasExited)
                 {
                     cometProcess.Kill();
                 }
             }
         }
 
-        public void LaunchGame()
+        public async Task LaunchGame()
         {
             Dispose();
             if (Directory.Exists(Game.InstallDirectory))
             {
                 var task = GogOssLibrary.GetPlayTasks(Game.GameId, Game.InstallDirectory);
                 var gameExe = task[0].Path;
-                Process proc;
                 if (File.Exists(gameExe))
                 {
-                    proc = ProcessStarter.StartProcess(gameExe);
-                    InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = proc.Id });
-                    var monitor = new MonitorProcessTree(proc.Id);
-                    StartTracking(() => monitor.IsProcessTreeRunning());
+                    var playArgs = new List<string>();
+                    var gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
+                    if (gameSettings.StartupArguments?.Any() == true)
+                    {
+                        playArgs.AddRange(gameSettings.StartupArguments);
+                    }
+                    if (!gameSettings.OverrideExe.IsNullOrEmpty())
+                    {
+                        gameExe = gameSettings.OverrideExe;
+                    }
+                    var cmd = Cli.Wrap(gameExe)
+                                 .WithArguments(playArgs)
+                                 .AddCommandToLog()
+                                 .WithValidation(CommandResultValidation.None);
+                    await foreach (var cmdEvent in cmd.ListenAsync())
+                    {
+                        switch (cmdEvent)
+                        {
+                            case StartedCommandEvent started:
+                                InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = started.ProcessId });
+                                var monitor = new MonitorProcessTree(started.ProcessId);
+                                StartTracking(() => monitor.IsProcessTreeRunning());
+                                await AfterGameStarting();
+                                break;
+                        }
+                    }
                 }
             }
         }

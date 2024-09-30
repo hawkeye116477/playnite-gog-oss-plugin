@@ -14,5 +14,6 @@ namespace GogOssLibraryNS.Models
         public List<string> Dependencies { get; set; } = new List<string>();
         public List<string> StartupArguments { get; set; } = new List<string>();
         public bool? EnableCometSupport { get; set; }
+        public string OverrideExe { get; set; } = "";
     }
 }

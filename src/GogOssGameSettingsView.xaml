@@ -41,6 +41,14 @@
                             Grid.Row="2" Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <TextBox x:Name="StartupArgumentsTxt"
                             Grid.Column="1" Grid.Row="2" Margin="0,0,0,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+                        <TextBlock Text="{DynamicResource LOCGogOssAlternativeExe}" Grid.Column="0" Grid.Row="4"
+                               Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        </TextBlock>
+                        <TextBox x:Name="SelectedAlternativeExeTxt" 
+                             Grid.Row="4" Grid.Column="1" Margin="10,0,0,5" VerticalAlignment="Center"/>
+                        <Button Name="ChooseAlternativeExeBtn"
+                            Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Grid.Row="4" Grid.Column="2"
+                            ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center" Click="ChooseAlternativeExeBtn_Click"/>
                     </Grid>
                 </StackPanel>
             </TabItem>

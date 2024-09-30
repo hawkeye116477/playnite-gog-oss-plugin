@@ -67,6 +67,7 @@
   <sys:String x:Key="LOCGogOssViewChangelog">Zobacz listę zmian</sys:String>
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Wyłącz sprawdzanie aktualizacji</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Argumenty startowe</sys:String>
+  <sys:String x:Key="LOCGogOssAlternativeExe">Alternatywny plik wykonywalny</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllDlcs">Zaznacz wszystkie dodatki (DLC)</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Zaznacz wszystko</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Ścieżka zapisu</sys:String>

@@ -346,6 +346,10 @@ namespace System
         /// </summary>
         public const string GogOssStartupArguments = "LOCGogOssStartupArguments";
         /// <summary>
+        /// Alternative executable file
+        /// </summary>
+        public const string GogOssAlternativeExe = "LOCGogOssAlternativeExe";
+        /// <summary>
         /// Check all DLCs
         /// </summary>
         public const string GogOssCheckAllDlcs = "LOCGogOssCheckAllDlcs";
@@ -357,6 +361,10 @@ namespace System
         /// Save path
         /// </summary>
         public const string GogOssSavePath = "LOCGogOssSavePath";
+        /// <summary>
+        /// Cloud
+        /// </summary>
+        public const string GogOssCloud = "LOCGogOssCloud";
         /// <summary>
         /// Sync saves to the cloud
         /// </summary>
