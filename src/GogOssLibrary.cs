@@ -29,7 +29,7 @@ namespace GogOssLibraryNS
         public static GogOssLibrary Instance { get; set; }
         public GogOssDownloadManagerView GogOssDownloadManagerView { get; set; }
         private readonly SidebarItem downloadManagerSidebarItem;
-        public Dictionary<string, Installed> installedAppListJson { get; set; }
+        public Dictionary<string, Installed> installedAppList { get; set; }
 
         public GogOssLibrary(IPlayniteAPI api) : base(
             "GOG OSS",
@@ -243,7 +243,7 @@ namespace GogOssLibraryNS
 
         public static Dictionary<string, Installed> GetInstalledAppList()
         {
-            var list = Instance.installedAppListJson;
+            var list = Instance.installedAppList;
             if (list == null)
             {
                 list = new Dictionary<string, Installed>();
@@ -256,7 +256,7 @@ namespace GogOssLibraryNS
                         list = nonEmptyList;
                     }
                 }
-                Instance.installedAppListJson = list;
+                Instance.installedAppList = list;
             }
             var programs = Programs.GetUnistallProgramsList();
             foreach (var program in programs)
@@ -268,7 +268,7 @@ namespace GogOssLibraryNS
                 }
 
                 var gameId = match.Groups[1].Value;
-                if (Instance.installedAppListJson.ContainsKey(gameId))
+                if (Instance.installedAppList.ContainsKey(gameId))
                 {
                     continue;
                 }
@@ -294,9 +294,9 @@ namespace GogOssLibraryNS
                 {
                     game.build_id = infoManifest.buildId;
                 }
-                Instance.installedAppListJson.Add(gameId, game);
+                Instance.installedAppList.Add(gameId, game);
             }
-            return Instance.installedAppListJson;
+            return Instance.installedAppList;
         }
 
         internal async Task<List<GameMetadata>> GetLibraryGames()
@@ -513,12 +513,17 @@ namespace GogOssLibraryNS
             yield return downloadManagerSidebarItem;
         }
 
+        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            GetInstalledAppList();
+        }
+
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
             StopDownloadManager();
-            if (installedAppListJson != null)
+            if (installedAppList != null)
             {
-                Helpers.SaveJsonSettingsToFile(installedAppListJson, "installed");
+                Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
             }
         }
 

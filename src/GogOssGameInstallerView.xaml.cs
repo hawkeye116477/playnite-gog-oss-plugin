@@ -335,7 +335,7 @@ namespace GogOssLibraryNS
                 }
             }
 
-            var installedAppList = GogOssLibrary.GetInstalledAppList();
+            var installedAppList = GogOssLibrary.Instance.installedAppList;
             if (!installedAppList.ContainsKey("ISI"))
             {
                 var isiTask = new DownloadManagerData.Download

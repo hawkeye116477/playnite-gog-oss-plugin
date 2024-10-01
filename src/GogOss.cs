@@ -13,7 +13,7 @@ namespace GogOssLibraryNS
 
         public static Installed GetInstalledInfo(string gameId)
         {
-            var installedAppList = GogOssLibrary.GetInstalledAppList();
+            var installedAppList = GogOssLibrary.Instance.installedAppList;
             var installedInfo = new Installed();
             if (installedAppList.ContainsKey(gameId))
             {

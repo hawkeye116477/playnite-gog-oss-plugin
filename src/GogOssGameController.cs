@@ -99,7 +99,7 @@ namespace GogOssLibraryNS
                         File.Delete(gameSettingsFile);
                     }
                 }
-                var installedAppList = GogOssLibrary.GetInstalledAppList();
+                var installedAppList = GogOssLibrary.Instance.installedAppList;
                 if (installedAppList.ContainsKey(Game.GameId))
                 {
                     installedAppList.Remove(Game.GameId);

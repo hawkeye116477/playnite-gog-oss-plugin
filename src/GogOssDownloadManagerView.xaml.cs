@@ -461,7 +461,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                var installedAppList = GogOssLibrary.Instance.installedAppListJson;
+                                var installedAppList = GogOssLibrary.Instance.installedAppList;
                                 var installedGameInfo = new Installed
                                 {
                                     build_id = downloadProperties.buildId,
