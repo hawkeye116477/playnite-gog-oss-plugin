@@ -30,6 +30,7 @@ namespace GogOssLibraryNS
         public GogOssDownloadManagerView GogOssDownloadManagerView { get; set; }
         private readonly SidebarItem downloadManagerSidebarItem;
         public Dictionary<string, Installed> installedAppList { get; set; }
+        public bool installedAppListModified { get; set; } = false;
 
         public GogOssLibrary(IPlayniteAPI api) : base(
             "GOG OSS",
@@ -295,6 +296,7 @@ namespace GogOssLibraryNS
                     game.build_id = infoManifest.buildId;
                 }
                 Instance.installedAppList.Add(gameId, game);
+                Instance.installedAppListModified = true;
             }
             return Instance.installedAppList;
         }
@@ -521,7 +523,7 @@ namespace GogOssLibraryNS
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
             StopDownloadManager();
-            if (installedAppList != null)
+            if (installedAppList != null && installedAppListModified)
             {
                 Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
             }

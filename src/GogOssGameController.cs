@@ -104,6 +104,7 @@ namespace GogOssLibraryNS
                 {
                     installedAppList.Remove(Game.GameId);
                 }
+                GogOssLibrary.Instance.installedAppListModified = true;
                 var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", Game.GameId);
                 if (File.Exists(manifestFile))
                 {

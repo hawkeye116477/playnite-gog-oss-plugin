@@ -477,6 +477,7 @@ namespace GogOssLibraryNS
                                     installedAppList.Remove(gameID);
                                 }
                                 installedAppList.Add(gameID, installedGameInfo);
+                                GogOssLibrary.Instance.installedAppListModified = true;
 
                                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                                 {
