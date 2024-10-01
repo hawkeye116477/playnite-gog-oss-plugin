@@ -28,6 +28,7 @@ namespace GogOssLibraryNS
         {
             InitializeComponent();
             UpdateAuthStatus();
+            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
         }
 
         private void ChooseGamePathBtn_Click(object sender, RoutedEventArgs e)
@@ -46,7 +47,6 @@ namespace GogOssLibraryNS
 
         private async void CometSettingsUC_Loaded(object sender, RoutedEventArgs e)
         {
-            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
             {
                 { DownloadCompleteAction.Nothing, ResourceProvider.GetString(LOC.GogOss3P_PlayniteDoNothing) },
