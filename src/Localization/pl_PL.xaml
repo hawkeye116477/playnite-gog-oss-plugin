@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opcje zaawansowane</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Dodatkowa zawartość</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Sprawdź pliki dziennika, aby uzyskać więcej informacji.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError">Współdzielona pamięć podręczna jest mniejsza niż wymagana: {0} &lt; {1}. Spróbuj włączyć optymalizację zmiany kolejności, aby zmniejszyć zużycie pamięci lub zwiększ maksymalną ilość pamięci współdzielonej.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edytuj właściwości wpisu</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Otwórz katalog pobierania</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Podana ścieżka nie istnieje.</sys:String>

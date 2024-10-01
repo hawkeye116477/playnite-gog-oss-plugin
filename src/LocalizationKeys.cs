@@ -66,10 +66,6 @@ namespace System
         /// </summary>
         public const string GogOssDownloadAlreadyExistsOther = "LOCGogOssDownloadAlreadyExistsOther";
         /// <summary>
-        /// Only one instance of GOG OSS may install/import/move applications at a time. Do you want to pause download manager tasks to continue?
-        /// </summary>
-        public const string GogOssInstanceNotice = "LOCGogOssInstanceNotice";
-        /// <summary>
         /// Enable Comet support
         /// </summary>
         public const string GogOssEnableCometSupport = "LOCGogOssEnableCometSupport";

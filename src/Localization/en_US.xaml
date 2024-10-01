@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Advanced Options</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Extra Content</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Check the log files for more information.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError">Current shared memory cache is smaller than required: {0} &lt; {1}. Try to enable reordering optimization to reduce memory usage or increase maximum amount of shared memory.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edit entry properties</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Open download directory</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">The specified path does not exist.</sys:String>

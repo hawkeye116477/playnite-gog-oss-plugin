@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Išplėstinės Parinktys</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Papildomas turinys</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daugiau informacijos ieškokite žurnaluose.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError"></sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties"></sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory"></sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError"></sys:String>

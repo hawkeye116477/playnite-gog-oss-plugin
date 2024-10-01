@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Gelişmiş Seçenekler</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Ekstra İçerik</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daha fazla bilgi için günlük dosyalarını kontrol edin.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError">Mevcut paylaşılan bellek önbelleği gerekenden daha küçük: {0} &lt; {1}. Bellek kullanımını azaltmak veya en fazla paylaşılan bellek miktarını artırmak için yeniden sıralama optimizasyonunu etkinleştirmeyi deneyin.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Girdi özelliklerini düzenle</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">İndirilenler dizinini aç</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Belirtilen yol mevcut değil.</sys:String>

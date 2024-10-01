@@ -91,11 +91,6 @@ namespace GogOssLibraryNS
             var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(Game.Name), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
-                var canContinue = GogOssLibrary.Instance.StopDownloadManager(true);
-                if (!canContinue)
-                {
-                    return;
-                }
                 if (result.CheckboxChecked)
                 {
                     var gameSettingsFile = Path.Combine(Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{Game.GameId}.json"));
@@ -108,7 +103,6 @@ namespace GogOssLibraryNS
                 if (installedAppList.ContainsKey(Game.GameId))
                 {
                     installedAppList.Remove(Game.GameId);
-                    Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
                 }
                 var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", Game.GameId);
                 if (File.Exists(manifestFile))

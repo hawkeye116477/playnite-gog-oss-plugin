@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Дополнительные параметры</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Доп. контент</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Для получения дополнительной информации смотрите файлы журнала.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError">Текущий общий объем кэша меньше требуемого: {0} &lt; {1}. Попробуйте включить оптимизацию перестановки для уменьшения использования памяти или увеличить максимальный объем общей памяти.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Изменить свойства записи</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Открыть каталог загрузок</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Указанный путь не существует.</sys:String>

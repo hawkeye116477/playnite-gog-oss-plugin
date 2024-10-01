@@ -27,8 +27,9 @@ namespace GogOssLibraryNS
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         public static GogOssLibrary Instance { get; set; }
-        public GogOssDownloadManagerView CometDownloadManagerView { get; set; }
+        public GogOssDownloadManagerView GogOssDownloadManagerView { get; set; }
         private readonly SidebarItem downloadManagerSidebarItem;
+        public Dictionary<string, Installed> installedAppListJson { get; set; }
 
         public GogOssLibrary(IPlayniteAPI api) : base(
             "GOG OSS",
@@ -60,11 +61,11 @@ namespace GogOssLibraryNS
 
         public static GogOssDownloadManagerView GetGogOssDownloadManager()
         {
-            if (Instance.CometDownloadManagerView == null)
+            if (Instance.GogOssDownloadManagerView == null)
             {
-                Instance.CometDownloadManagerView = new GogOssDownloadManagerView();
+                Instance.GogOssDownloadManagerView = new GogOssDownloadManagerView();
             }
-            return Instance.CometDownloadManagerView;
+            return Instance.GogOssDownloadManagerView;
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
@@ -237,21 +238,25 @@ namespace GogOssLibraryNS
                 game.GameActions = GetOtherTasks(game.GameId, game.InstallDirectory);
                 games.Add(game.GameId, game);
             }
-
             return games;
         }
 
         public static Dictionary<string, Installed> GetInstalledAppList()
         {
-            var installListPath = Path.Combine(Instance.GetPluginUserDataPath(), "installed.json");
-            var list = new Dictionary<string, Installed>();
-            if (File.Exists(installListPath))
+            var list = Instance.installedAppListJson;
+            if (list == null)
             {
-                var content = FileSystem.ReadFileAsStringSafe(installListPath);
-                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out Dictionary<string, Installed> nonEmptyList))
+                list = new Dictionary<string, Installed>();
+                var installListPath = Path.Combine(Instance.GetPluginUserDataPath(), "installed.json");
+                if (File.Exists(installListPath))
                 {
-                    list = nonEmptyList;
+                    var content = FileSystem.ReadFileAsStringSafe(installListPath);
+                    if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out Dictionary<string, Installed> nonEmptyList))
+                    {
+                        list = nonEmptyList;
+                    }
                 }
+                Instance.installedAppListJson = list;
             }
             var programs = Programs.GetUnistallProgramsList();
             foreach (var program in programs)
@@ -263,7 +268,7 @@ namespace GogOssLibraryNS
                 }
 
                 var gameId = match.Groups[1].Value;
-                if (list.ContainsKey(gameId))
+                if (Instance.installedAppListJson.ContainsKey(gameId))
                 {
                     continue;
                 }
@@ -289,9 +294,9 @@ namespace GogOssLibraryNS
                 {
                     game.build_id = infoManifest.buildId;
                 }
-                list.Add(gameId, game);
+                Instance.installedAppListJson.Add(gameId, game);
             }
-            return list;
+            return Instance.installedAppListJson;
         }
 
         internal async Task<List<GameMetadata>> GetLibraryGames()
@@ -511,23 +516,19 @@ namespace GogOssLibraryNS
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
             StopDownloadManager();
+            if (installedAppListJson != null)
+            {
+                Helpers.SaveJsonSettingsToFile(installedAppListJson, "installed");
+            }
         }
 
-        public bool StopDownloadManager(bool displayConfirm = false)
+        public bool StopDownloadManager()
         {
             GogOssDownloadManagerView downloadManager = GetGogOssDownloadManager();
             var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
                                                                                                      || i.status == DownloadStatus.Queued).ToList();
             if (runningAndQueuedDownloads.Count > 0)
             {
-                if (displayConfirm)
-                {
-                    var stopConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssInstanceNotice), "", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (stopConfirm == MessageBoxResult.No)
-                    {
-                        return false;
-                    }
-                }
                 foreach (var download in runningAndQueuedDownloads)
                 {
                     if (download.status == DownloadStatus.Running)

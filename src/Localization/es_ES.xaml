@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opciones Avanzadas</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Contenido extra</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Revisa los archivos de registro para más información.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError">La caché de memoria compartida actual es menor de lo requerido: {0} &lt; {1}. Trata de habilitar la optimización de reordenación para reducir el uso de memoria o aumentar la cantidad máxima de memoria compartida.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Editar propiedades de la entrada</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Abrir directorio de descarga</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">La ruta especificada no existe.</sys:String>

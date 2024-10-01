@@ -51,7 +51,6 @@
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opzioni avanzate</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Contenuti extra</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Controllare i log per ulteriori informazioni.</sys:String>
-  <sys:String x:Key="LOCGogOssMemoryError">La cache condivisa attuale è più piccola di quanto richiesto: {0} &lt; {1}. Prova ad abilitare l'ottimizzazione riordinamento per ridurre l'utilizzo della memoria o aumentare la quantità massima di memoria condivisa.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Modifica proprietà</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Apri cartella download</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Il percorso specificato non esiste.</sys:String>

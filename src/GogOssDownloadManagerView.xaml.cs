@@ -278,7 +278,6 @@ namespace GogOssLibraryNS
                 bool errorDisplayed = false;
                 bool successDisplayed = false;
                 bool loginErrorDisplayed = false;
-                string memoryErrorMessage = "";
                 bool permissionErrorDisplayed = false;
                 bool diskSpaceErrorDisplayed = false;
                 var cmd = Cli.Wrap(Gogdl.ClientInstallationPath)
@@ -425,10 +424,6 @@ namespace GogOssLibraryNS
                                 {
                                     loginErrorDisplayed = true;
                                 }
-                                else if (errorMessage.Contains("MemoryError"))
-                                {
-                                    memoryErrorMessage = errorMessage;
-                                }
                                 else if (errorMessage.Contains("PermissionError"))
                                 {
                                     permissionErrorDisplayed = true;
@@ -450,11 +445,6 @@ namespace GogOssLibraryNS
                                 {
                                     playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                                 }
-                                else if (memoryErrorMessage != "")
-                                {
-                                    var memoryErrorMatch = Regex.Match(memoryErrorMessage, @"MemoryError: Current shared memory cache is smaller than required: (\S+) MiB < (\S+) MiB");
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), string.Format(ResourceProvider.GetString(LOC.GogOssMemoryError), memoryErrorMatch.Groups[1] + " MB", memoryErrorMatch.Groups[2] + " MB")));
-                                }
                                 else if (permissionErrorDisplayed)
                                 {
                                     playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssPermissionError)));
@@ -471,7 +461,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                var installedAppList = GogOssLibrary.GetInstalledAppList();
+                                var installedAppList = GogOssLibrary.Instance.installedAppListJson;
                                 var installedGameInfo = new Installed
                                 {
                                     build_id = downloadProperties.buildId,
@@ -487,7 +477,6 @@ namespace GogOssLibraryNS
                                     installedAppList.Remove(gameID);
                                 }
                                 installedAppList.Add(gameID, installedGameInfo);
-                                Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
 
                                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                                 {
@@ -651,16 +640,6 @@ namespace GogOssLibraryNS
                 }
                 selectedEntry.status = DownloadStatus.Canceled;
             }
-            //var resumeFile = Path.Combine(CometLauncher.ConfigPath, "tmp", selectedEntry.gameID + ".resume");
-            //if (File.Exists(resumeFile))
-            //{
-            //    File.Delete(resumeFile);
-            //}
-            //var repairFile = Path.Combine(CometLauncher.ConfigPath, "tmp", selectedEntry.gameID + ".repair");
-            //if (File.Exists(repairFile))
-            //{
-            //    File.Delete(repairFile);
-            //}
             if (selectedEntry.fullInstallPath != null && selectedEntry.status != DownloadStatus.Completed
                 && selectedEntry.downloadProperties.downloadAction == DownloadAction.Install)
             {
