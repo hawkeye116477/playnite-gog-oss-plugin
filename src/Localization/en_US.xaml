@@ -67,7 +67,6 @@
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Disable update checking</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Startup arguments</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternative executable file</sys:String>
-  <sys:String x:Key="LOCGogOssCheckAllDlcs">Check all DLCs</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Check all</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Save path</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Cloud</sys:String>

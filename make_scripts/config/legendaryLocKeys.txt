@@ -18,7 +18,6 @@ LOCLegendarySpaceAvailable
 LOCLegendaryInstallSize
 LOCLegendaryDownloadSize
 LOCLegendaryCheckAllContent
-LOCLegendaryCheckAllDlcs
 LOCLegendaryExtraContent
 LOCLegendaryGames
 LOCLegendaryAdvancedOptions

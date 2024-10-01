@@ -35,6 +35,7 @@ namespace GogOssLibraryNS
         public long availableFreeSpace;
         private GogDownloadGameInfo manifest;
         public bool uncheckedByUser = true;
+        public string singleGameId;
 
         public GogOssGameInstallerView()
         {
@@ -216,6 +217,25 @@ namespace GogOssLibraryNS
                 size.download_size += manifest.size[selectedLanguage].download_size;
                 size.disk_size += manifest.size[selectedLanguage].disk_size;
             }
+            if (installData.downloadProperties.extraContent.Count > 0)
+            {
+                foreach (var dlc in manifest.dlcs)
+                {
+                    if (installData.downloadProperties.extraContent.Contains(dlc.id))
+                    {
+                        if (dlc.size.ContainsKey("*"))
+                        {
+                            size.download_size += dlc.size["*"].download_size;
+                            size.disk_size += dlc.size["*"].disk_size;
+                        }
+                        if (dlc.size.ContainsKey(selectedLanguage))
+                        {
+                            size.download_size += dlc.size[selectedLanguage].download_size;
+                            size.disk_size += dlc.size[selectedLanguage].disk_size;
+                        }
+                    }
+                }
+            }
             return size;
         }
 
@@ -333,6 +353,20 @@ namespace GogOssLibraryNS
                 {
                     MultiInstallData.Remove(MultiInstallData[0]);
                 }
+                if (manifest.dlcs.Count > 0)
+                {
+                    ExtraContentLB.ItemsSource = manifest.dlcs;
+                    ExtraContentBrd.Visibility = Visibility.Visible;
+                    if (manifest.dlcs.Count > 1)
+                    {
+                        AllOrNothingChk.Visibility = Visibility.Visible;
+                        if (settings.DownloadAllDlcs)
+                        {
+                            AllOrNothingChk.IsChecked = true;
+                        }
+                    }
+                }
+                singleGameId = MultiInstallData[0].gameID;
             }
 
             var installedAppList = GogOssLibrary.Instance.installedAppList;
@@ -410,9 +444,9 @@ namespace GogOssLibraryNS
 
         private void GameLanguageCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MultiInstallData.Count == 1 && GameLanguageCBo.IsDropDownOpen)
+            if (singleGameId != null && GameLanguageCBo.IsDropDownOpen)
             {
-                var installData = MultiInstallData[0];
+                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
                 if (GameLanguageCBo.SelectedValue != null)
                 {
                     InstallBtn.IsEnabled = false;
@@ -426,15 +460,17 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void GameVersionCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void GameVersionCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MultiInstallData.Count == 1 && GameVersionCBo.IsDropDownOpen)
+            if (singleGameId != null && GameVersionCBo.IsDropDownOpen)
             {
-                var installData = MultiInstallData[0];
+                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
                 if (GameVersionCBo.SelectedValue != null)
                 {
                     InstallBtn.IsEnabled = false;
                     installData.downloadProperties.buildId = GameVersionCBo.SelectedValue.ToString();
+                    manifest = await Gogdl.GetGameInfo(installData);
+                    ExtraContentLB.ItemsSource = manifest.dlcs;
                     var gameSize = CalculateGameSize(installData);
                     installData.downloadSizeNumber = gameSize.download_size;
                     installData.installSizeNumber = gameSize.disk_size;
@@ -446,9 +482,9 @@ namespace GogOssLibraryNS
 
         private void BetaChannelCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (MultiInstallData.Count == 1 && BetaChannelCBo.IsDropDownOpen)
+            if (singleGameId != null && BetaChannelCBo.IsDropDownOpen)
             {
-                var installData = MultiInstallData[0];
+                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
                 if (GameVersionCBo.SelectedValue != null)
                 {
                     InstallBtn.IsEnabled = false;
@@ -492,6 +528,46 @@ namespace GogOssLibraryNS
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             Window.GetWindow(this).Close();
+        }
+
+        private void AllOrNothingChk_Checked(object sender, RoutedEventArgs e)
+        {
+            ExtraContentLB.SelectAll();
+        }
+
+        private void AllOrNothingChk_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (uncheckedByUser)
+            {
+                ExtraContentLB.SelectedItems.Clear();
+            }
+        }
+
+        private void ExtraContentLBChk_Unchecked(object sender, RoutedEventArgs e)
+        {
+            uncheckedByUser = false;
+            if (AllOrNothingChk.IsChecked == true)
+            {
+                AllOrNothingChk.IsChecked = false;
+            }
+            uncheckedByUser = true;
+        }
+
+        private void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            InstallBtn.IsEnabled = false;
+            DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
+            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>();
+            installData.downloadProperties.extraContent = new List<string>();
+            foreach (var selectedDlc in selectedDlcs)
+            {
+                installData.downloadProperties.extraContent.Add(selectedDlc.id);
+            }
+            var gameSize = CalculateGameSize(installData);
+            installData.downloadSizeNumber = gameSize.download_size;
+            installData.installSizeNumber = gameSize.disk_size;
+            CalculateTotalSize();
+            InstallBtn.IsEnabled = true;
         }
     }
 }

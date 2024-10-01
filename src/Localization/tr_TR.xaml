@@ -67,7 +67,6 @@
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Güncelleme kontrolünü kapat</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Başlangıç ​​etkenleri</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternatif yürütülebilir dosya</sys:String>
-  <sys:String x:Key="LOCGogOssCheckAllDlcs">Tüm DLC içerikleri denetle</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Tümünü denetle</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Kayıt yolu</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Bulut</sys:String>

@@ -70,7 +70,7 @@ namespace GogOssLibraryNS.Models
         public string installPath { get; set; } = "";
         public DownloadAction downloadAction { get; set; }
         public int maxWorkers { get; set; }
-        public List<string> extraContent { get; set; } = default;
+        public List<string> extraContent { get; set; } = new List<string>();
         public string language { get; set; } = "en-US";
         public string buildId { get; set; } = "";
         public string version { get; set; } = "";

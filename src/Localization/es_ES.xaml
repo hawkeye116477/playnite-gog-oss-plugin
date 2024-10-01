@@ -67,7 +67,6 @@
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Desactivar comprobación de actualización</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Argumentos de inicio</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Archivo ejecutable alternativo</sys:String>
-  <sys:String x:Key="LOCGogOssCheckAllDlcs">Marcar todos los contenidos descargables</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Marcar todo</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Ruta de partidas guardadas</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Nube</sys:String>

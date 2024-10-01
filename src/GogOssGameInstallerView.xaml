@@ -94,16 +94,16 @@
             <Border BorderThickness="2" Style="{DynamicResource HighlightBorder}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="ExtraContentBrd" Visibility="Collapsed" Margin="0,0,0,5">
                 <Expander Header="{DynamicResource LOCGogOssExtraContent}" Margin="2,2,5,2" HorizontalAlignment="Left">
                     <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                        <CheckBox Margin="7,0,0,5" Content="{DynamicResource LOCGogOssCheckAllContent}" x:Name="AllOrNothingChk" Visibility="Collapsed" />
-                        <CheckBox Margin="7,0,0,5" Content="{DynamicResource LOCGogOssCheckAllDlcs}" x:Name="AllDlcsChk" Visibility="Collapsed"/>
+                        <CheckBox Margin="7,0,0,5" Content="{DynamicResource LOCGogOssCheckAllContent}" x:Name="AllOrNothingChk" Visibility="Collapsed" Checked="AllOrNothingChk_Checked" Unchecked="AllOrNothingChk_Unchecked" />
                         <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Background="{DynamicResource PanelSeparatorBrush}" Margin="7,0,0,5" />
-                        <ListBox BorderThickness="0" Name="ExtraContentLB" SelectionMode="Multiple" Margin="5,0,5,5">
+                        <ListBox BorderThickness="0" Name="ExtraContentLB" SelectionMode="Multiple" Margin="5,0,5,5" SelectionChanged="ExtraContentLB_SelectionChanged">
                             <ListBox.Resources>
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="ListBoxItem">
-                                                <CheckBox Content="{Binding Value.Name}" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" ToolTip="{Binding Value.Description}" Tag="{Binding Value.Is_dlc}" Margin="0,5,0,0" Name="ExtraContentLBChk"/>
+                                                <CheckBox Content="{Binding title}" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Margin="0,5,0,0" Name="ExtraContentLBChk" Unchecked="ExtraContentLBChk_Unchecked">
+                                                </CheckBox>
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>

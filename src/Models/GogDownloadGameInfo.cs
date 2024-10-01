@@ -6,7 +6,7 @@ namespace GogOssLibraryNS.Models
     public class GogDownloadGameInfo
     {
         public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
-        public object[] dlcs { get; set; }
+        public List<Dlc> dlcs { get; set; } = new List<Dlc>();
         public string buildId { get; set; }
         public List<string> languages { get; set; } = new List<string>();
         public string folder_name { get; set; } = "";
@@ -16,6 +16,13 @@ namespace GogOssLibraryNS.Models
         public List<string> available_branches { get; set; } = new List<string>();
         public Builds builds { get; set; } = new Builds();
         public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
+
+        public class Dlc
+        {
+            public string title { get; set; }
+            public string id { get; set; }
+            public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
+        }
 
         public class SizeType
         {

@@ -278,10 +278,6 @@ namespace System
         /// </summary>
         public const string GogOssCheckLog = "LOCGogOssCheckLog";
         /// <summary>
-        /// Current shared memory cache is smaller than required: {0} < {1}. Try to enable reordering optimization to reduce memory usage or increase maximum amount of shared memory.
-        /// </summary>
-        public const string GogOssMemoryError = "LOCGogOssMemoryError";
-        /// <summary>
         /// Edit entry properties
         /// </summary>
         public const string GogOssEditSelectedDownloadProperties = "LOCGogOssEditSelectedDownloadProperties";
@@ -345,10 +341,6 @@ namespace System
         /// Alternative executable file
         /// </summary>
         public const string GogOssAlternativeExe = "LOCGogOssAlternativeExe";
-        /// <summary>
-        /// Check all DLCs
-        /// </summary>
-        public const string GogOssCheckAllDlcs = "LOCGogOssCheckAllDlcs";
         /// <summary>
         /// Check all
         /// </summary>

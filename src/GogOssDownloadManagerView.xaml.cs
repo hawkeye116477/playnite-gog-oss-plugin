@@ -271,6 +271,10 @@ namespace GogOssLibraryNS
             {
                 installCommand.Add("--skip-dlcs");
             }
+            else
+            {
+                installCommand.AddRange(new[] { "--dlcs", string.Join(",", downloadProperties.extraContent) });
+            }
             forcefulInstallerCTS = new CancellationTokenSource();
             gracefulInstallerCTS = new CancellationTokenSource();
             try

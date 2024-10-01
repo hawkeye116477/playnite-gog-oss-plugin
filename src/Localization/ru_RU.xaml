@@ -67,7 +67,6 @@
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Отключить проверку обновлений</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Аргументы для запуска</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Альтернативный исполняемый файл</sys:String>
-  <sys:String x:Key="LOCGogOssCheckAllDlcs">Проверить все DLC</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Выбрать все</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Сохранить путь</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Облако</sys:String>
