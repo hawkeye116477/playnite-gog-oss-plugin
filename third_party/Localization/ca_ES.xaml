@@ -31,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">No s'ha pogut descarregar les metadades: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">No fer res</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Actualització disponible</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Descarregar i instal·lar l'actualització</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Buscar actualitzacions</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdateCheckFailMessage">No s'ha pogut comprovar si hi ha una versió nova.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Instal·lar</sys:String>

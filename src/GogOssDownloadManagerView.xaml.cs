@@ -741,18 +741,29 @@ namespace GogOssLibraryNS
         {
             if (DownloadsDG.SelectedIndex != -1)
             {
-                //var window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
-                //{
-                //    ShowMaximizeButton = false,
-                //});
-                //var selectedItem = DownloadsDG.SelectedItems[0] as DownloadManagerData.Download;
-                //window.title = selectedItem.name + " — " + ResourceProvider.GetString(LOC.GogOssDownloadProperties);
-                //window.DataContext = selectedItem;
-                //window.Content = new GogOssDownloadProperties();
-                //window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
-                //window.SizeToContent = SizeToContent.WidthAndHeight;
-                //window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                //window.ShowDialog();
+                var window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                {
+                    ShowMaximizeButton = false,
+                });
+                var selectedItem = DownloadsDG.SelectedItems[0] as DownloadManagerData.Download;
+                var newSelectedItem = new DownloadManagerData.Download
+                {
+                    editDownloadPropertiesMode = true,
+                    gameID = selectedItem.gameID,
+                    name = selectedItem.name,
+                    downloadProperties = selectedItem.downloadProperties
+                };
+                var specialList = new List<DownloadManagerData.Download>
+                {
+                    newSelectedItem
+                };
+                window.Title = selectedItem.name + " — " + ResourceProvider.GetString(LOC.GogOssDownloadProperties);
+                window.DataContext = specialList;
+                window.Content = new GogOssGameInstallerView();
+                window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+                window.SizeToContent = SizeToContent.WidthAndHeight;
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                window.ShowDialog();
             }
         }
 

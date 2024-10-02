@@ -80,3 +80,5 @@ LOCLegendarySync
 LOCLegendaryCloudSavesNotSupported
 LOCLegendaryCloud
 LOCLegendaryAlternativeExe
+LOCLegendaryDownloadProperties
+LOCLegendaryTask

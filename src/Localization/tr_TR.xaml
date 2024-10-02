@@ -54,6 +54,8 @@
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Girdi özelliklerini düzenle</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">İndirilenler dizinini aç</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Belirtilen yol mevcut değil.</sys:String>
+  <sys:String x:Key="LOCGogOssTask">Görev</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadProperties">İndirme Özellikleri</sys:String>
   <sys:String x:Key="LOCGogOssSignOut">Oturumu kapat</sys:String>
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Sorun giderme bilgisi</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Playnite sürümü</sys:String>

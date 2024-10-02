@@ -53,6 +53,7 @@
                 <Button x:Name="InstallBtn" Content="{DynamicResource LOCGogOss3P_PlayniteInstallGame}" ContentStringFormat="&#xef07; {0}"
                     FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0"
                     Click="InstallBtn_Click" IsEnabled="False" />
+                <Button x:Name="SaveBtn" Content="{DynamicResource LOCGogOss3P_PlayniteSaveLabel}" ContentStringFormat="&#xee00; {0}" FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0" Visibility="Collapsed" Click="SaveBtn_Click" />
                 <Button x:Name="CancelBtn" Content="{DynamicResource LOCGogOss3P_PlayniteCancelLabel}" ContentStringFormat="&#xec4f; {0}"
                     FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CancelBtn_Click" />
             </StackPanel>
@@ -63,20 +64,24 @@
                     Name="ChooseGamePathBtn" Click="ChooseGamePathBtn_Click" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectDirectoryTooltip}" />
                 <TextBox Name="SelectedGamePathTxt" Text="" VerticalAlignment="Center" Margin="0" />
             </DockPanel>
-            <StackPanel Orientation="Horizontal" Name="LanguageSP" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" Name="TaskSP" Visibility="Collapsed" Margin="0,0,0,5">
+                <TextBlock Text="{DynamicResource LOCGogOssTask}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"></TextBlock>
+                <ComboBox x:Name="TaskCBo" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="Auto" Margin="10,0,0,0"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Name="LanguageSP" Visibility="Collapsed" Margin="0,0,0,5">
                 <TextBlock Text="{DynamicResource LOCGogOssLanguage}"
-                                   Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <ComboBox Name="GameLanguageCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,5" SelectionChanged="GameLanguageCBo_SelectionChanged"/>
+                                   Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <ComboBox Name="GameLanguageCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameLanguageCBo_SelectionChanged"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Name="VersionSP" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" Name="VersionSP" Visibility="Collapsed" Margin="0,0,0,5">
                 <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteVersionLabel}" Grid.Row="1" Grid.Column="0" 
-                                   Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <ComboBox Grid.Row="1" Grid.Column="1" Name="GameVersionCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,5" SelectionChanged="GameVersionCBo_SelectionChanged"/>
+                                   Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <ComboBox Grid.Row="1" Grid.Column="1" Name="GameVersionCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameVersionCBo_SelectionChanged"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Name="BetaChannelSP" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" Name="BetaChannelSP" Visibility="Collapsed" Margin="0,0,0,5">
                 <TextBlock Text="{DynamicResource LOCGogOssBetaChannel}" Grid.Row="2" Grid.Column="0" 
-                                   Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                <ComboBox Grid.Row="2" Grid.Column="1" Name="BetaChannelCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,5" SelectionChanged="BetaChannelCBo_SelectionChanged"/>
+                                   Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <ComboBox Grid.Row="2" Grid.Column="1" Name="BetaChannelCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="BetaChannelCBo_SelectionChanged"/>
             </StackPanel>
             <Border BorderThickness="2" Style="{DynamicResource HighlightBorder}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="GamesBrd" Visibility="Collapsed" Margin="0,0,0,5">
                 <Expander Header="{DynamicResource LOCGogOssGames}" Margin="2,2,5,2" HorizontalAlignment="Left" IsExpanded="True">

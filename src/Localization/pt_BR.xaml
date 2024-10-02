@@ -54,6 +54,8 @@
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Editar propriedades deste item</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Abrir diretório de download</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">O caminho especificado não existe.</sys:String>
+  <sys:String x:Key="LOCGogOssTask">Tarefa</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadProperties">Propriedades de Download</sys:String>
   <sys:String x:Key="LOCGogOssSignOut">Encerrar sessão</sys:String>
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Informações para solução de problemas</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Versão do Playnite</sys:String>

@@ -31,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Fallou ó descargar os metadatos: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Non facer nada</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Actualización dispoñible</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Descargar e instalar a actualización</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Buscar actualizacións</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdateCheckFailMessage">Error ó comprobar actualizacións.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Instalar</sys:String>

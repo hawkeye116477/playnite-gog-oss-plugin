@@ -62,6 +62,7 @@ namespace GogOssLibraryNS.Models
             }
             public DownloadItemType downloadItemType { get; set; } = DownloadItemType.Game;
             public DownloadProperties downloadProperties { get; set; } = new DownloadProperties();
+            public bool? editDownloadPropertiesMode;
         }
     }
 
@@ -71,10 +72,10 @@ namespace GogOssLibraryNS.Models
         public DownloadAction downloadAction { get; set; }
         public int maxWorkers { get; set; }
         public List<string> extraContent { get; set; } = new List<string>();
-        public string language { get; set; } = "en-US";
+        public string language { get; set; } = "";
         public string buildId { get; set; } = "";
         public string version { get; set; } = "";
-        public string betaChannel { get; set; } = "disabled";
+        public string betaChannel { get; set; } = "";
         public string os { get; set; } = "windows";
     }
 }

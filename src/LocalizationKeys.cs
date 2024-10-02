@@ -290,6 +290,14 @@ namespace System
         /// </summary>
         public const string GogOssPathNotExistsError = "LOCGogOssPathNotExistsError";
         /// <summary>
+        /// Task
+        /// </summary>
+        public const string GogOssTask = "LOCGogOssTask";
+        /// <summary>
+        /// Download Properties
+        /// </summary>
+        public const string GogOssDownloadProperties = "LOCGogOssDownloadProperties";
+        /// <summary>
         /// Sign out
         /// </summary>
         public const string GogOssSignOut = "LOCGogOssSignOut";
@@ -509,6 +517,10 @@ namespace System
         /// Update Available
         /// </summary>
         public const string GogOss3P_PlayniteUpdaterWindowTitle = "LOCGogOss3P_PlayniteUpdaterWindowTitle";
+        /// <summary>
+        /// Download and Install Update
+        /// </summary>
+        public const string GogOss3P_PlayniteUpdaterInstallUpdate = "LOCGogOss3P_PlayniteUpdaterInstallUpdate";
         /// <summary>
         /// Check for Updates
         /// </summary>

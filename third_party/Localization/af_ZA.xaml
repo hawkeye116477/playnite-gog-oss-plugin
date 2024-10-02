@@ -29,6 +29,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdateCheckFailMessage"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame"></sys:String>

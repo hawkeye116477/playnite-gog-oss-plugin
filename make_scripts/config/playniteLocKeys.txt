@@ -33,3 +33,4 @@ LOCYesLabel
 LOCNoLabel
 LOCUninstallGame
 LOCSaveLabel
+LOCUpdaterInstallUpdate
