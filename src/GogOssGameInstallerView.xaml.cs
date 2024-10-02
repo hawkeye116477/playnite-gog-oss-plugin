@@ -534,7 +534,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void BetaChannelCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void BetaChannelCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (singleGameId != null && BetaChannelCBo.IsDropDownOpen)
             {
@@ -569,6 +569,7 @@ namespace GogOssLibraryNS
                         GameVersionCBo.ItemsSource = gameVersions;
                         GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault();
                         installData.downloadProperties.buildId = GameVersionCBo.SelectedValue.ToString();
+                        manifest = await Gogdl.GetGameInfo(installData);
                     }
                     var gameSize = CalculateGameSize(installData);
                     installData.downloadSizeNumber = gameSize.download_size;
