@@ -5,19 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 
 namespace GogOssLibraryNS
 {
@@ -218,11 +209,12 @@ namespace GogOssLibraryNS
                 size.download_size += manifest.size[selectedLanguage].download_size;
                 size.disk_size += manifest.size[selectedLanguage].disk_size;
             }
-            if (installData.downloadProperties.extraContent.Count > 0)
+            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>().Select(d => d.id).ToList();
+            if (selectedDlcs.Count() > 0)
             {
                 foreach (var dlc in manifest.dlcs)
                 {
-                    if (installData.downloadProperties.extraContent.Contains(dlc.id))
+                    if (selectedDlcs.Contains(dlc.id))
                     {
                         if (dlc.size.ContainsKey("*"))
                         {
@@ -265,7 +257,6 @@ namespace GogOssLibraryNS
             installSizeNumber = 0;
 
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
-
             if (MultiInstallData.Count == 1)
             {
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == MultiInstallData[0].gameID);
@@ -275,6 +266,10 @@ namespace GogOssLibraryNS
                 }
                 if (editDownloadPropertiesMode)
                 {
+                    GameVersionCBo.IsEnabled = false;
+                    BetaChannelCBo.IsEnabled = false;
+                    ExtraContentLB.IsEnabled = false;
+                    AllOrNothingChk.IsEnabled = false;
                     var downloadActionOptions = new Dictionary<DownloadAction, string>
                     {
                         { DownloadAction.Install, ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame) },
@@ -399,9 +394,17 @@ namespace GogOssLibraryNS
                     {
                         AllOrNothingChk.Visibility = Visibility.Visible;
                     }
-                    if (settings.DownloadAllDlcs)
+                    if (settings.DownloadAllDlcs && editDownloadPropertiesMode != true)
                     {
                         AllOrNothingChk.IsChecked = true;
+                    }
+                    if (editDownloadPropertiesMode)
+                    {
+                        foreach (var selectedDlc in MultiInstallData[0].downloadProperties.extraContent)
+                        {
+                            var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
+                            ExtraContentLB.SelectedItems.Add(selectedDlcItem);
+                        }
                     }
                 }
             }
@@ -433,8 +436,6 @@ namespace GogOssLibraryNS
                 }
                 installData.downloadSizeNumber = gameSize.download_size;
                 installData.installSizeNumber = gameSize.disk_size;
-                downloadSizeNumber += installData.downloadSizeNumber;
-                installSizeNumber += installData.installSizeNumber;
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
                 if (wantedItem != null && editDownloadPropertiesMode != true)
                 {
@@ -443,10 +444,7 @@ namespace GogOssLibraryNS
                     continue;
                 }
             }
-            InstallBtn.IsEnabled = true;
-            UpdateAfterInstallingSize();
-            DownloadSizeTB.Text = Helpers.FormatSize(downloadSizeNumber);
-            InstallSizeTB.Text = Helpers.FormatSize(installSizeNumber);
+            CalculateTotalSize();
             if (downloadItemsAlreadyAdded.Count > 0)
             {
                 if (downloadItemsAlreadyAdded.Count == 1)
