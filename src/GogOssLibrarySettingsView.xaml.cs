@@ -45,7 +45,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private async void CometSettingsUC_Loaded(object sender, RoutedEventArgs e)
+        private async void GogOssSettingsUC_Loaded(object sender, RoutedEventArgs e)
         {
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
             {

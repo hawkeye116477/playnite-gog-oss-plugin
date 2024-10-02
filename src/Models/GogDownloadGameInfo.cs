@@ -10,7 +10,7 @@ namespace GogOssLibraryNS.Models
         public string buildId { get; set; }
         public List<string> languages { get; set; } = new List<string>();
         public string folder_name { get; set; } = "";
-        public object[] dependencies { get; set; }
+        public List<string> dependencies { get; set; } = new List<string>();
         public string versionEtag { get; set; }
         public string versionName { get; set; }
         public List<string> available_branches { get; set; } = new List<string>();

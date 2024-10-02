@@ -416,11 +416,11 @@ namespace GogOssLibraryNS
                             }
                             else if (errorMessage.Contains("WARNING") && !errorMessage.Contains("exit requested") && !errorMessage.Contains("PermissionError"))
                             {
-                                logger.Warn($"[Comet] {errorMessage}");
+                                logger.Warn($"{errorMessage}");
                             }
                             else if (errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error") || errorMessage.Contains("Failure"))
                             {
-                                logger.Error($"[Comet] {errorMessage}");
+                                logger.Error($"{errorMessage}");
                                 if (errorMessage.Contains("Failed to establish a new connection")
                                     || errorMessage.Contains("Log in failed")
                                     || errorMessage.Contains("Login failed")
@@ -763,7 +763,7 @@ namespace GogOssLibraryNS
                 //var selectedItem = DownloadsDG.SelectedItems[0] as DownloadManagerData.Download;
                 //window.title = selectedItem.name + " — " + ResourceProvider.GetString(LOC.GogOssDownloadProperties);
                 //window.DataContext = selectedItem;
-                //window.Content = new CometDownloadProperties();
+                //window.Content = new GogOssDownloadProperties();
                 //window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
                 //window.SizeToContent = SizeToContent.WidthAndHeight;
                 //window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -921,7 +921,7 @@ namespace GogOssLibraryNS
             MoveEntries(EntryPosition.Bottom);
         }
 
-        private void CometDownloadManagerUC_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void GogOssDownloadManagerUC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Delete)
             {
