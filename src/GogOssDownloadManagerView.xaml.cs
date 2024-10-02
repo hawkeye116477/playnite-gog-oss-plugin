@@ -214,7 +214,6 @@ namespace GogOssLibraryNS
             var downloadProperties = taskData.downloadProperties;
             var gameTitle = taskData.name;
             double cachedDownloadSizeNumber = taskData.downloadSizeNumber;
-            double newDownloadSizeNumber = 0;
             double downloadCache = 0;
             bool downloadSpeedInBits = false;
             if (settings.DisplayDownloadSpeedInBits)
@@ -267,7 +266,7 @@ namespace GogOssLibraryNS
                 installCommand.AddRange(new[] { "--lang", downloadProperties.language });
             }
             installCommand.AddRange(new[] { "--platform", downloadProperties.os });
-            if (downloadProperties.extraContent == null)
+            if (downloadProperties.extraContent.Count == 0)
             {
                 installCommand.Add("--skip-dlcs");
             }
@@ -325,23 +324,6 @@ namespace GogOssLibraryNS
                             }
                             break;
                         case StandardErrorCommandEvent stdErr:
-                            var downloadSizeMatch = Regex.Match(stdErr.Text, @"Download size: (\S+) (\wiB)");
-                            if (downloadSizeMatch.Length >= 2)
-                            {
-                                newDownloadSizeNumber = Helpers.ToBytes(Helpers.GetDouble(downloadSizeMatch.Groups[1].Value), downloadSizeMatch.Groups[2].Value);
-                                if (newDownloadSizeNumber > cachedDownloadSizeNumber)
-                                {
-                                    wantedItem.downloadSizeNumber = newDownloadSizeNumber;
-                                    cachedDownloadSizeNumber = newDownloadSizeNumber;
-                                }
-                                downloadCache = cachedDownloadSizeNumber - newDownloadSizeNumber;
-                            }
-                            var installSizeMatch = Regex.Match(stdErr.Text, @"Install size: (\S+) (\wiB)");
-                            if (installSizeMatch.Length >= 2)
-                            {
-                                double installSizeNumber = Helpers.ToBytes(Helpers.GetDouble(installSizeMatch.Groups[1].Value), installSizeMatch.Groups[2].Value);
-                                wantedItem.installSizeNumber = installSizeNumber;
-                            }
                             var fullInstallPathMatch = Regex.Match(stdErr.Text, @"Install path: (\S+)");
                             if (fullInstallPathMatch.Length >= 2)
                             {
@@ -358,6 +340,9 @@ namespace GogOssLibraryNS
                                 {
                                     DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssDownloadingUpdate);
                                 }
+                                double progress = Helpers.GetDouble(progressMatch.Groups[1].Value);
+                                wantedItem.progress = progress;
+                                gogPanel.ProgressValue = progress;
                             }
                             var elapsedMatch = Regex.Match(stdErr.Text, @"Running for: (\d\d:\d\d:\d\d)");
                             if (elapsedMatch.Length >= 2)
@@ -375,9 +360,9 @@ namespace GogOssLibraryNS
                                 double downloadedNumber = Helpers.ToBytes(Helpers.GetDouble(downloadedMatch.Groups[1].Value), downloadedMatch.Groups[2].Value);
                                 double totalDownloadedNumber = downloadedNumber + downloadCache;
                                 wantedItem.downloadedNumber = totalDownloadedNumber;
-                                double newProgress = totalDownloadedNumber / wantedItem.downloadSizeNumber * 100;
-                                wantedItem.progress = newProgress;
-                                gogPanel.ProgressValue = newProgress;
+                                //double newProgress = totalDownloadedNumber / wantedItem.downloadSizeNumber * 100;
+                                //wantedItem.progress = newProgress;
+                                //gogPanel.ProgressValue = newProgress;
 
                                 if (totalDownloadedNumber == wantedItem.downloadSizeNumber)
                                 {
