@@ -22,11 +22,10 @@ namespace GogOssLibraryNS
         public string installCommand;
         public double downloadSizeNumber;
         public double installSizeNumber;
-        public double? installSizeNumberAfterMod;
         public long availableFreeSpace;
         private GogDownloadGameInfo manifest;
         public bool uncheckedByUser = true;
-        public string singleGameId;
+        public DownloadManagerData.Download singleGameInstallData;
         public bool editDownloadPropertiesMode = false;
 
         public GogOssGameInstallerView()
@@ -53,7 +52,7 @@ namespace GogOssLibraryNS
 
         public Window InstallerWindow => Window.GetWindow(this);
 
-        public List<DownloadManagerData.Download> MultiInstallData
+        private List<DownloadManagerData.Download> MultiInstallData
         {
             get => (List<DownloadManagerData.Download>)DataContext;
             set { }
@@ -83,10 +82,6 @@ namespace GogOssLibraryNS
         private void UpdateAfterInstallingSize()
         {
             double afterInstallSizeNumber = (double)(availableFreeSpace - installSizeNumber);
-            if (installSizeNumberAfterMod != null)
-            {
-                afterInstallSizeNumber = (double)(availableFreeSpace - installSizeNumberAfterMod);
-            }
             if (afterInstallSizeNumber < 0)
             {
                 afterInstallSizeNumber = 0;
@@ -296,7 +291,7 @@ namespace GogOssLibraryNS
                     SaveBtn.Visibility = Visibility.Visible;
                 }
                 manifest = await Gogdl.GetGameInfo(MultiInstallData[0]);
-                singleGameId = MultiInstallData[0].gameID;
+                singleGameInstallData = MultiInstallData[0];
                 var builds = manifest.builds.items;
                 var gameVersions = new Dictionary<string, string>();
                 if (builds.Count > 1)
@@ -480,9 +475,9 @@ namespace GogOssLibraryNS
 
         private void GameLanguageCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (singleGameId != null && GameLanguageCBo.IsDropDownOpen)
+            if (singleGameInstallData != null && GameLanguageCBo.IsDropDownOpen)
             {
-                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
+                DownloadManagerData.Download installData = singleGameInstallData;
                 if (GameLanguageCBo.SelectedValue != null)
                 {
                     InstallBtn.IsEnabled = false;
@@ -499,9 +494,9 @@ namespace GogOssLibraryNS
         private async void GameVersionCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var settings = GogOssLibrary.GetSettings();
-            if (singleGameId != null && GameVersionCBo.IsDropDownOpen)
+            if (singleGameInstallData != null && GameVersionCBo.IsDropDownOpen)
             {
-                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
+                DownloadManagerData.Download installData = singleGameInstallData;
                 if (GameVersionCBo.SelectedValue != null)
                 {
                     InstallBtn.IsEnabled = false;
@@ -534,9 +529,9 @@ namespace GogOssLibraryNS
 
         private async void BetaChannelCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (singleGameId != null && BetaChannelCBo.IsDropDownOpen)
+            if (singleGameInstallData != null && BetaChannelCBo.IsDropDownOpen)
             {
-                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
+                DownloadManagerData.Download installData = singleGameInstallData;
                 if (GameVersionCBo.SelectedValue != null)
                 {
                     InstallBtn.IsEnabled = false;
@@ -582,7 +577,7 @@ namespace GogOssLibraryNS
         {
             if (editDownloadPropertiesMode)
             {
-                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
+                DownloadManagerData.Download installData = singleGameInstallData;
                 installData.editDownloadPropertiesMode = null;
             }
             Window.GetWindow(this).Close();
@@ -613,10 +608,10 @@ namespace GogOssLibraryNS
 
         private void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (singleGameId != null)
+            if (singleGameInstallData != null)
             {
                 InstallBtn.IsEnabled = false;
-                DownloadManagerData.Download installData = MultiInstallData.First(s => s.gameID == singleGameId);
+                DownloadManagerData.Download installData = singleGameInstallData;
                 var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>();
                 installData.downloadProperties.extraContent = new List<string>();
                 foreach (var selectedDlc in selectedDlcs)

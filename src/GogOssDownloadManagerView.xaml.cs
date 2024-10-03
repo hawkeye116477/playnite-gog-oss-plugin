@@ -746,16 +746,10 @@ namespace GogOssLibraryNS
                     ShowMaximizeButton = false,
                 });
                 var selectedItem = DownloadsDG.SelectedItems[0] as DownloadManagerData.Download;
-                var newSelectedItem = new DownloadManagerData.Download
-                {
-                    editDownloadPropertiesMode = true,
-                    gameID = selectedItem.gameID,
-                    name = selectedItem.name,
-                    downloadProperties = selectedItem.downloadProperties
-                };
+                selectedItem.editDownloadPropertiesMode = true;
                 var specialList = new List<DownloadManagerData.Download>
                 {
-                    newSelectedItem
+                    selectedItem
                 };
                 window.Title = selectedItem.name + " — " + ResourceProvider.GetString(LOC.GogOssDownloadProperties);
                 window.DataContext = specialList;
