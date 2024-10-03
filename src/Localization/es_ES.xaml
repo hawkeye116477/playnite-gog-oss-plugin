@@ -68,6 +68,7 @@
   <sys:String x:Key="LOCGogOssViewChangelog">Ver lista de cambios</sys:String>
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Desactivar comprobación de actualización</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Argumentos de inicio</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherSettings">Modificar ajustes de inicio</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Archivo ejecutable alternativo</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Marcar todo</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Ruta de partidas guardadas</sys:String>

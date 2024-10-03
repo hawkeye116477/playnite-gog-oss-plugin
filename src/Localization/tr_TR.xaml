@@ -68,6 +68,7 @@
   <sys:String x:Key="LOCGogOssViewChangelog">Değişiklikleri görüntüle</sys:String>
   <sys:String x:Key="LOCGogOssDisableGameUpdateChecking">Güncelleme kontrolünü kapat</sys:String>
   <sys:String x:Key="LOCGogOssStartupArguments">Başlangıç ​​etkenleri</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherSettings">Başlatma ayarlarını değiştir</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternatif yürütülebilir dosya</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Tümünü denetle</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Kayıt yolu</sys:String>

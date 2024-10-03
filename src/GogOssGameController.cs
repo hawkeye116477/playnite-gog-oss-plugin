@@ -41,7 +41,7 @@ namespace GogOssLibraryNS
             Game.IsInstalling = false;
         }
 
-        private void LaunchInstaller(List<DownloadManagerData.Download> installData)
+        public static void LaunchInstaller(List<DownloadManagerData.Download> installData)
         {
             var playniteAPI = API.Instance;
 

@@ -550,5 +550,328 @@ namespace GogOssLibraryNS
             downloadManager.SaveData();
             return true;
         }
+
+        public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
+        {
+            var gogOssGames = args.Games.Where(i => i.PluginId == Id).ToList();
+            if (gogOssGames.Count > 0)
+            {
+                if (gogOssGames.Count == 1)
+                {
+                    Game game = gogOssGames.FirstOrDefault();
+                    if (game.IsInstalled)
+                    {
+                        yield return new GameMenuItem
+                        {
+                            Description = ResourceProvider.GetString(LOC.GogOssLauncherSettings),
+                            Icon = "ModifyLaunchSettingsIcon",
+                            Action = (args) =>
+                            {
+                                Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                                {
+                                    ShowMaximizeButton = false
+                                });
+                                window.DataContext = game;
+                                window.Title = $"{ResourceProvider.GetString(LOC.GogOssLauncherSettings)} - {game.Name}";
+                                window.Content = new GogOssGameSettingsView();
+                                window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                                window.SizeToContent = SizeToContent.WidthAndHeight;
+                                window.MinWidth = 600;
+                                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                window.ShowDialog();
+                            }
+                        };
+                    //    yield return new GameMenuItem
+                    //    {
+                    //        Description = ResourceProvider.GetString(LOC.Legendary3P_PlayniteCheckForUpdates),
+                    //        Icon = "UpdateDbIcon",
+                    //        Action = (args) =>
+                    //        {
+                    //            if (!LegendaryLauncher.IsInstalled)
+                    //            {
+                    //                throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
+                    //            }
+
+                    //            LegendaryUpdateController legendaryUpdateController = new LegendaryUpdateController();
+                    //            var gamesToUpdate = new Dictionary<string, UpdateInfo>();
+                    //            GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.LegendaryCheckingForUpdates), false) { IsIndeterminate = true };
+                    //            PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
+                    //            {
+                    //                gamesToUpdate = await legendaryUpdateController.CheckGameUpdates(game.Name, game.GameId);
+                    //            }, updateCheckProgressOptions);
+                    //            if (gamesToUpdate.Count > 0)
+                    //            {
+                    //                var successUpdates = gamesToUpdate.Where(i => i.Value.Success).ToDictionary(i => i.Key, i => i.Value);
+                    //                if (successUpdates.Count > 0)
+                    //                {
+                    //                    Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                    //                    {
+                    //                        ShowMaximizeButton = false,
+                    //                    });
+                    //                    window.DataContext = successUpdates;
+                    //                    window.Title = $"{ResourceProvider.GetString(LOC.Legendary3P_PlayniteExtensionsUpdates)}";
+                    //                    window.Content = new LegendaryUpdater();
+                    //                    window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                    //                    window.SizeToContent = SizeToContent.WidthAndHeight;
+                    //                    window.MinWidth = 600;
+                    //                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    //                    window.ShowDialog();
+                    //                }
+                    //                else
+                    //                {
+                    //                    PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Legendary3P_PlayniteUpdateCheckFailMessage), game.Name);
+                    //                }
+                    //            }
+                    //            else
+                    //            {
+                    //                PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.LegendaryNoUpdatesAvailable), game.Name);
+                    //            }
+                    //        }
+                    //    };
+                    }
+                    else
+                    {
+                        //yield return new GameMenuItem
+                        //{
+                        //    Description = ResourceProvider.GetString(LOC.LegendaryImportInstalledGame),
+                        //    Icon = "AddGameIcon",
+                        //    Action = async (args) =>
+                        //    {
+                        //        if (!LegendaryLauncher.IsInstalled)
+                        //        {
+                        //            throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
+                        //        }
+
+                        //        var path = PlayniteApi.Dialogs.SelectFolder();
+                        //        if (path != "")
+                        //        {
+                        //            bool canContinue = StopDownloadManager(true);
+                        //            if (!canContinue)
+                        //            {
+                        //                return;
+                        //            }
+                        //            await LegendaryDownloadManager.WaitUntilLegendaryCloses();
+                        //            GlobalProgressOptions importProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.LegendaryImportingGame).Format(game.Name), false) { IsIndeterminate = true };
+                        //            PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
+                        //            {
+                        //                var importCmd = await Cli.Wrap(LegendaryLauncher.ClientExecPath)
+                        //                                         .WithArguments(new[] { "-y", "import", game.GameId, path })
+                        //                                         .WithEnvironmentVariables(LegendaryLauncher.DefaultEnvironmentVariables)
+                        //                                         .AddCommandToLog()
+                        //                                         .WithValidation(CommandResultValidation.None)
+                        //                                         .ExecuteBufferedAsync();
+                        //                logger.Debug("[Legendary] " + importCmd.StandardError);
+                        //                if (importCmd.StandardError.Contains("has been imported"))
+                        //                {
+                        //                    var installedAppList = LegendaryLauncher.GetInstalledAppList();
+                        //                    if (installedAppList.ContainsKey(game.GameId))
+                        //                    {
+                        //                        var installedGameInfo = installedAppList[game.GameId];
+                        //                        game.InstallDirectory = installedGameInfo.Install_path;
+                        //                        game.Version = installedGameInfo.Version;
+                        //                        game.InstallSize = (ulong?)installedGameInfo.Install_size;
+                        //                        game.IsInstalled = true;
+                        //                        var playtimeSyncEnabled = GetSettings().SyncPlaytime;
+                        //                        if (playtimeSyncEnabled)
+                        //                        {
+                        //                            var accountApi = new EpicAccountClient(PlayniteApi, LegendaryLauncher.TokensPath);
+                        //                            var playtimeItems = await accountApi.GetPlaytimeItems();
+                        //                            var playtimeItem = playtimeItems?.FirstOrDefault(x => x.artifactId == game.GameId);
+                        //                            if (playtimeItem != null)
+                        //                            {
+                        //                                game.Playtime = playtimeItem.totalTime;
+                        //                            }
+                        //                        }
+                        //                    }
+                        //                    PlayniteApi.Dialogs.ShowMessage(LOC.LegendaryImportFinished);
+                        //                }
+                        //                else
+                        //                {
+                        //                    PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.LegendaryGameImportFailure).Format(LOC.LegendaryCheckLog));
+                        //                }
+                        //            }, importProgressOptions);
+                        //        }
+                        //    }
+                        //};
+                    }
+                    //yield return new GameMenuItem
+                    //{
+                    //    Description = ResourceProvider.GetString(LOC.LegendaryManageDlcs),
+                    //    Icon = "AddonsIcon",
+                    //    Action = (args) =>
+                    //    {
+                    //        if (!LegendaryLauncher.IsInstalled)
+                    //        {
+                    //            throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
+                    //        }
+
+                    //        Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                    //        {
+                    //            ShowMaximizeButton = false,
+                    //        });
+                    //        window.Title = $"{ResourceProvider.GetString(LOC.LegendaryManageDlcs)} - {game.Name}";
+                    //        window.DataContext = game;
+                    //        window.Content = new LegendaryDlcManager();
+                    //        window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                    //        window.SizeToContent = SizeToContent.WidthAndHeight;
+                    //        window.MinWidth = 600;
+                    //        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    //        window.ShowDialog();
+                    //    }
+                    //};
+                    //yield return new GameMenuItem
+                    //{
+                    //    Description = ResourceProvider.GetString(LOC.LegendaryMove),
+                    //    Icon = "MoveIcon",
+                    //    Action = (args) =>
+                    //    {
+                    //        if (!LegendaryLauncher.IsInstalled)
+                    //        {
+                    //            throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
+                    //        }
+
+                    //        var newPath = PlayniteApi.Dialogs.SelectFolder();
+                    //        if (newPath != "")
+                    //        {
+                    //            var oldPath = game.InstallDirectory;
+                    //            if (Directory.Exists(oldPath) && Directory.Exists(newPath))
+                    //            {
+                    //                string sepChar = Path.DirectorySeparatorChar.ToString();
+                    //                string altChar = Path.AltDirectorySeparatorChar.ToString();
+                    //                if (!oldPath.EndsWith(sepChar) && !oldPath.EndsWith(altChar))
+                    //                {
+                    //                    oldPath += sepChar;
+                    //                }
+                    //                var folderName = Path.GetFileName(Path.GetDirectoryName(oldPath));
+                    //                newPath = Path.Combine(newPath, folderName);
+                    //                var moveConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.LegendaryMoveConfirm).Format(game.Name, newPath), ResourceProvider.GetString(LOC.LegendaryMove), MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    //                if (moveConfirm == MessageBoxResult.Yes)
+                    //                {
+                    //                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.LegendaryMovingGame).Format(game.Name, newPath), false);
+                    //                    PlayniteApi.Dialogs.ActivateGlobalProgress((a) =>
+                    //                    {
+                    //                        a.ProgressMaxValue = 3;
+                    //                        a.CurrentProgressValue = 0;
+                    //                        _ = (Application.Current.Dispatcher?.BeginInvoke((Action)async delegate
+                    //                        {
+                    //                            try
+                    //                            {
+                    //                                bool canContinue = StopDownloadManager(true);
+                    //                                if (!canContinue)
+                    //                                {
+                    //                                    return;
+                    //                                }
+                    //                                await LegendaryDownloadManager.WaitUntilLegendaryCloses();
+                    //                                Directory.Move(oldPath, newPath);
+                    //                                a.CurrentProgressValue = 1;
+                    //                                var rewriteResult = await Cli.Wrap(LegendaryLauncher.ClientExecPath)
+                    //                                                             .WithArguments(new[] { "move", game.GameId, newPath, "--skip-move" })
+                    //                                                             .WithEnvironmentVariables(LegendaryLauncher.DefaultEnvironmentVariables)
+                    //                                                             .AddCommandToLog()
+                    //                                                             .ExecuteBufferedAsync();
+                    //                                var errorMessage = rewriteResult.StandardError;
+                    //                                if (rewriteResult.ExitCode != 0 || errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error"))
+                    //                                {
+                    //                                    logger.Error($"[Legendary] {errorMessage}");
+                    //                                    logger.Error($"[Legendary] exit code: {rewriteResult.ExitCode}");
+                    //                                }
+                    //                                a.CurrentProgressValue = 2;
+                    //                                game.InstallDirectory = newPath;
+                    //                                PlayniteApi.Database.Games.Update(game);
+                    //                                a.CurrentProgressValue = 3;
+                    //                                PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.LegendaryMoveGameSuccess).Format(game.Name, newPath));
+                    //                            }
+                    //                            catch (Exception e)
+                    //                            {
+                    //                                a.CurrentProgressValue = 3;
+                    //                                PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.LegendaryMoveGameError).Format(game.Name, newPath));
+                    //                                logger.Error(e.Message);
+                    //                            }
+                    //                        }));
+                    //                    }, globalProgressOptions);
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //};
+                }
+
+                var notInstalledGogOssGames = gogOssGames.Where(i => i.IsInstalled == false).ToList();
+                if (notInstalledGogOssGames.Count > 0)
+                {
+                    if (gogOssGames.Count > 1)
+                    {
+                        var installData = new List<DownloadManagerData.Download>();
+                        var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install };
+                        foreach (var notInstalledLegendaryGame in notInstalledGogOssGames)
+                        {
+                            installData.Add(new DownloadManagerData.Download { gameID = notInstalledLegendaryGame.GameId, name = notInstalledLegendaryGame.Name, downloadProperties = installProperties });
+                        }
+                        yield return new GameMenuItem
+                        {
+                            Description = ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame),
+                            Icon = "InstallIcon",
+                            Action = (args) =>
+                            {
+                                GogOssInstallController.LaunchInstaller(installData);
+                            }
+                        };
+                    }
+                }
+                //var installedLegendaryGames = gogOssGames.Where(i => i.IsInstalled).ToList();
+                //if (installedLegendaryGames.Count > 0)
+                //{
+                //    yield return new GameMenuItem
+                //    {
+                //        Description = ResourceProvider.GetString(LOC.LegendaryRepair),
+                //        Icon = "RepairIcon",
+                //        Action = (args) =>
+                //        {
+                //            if (!LegendaryLauncher.IsInstalled)
+                //            {
+                //                throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
+                //            }
+
+                //            Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                //            {
+                //                ShowMaximizeButton = false,
+                //            });
+
+                //            var installProperties = new DownloadProperties { downloadAction = DownloadAction.Repair };
+                //            var installData = new List<DownloadManagerData.Download>();
+                //            foreach (var game in installedLegendaryGames)
+                //            {
+                //                installData.Add(new DownloadManagerData.Download { gameID = game.GameId, name = game.Name, downloadProperties = installProperties });
+                //            }
+                //            window.DataContext = installData;
+                //            window.Content = new LegendaryGameInstaller();
+                //            window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                //            window.SizeToContent = SizeToContent.WidthAndHeight;
+                //            window.MinWidth = 600;
+                //            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                //            var title = ResourceProvider.GetString(LOC.LegendaryRepair);
+                //            if (installedLegendaryGames.Count == 1)
+                //            {
+                //                title = installedLegendaryGames[0].Name;
+                //            }
+                //            window.Title = title;
+                //            window.ShowDialog();
+                //        }
+                //    };
+                //    if (gogOssGames.Count > 1)
+                //    {
+                //        yield return new GameMenuItem
+                //        {
+                //            Description = ResourceProvider.GetString(LOC.Legendary3P_PlayniteUninstallGame),
+                //            Icon = "UninstallIcon",
+                //            Action = (args) =>
+                //            {
+                //                LegendaryUninstallController.LaunchUninstaller(installedLegendaryGames);
+                //            }
+                //        };
+                //    }
+                //}
+            }
+        }
     }
 }

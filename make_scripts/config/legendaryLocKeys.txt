@@ -82,3 +82,4 @@ LOCLegendaryCloud
 LOCLegendaryAlternativeExe
 LOCLegendaryDownloadProperties
 LOCLegendaryTask
+LOCLegendaryLauncherSettings

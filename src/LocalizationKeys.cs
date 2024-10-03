@@ -346,6 +346,10 @@ namespace System
         /// </summary>
         public const string GogOssStartupArguments = "LOCGogOssStartupArguments";
         /// <summary>
+        /// Modify launch settings
+        /// </summary>
+        public const string GogOssLauncherSettings = "LOCGogOssLauncherSettings";
+        /// <summary>
         /// Alternative executable file
         /// </summary>
         public const string GogOssAlternativeExe = "LOCGogOssAlternativeExe";
