@@ -25,6 +25,7 @@ namespace GogOssLibraryNS
         public long availableFreeSpace;
         private GogDownloadGameInfo manifest;
         public bool uncheckedByUser = true;
+        private bool checkedByUser = true;
         public DownloadManagerData.Download singleGameInstallData;
         public bool editDownloadPropertiesMode = false;
 
@@ -168,7 +169,7 @@ namespace GogOssLibraryNS
             return installData.downloadProperties;
         }
 
-        public void CalculateTotalSize()
+        private void CalculateTotalSize()
         {
             downloadSizeNumber = 0;
             installSizeNumber = 0;
@@ -182,7 +183,7 @@ namespace GogOssLibraryNS
             InstallSizeTB.Text = Helpers.FormatSize(installSizeNumber);
         }
 
-        public GogDownloadGameInfo.SizeType CalculateGameSize(DownloadManagerData.Download installData)
+        private GogDownloadGameInfo.SizeType CalculateGameSize(DownloadManagerData.Download installData)
         {
             var size = new GogDownloadGameInfo.SizeType
             {
@@ -204,7 +205,7 @@ namespace GogOssLibraryNS
                 size.download_size += manifest.size[selectedLanguage].download_size;
                 size.disk_size += manifest.size[selectedLanguage].disk_size;
             }
-            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>().Select(d => d.id).ToList();
+            var selectedDlcs = installData.downloadProperties.extraContent;
             if (selectedDlcs.Count() > 0)
             {
                 foreach (var dlc in manifest.dlcs)
@@ -246,8 +247,6 @@ namespace GogOssLibraryNS
             MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             var downloadItemsAlreadyAdded = new List<string>();
-            var currentPlayniteLanguage = playniteAPI.ApplicationSettings.Language.Replace("_", "-");
-            var selectedLanguage = "en-US";
             downloadSizeNumber = 0;
             installSizeNumber = 0;
 
@@ -291,38 +290,9 @@ namespace GogOssLibraryNS
                     SaveBtn.Visibility = Visibility.Visible;
                 }
                 manifest = await Gogdl.GetGameInfo(MultiInstallData[0]);
-                singleGameInstallData = MultiInstallData[0];
-                var builds = manifest.builds.items;
-                var gameVersions = new Dictionary<string, string>();
-                if (builds.Count > 1)
+                if (!manifest.errorDisplayed)
                 {
-                    foreach (var build in builds)
-                    {
-                        if (build.branch == null)
-                        {
-                            DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
-                            var versionNameFirstPart = $"{build.version_name} — ";
-                            if (build.version_name == "")
-                            {
-                                versionNameFirstPart = "";
-                            }
-                            var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
-                            gameVersions.Add(build.build_id, versionName);
-                        }
-                    }
-                    GameVersionCBo.ItemsSource = gameVersions;
-                    var selectedVersion = gameVersions.FirstOrDefault();
-                    if (!MultiInstallData[0].downloadProperties.buildId.IsNullOrEmpty())
-                    {
-                        selectedVersion = gameVersions.First(i => i.Key == MultiInstallData[0].downloadProperties.buildId);
-                    }
-                    GameVersionCBo.SelectedItem = selectedVersion;
-                    MultiInstallData[0].downloadProperties.buildId = selectedVersion.Key;
-                    MultiInstallData[0].downloadProperties.version = selectedVersion.Value.Split('—')[0].Trim();
-                    VersionSP.Visibility = Visibility.Visible;
-                }
-                if (gameVersions.Count > 1)
-                {
+                    singleGameInstallData = MultiInstallData[0];
                     var betaChannels = new Dictionary<string, string>();
                     if (manifest.available_branches.Count > 1)
                     {
@@ -337,70 +307,23 @@ namespace GogOssLibraryNS
                                 betaChannels.Add(branch, branch);
                             }
                         }
-                        BetaChannelCBo.ItemsSource = betaChannels;
-                        var selectedBetaChannel = "disabled";
-                        if (!MultiInstallData[0].downloadProperties.betaChannel.IsNullOrEmpty())
+                        if (betaChannels.Count > 0)
                         {
-                            selectedBetaChannel = MultiInstallData[0].downloadProperties.betaChannel;
-                        }
-                        BetaChannelCBo.SelectedValue = selectedBetaChannel;
-                        BetaChannelSP.Visibility = Visibility.Visible;
-                    }
-                }
-                var languages = manifest.languages;
-                if (languages.Count > 1)
-                {
-                    var gameLanguages = new Dictionary<string, string>();
-                    foreach (var language in languages)
-                    {
-                        gameLanguages.Add(language, new CultureInfo(language).NativeName);
-                    }
-                    gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                    GameLanguageCBo.ItemsSource = gameLanguages;
-                    if (gameLanguages.ContainsKey(currentPlayniteLanguage))
-                    {
-                        selectedLanguage = currentPlayniteLanguage;
-                    }
-                    else
-                    {
-                        currentPlayniteLanguage = currentPlayniteLanguage.Substring(0, currentPlayniteLanguage.IndexOf("-"));
-                        if (gameLanguages.ContainsKey(currentPlayniteLanguage))
-                        {
-                            selectedLanguage = currentPlayniteLanguage;
+                            BetaChannelCBo.ItemsSource = betaChannels;
+                            var selectedBetaChannel = "disabled";
+                            if (!singleGameInstallData.downloadProperties.betaChannel.IsNullOrEmpty() && manifest.available_branches.Contains(singleGameInstallData.downloadProperties.betaChannel))
+                            {
+                                selectedBetaChannel = singleGameInstallData.downloadProperties.betaChannel;
+                            }
+                            BetaChannelCBo.SelectedValue = selectedBetaChannel;
+                            BetaChannelSP.Visibility = Visibility.Visible;
                         }
                     }
-                    if (!MultiInstallData[0].downloadProperties.language.IsNullOrEmpty())
-                    {
-                        selectedLanguage = MultiInstallData[0].downloadProperties.language;
-                    }
-                    GameLanguageCBo.SelectedValue = selectedLanguage;
-                    LanguageSP.Visibility = Visibility.Visible;
+                    await RefreshVersions();
                 }
-                MultiInstallData[0].downloadProperties.language = selectedLanguage;
-                if (builds.Count == 0)
+                else
                 {
                     MultiInstallData.Remove(MultiInstallData[0]);
-                }
-                if (manifest.dlcs.Count > 0)
-                {
-                    ExtraContentLB.ItemsSource = manifest.dlcs;
-                    ExtraContentBrd.Visibility = Visibility.Visible;
-                    if (manifest.dlcs.Count > 1)
-                    {
-                        AllOrNothingChk.Visibility = Visibility.Visible;
-                    }
-                    if (settings.DownloadAllDlcs && editDownloadPropertiesMode != true)
-                    {
-                        AllOrNothingChk.IsChecked = true;
-                    }
-                    if (editDownloadPropertiesMode)
-                    {
-                        foreach (var selectedDlc in MultiInstallData[0].downloadProperties.extraContent)
-                        {
-                            var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
-                            ExtraContentLB.SelectedItems.Add(selectedDlcItem);
-                        }
-                    }
                 }
             }
 
@@ -419,10 +342,30 @@ namespace GogOssLibraryNS
                     MultiInstallData.Insert(0, isiTask);
                 }
             }
+            bool gamesListShouldBeDisplayed = false;
             var redistInstallPath = Gogdl.DependenciesInstallationPath;
             foreach (var installData in MultiInstallData.ToList())
             {
                 manifest = await Gogdl.GetGameInfo(installData);
+                if (manifest.errorDisplayed)
+                {
+                    gamesListShouldBeDisplayed = true;
+                    MultiInstallData.Remove(installData);
+                    continue;
+                }
+                RefreshLanguages(installData);
+                if (installData.downloadProperties.buildId.IsNullOrEmpty())
+                {
+                    installData.downloadProperties.buildId = manifest.buildId;
+                    installData.downloadProperties.version = manifest.versionName;
+                }
+                if (manifest.dlcs.Count > 1 && settings.DownloadAllDlcs)
+                {
+                    foreach (var dlc in manifest.dlcs)
+                    {
+                        installData.downloadProperties.extraContent.Add(dlc.id);
+                    }
+                }
                 var gameSize = CalculateGameSize(installData);
                 installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
                 if (installData.downloadItemType == DownloadItemType.Dependency)
@@ -436,7 +379,6 @@ namespace GogOssLibraryNS
                 {
                     downloadItemsAlreadyAdded.Add(installData.name);
                     MultiInstallData.Remove(installData);
-                    continue;
                 }
             }
             CalculateTotalSize();
@@ -451,6 +393,13 @@ namespace GogOssLibraryNS
                     string downloadItemsAlreadyAddedComnined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
                     playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+
+            var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game).ToList();
+            GamesLB.ItemsSource = games;
+            if (MultiInstallData.Count > 1 || gamesListShouldBeDisplayed)
+            {
+                GamesBrd.Visibility = Visibility.Visible;
             }
 
             if (MultiInstallData.Count <= 0)
@@ -473,6 +422,43 @@ namespace GogOssLibraryNS
             }
         }
 
+        private Dictionary<string, string> RefreshLanguages(DownloadManagerData.Download installData)
+        {
+            var currentPlayniteLanguage = playniteAPI.ApplicationSettings.Language.Replace("_", "-");
+            var languages = manifest.languages;
+            var selectedLanguage = "";
+            var gameLanguages = new Dictionary<string, string>();
+            if (languages.Count > 1)
+            {
+                foreach (var language in languages)
+                {
+                    gameLanguages.Add(language, new CultureInfo(language).NativeName);
+                }
+                gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                if (!installData.downloadProperties.language.IsNullOrEmpty() && gameLanguages.ContainsKey(installData.downloadProperties.language))
+                {
+                    selectedLanguage = installData.downloadProperties.language;
+                }
+                else
+                {
+                    if (gameLanguages.ContainsKey(currentPlayniteLanguage))
+                    {
+                        selectedLanguage = currentPlayniteLanguage;
+                    }
+                    else
+                    {
+                        currentPlayniteLanguage = currentPlayniteLanguage.Substring(0, currentPlayniteLanguage.IndexOf("-"));
+                        if (gameLanguages.ContainsKey(currentPlayniteLanguage))
+                        {
+                            selectedLanguage = currentPlayniteLanguage;
+                        }
+                    }
+                }
+                installData.downloadProperties.language = selectedLanguage;
+            }
+            return gameLanguages;
+        }
+
         private void GameLanguageCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (singleGameInstallData != null && GameLanguageCBo.IsDropDownOpen)
@@ -493,83 +479,118 @@ namespace GogOssLibraryNS
 
         private async void GameVersionCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var settings = GogOssLibrary.GetSettings();
             if (singleGameInstallData != null && GameVersionCBo.IsDropDownOpen)
             {
-                DownloadManagerData.Download installData = singleGameInstallData;
-                if (GameVersionCBo.SelectedValue != null)
+                InstallBtn.IsEnabled = false;
+                await SetGameVersion();
+                var gameSize = CalculateGameSize(singleGameInstallData);
+                singleGameInstallData.downloadSizeNumber = gameSize.download_size;
+                singleGameInstallData.installSizeNumber = gameSize.disk_size;
+                CalculateTotalSize();
+                InstallBtn.IsEnabled = true;
+            }
+        }
+
+        private async Task SetGameVersion()
+        {
+            KeyValuePair<string, string> selectedVersion = (KeyValuePair<string, string>)GameVersionCBo.SelectedItem;
+            singleGameInstallData.downloadProperties.buildId = selectedVersion.Key;
+            singleGameInstallData.downloadProperties.version = selectedVersion.Value.Split('—')[0].Trim();
+            manifest = await Gogdl.GetGameInfo(singleGameInstallData);
+            var gameLanguages = RefreshLanguages(singleGameInstallData);
+            if (gameLanguages.Count > 1)
+            {
+                GameLanguageCBo.ItemsSource = gameLanguages;
+                GameLanguageCBo.SelectedValue = singleGameInstallData.downloadProperties.language;
+                LanguageSP.Visibility = Visibility.Visible;
+            }
+            if (manifest.dlcs.Count > 0)
+            {
+                var settings = GogOssLibrary.GetSettings();
+                ExtraContentLB.ItemsSource = manifest.dlcs;
+                ExtraContentBrd.Visibility = Visibility.Visible;
+                if (singleGameInstallData.downloadProperties.extraContent.Count > 0)
                 {
-                    InstallBtn.IsEnabled = false;
-                    installData.downloadProperties.buildId = GameVersionCBo.SelectedValue.ToString();
-                    manifest = await Gogdl.GetGameInfo(installData);
-                    ExtraContentLB.ItemsSource = manifest.dlcs;
-                    if (manifest.dlcs.Count > 0)
+                    foreach (var selectedDlc in singleGameInstallData.downloadProperties.extraContent)
                     {
-                        if (settings.DownloadAllDlcs)
+                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
+                        if (selectedDlcItem != null)
                         {
-                            AllOrNothingChk.IsChecked = true;
-                        }
-                        if (manifest.dlcs.Count > 1)
-                        {
-                            AllOrNothingChk.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            AllOrNothingChk.Visibility = Visibility.Collapsed;
+                            ExtraContentLB.SelectedItems.Add(selectedDlcItem);
                         }
                     }
-                    var gameSize = CalculateGameSize(installData);
-                    installData.downloadSizeNumber = gameSize.download_size;
-                    installData.installSizeNumber = gameSize.disk_size;
-                    CalculateTotalSize();
-                    InstallBtn.IsEnabled = true;
+                }
+                if (settings.DownloadAllDlcs)
+                {
+                    ExtraContentLB.SelectAll();
+                }
+                if (manifest.dlcs.Count > 1)
+                {
+                    AllOrNothingChk.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    AllOrNothingChk.Visibility = Visibility.Collapsed;
                 }
             }
+        }
+
+        private async Task RefreshVersions()
+        {
+            VersionSP.Visibility = Visibility.Collapsed;
+            var builds = manifest.builds.items;
+            var gameVersions = new Dictionary<string, string>();
+            if (builds.Count > 0)
+            {
+                var chosenBranch = singleGameInstallData.downloadProperties.betaChannel;
+                if (chosenBranch == "disabled")
+                {
+                    chosenBranch = null;
+                }
+                foreach (var build in builds)
+                {
+                    if (build.branch == chosenBranch)
+                    {
+                        DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
+                        var versionNameFirstPart = $"{build.version_name} — ";
+                        if (build.version_name == "")
+                        {
+                            versionNameFirstPart = "";
+                        }
+                        var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
+                        gameVersions.Add(build.build_id, versionName);
+                    }
+                }
+                GameVersionCBo.ItemsSource = gameVersions;
+                var selectedVersion = singleGameInstallData.downloadProperties.buildId;
+                if (selectedVersion.IsNullOrEmpty() || !gameVersions.ContainsKey(selectedVersion))
+                {
+                    selectedVersion = gameVersions.FirstOrDefault().Key;
+                }
+                GameVersionCBo.SelectedItem = gameVersions.First(i => i.Key == selectedVersion);
+                if (gameVersions.Count > 1)
+                {
+                    VersionSP.Visibility = Visibility.Visible;
+                }
+            }
+            await SetGameVersion();
         }
 
         private async void BetaChannelCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (singleGameInstallData != null && BetaChannelCBo.IsDropDownOpen)
             {
-                DownloadManagerData.Download installData = singleGameInstallData;
-                if (GameVersionCBo.SelectedValue != null)
+                InstallBtn.IsEnabled = false;
+                if (BetaChannelCBo.SelectedValue != null)
                 {
-                    InstallBtn.IsEnabled = false;
-                    installData.downloadProperties.betaChannel = BetaChannelCBo.SelectedValue.ToString();
-                    var builds = manifest.builds.items;
-                    var gameVersions = new Dictionary<string, string>();
-                    if (builds.Count > 0)
-                    {
-                        foreach (var build in builds)
-                        {
-                            var chosenBranch = installData.downloadProperties.betaChannel;
-                            if (chosenBranch == "disabled")
-                            {
-                                chosenBranch = null;
-                            }
-                            if (build.branch == chosenBranch)
-                            {
-                                DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
-                                var versionNameFirstPart = $"{build.version_name} — ";
-                                if (build.version_name == "")
-                                {
-                                    versionNameFirstPart = "";
-                                }
-                                var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
-                                gameVersions.Add(build.build_id, versionName);
-                            }
-                        }
-                        GameVersionCBo.ItemsSource = gameVersions;
-                        GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault();
-                        installData.downloadProperties.buildId = GameVersionCBo.SelectedValue.ToString();
-                        manifest = await Gogdl.GetGameInfo(installData);
-                    }
-                    var gameSize = CalculateGameSize(installData);
-                    installData.downloadSizeNumber = gameSize.download_size;
-                    installData.installSizeNumber = gameSize.disk_size;
-                    CalculateTotalSize();
-                    InstallBtn.IsEnabled = true;
+                    singleGameInstallData.downloadProperties.betaChannel = BetaChannelCBo.SelectedValue.ToString();
                 }
+                await RefreshVersions();
+                var gameSize = CalculateGameSize(singleGameInstallData);
+                singleGameInstallData.downloadSizeNumber = gameSize.download_size;
+                singleGameInstallData.installSizeNumber = gameSize.disk_size;
+                CalculateTotalSize();
+                InstallBtn.IsEnabled = true;
             }
         }
 
@@ -585,7 +606,10 @@ namespace GogOssLibraryNS
 
         private void AllOrNothingChk_Checked(object sender, RoutedEventArgs e)
         {
-            ExtraContentLB.SelectAll();
+            if (checkedByUser)
+            {
+                ExtraContentLB.SelectAll();
+            }
         }
 
         private void AllOrNothingChk_Unchecked(object sender, RoutedEventArgs e)
@@ -594,16 +618,6 @@ namespace GogOssLibraryNS
             {
                 ExtraContentLB.SelectedItems.Clear();
             }
-        }
-
-        private void ExtraContentLBChk_Unchecked(object sender, RoutedEventArgs e)
-        {
-            uncheckedByUser = false;
-            if (AllOrNothingChk.IsChecked == true)
-            {
-                AllOrNothingChk.IsChecked = false;
-            }
-            uncheckedByUser = true;
         }
 
         private void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -617,6 +631,18 @@ namespace GogOssLibraryNS
                 foreach (var selectedDlc in selectedDlcs)
                 {
                     installData.downloadProperties.extraContent.Add(selectedDlc.id);
+                }
+                if (AllOrNothingChk.IsChecked == true && selectedDlcs.Count() != ExtraContentLB.Items.Count)
+                {
+                    uncheckedByUser = false;
+                    AllOrNothingChk.IsChecked = false;
+                    uncheckedByUser = true;
+                }
+                if (AllOrNothingChk.IsChecked == false && selectedDlcs.Count() == ExtraContentLB.Items.Count)
+                {
+                    checkedByUser = false;
+                    AllOrNothingChk.IsChecked = true;
+                    checkedByUser = true;
                 }
                 var gameSize = CalculateGameSize(installData);
                 installData.downloadSizeNumber = gameSize.download_size;
@@ -663,6 +689,34 @@ namespace GogOssLibraryNS
             downloadManager.DownloadsDG.SelectedIndex = previouslySelected;
             downloadManager.downloadsChanged = true;
             Window.GetWindow(this).Close();
+        }
+
+        private async void GameExtraSettingsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedGame = ((Button)sender).DataContext as DownloadManagerData.Download;
+            var playniteAPI = API.Instance;
+            Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+            {
+                ShowMaximizeButton = false,
+            });
+            window.DataContext = selectedGame;
+            window.Content = new GogOssExtraInstallationSettingsView();
+            window.Owner = InstallerWindow;
+            window.SizeToContent = SizeToContent.WidthAndHeight;
+            window.MinWidth = 600;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            window.Title = selectedGame.name;
+            var result = window.ShowDialog();
+            if (result == false)
+            {
+                InstallBtn.IsEnabled = false;
+                manifest = await Gogdl.GetGameInfo(selectedGame);
+                var gameSize = CalculateGameSize(selectedGame);
+                selectedGame.downloadSizeNumber = gameSize.download_size;
+                selectedGame.installSizeNumber = gameSize.disk_size;
+                CalculateTotalSize();
+                InstallBtn.IsEnabled = true;
+            }
         }
     }
 }

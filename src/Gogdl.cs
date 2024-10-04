@@ -350,6 +350,7 @@ namespace GogOssLibraryNS
                             playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)));
                         }
                     }
+                    manifest.errorDisplayed = true;
                 }
                 else
                 {

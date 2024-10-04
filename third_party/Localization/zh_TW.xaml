@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">關閉系統</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">系統睡眠</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">系統休眠</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">設定</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">一般</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">進階設定</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">需要驗證</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">安裝目錄</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">下載元資料失敗: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">不做任何事</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">關閉</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">有可用的更新</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">下載並安裝更新</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">檢查更新</sys:String>

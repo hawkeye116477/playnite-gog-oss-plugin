@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">כבה מערכת</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">השהה מערכת</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">מצב שינה</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">הגדרות</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">כללי</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">מתקדם</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">נדרש אימות</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">תיקיית התקנה</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">נכשלה הורדת נתונים: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">אל תעשה דבר</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">סגור</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">עדכון זמין</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">הורד והתקן עדכון</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">חפש עדכונים</sys:String>

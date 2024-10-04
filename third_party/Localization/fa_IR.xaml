@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">خاموش کردن سیستم</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">تعلیق سیستم</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">خواب زمستانی سیستم</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">تنظیمات</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">عمومی</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">پیشرفته</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">نیاز به تایید هویت دارد</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">محل نصب</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">بارگیری ابرداده انجام نشد: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">کاری نکن</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">بستن</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">به روزرسانی موجود است</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">دانلود و نصب بروزرسانی</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">بررسی برای بروزرسانی</sys:String>

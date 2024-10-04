@@ -75,7 +75,7 @@ namespace GogOssLibraryNS.Models
         public string language { get; set; } = "";
         public string buildId { get; set; } = "";
         public string version { get; set; } = "";
-        public string betaChannel { get; set; } = "";
+        public string betaChannel { get; set; } = "disabled";
         public string os { get; set; } = "windows";
     }
 }

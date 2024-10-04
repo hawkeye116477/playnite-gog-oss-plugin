@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Вимкнути систему</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Призупинити систему</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Режим глибокого сну</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Налаштування</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Загальні</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Додатково</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Необхідна автентифікація</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Тека встановлення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Не вдалося завантажити метадані: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Нічого не робити</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Закрити</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Доступне оновлення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Завантажити та встановити оновлення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Перевірити наявність оновлень</sys:String>

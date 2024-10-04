@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Turn Off System</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Suspend System</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Hibernate System</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Settings</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">General</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Advanced</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Authentification required</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Installation Folder</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Failed to download metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Do nothing</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Close</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Update Available</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Download and Install Update</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Check for Updates</sys:String>

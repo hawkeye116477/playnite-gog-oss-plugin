@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">システムのシャットダウン</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">システムのスリープ</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">システムの休止</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">設定</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">一般設定</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">詳細設定</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">認証が必要です</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">インストールフォルダ</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">メタデータをダウンロードできませんでした: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">何もしない</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">終了</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">更新が利用可能です</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">更新をダウンロードしてインストール</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">更新を確認</sys:String>

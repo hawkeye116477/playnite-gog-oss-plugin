@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Leállítás</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Készenléti állapot</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Hibernálás</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Beállítások</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Általános</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Speciális beállítások</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Hitelesítés szükséges</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Telepítési hely</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Hiba a metaadatok letöltésekor: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ne tegyen semmit</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Bezárás</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Frissítés elérhető</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Frissítés letöltése és telepítése</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Frissítések keresése</sys:String>

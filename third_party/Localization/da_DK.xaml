@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Sluk Systemet</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Suspendér Systemet</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Dvaletilstand</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Indstillinger</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Generelt</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Avanceret</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Godkendelse krævet</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Gør ingenting</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Luk</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates"></sys:String>

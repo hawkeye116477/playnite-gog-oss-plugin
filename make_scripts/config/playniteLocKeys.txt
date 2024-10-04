@@ -1,3 +1,4 @@
+LOCSettingsLabel
 LOCSettingsGeneralLabel
 LOCSettingsAdvancedLabel
 LOCSelectDirectoryTooltip
@@ -5,6 +6,7 @@ LOCSelectFileTooltip
 LOCExecutableTitle
 LOCCheckForUpdates
 LOCOpen
+LOCClose
 LOCOKLabel
 LOCUpdaterWindowTitle
 LOCUpdateCheckFailMessage

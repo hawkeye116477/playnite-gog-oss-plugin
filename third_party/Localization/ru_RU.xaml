@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Завершение работы</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Спящий режим</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Гибернация</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Настройки</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Основные</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Расширенные</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Требуется авторизация</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Путь установки</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Не удалось скачать метаданные: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ничего не делать</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Закрыть</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Вышла новая версия</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Скачать и обновить</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Проверить наличие обновлений</sys:String>

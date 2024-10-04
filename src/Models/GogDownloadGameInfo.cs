@@ -5,6 +5,7 @@ namespace GogOssLibraryNS.Models
 {
     public class GogDownloadGameInfo
     {
+        public bool errorDisplayed = false;
         public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
         public List<Dlc> dlcs { get; set; } = new List<Dlc>();
         public string buildId { get; set; }

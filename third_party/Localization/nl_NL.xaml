@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Systeem uitschakelen</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Systeem Onderbreken</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Systeem in slaapstand zetten</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Instellingen</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Algemeen</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Geavanceerd</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Authenticatie nodig</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Installatie Map</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Downloaden van metadata mislukt: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Doe niets</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Sluiten</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Update Beschikbaar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Installeer Update</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Controleer op updates</sys:String>

@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Išjungti sistemą</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Užmigdyti sistemą</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Sistemą užmigdyti įrašius</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Nustatymai</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Bendri</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Išplėstiniai</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Reikalinga autentifikacija</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Žaidimo direktorija</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Nepavyko atsisiųsti metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Nieko nedaryti</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Uždaryti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Galimas atnaujinimas</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Įrašyti atnaujinimą</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Tikrinti, ar yra atnaujinimų</sys:String>

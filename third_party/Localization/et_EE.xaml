@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Lülita süsteem välja</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Peata süsteem</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Pane süsteem talveunne</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Seaded</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Üldine</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Täpsem</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Autentimine vajalik</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Paigalduse asukoht</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Metaandmete allalaadimine ebaõnnestus: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ära tee midagi</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Sulge</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Värskendus on saadaval</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Laadi alla ja paigalda värskendus</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Otsi värskendusi</sys:String>

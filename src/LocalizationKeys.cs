@@ -486,6 +486,10 @@ namespace System
         /// </summary>
         public const string GogOss3P_PlayniteMenuHibernateSystem = "LOCGogOss3P_PlayniteMenuHibernateSystem";
         /// <summary>
+        /// Settings
+        /// </summary>
+        public const string GogOss3P_PlayniteSettingsLabel = "LOCGogOss3P_PlayniteSettingsLabel";
+        /// <summary>
         /// General
         /// </summary>
         public const string GogOss3P_PlayniteSettingsGeneralLabel = "LOCGogOss3P_PlayniteSettingsGeneralLabel";
@@ -517,6 +521,10 @@ namespace System
         /// Do nothing
         /// </summary>
         public const string GogOss3P_PlayniteDoNothing = "LOCGogOss3P_PlayniteDoNothing";
+        /// <summary>
+        /// Close
+        /// </summary>
+        public const string GogOss3P_PlayniteClose = "LOCGogOss3P_PlayniteClose";
         /// <summary>
         /// Update Available
         /// </summary>

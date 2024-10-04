@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Isključi sustav</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Suspendiraj sustav</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Hibernacija sustava</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Postavke</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Općenito</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Napredno</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Autentifikacija potrebna</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Lokacija instalacije</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Neuspjelo preuzimanje metapodataka: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ne čini ništa</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Zatvori</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Dostupna su ažuriranja</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Preuzmi i instaliraj ažuriranje</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Provjeri ima li ažuriranja</sys:String>

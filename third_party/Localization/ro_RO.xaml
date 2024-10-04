@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Închidere Sistem</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Suspendare Sistem</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Hibernează Sistemul</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Setări</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">General</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Avansat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Autentificare necesară</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Directorul de instalare</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Nu s-a putut descărca metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Repaus</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Închideţi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Versiune nouă disponibilă</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Descarcă şi actualizează programul</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Verificați dacă sunt disponibile Actualizări</sys:String>

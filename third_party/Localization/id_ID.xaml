@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Matikan Sistem</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Suspend System</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Hibernasikan Sistem</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Pengaturan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Umum</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Opsi Lanjut</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Login dibutuhkan</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Direktori Instalasi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Gagal mendownload metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Diamkan aplikasi</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Tutup aplikasi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Update Tersedia</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Install Update</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Periksa Pembaruan</sys:String>

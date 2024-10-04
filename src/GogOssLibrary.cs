@@ -802,9 +802,9 @@ namespace GogOssLibraryNS
                     if (gogOssGames.Count > 1)
                     {
                         var installData = new List<DownloadManagerData.Download>();
-                        var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install };
                         foreach (var notInstalledLegendaryGame in notInstalledGogOssGames)
                         {
+                            var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install };
                             installData.Add(new DownloadManagerData.Download { gameID = notInstalledLegendaryGame.GameId, name = notInstalledLegendaryGame.Name, downloadProperties = installProperties });
                         }
                         yield return new GameMenuItem

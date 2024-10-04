@@ -20,6 +20,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">සැකසුම්</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired"></sys:String>
@@ -28,6 +29,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates"></sys:String>

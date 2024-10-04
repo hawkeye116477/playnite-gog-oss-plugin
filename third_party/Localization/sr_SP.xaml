@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Искључи систем</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Суспендуј систем</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Хибернирај систем</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Подешавања</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Опште</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Напредно</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Потребна је провера</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Инсталациони директоријум</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Неуспело преузимање метаподатака: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Не ради ништа</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Затвори</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Доступно је ажурирање</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Преузми и инсталирај ажурирање</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Провери да ли постоје ажурирања</sys:String>

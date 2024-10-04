@@ -22,6 +22,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Tancar el sistema</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Suspendre el sistema</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuHibernateSystem">Hibernar el sistema</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Configuració</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">General</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Avançat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Es requereix autenticació</sys:String>
@@ -30,6 +31,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Carpeta d'instal·lació</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">No s'ha pogut descarregar les metadades: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">No fer res</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteClose">Tancar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Actualització disponible</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterInstallUpdate">Descarregar i instal·lar l'actualització</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteCheckForUpdates">Buscar actualitzacions</sys:String>
