@@ -339,7 +339,7 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)), downloadData.name);
                         }
                         else if (result.StandardError.Contains("Game doesn't support content system api"))
                         {
@@ -347,7 +347,7 @@ namespace GogOssLibraryNS
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)), downloadData.name);
                         }
                     }
                     manifest.errorDisplayed = true;
