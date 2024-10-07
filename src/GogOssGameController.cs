@@ -203,11 +203,15 @@ namespace GogOssLibraryNS
                                     "/nodesktopshorctut", // Yes, they made a typo
                                     "/nodesktopshortcut"
                                 };
-                            await Cli.Wrap(Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe"))
-                                     .WithArguments(args)
-                                     .WithWorkingDirectory(isiInstalledInfo.install_path)
-                                     .AddCommandToLog()
-                                     .ExecuteAsync();
+                            var isiInstallPath = Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe");
+                            if (File.Exists(isiInstallPath))
+                            {
+                                await Cli.Wrap(Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe"))
+                                         .WithArguments(args)
+                                         .WithWorkingDirectory(isiInstalledInfo.install_path)
+                                         .AddCommandToLog()
+                                         .ExecuteAsync();
+                            }
                         }
                         gameSettings.Dependencies.Remove("ISI");
                     }
