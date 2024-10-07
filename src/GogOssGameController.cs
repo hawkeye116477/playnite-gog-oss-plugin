@@ -186,27 +186,35 @@ namespace GogOssLibraryNS
                     {
                         var isiInstalledInfo = GogOss.GetInstalledInfo("ISI");
                         var shortLang = installedInfo.language.Split('-')[0];
-                        var langInEnglish = new CultureInfo(shortLang).EnglishName;
+                        var langInEnglish = "";
+                        if (!shortLang.IsNullOrEmpty())
+                        {
+                            langInEnglish = new CultureInfo(shortLang).EnglishName;
+                        }
                         foreach (var product in metaManifest.products)
                         {
                             var args = new List<string>
-                                {
-                                    "/VERYSILENT",
-                                    $"/DIR={Game.InstallDirectory}",
+                            {
+                                "/VERYSILENT",
+                                $"/DIR={Game.InstallDirectory}",
+                                $"/ProductId={product.productId}",
+                                "/galaxyclient",
+                                $"/buildId={installedInfo.build_id}",
+                                $"/versionName={installedInfo.version}",
+                                "/nodesktopshortcut",
+                                "/nodesktopshorctut", // Yes, they made a typo
+                            };
+                            if (!langInEnglish.IsNullOrEmpty())
+                            {
+                                args.AddRange(new[] {
                                     $"/Language={langInEnglish}",
                                     $"/LANG={langInEnglish}",
-                                    $"/ProductId={product.productId}",
-                                    "/galaxyclient",
-                                    $"/buildId={installedInfo.build_id}",
-                                    $"/versionName={installedInfo.version}",
-                                    $"/lang-code={installedInfo.language}",
-                                    "/nodesktopshorctut", // Yes, they made a typo
-                                    "/nodesktopshortcut"
-                                };
+                                    $"/lang-code={installedInfo.language}" });
+                            }
                             var isiInstallPath = Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe");
                             if (File.Exists(isiInstallPath))
                             {
-                                await Cli.Wrap(Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe"))
+                                await Cli.Wrap(isiInstallPath)
                                          .WithArguments(args)
                                          .WithWorkingDirectory(isiInstalledInfo.install_path)
                                          .AddCommandToLog()
