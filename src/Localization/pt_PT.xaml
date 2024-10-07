@@ -80,6 +80,11 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves"></sys:String>
   <sys:String x:Key="LOCGogOssSync"></sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime"></sys:String>
+  <sys:String x:Key="LOCGogOssMove"></sys:String>
+  <sys:String x:Key="LOCGogOssMoveConfirm"></sys:String>
+  <sys:String x:Key="LOCGogOssMovingGame"></sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameSuccess"></sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameError"></sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs"></sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm"></sys:String>

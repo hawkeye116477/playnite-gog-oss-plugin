@@ -80,6 +80,11 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Ручная синхронизация сохраняет</sys:String>
   <sys:String x:Key="LOCGogOssSync">Синх</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Синхронизируйте время игры с облаком</sys:String>
+  <sys:String x:Key="LOCGogOssMove">Переместить</sys:String>
+  <sys:String x:Key="LOCGogOssMoveConfirm">Вы уверены, что хотите переместить {0} в "{1}"? Это может занять много времени.</sys:String>
+  <sys:String x:Key="LOCGogOssMovingGame">Перемещение {0} в "{1}"...</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} был успешно перемещен в "{1}".</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameError">Произошла ошибка при перемещении {0} на "{1}".</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Удаление настроек запуска</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Вы вошли как {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Вы действительно хотите выйти?</sys:String>

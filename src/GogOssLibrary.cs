@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CliWrap;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -714,81 +716,73 @@ namespace GogOssLibraryNS
                     //        window.ShowDialog();
                     //    }
                     //};
-                    //yield return new GameMenuItem
-                    //{
-                    //    Description = ResourceProvider.GetString(LOC.LegendaryMove),
-                    //    Icon = "MoveIcon",
-                    //    Action = (args) =>
-                    //    {
-                    //        if (!LegendaryLauncher.IsInstalled)
-                    //        {
-                    //            throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
-                    //        }
-
-                    //        var newPath = PlayniteApi.Dialogs.SelectFolder();
-                    //        if (newPath != "")
-                    //        {
-                    //            var oldPath = game.InstallDirectory;
-                    //            if (Directory.Exists(oldPath) && Directory.Exists(newPath))
-                    //            {
-                    //                string sepChar = Path.DirectorySeparatorChar.ToString();
-                    //                string altChar = Path.AltDirectorySeparatorChar.ToString();
-                    //                if (!oldPath.EndsWith(sepChar) && !oldPath.EndsWith(altChar))
-                    //                {
-                    //                    oldPath += sepChar;
-                    //                }
-                    //                var folderName = Path.GetFileName(Path.GetDirectoryName(oldPath));
-                    //                newPath = Path.Combine(newPath, folderName);
-                    //                var moveConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.LegendaryMoveConfirm).Format(game.Name, newPath), ResourceProvider.GetString(LOC.LegendaryMove), MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    //                if (moveConfirm == MessageBoxResult.Yes)
-                    //                {
-                    //                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.LegendaryMovingGame).Format(game.Name, newPath), false);
-                    //                    PlayniteApi.Dialogs.ActivateGlobalProgress((a) =>
-                    //                    {
-                    //                        a.ProgressMaxValue = 3;
-                    //                        a.CurrentProgressValue = 0;
-                    //                        _ = (Application.Current.Dispatcher?.BeginInvoke((Action)async delegate
-                    //                        {
-                    //                            try
-                    //                            {
-                    //                                bool canContinue = StopDownloadManager(true);
-                    //                                if (!canContinue)
-                    //                                {
-                    //                                    return;
-                    //                                }
-                    //                                await LegendaryDownloadManager.WaitUntilLegendaryCloses();
-                    //                                Directory.Move(oldPath, newPath);
-                    //                                a.CurrentProgressValue = 1;
-                    //                                var rewriteResult = await Cli.Wrap(LegendaryLauncher.ClientExecPath)
-                    //                                                             .WithArguments(new[] { "move", game.GameId, newPath, "--skip-move" })
-                    //                                                             .WithEnvironmentVariables(LegendaryLauncher.DefaultEnvironmentVariables)
-                    //                                                             .AddCommandToLog()
-                    //                                                             .ExecuteBufferedAsync();
-                    //                                var errorMessage = rewriteResult.StandardError;
-                    //                                if (rewriteResult.ExitCode != 0 || errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error"))
-                    //                                {
-                    //                                    logger.Error($"[Legendary] {errorMessage}");
-                    //                                    logger.Error($"[Legendary] exit code: {rewriteResult.ExitCode}");
-                    //                                }
-                    //                                a.CurrentProgressValue = 2;
-                    //                                game.InstallDirectory = newPath;
-                    //                                PlayniteApi.Database.Games.Update(game);
-                    //                                a.CurrentProgressValue = 3;
-                    //                                PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.LegendaryMoveGameSuccess).Format(game.Name, newPath));
-                    //                            }
-                    //                            catch (Exception e)
-                    //                            {
-                    //                                a.CurrentProgressValue = 3;
-                    //                                PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.LegendaryMoveGameError).Format(game.Name, newPath));
-                    //                                logger.Error(e.Message);
-                    //                            }
-                    //                        }));
-                    //                    }, globalProgressOptions);
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //};
+                    if (game.IsInstalled)
+                    {
+                        yield return new GameMenuItem
+                        {
+                            Description = ResourceProvider.GetString(LOC.GogOssMove),
+                            Icon = "MoveIcon",
+                            Action = (args) =>
+                            {
+                                var newPath = PlayniteApi.Dialogs.SelectFolder();
+                                if (newPath != "")
+                                {
+                                    var oldPath = game.InstallDirectory;
+                                    if (Directory.Exists(oldPath) && Directory.Exists(newPath))
+                                    {
+                                        string sepChar = Path.DirectorySeparatorChar.ToString();
+                                        string altChar = Path.AltDirectorySeparatorChar.ToString();
+                                        if (!oldPath.EndsWith(sepChar) && !oldPath.EndsWith(altChar))
+                                        {
+                                            oldPath += sepChar;
+                                        }
+                                        var folderName = Path.GetFileName(Path.GetDirectoryName(oldPath));
+                                        newPath = Path.Combine(newPath, folderName);
+                                        var moveConfirm = PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssMoveConfirm).Format(game.Name, newPath), ResourceProvider.GetString(LOC.GogOssMove), MessageBoxButton.YesNo, MessageBoxImage.Question);
+                                        if (moveConfirm == MessageBoxResult.Yes)
+                                        {
+                                            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssMovingGame).Format(game.Name, newPath), false);
+                                            PlayniteApi.Dialogs.ActivateGlobalProgress((a) =>
+                                            {
+                                                a.ProgressMaxValue = 3;
+                                                a.CurrentProgressValue = 0;
+                                                _ = (Application.Current.Dispatcher?.BeginInvoke((Action)async delegate
+                                                {
+                                                    try
+                                                    {
+                                                        Directory.Move(oldPath, newPath);
+                                                        a.CurrentProgressValue = 1;
+                                                        var installedAppList = GetInstalledAppList();
+                                                        if (installedAppList.ContainsKey(game.GameId))
+                                                        {
+                                                            var installedApp = installedAppList[game.GameId];
+                                                            installedApp.install_path = newPath;
+                                                            installedAppListModified = true;
+                                                            if (installedApp.scriptInterpreter)
+                                                            {
+                                                                await GogOss.LaunchIsi(installedApp, game.GameId);
+                                                            }
+                                                        }
+                                                        a.CurrentProgressValue = 2;
+                                                        game.InstallDirectory = newPath;
+                                                        PlayniteApi.Database.Games.Update(game);
+                                                        a.CurrentProgressValue = 3;
+                                                        PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssMoveGameSuccess).Format(game.Name, newPath));
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        a.CurrentProgressValue = 3;
+                                                        PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssMoveGameError).Format(game.Name, newPath));
+                                                        logger.Error(e.Message);
+                                                    }
+                                                }));
+                                            }, globalProgressOptions);
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                    }
                 }
 
                 var notInstalledGogOssGames = gogOssGames.Where(i => i.IsInstalled == false).ToList();

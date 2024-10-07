@@ -444,8 +444,6 @@ namespace GogOssLibraryNS
                                 {
                                     installedAppList.Remove(gameID);
                                 }
-                                installedAppList.Add(gameID, installedGameInfo);
-                                GogOssLibrary.Instance.installedAppListModified = true;
 
                                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                                 {
@@ -461,6 +459,7 @@ namespace GogOssLibraryNS
                                             Dependencies = dependsIds
                                         };
                                         Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
+                                        installedGameInfo.scriptInterpreter = true;
                                     }
                                     Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
                                     {
@@ -483,6 +482,8 @@ namespace GogOssLibraryNS
                                         playniteAPI.Database.Games.Update(game);
                                     }
                                 }
+                                installedAppList.Add(gameID, installedGameInfo);
+                                GogOssLibrary.Instance.installedAppListModified = true;
 
                                 wantedItem.status = DownloadStatus.Completed;
                                 wantedItem.progress = 100.0;

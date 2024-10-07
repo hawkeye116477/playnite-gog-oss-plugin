@@ -147,7 +147,7 @@ namespace GogOssLibraryNS
                              .AddCommandToLog()
                              .ExecuteAsync();
                 }
-                else if (Directory.Exists(Game.InstallDirectory))
+                if (Directory.Exists(Game.InstallDirectory))
                 {
                     Directory.Delete(Game.InstallDirectory, true);
                 }
@@ -206,43 +206,7 @@ namespace GogOssLibraryNS
                 {
                     if (depend == "ISI")
                     {
-                        var isiInstalledInfo = GogOss.GetInstalledInfo("ISI");
-                        var shortLang = installedInfo.language.Split('-')[0];
-                        var langInEnglish = "";
-                        if (!shortLang.IsNullOrEmpty())
-                        {
-                            langInEnglish = new CultureInfo(shortLang).EnglishName;
-                        }
-                        foreach (var product in metaManifest.products)
-                        {
-                            var args = new List<string>
-                            {
-                                "/VERYSILENT",
-                                $"/DIR={Game.InstallDirectory}",
-                                $"/ProductId={product.productId}",
-                                "/galaxyclient",
-                                $"/buildId={installedInfo.build_id}",
-                                $"/versionName={installedInfo.version}",
-                                "/nodesktopshortcut",
-                                "/nodesktopshorctut", // Yes, they made a typo
-                            };
-                            if (!langInEnglish.IsNullOrEmpty())
-                            {
-                                args.AddRange(new[] {
-                                    $"/Language={langInEnglish}",
-                                    $"/LANG={langInEnglish}",
-                                    $"/lang-code={installedInfo.language}" });
-                            }
-                            var isiInstallPath = Path.Combine(isiInstalledInfo.install_path, "scriptinterpreter.exe");
-                            if (File.Exists(isiInstallPath))
-                            {
-                                await Cli.Wrap(isiInstallPath)
-                                         .WithArguments(args)
-                                         .WithWorkingDirectory(isiInstalledInfo.install_path)
-                                         .AddCommandToLog()
-                                         .ExecuteAsync();
-                            }
-                        }
+                        await GogOss.LaunchIsi(installedInfo, Game.GameId);
                         gameSettings.Dependencies.Remove("ISI");
                     }
                 }

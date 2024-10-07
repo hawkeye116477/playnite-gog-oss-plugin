@@ -1,6 +1,11 @@
-﻿using GogOssLibraryNS.Models;
+﻿using CliWrap;
+using GogOssLibraryNS.Models;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace GogOssLibraryNS
 {
@@ -20,6 +25,66 @@ namespace GogOssLibraryNS
                 installedInfo = installedAppList[gameId];
             }
             return installedInfo;
+        }
+
+        public static string IsiInstallPath
+        {
+            get
+            {
+                var isiInstallPath = "";
+                var isiInstalledInfo = GetInstalledInfo("ISI");
+                if (isiInstalledInfo.install_path != "")
+                {
+                    isiInstallPath = Path.Combine(isiInstalledInfo.install_path);
+                }
+                return isiInstallPath;
+            }
+        }
+
+        public static async Task LaunchIsi(Installed installedGameInfo, string gameId)
+        {
+            var isiInstallPath = IsiInstallPath;
+            if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
+            {
+                var metaManifest = Gogdl.GetGameMetaManifest(gameId);
+                var shortLang = installedGameInfo.language.Split('-')[0];
+                var langInEnglish = "";
+                if (!shortLang.IsNullOrEmpty())
+                {
+                    langInEnglish = new CultureInfo(shortLang).EnglishName;
+                }
+                foreach (var product in metaManifest.products)
+                {
+                    var args = new List<string>
+                    {
+                        "/VERYSILENT",
+                        $"/DIR={installedGameInfo.install_path}",
+                        $"/ProductId={product.productId}",
+                        "/galaxyclient",
+                        $"/buildId={installedGameInfo.build_id}",
+                        $"/versionName={installedGameInfo.version}",
+                        "/nodesktopshortcut",
+                        "/nodesktopshorctut", // Yes, they made a typo
+                    };
+                    if (!langInEnglish.IsNullOrEmpty())
+                    {
+                        args.AddRange(new[] {
+                                    $"/Language={langInEnglish}",
+                                    $"/LANG={langInEnglish}",
+                                    $"/lang-code={installedGameInfo.language}" });
+                    }
+                    var isiExe = Path.Combine(isiInstallPath, "scriptinterpreter.exe");
+                    if (File.Exists(isiExe))
+                    {
+                        await Cli.Wrap(isiExe)
+                                 .WithArguments(args)
+                                 .WithWorkingDirectory(isiInstallPath)
+                                 .AddCommandToLog()
+                                 .ExecuteAsync();
+                    }
+                }
+
+            }
         }
     }
 }

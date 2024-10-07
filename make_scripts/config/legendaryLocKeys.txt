@@ -84,3 +84,8 @@ LOCLegendaryDownloadProperties
 LOCLegendaryTask
 LOCLegendaryLauncherSettings
 LOCLegendaryVerifying
+LOCLegendaryMove
+LOCLegendaryMoveConfirm
+LOCLegendaryMovingGame
+LOCLegendaryMoveGameSuccess
+LOCLegendaryMoveGameError

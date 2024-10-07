@@ -80,6 +80,11 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">El ile eşitlenen kayıtlar</sys:String>
   <sys:String x:Key="LOCGogOssSync">Eşitleme</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Oynatma süresini bulutla eşitle</sys:String>
+  <sys:String x:Key="LOCGogOssMove">Taşı</sys:String>
+  <sys:String x:Key="LOCGogOssMoveConfirm">{0} öğesini "{1}" konumuna taşımak istediğinizden emin misiniz? Bu uzun zaman alabilir.</sys:String>
+  <sys:String x:Key="LOCGogOssMovingGame">{0}, "{1}" öğesine taşınıyor...</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} başarıyla "{1}" konumuna taşındı.</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameError">{0}, "{1}" konumuna taşınırken bir hata oluştu.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Başlatma ayarlarını kaldır</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">{0} olarak oturum açıldı</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>

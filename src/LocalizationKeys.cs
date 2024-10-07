@@ -394,6 +394,26 @@ namespace System
         /// </summary>
         public const string GogOssSyncPlaytime = "LOCGogOssSyncPlaytime";
         /// <summary>
+        /// Move
+        /// </summary>
+        public const string GogOssMove = "LOCGogOssMove";
+        /// <summary>
+        /// Are you sure you want to move {0} to "{1}"? This may take a long time.
+        /// </summary>
+        public const string GogOssMoveConfirm = "LOCGogOssMoveConfirm";
+        /// <summary>
+        /// Moving {0} to "{1}"...
+        /// </summary>
+        public const string GogOssMovingGame = "LOCGogOssMovingGame";
+        /// <summary>
+        /// {0} has been successfully moved to "{1}".
+        /// </summary>
+        public const string GogOssMoveGameSuccess = "LOCGogOssMoveGameSuccess";
+        /// <summary>
+        /// An error occurred while moving {0} to "{1}".
+        /// </summary>
+        public const string GogOssMoveGameError = "LOCGogOssMoveGameError";
+        /// <summary>
         /// Remove launch settings
         /// </summary>
         public const string GogOssRemoveGameLaunchSettings = "LOCGogOssRemoveGameLaunchSettings";

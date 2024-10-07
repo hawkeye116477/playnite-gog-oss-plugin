@@ -80,6 +80,11 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Sincronización manual de partidas guardadas</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tiempo de juego a la nube</sys:String>
+  <sys:String x:Key="LOCGogOssMove">Mover</sys:String>
+  <sys:String x:Key="LOCGogOssMoveConfirm">¿Estás seguro de que quieres mover {0} a "{1}"? Esto puede tardar mucho tiempo.</sys:String>
+  <sys:String x:Key="LOCGogOssMovingGame">Moviendo {0} a "{1}"...</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} se ha movido con éxito a "{1}".</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameError">Se ha producido un error al mover {0} a "{1}".</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Sesión iniciada como {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">¿Estás seguro de que quieres cerrar sesión?</sys:String>

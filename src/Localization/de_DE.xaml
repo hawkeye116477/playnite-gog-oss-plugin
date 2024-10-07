@@ -80,6 +80,11 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Manuelle Synchronisierung der Speicherstände</sys:String>
   <sys:String x:Key="LOCGogOssSync">Synchronisieren</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronisiere Spielzeit mit der Cloud</sys:String>
+  <sys:String x:Key="LOCGogOssMove">Verschieben</sys:String>
+  <sys:String x:Key="LOCGogOssMoveConfirm">Sind Sie sicher, dass Sie {0} nach "{1}" verschieben möchten? Dies kann eine lange Zeit dauern.</sys:String>
+  <sys:String x:Key="LOCGogOssMovingGame">Verschiebe {0} nach "{1}"...</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} wurde erfolgreich nach "{1} " verschoben.</sys:String>
+  <sys:String x:Key="LOCGogOssMoveGameError">Beim Verschieben von {0} nach "{1} " ist ein Fehler aufgetreten.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Starteinstellungen entfernen</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Angemeldet als {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Sind Sie sicher, dass Sie sich abmelden möchten?</sys:String>
