@@ -397,7 +397,7 @@ namespace GogOssLibraryNS
 
             var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game).ToList();
             GamesLB.ItemsSource = games;
-            if (MultiInstallData.Count > 1 || gamesListShouldBeDisplayed)
+            if ((MultiInstallData.Count > 1 && singleGameInstallData == null) || gamesListShouldBeDisplayed)
             {
                 GamesBrd.Visibility = Visibility.Visible;
             }
