@@ -45,6 +45,7 @@ namespace GogOssLibraryNS
         {
             var playniteAPI = API.Instance;
 
+            GogOssLibrary.GetInstalledAppList();
             Window window = null;
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
@@ -99,7 +100,7 @@ namespace GogOssLibraryNS
                         File.Delete(gameSettingsFile);
                     }
                 }
-                var installedAppList = GogOssLibrary.Instance.installedAppList;
+                var installedAppList = GogOssLibrary.GetInstalledAppList();
                 if (installedAppList.ContainsKey(Game.GameId))
                 {
                     installedAppList.Remove(Game.GameId);

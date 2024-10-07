@@ -515,11 +515,6 @@ namespace GogOssLibraryNS
             yield return downloadManagerSidebarItem;
         }
 
-        public override void OnApplicationStarted(OnApplicationStartedEventArgs args)
-        {
-            GetInstalledAppList();
-        }
-
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
             StopDownloadManager();
