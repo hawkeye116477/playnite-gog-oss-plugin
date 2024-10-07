@@ -19,6 +19,7 @@
   <sys:String x:Key="LOCGogOssDownloadSpeed">Veloc. de Download:</sys:String>
   <sys:String x:Key="LOCGogOssDiskSpeed">Uso do Disco:</sys:String>
   <sys:String x:Key="LOCGogOssElapsed">Decorrido:</sys:String>
+  <sys:String x:Key="LOCGogOssVerifying">Verificando...</sys:String>
   <sys:String x:Key="LOCGogOssDownloadingUpdate">Baixando atualização...</sys:String>
   <sys:String x:Key="LOCGogOssFinishingInstallation">Concluindo instalação...</sys:String>
   <sys:String x:Key="LOCGogOssFinishingUpdate">Concluindo atualização...</sys:String>

@@ -43,9 +43,26 @@ namespace GogOssLibraryNS
 
         public static void LaunchInstaller(List<DownloadManagerData.Download> installData)
         {
+            if (!Gogdl.IsInstalled)
+            {
+                throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
+            }
             var playniteAPI = API.Instance;
 
-            GogOssLibrary.GetInstalledAppList();
+            var installedAppList = GogOssLibrary.GetInstalledAppList();
+
+            foreach (var game in installData)
+            {
+                if (installedAppList.ContainsKey(game.gameID)) 
+                {
+                    var installedGame = installedAppList[game.gameID];
+                    game.downloadProperties.version = installedGame.version;
+                    game.downloadProperties.buildId = installedGame.build_id;
+                    game.downloadProperties.installPath = installedGame.install_path;
+                    game.downloadProperties.language = installedGame.language;
+                }
+            }
+
             Window window = null;
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
@@ -68,6 +85,10 @@ namespace GogOssLibraryNS
             window.MinWidth = 600;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             var title = ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame);
+            if (installData[0].downloadProperties.downloadAction == DownloadAction.Repair)
+            {
+                title = ResourceProvider.GetString(LOC.GogOssRepair);
+            }
             if (installData.Count == 1)
             {
                 title = installData[0].name;

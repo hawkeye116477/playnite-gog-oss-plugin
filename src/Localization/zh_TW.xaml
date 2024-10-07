@@ -19,6 +19,7 @@
   <sys:String x:Key="LOCGogOssDownloadSpeed"></sys:String>
   <sys:String x:Key="LOCGogOssDiskSpeed"></sys:String>
   <sys:String x:Key="LOCGogOssElapsed"></sys:String>
+  <sys:String x:Key="LOCGogOssVerifying"></sys:String>
   <sys:String x:Key="LOCGogOssDownloadingUpdate"></sys:String>
   <sys:String x:Key="LOCGogOssFinishingInstallation"></sys:String>
   <sys:String x:Key="LOCGogOssFinishingUpdate"></sys:String>

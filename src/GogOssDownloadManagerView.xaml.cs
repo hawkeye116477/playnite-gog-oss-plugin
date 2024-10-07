@@ -298,32 +298,11 @@ namespace GogOssLibraryNS
                             GameTitleTB.Text = gameTitle;
                             gogPanel.ProgressValue = 0;
                             break;
-                        case StandardOutputCommandEvent stdOut:
-                            if (downloadProperties.downloadAction == DownloadAction.Repair)
-                            {
-                                var verificationProgressMatch = Regex.Match(stdOut.Text, @"Verification progress:.*\((\d.*%)");
-                                if (verificationProgressMatch.Length >= 2)
-                                {
-                                    double progress = Helpers.GetDouble(verificationProgressMatch.Groups[1].Value.Replace("%", ""));
-                                    wantedItem.progress = progress;
-                                    gogPanel.ProgressValue = progress;
-                                }
-                                //var verificationFileProgressMatch = Regex.Match(stdOut.Text, @"Verifying large file \""(.*)""\: (\d.*%) \((\d+\.\d+)\/(\d+\.\d+) (\wiB)");
-                                //if (verificationFileProgressMatch.Length >= 2)
-                                //{
-                                //    string fileName = verificationFileProgressMatch.Groups[1].Value;
-                                //    string largeProgressPercent = verificationFileProgressMatch.Groups[2].Value;
-                                //    string readSize = Helpers.FormatSize(Helpers.GetDouble(verificationFileProgressMatch.Groups[3].Value), verificationFileProgressMatch.Groups[5].Value);
-                                //    string fullSize = Helpers.FormatSize(Helpers.GetDouble(verificationFileProgressMatch.Groups[4].Value), verificationFileProgressMatch.Groups[5].Value);
-                                //    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssVerifyingLargeFile).Format(fileName, $"{largeProgressPercent} ({readSize}/{fullSize})");
-                                //}
-                                //else if (stdOut.Text.Contains("Verification"))
-                                //{
-                                //    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssVerifying);
-                                //}
-                            }
-                            break;
                         case StandardErrorCommandEvent stdErr:
+                            if (stdErr.Text.Contains("Verification") || stdErr.Text.Contains("Verifying"))
+                            {
+                                DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssVerifying);
+                            }
                             var fullInstallPathMatch = Regex.Match(stdErr.Text, @"Install path: (\S+)");
                             if (fullInstallPathMatch.Length >= 2)
                             {
@@ -506,6 +485,7 @@ namespace GogOssLibraryNS
                                 }
 
                                 wantedItem.status = DownloadStatus.Completed;
+                                wantedItem.progress = 100.0;
                                 DateTimeOffset now = DateTime.UtcNow;
                                 wantedItem.completedTime = now.ToUnixTimeSeconds();
                                 if (settings.DisplayDownloadTaskFinishedNotifications)

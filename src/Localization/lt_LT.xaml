@@ -19,6 +19,7 @@
   <sys:String x:Key="LOCGogOssDownloadSpeed">Siuntimosi greitis:</sys:String>
   <sys:String x:Key="LOCGogOssDiskSpeed"></sys:String>
   <sys:String x:Key="LOCGogOssElapsed">Praėjo:</sys:String>
+  <sys:String x:Key="LOCGogOssVerifying"></sys:String>
   <sys:String x:Key="LOCGogOssDownloadingUpdate"></sys:String>
   <sys:String x:Key="LOCGogOssFinishingInstallation"></sys:String>
   <sys:String x:Key="LOCGogOssFinishingUpdate"></sys:String>

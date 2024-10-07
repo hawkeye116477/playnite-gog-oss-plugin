@@ -83,3 +83,4 @@ LOCLegendaryAlternativeExe
 LOCLegendaryDownloadProperties
 LOCLegendaryTask
 LOCLegendaryLauncherSettings
+LOCLegendaryVerifying

@@ -19,6 +19,7 @@
   <sys:String x:Key="LOCGogOssDownloadSpeed">Скорость загрузки:</sys:String>
   <sys:String x:Key="LOCGogOssDiskSpeed">Запись на диск:</sys:String>
   <sys:String x:Key="LOCGogOssElapsed">Прошло:</sys:String>
+  <sys:String x:Key="LOCGogOssVerifying">Проверка...</sys:String>
   <sys:String x:Key="LOCGogOssDownloadingUpdate">Загрузка обновления...</sys:String>
   <sys:String x:Key="LOCGogOssFinishingInstallation">Завершение установки...</sys:String>
   <sys:String x:Key="LOCGogOssFinishingUpdate">Завершение обновления...</sys:String>

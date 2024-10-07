@@ -19,6 +19,7 @@
   <sys:String x:Key="LOCGogOssDownloadSpeed">İndirme Hızı:</sys:String>
   <sys:String x:Key="LOCGogOssDiskSpeed">Disk Kullanımı:</sys:String>
   <sys:String x:Key="LOCGogOssElapsed">Geçen:</sys:String>
+  <sys:String x:Key="LOCGogOssVerifying">Verifying...</sys:String>
   <sys:String x:Key="LOCGogOssDownloadingUpdate">Güncelleştirme indiriliyor...</sys:String>
   <sys:String x:Key="LOCGogOssFinishingInstallation">Kurulum tamamlanıyor...</sys:String>
   <sys:String x:Key="LOCGogOssFinishingUpdate">Güncelleme tamamlanıyor...</sys:String>

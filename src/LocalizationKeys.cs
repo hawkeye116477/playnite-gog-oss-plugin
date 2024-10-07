@@ -150,6 +150,10 @@ namespace System
         /// </summary>
         public const string GogOssElapsed = "LOCGogOssElapsed";
         /// <summary>
+        /// Verifying...
+        /// </summary>
+        public const string GogOssVerifying = "LOCGogOssVerifying";
+        /// <summary>
         /// Downloading update...
         /// </summary>
         public const string GogOssDownloadingUpdate = "LOCGogOssDownloadingUpdate";

@@ -90,7 +90,7 @@ namespace GogOssLibraryNS
             AfterInstallingTB.Text = Helpers.FormatSize(afterInstallSizeNumber);
         }
 
-        public async Task Install()
+        public async Task StartTask(DownloadAction downloadAction)
         {
             var settings = GogOssLibrary.GetSettings();
             var installPath = SelectedGamePathTxt.Text;
@@ -118,10 +118,10 @@ namespace GogOssLibraryNS
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameId);
                 if (wantedItem == null)
                 {
-                    var downloadProperties = GetDownloadProperties(installData, DownloadAction.Install, installPath);
+                    var downloadProperties = GetDownloadProperties(installData, downloadAction, installPath);
                     if (installData.downloadItemType == DownloadItemType.Dependency)
                     {
-                        downloadProperties = GetDownloadProperties(installData, DownloadAction.Install, redistInstallPath);
+                        downloadProperties = GetDownloadProperties(installData, downloadAction, redistInstallPath);
                     }
                     installData.downloadProperties = downloadProperties;
                     downloadTasks.Add(installData);
@@ -147,12 +147,17 @@ namespace GogOssLibraryNS
 
         private async void InstallBtn_Click(object sender, RoutedEventArgs e)
         {
-            await Install();
+            await StartTask(DownloadAction.Install);
         }
 
-        private void RepairBtn_Click(object sender, RoutedEventArgs e)
+        private async void RepairBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            foreach (var installData in MultiInstallData)
+            {
+                installData.downloadSizeNumber = 0;
+                installData.installSizeNumber = 0;
+            }
+            await StartTask(DownloadAction.Repair);
         }
 
         public DownloadProperties GetDownloadProperties(DownloadManagerData.Download installData, DownloadAction downloadAction, string installPath = "")
@@ -230,6 +235,13 @@ namespace GogOssLibraryNS
 
         private async void GogOssGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            if (MultiInstallData.First().downloadProperties.downloadAction == DownloadAction.Repair)
+            {
+                FolderDP.Visibility = Visibility.Collapsed;
+                InstallBtn.Visibility = Visibility.Collapsed;
+                RepairBtn.Visibility = Visibility.Visible;
+                AfterInstallingSP.Visibility = Visibility.Collapsed;
+            }
             var settings = GogOssLibrary.GetSettings();
             var installPath = Gogdl.GamesInstallationPath;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
@@ -418,7 +430,7 @@ namespace GogOssLibraryNS
             if (settings.UnattendedInstall && (MultiInstallData.First().downloadProperties.downloadAction == DownloadAction.Install) &&
                 !editDownloadPropertiesMode)
             {
-                await Install();
+                await StartTask(DownloadAction.Install);
             }
         }
 
