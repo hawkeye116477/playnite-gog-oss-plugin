@@ -290,7 +290,7 @@ namespace GogOssLibraryNS
                 };
                 if (!GetPlayTasks(gameId, game.install_path).HasItems())
                 {
-                    game.is_dlc = true; // Empty play task = DLC
+                    continue; // Empty play task = DLC
                 }
                 var infoManifest = GetGogGameInfoManifest(gameId, game.install_path);
                 if (infoManifest.buildId != null)

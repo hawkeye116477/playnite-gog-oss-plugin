@@ -12,9 +12,10 @@ namespace GogOssLibraryNS.Models
         public bool is_dlc { get; set; } = false;
         public string version { get; set; } = "";
         public string build_id { get; set; } = "";
-        public List<string> installed_DLCs { get; set; } = default;
+        public List<string> installed_DLCs { get; set; } = new List<string>();
         public string language { get; set; } = "";
         public DownloadItemType item_type { get; set; } = DownloadItemType.Game;
         public bool scriptInterpreter { get; set; } = false;
+        public bool is_installed { get; set; } = true;
     }
 }

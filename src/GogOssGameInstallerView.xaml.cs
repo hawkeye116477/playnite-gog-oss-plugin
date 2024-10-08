@@ -188,8 +188,9 @@ namespace GogOssLibraryNS
             InstallSizeTB.Text = Helpers.FormatSize(installSizeNumber);
         }
 
-        private GogDownloadGameInfo.SizeType CalculateGameSize(DownloadManagerData.Download installData)
+        private async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
         {
+            var manifest = await Gogdl.GetGameInfo(installData);
             var size = new GogDownloadGameInfo.SizeType
             {
                 download_size = 0,
@@ -339,21 +340,18 @@ namespace GogOssLibraryNS
                 }
             }
 
-            var installedAppList = GogOssLibrary.Instance.installedAppList;
-            if (!installedAppList.ContainsKey("ISI"))
+            var redistTask = new DownloadManagerData.Download
             {
-                var isiTask = new DownloadManagerData.Download
-                {
-                    gameID = "ISI",
-                    name = "Install Script Interpreter",
-                    downloadItemType = DownloadItemType.Dependency,
-                };
-                var ISIalreadyAdded = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == isiTask.gameID);
-                if (ISIalreadyAdded == null)
-                {
-                    MultiInstallData.Insert(0, isiTask);
-                }
-            }
+                gameID = "gog-redist",
+                name = "GOG Common Redistributables",
+                downloadItemType = DownloadItemType.Dependency,
+                fullInstallPath = Gogdl.DependenciesInstallationPath
+            };
+            var requiredDepends = Gogdl.GetRequiredDepends();
+            redistTask.depends = new List<string>
+            {
+                "ISI"
+            };
             bool gamesListShouldBeDisplayed = false;
             var redistInstallPath = Gogdl.DependenciesInstallationPath;
             foreach (var installData in MultiInstallData.ToList())
@@ -364,6 +362,14 @@ namespace GogOssLibraryNS
                     gamesListShouldBeDisplayed = true;
                     MultiInstallData.Remove(installData);
                     continue;
+                }
+                if (manifest.dependencies.Count > 0)
+                {
+                    installData.depends = manifest.dependencies;
+                    foreach (var depend in manifest.dependencies)
+                    {
+                        redistTask.depends.AddMissing(depend);
+                    }
                 }
                 RefreshLanguages(installData);
                 if (installData.downloadProperties.buildId.IsNullOrEmpty())
@@ -378,7 +384,7 @@ namespace GogOssLibraryNS
                         installData.downloadProperties.extraContent.Add(dlc.id);
                     }
                 }
-                var gameSize = CalculateGameSize(installData);
+                var gameSize = await CalculateGameSize(installData);
                 installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
                 if (installData.downloadItemType == DownloadItemType.Dependency)
                 {
@@ -393,6 +399,49 @@ namespace GogOssLibraryNS
                     MultiInstallData.Remove(installData);
                 }
             }
+            if (redistTask.depends.Count > 0 && requiredDepends.Count > 0)
+            {
+                foreach (var requiredDepend in requiredDepends)
+                {
+                    if (!redistTask.depends.Contains(requiredDepend))
+                    {
+                        redistTask.depends.Add(requiredDepend);
+                    }
+                }
+            }
+            if (redistTask.depends.Count != requiredDepends.Count)
+            {
+                redistTask.downloadSizeNumber = 0;
+                redistTask.installSizeNumber = 0;
+                var installedDepends = Gogdl.GetInstalledDepends();
+                foreach (var depend in redistTask.depends)
+                {
+                    if (!installedDepends.Contains(depend))
+                    {
+                        var dependInstallData = new DownloadManagerData.Download
+                        {
+                            gameID = depend
+                        };
+                        var dependSize = await CalculateGameSize(dependInstallData);
+                        redistTask.downloadSizeNumber += dependSize.download_size;
+                        redistTask.installSizeNumber += dependSize.disk_size;
+                    }
+                }
+                if (redistTask.downloadSizeNumber != 0)
+                {
+                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == "gog-redist");
+                    if (wantedItem == null)
+                    {
+                        MultiInstallData.Insert(0, redistTask);
+                    }
+                    else if (wantedItem.status != DownloadStatus.Running)
+                    {
+                        downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                        MultiInstallData.Insert(0, redistTask);
+                    }
+                }
+            }
+
             CalculateTotalSize();
             if (downloadItemsAlreadyAdded.Count > 0)
             {
@@ -471,7 +520,7 @@ namespace GogOssLibraryNS
             return gameLanguages;
         }
 
-        private void GameLanguageCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void GameLanguageCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (singleGameInstallData != null && GameLanguageCBo.IsDropDownOpen)
             {
@@ -480,7 +529,7 @@ namespace GogOssLibraryNS
                 {
                     InstallBtn.IsEnabled = false;
                     installData.downloadProperties.language = GameLanguageCBo.SelectedValue.ToString();
-                    var gameSize = CalculateGameSize(installData);
+                    var gameSize = await CalculateGameSize(installData);
                     installData.downloadSizeNumber = gameSize.download_size;
                     installData.installSizeNumber = gameSize.disk_size;
                     CalculateTotalSize();
@@ -495,7 +544,7 @@ namespace GogOssLibraryNS
             {
                 InstallBtn.IsEnabled = false;
                 await SetGameVersion();
-                var gameSize = CalculateGameSize(singleGameInstallData);
+                var gameSize = await CalculateGameSize(singleGameInstallData);
                 singleGameInstallData.downloadSizeNumber = gameSize.download_size;
                 singleGameInstallData.installSizeNumber = gameSize.disk_size;
                 CalculateTotalSize();
@@ -598,7 +647,7 @@ namespace GogOssLibraryNS
                     singleGameInstallData.downloadProperties.betaChannel = BetaChannelCBo.SelectedValue.ToString();
                 }
                 await RefreshVersions();
-                var gameSize = CalculateGameSize(singleGameInstallData);
+                var gameSize = await CalculateGameSize (singleGameInstallData);
                 singleGameInstallData.downloadSizeNumber = gameSize.download_size;
                 singleGameInstallData.installSizeNumber = gameSize.disk_size;
                 CalculateTotalSize();
@@ -632,7 +681,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (singleGameInstallData != null)
             {
@@ -656,7 +705,7 @@ namespace GogOssLibraryNS
                     AllOrNothingChk.IsChecked = true;
                     checkedByUser = true;
                 }
-                var gameSize = CalculateGameSize(installData);
+                var gameSize = await CalculateGameSize(installData);
                 installData.downloadSizeNumber = gameSize.download_size;
                 installData.installSizeNumber = gameSize.disk_size;
                 CalculateTotalSize();
@@ -723,7 +772,7 @@ namespace GogOssLibraryNS
             {
                 InstallBtn.IsEnabled = false;
                 manifest = await Gogdl.GetGameInfo(selectedGame);
-                var gameSize = CalculateGameSize(selectedGame);
+                var gameSize = await CalculateGameSize(selectedGame);
                 selectedGame.downloadSizeNumber = gameSize.download_size;
                 selectedGame.installSizeNumber = gameSize.disk_size;
                 CalculateTotalSize();

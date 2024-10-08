@@ -300,9 +300,11 @@ namespace GogOssLibraryNS
             {
                 if (downloadData.downloadItemType == DownloadItemType.Dependency)
                 {
-                    var redistManifest = await GetRedistInfo(downloadData, skipRefreshing, silently, forceRefreshCache);
+                    var redistManifest = await GetRedistInfo(downloadData.gameID, skipRefreshing, silently, forceRefreshCache);
                     manifest.buildId = redistManifest.build_id;
                     manifest.size = new Dictionary<string, GogDownloadGameInfo.SizeType>();
+                    manifest.readableName = redistManifest.readableName;
+                    downloadData.name = manifest.readableName;
                     var redistSizes = new GogDownloadGameInfo.SizeType
                     {
                         disk_size = redistManifest.size,
@@ -361,7 +363,7 @@ namespace GogOssLibraryNS
             return manifest;
         }
 
-        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(DownloadManagerData.Download downloadData, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
+        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string gameId, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
         {
             var redistManifest = new GogDownloadRedistManifest.Depot();
             var manifest = new GogDownloadRedistManifest();
@@ -373,8 +375,8 @@ namespace GogOssLibraryNS
                 BufferedCommandResult result;
                 var infoArgs = new List<string>();
                 infoArgs.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
-                infoArgs.AddRange(new[] { "redist", "--ids", downloadData.gameID, "--path", "/", "--print-manifest" });
-               
+                infoArgs.AddRange(new[] { "redist", "--ids", gameId, "--path", "/", "--print-manifest" });
+
                 result = await Cli.Wrap(ClientInstallationPath)
                                       .WithArguments(infoArgs)
                                       .AddCommandToLog()
@@ -403,11 +405,57 @@ namespace GogOssLibraryNS
                 {
                     manifest = Serialization.FromJson<GogDownloadRedistManifest>(result.StandardOutput);
                     var depots = manifest.depots;
-                    redistManifest = depots.First(d => d.dependencyId == downloadData.gameID);
+                    redistManifest = depots.First(d => d.dependencyId == gameId);
                     redistManifest.build_id = manifest.build_id;
                 }
             }
             return redistManifest;
+        }
+
+        public static List<string> GetInstalledDepends()
+        {
+            var depends = new List<string>();
+            var redistManifestFile = Path.Combine(DependenciesInstallationPath, ".gogdl-redist-manifest");
+            if (File.Exists(redistManifestFile))
+            {
+                var redistManifest = Serialization.FromJson<GogDownloadRedistManifest>(File.ReadAllText(redistManifestFile));
+                if (redistManifest.HGLInstalled.Count > 0)
+                {
+                    depends = redistManifest.HGLInstalled;
+                }
+            }
+            return depends;
+        }
+
+        public static List<string> GetRequiredDepends()
+        {
+            var cacheMetaManifestsDir = Path.Combine(ConfigPath, "manifests");
+            var depends = new List<string>();
+            var installedAppList = GogOssLibrary.GetInstalledAppList();
+            if (Directory.Exists(cacheMetaManifestsDir))
+            {
+                var apps = installedAppList.Keys.ToList();
+                foreach (var app in apps)
+                {
+                    var cacheMetaManifestFile = Path.Combine(cacheMetaManifestsDir, app);
+                    if (File.Exists(cacheMetaManifestFile))
+                    {
+                        var metaManifest = GetGameMetaManifest(app);
+                        if (metaManifest.scriptInterpreter)
+                        {
+                            depends.Add("ISI");
+                        }
+                        if (metaManifest.dependencies.Count > 0)
+                        {
+                            foreach (var depend in metaManifest.dependencies)
+                            {
+                                depends.AddMissing(depend);
+                            }
+                        }
+                    }
+                }
+            }
+            return depends;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace GogOssLibraryNS.Models
         public List<string> available_branches { get; set; } = new List<string>();
         public Builds builds { get; set; } = new Builds();
         public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
+        public string readableName { get; set; } = "";
 
         public class Dlc
         {

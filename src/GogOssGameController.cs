@@ -200,17 +200,45 @@ namespace GogOssLibraryNS
         {
             if (gameSettings.Dependencies.Count > 0)
             {
-                var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
-                var metaManifest = Gogdl.GetGameMetaManifest(Game.GameId);
-                foreach (var depend in gameSettings.Dependencies.ToList())
+                var installedAppList = GogOssLibrary.GetInstalledAppList();
+                if (installedAppList.ContainsKey(Game.GameId))
                 {
-                    if (depend == "ISI")
+                    var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
+                    var metaManifest = Gogdl.GetGameMetaManifest(Game.GameId);
+                    foreach (var depend in gameSettings.Dependencies.ToList())
                     {
-                        await GogOss.LaunchIsi(installedInfo, Game.GameId);
-                        gameSettings.Dependencies.Remove("ISI");
+                        if (depend == "ISI")
+                        {
+                            await GogOss.LaunchIsi(installedInfo, Game.GameId);
+                            gameSettings.Dependencies.Remove("ISI");
+                        }
+                        else
+                        {
+                            if (installedAppList.ContainsKey(depend))
+                            {
+                                var installedDepend = installedAppList[depend];
+                                if (!installedDepend.is_installed)
+                                {
+                                    var dependManifest = await Gogdl.GetRedistInfo(depend);
+                                    if (dependManifest.executable.path != "")
+                                    {
+                                        var dependExe = Path.GetFullPath(Path.Combine(Gogdl.DependenciesInstallationPath, dependManifest.executable.path));
+                                        if (File.Exists(dependExe))
+                                        {
+                                            var process = ProcessStarter.StartProcess(dependExe, dependManifest.executable.arguments, true);
+                                            process.WaitForExit();
+                                        }
+                                        installedDepend.is_installed = true;
+                                        GogOssLibrary.Instance.installedAppListModified = true;
+                                    }
+                                }
+                            }
+                            gameSettings.Dependencies.Remove(depend);
+
+                        }
                     }
+                    Helpers.SaveJsonSettingsToFile(gameSettings, Game.GameId, "GamesSettings");
                 }
-                Helpers.SaveJsonSettingsToFile(gameSettings, Game.GameId, "GamesSettings");
             }
         }
 

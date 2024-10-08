@@ -22,6 +22,7 @@ namespace GogOssLibraryNS.Models
         public int version { get; set; }
         public string HGLInstallLanguage { get; set; }
         public object[] HGLdlcs { get; set; }
+        public List<string> dependencies { get; set; } = new List<string>();
 
         public class Offlinedepot
         {

@@ -237,13 +237,12 @@ namespace GogOssLibraryNS
                 {
                     installCommand.Add("update");
                 }
+                installCommand.Add(taskData.gameID);
             }
             else
             {
-                installCommand.AddRange(new[] { "redist", "--ids" });
+                installCommand.AddRange(new[] { "redist", "--ids", string.Join(",", taskData.depends) });
             }
-
-            installCommand.Add(gameID);
 
             if (downloadProperties.installPath != "")
             {
@@ -272,6 +271,7 @@ namespace GogOssLibraryNS
             }
             else
             {
+                installCommand.Add("--with-dlcs");
                 installCommand.AddRange(new[] { "--dlcs", string.Join(",", downloadProperties.extraContent) });
             }
             forcefulInstallerCTS = new CancellationTokenSource();
@@ -429,7 +429,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                var installedAppList = GogOssLibrary.Instance.installedAppList;
+                                var installedAppList = GogOssLibrary.GetInstalledAppList();
                                 var installedGameInfo = new Installed
                                 {
                                     build_id = downloadProperties.buildId,
@@ -439,7 +439,12 @@ namespace GogOssLibraryNS
                                     platform = downloadProperties.os,
                                     install_path = taskData.fullInstallPath,
                                     language = downloadProperties.language,
+                                    installed_DLCs = downloadProperties.extraContent
                                 };
+                                if (taskData.downloadItemType == DownloadItemType.Dependency)
+                                {
+                                    installedGameInfo.is_installed = false;
+                                }
                                 if (installedAppList.ContainsKey(gameID))
                                 {
                                     installedAppList.Remove(gameID);
@@ -448,18 +453,23 @@ namespace GogOssLibraryNS
                                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                                 {
                                     var gameMetaManifest = Gogdl.GetGameMetaManifest(gameID);
+                                    var gameSettings = new GameSettings();
+                                    var dependencies = gameSettings.Dependencies;
                                     if (gameMetaManifest.scriptInterpreter)
                                     {
-                                        var dependsIds = new List<string>
-                                        {
-                                            "ISI"
-                                        };
-                                        var gameSettings = new GameSettings
-                                        {
-                                            Dependencies = dependsIds
-                                        };
-                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
+                                        dependencies.Add("ISI");
                                         installedGameInfo.scriptInterpreter = true;
+                                    }
+                                    if (taskData.depends.Count > 0)
+                                    {
+                                        foreach (var depend in taskData.depends)
+                                        {
+                                            dependencies.Add(depend);
+                                        }
+                                    }
+                                    if (dependencies.Count > 0)
+                                    {
+                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
                                     }
                                     Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
                                     {
@@ -482,7 +492,31 @@ namespace GogOssLibraryNS
                                         playniteAPI.Database.Games.Update(game);
                                     }
                                 }
-                                installedAppList.Add(gameID, installedGameInfo);
+                                if (taskData.downloadItemType != DownloadItemType.Dependency)
+                                {
+                                    if (installedAppList.ContainsKey(gameID))
+                                    {
+                                        installedAppList.Remove(gameID);
+                                    }
+                                    installedAppList.Add(gameID, installedGameInfo);
+                                }
+                                else
+                                {
+                                    foreach (var depend in taskData.depends)
+                                    {
+                                        var dependInstallInfo = new Installed
+                                        {
+                                            is_installed = false,
+                                            item_type = DownloadItemType.Dependency
+                                        };
+                                        if (installedAppList.ContainsKey(depend))
+                                        {
+                                            installedAppList.Remove(depend);
+                                        }
+                                        installedAppList.Add(depend, dependInstallInfo);
+                                    }
+                                }
+
                                 GogOssLibrary.Instance.installedAppListModified = true;
 
                                 wantedItem.status = DownloadStatus.Completed;
