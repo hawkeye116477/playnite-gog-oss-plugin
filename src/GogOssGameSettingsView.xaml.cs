@@ -84,14 +84,6 @@ namespace GogOssLibraryNS
             var gameSettingsFile = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{GameID}.json");
             if (newGameSettings.GetType().GetProperties().Any(p => p.GetValue(newGameSettings) != null) || File.Exists(gameSettingsFile))
             {
-                if (File.Exists(gameSettingsFile))
-                {
-                    var oldGameSettings = LoadGameSettings(GameID);
-                    if (oldGameSettings.Dependencies.Count > 0)
-                    {
-                        newGameSettings.Dependencies = oldGameSettings.Dependencies;
-                    }
-                }
                 Helpers.SaveJsonSettingsToFile(newGameSettings, GameID, "GamesSettings");
             }
             Window.GetWindow(this).Close();

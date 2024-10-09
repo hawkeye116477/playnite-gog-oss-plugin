@@ -15,7 +15,7 @@ namespace GogOssLibraryNS.Models
         public List<string> installed_DLCs { get; set; } = new List<string>();
         public string language { get; set; } = "";
         public DownloadItemType item_type { get; set; } = DownloadItemType.Game;
-        public bool scriptInterpreter { get; set; } = false;
-        public bool is_installed { get; set; } = true;
+        public bool is_installed { get; set; } = false;
+        public List<string> Dependencies { get; set; } = new List<string>();
     }
 }

@@ -251,6 +251,7 @@
     <Compile Include="Models\GogGameTaskInfo.cs" />
     <Compile Include="Models\GetOwnedGamesResult.cs" />
     <Compile Include="Models\Installed.cs" />
+    <Compile Include="Models\InstalledDepends.cs" />
     <Compile Include="Models\LauncherVersion.cs" />
     <Compile Include="Models\LibraryGameResponse.cs" />
     <Compile Include="Models\PagedResponse.cs" />

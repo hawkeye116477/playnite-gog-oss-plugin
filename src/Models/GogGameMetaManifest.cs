@@ -16,13 +16,14 @@ namespace GogOssLibraryNS.Models
         public string installDirectory { get; set; }
         public Offlinedepot offlineDepot { get; set; }
         public string platform { get; set; }
-        public Product[] products { get; set; }
+        public List<Product> products { get; set; } = new List<Product>();
         public bool scriptInterpreter { get; set; } = false;
         public string[] tags { get; set; }
         public int version { get; set; }
         public string HGLInstallLanguage { get; set; }
         public object[] HGLdlcs { get; set; }
         public List<string> dependencies { get; set; } = new List<string>();
+        public ProductV1 product { get; set; }
 
         public class Offlinedepot
         {
@@ -43,12 +44,38 @@ namespace GogOssLibraryNS.Models
             public bool isGogDepot { get; set; }
         }
 
+        public class ProductV1
+        {
+            public int timestamp { get; set; }
+            public List<SupportCommand> support_commands { get; set; } = new List<SupportCommand>();
+            public string installDirectory { get; set; }
+            public string rootGameID { get; set; }
+            public List<Gameid> gameIDs { get; set; }
+            public string projectName { get; set; }
+        }
+
+        public class Gameid
+        {
+            public string gameID { get; set; }
+            public bool standalone { get; set; }
+        }
+
         public class Product
         {
-            public string name { get; set; }
-            public string productId { get; set; }
-            public string temp_arguments { get; set; }
-            public string temp_executable { get; set; }
+            public string name { get; set; } = "";
+            public string productId { get; set; } = "";
+            public string temp_arguments { get; set; } = "";
+            public string temp_executable { get; set; } = "";
+
+        }
+
+        public class SupportCommand
+        {
+            public List<string> languages { get; set; }
+            public string executable { get; set; }
+            public string gameID { get; set; }
+            public string argument { get; set; }
+            public List<string> systems { get; set; }
         }
 
     }

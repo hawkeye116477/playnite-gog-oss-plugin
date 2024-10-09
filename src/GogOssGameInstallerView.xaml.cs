@@ -413,14 +413,15 @@ namespace GogOssLibraryNS
             {
                 redistTask.downloadSizeNumber = 0;
                 redistTask.installSizeNumber = 0;
-                var installedDepends = Gogdl.GetInstalledDepends();
+                var downloadedDepends = Gogdl.GetDownloadedDepends();
                 foreach (var depend in redistTask.depends)
                 {
-                    if (!installedDepends.Contains(depend))
+                    if (!downloadedDepends.Contains(depend))
                     {
                         var dependInstallData = new DownloadManagerData.Download
                         {
-                            gameID = depend
+                            gameID = depend,
+                            downloadItemType = DownloadItemType.Dependency
                         };
                         var dependSize = await CalculateGameSize(dependInstallData);
                         redistTask.downloadSizeNumber += dependSize.download_size;

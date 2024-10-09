@@ -241,7 +241,7 @@ namespace GogOssLibraryNS
                 var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
                 if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out newManifest))
                 {
-                    if (newManifest != null && newManifest.buildId != null)
+                    if (newManifest != null && (newManifest.buildId != null || newManifest.product.rootGameID != null))
                     {
                         correctJson = true;
                     }
@@ -412,7 +412,7 @@ namespace GogOssLibraryNS
             return redistManifest;
         }
 
-        public static List<string> GetInstalledDepends()
+        public static List<string> GetDownloadedDepends()
         {
             var depends = new List<string>();
             var redistManifestFile = Path.Combine(DependenciesInstallationPath, ".gogdl-redist-manifest");
@@ -426,6 +426,24 @@ namespace GogOssLibraryNS
             }
             return depends;
         }
+
+
+        public static List<string> GetInstalledDepends()
+        {
+            var depends = new List<string>();
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+            var installedFile = Path.Combine(dataDir, "installedDepends.json");
+            if (File.Exists(installedFile))
+            {
+                var installedDependsManifest = Serialization.FromJson<InstalledDepends>(File.ReadAllText(installedFile));
+                if (installedDependsManifest != null)
+                {
+                    depends = installedDependsManifest.InstalledDependsList;
+                }
+            }
+            return depends;
+        }
+
 
         public static List<string> GetRequiredDepends()
         {
@@ -443,7 +461,7 @@ namespace GogOssLibraryNS
                         var metaManifest = GetGameMetaManifest(app);
                         if (metaManifest.scriptInterpreter)
                         {
-                            depends.Add("ISI");
+                            depends.AddMissing("ISI");
                         }
                         if (metaManifest.dependencies.Count > 0)
                         {

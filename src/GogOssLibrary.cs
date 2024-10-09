@@ -758,10 +758,7 @@ namespace GogOssLibraryNS
                                                             var installedApp = installedAppList[game.GameId];
                                                             installedApp.install_path = newPath;
                                                             installedAppListModified = true;
-                                                            if (installedApp.scriptInterpreter)
-                                                            {
-                                                                await GogOss.LaunchIsi(installedApp, game.GameId);
-                                                            }
+                                                            await GogOss.CompleteInstallation(game.GameId);
                                                         }
                                                         a.CurrentProgressValue = 2;
                                                         game.InstallDirectory = newPath;

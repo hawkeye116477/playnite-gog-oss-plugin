@@ -441,10 +441,6 @@ namespace GogOssLibraryNS
                                     language = downloadProperties.language,
                                     installed_DLCs = downloadProperties.extraContent
                                 };
-                                if (taskData.downloadItemType == DownloadItemType.Dependency)
-                                {
-                                    installedGameInfo.is_installed = false;
-                                }
                                 if (installedAppList.ContainsKey(gameID))
                                 {
                                     installedAppList.Remove(gameID);
@@ -453,23 +449,13 @@ namespace GogOssLibraryNS
                                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                                 {
                                     var gameMetaManifest = Gogdl.GetGameMetaManifest(gameID);
-                                    var gameSettings = new GameSettings();
-                                    var dependencies = gameSettings.Dependencies;
-                                    if (gameMetaManifest.scriptInterpreter)
-                                    {
-                                        dependencies.Add("ISI");
-                                        installedGameInfo.scriptInterpreter = true;
-                                    }
+                                    var dependencies = installedGameInfo.Dependencies;
                                     if (taskData.depends.Count > 0)
                                     {
                                         foreach (var depend in taskData.depends)
                                         {
                                             dependencies.Add(depend);
                                         }
-                                    }
-                                    if (dependencies.Count > 0)
-                                    {
-                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
                                     }
                                     Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
                                     {
@@ -499,22 +485,6 @@ namespace GogOssLibraryNS
                                         installedAppList.Remove(gameID);
                                     }
                                     installedAppList.Add(gameID, installedGameInfo);
-                                }
-                                else
-                                {
-                                    foreach (var depend in taskData.depends)
-                                    {
-                                        var dependInstallInfo = new Installed
-                                        {
-                                            is_installed = false,
-                                            item_type = DownloadItemType.Dependency
-                                        };
-                                        if (installedAppList.ContainsKey(depend))
-                                        {
-                                            installedAppList.Remove(depend);
-                                        }
-                                        installedAppList.Add(depend, dependInstallInfo);
-                                    }
                                 }
 
                                 GogOssLibrary.Instance.installedAppListModified = true;

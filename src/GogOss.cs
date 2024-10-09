@@ -1,9 +1,11 @@
 ﻿using CliWrap;
 using GogOssLibraryNS.Models;
+using Playnite.SDK;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -29,8 +31,7 @@ namespace GogOssLibraryNS
 
         public static async Task LaunchIsi(Installed installedGameInfo, string gameId)
         {
-            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
-            var isiInstallPath = Path.Combine(dataDir "_redist", "ISI");
+            var isiInstallPath = Path.Combine(Gogdl.DependenciesInstallationPath, "_redist", "ISI");
             if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
             {
                 var metaManifest = Gogdl.GetGameMetaManifest(gameId);
@@ -39,6 +40,10 @@ namespace GogOssLibraryNS
                 if (!shortLang.IsNullOrEmpty())
                 {
                     langInEnglish = new CultureInfo(shortLang).EnglishName;
+                }
+                else
+                {
+                    langInEnglish = "English";
                 }
                 foreach (var product in metaManifest.products)
                 {
@@ -71,6 +76,112 @@ namespace GogOssLibraryNS
                     }
                 }
 
+            }
+        }
+
+        public static async Task CompleteInstallation(string gameId)
+        {
+            var installedInfo = GetInstalledInfo(gameId);
+            var metaManifest = Gogdl.GetGameMetaManifest(gameId);
+            if (metaManifest.version == 1)
+            {
+                if (metaManifest.product.support_commands.Count > 0)
+                {
+                    foreach (var support_command in metaManifest.product.support_commands)
+                    {
+                        if (!support_command.executable.IsNullOrEmpty())
+                        {
+                            var playniteAPI = API.Instance;
+                            var supportPath = Path.Combine(installedInfo.install_path, "gog-support", support_command.gameID);
+                            var supportExe = Path.GetFullPath(Path.Combine(supportPath, support_command.executable.TrimStart(["/"]));
+                            var supportArgs = new List<string>
+                            {
+                                "/VERYSILENT",
+                                $"/DIR={installedInfo.install_path}",
+                                $"/ProductId={gameId}",
+                                "/galaxyclient",
+                                $"/buildId={metaManifest.product.timestamp}",
+                                $"/versionName={installedInfo.version}",
+                                "/nodesktopshortcut",
+                                "/nodesktopshorctut", // Yes, they made a typo
+                            };
+                            var shortLang = installedInfo.language.Split('-')[0];
+                            var langInEnglish = "";
+                            if (!shortLang.IsNullOrEmpty())
+                            {
+                                langInEnglish = new CultureInfo(shortLang).EnglishName;
+                            }
+                            else
+                            {
+                                langInEnglish = "English";
+                            }
+                            if (!langInEnglish.IsNullOrEmpty())
+                            {
+                                supportArgs.AddRange(new[] {
+                                            $"/Language={langInEnglish}",
+                                            $"/LANG={langInEnglish}",
+                                            $"/lang-code={installedInfo.language}" });
+                            }
+                            if (File.Exists(supportExe))
+                            {
+                                await Cli.Wrap(supportExe)
+                                         .WithArguments(supportArgs)
+                                         .WithWorkingDirectory(supportPath)
+                                         .AddCommandToLog()
+                                         .ExecuteAsync();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (metaManifest.scriptInterpreter)
+            {
+                await LaunchIsi(installedInfo, gameId);
+            }
+            else
+            {
+                var product = metaManifest.products.FirstOrDefault(i => i.productId == gameId);
+                if (product != null && !product.temp_executable.IsNullOrEmpty())
+                {
+                    var supportPath = Path.Combine(installedInfo.install_path, "gog-support", gameId);
+                    var tempExe = Path.GetFullPath(Path.Combine(supportPath, product.temp_executable.TrimStart(["/"]));
+                    var tempArgs = new List<string>
+                    {
+                        "/VERYSILENT",
+                        $"/DIR={installedInfo.install_path}",
+                        $"/ProductId={gameId}",
+                        "/galaxyclient",
+                        $"/buildId={installedInfo.build_id}",
+                        $"/versionName={installedInfo.version}",
+                        "/nodesktopshortcut",
+                        "/nodesktopshorctut", // Yes, they made a typo
+                   };
+                    var shortLang = installedInfo.language.Split('-')[0];
+                    var langInEnglish = "";
+                    if (!shortLang.IsNullOrEmpty())
+                    {
+                        langInEnglish = new CultureInfo(shortLang).EnglishName;
+                    }
+                    else
+                    {
+                        langInEnglish = "English";
+                    }
+                    if (!langInEnglish.IsNullOrEmpty())
+                    {
+                        tempArgs.AddRange(new[] {
+                                            $"/Language={langInEnglish}",
+                                            $"/LANG={langInEnglish}",
+                                            $"/lang-code={installedInfo.language}" });
+                    }
+                    if (File.Exists(tempExe))
+                    {
+                        await Cli.Wrap(tempExe)
+                                 .WithArguments(tempArgs)
+                                 .WithWorkingDirectory(supportPath)
+                                 .AddCommandToLog()
+                                 .ExecuteAsync();
+                    }
+                }
             }
         }
     }
