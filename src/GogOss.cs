@@ -27,23 +27,10 @@ namespace GogOssLibraryNS
             return installedInfo;
         }
 
-        public static string IsiInstallPath
-        {
-            get
-            {
-                var isiInstallPath = "";
-                var isiInstalledInfo = GetInstalledInfo("ISI");
-                if (isiInstalledInfo.install_path != "")
-                {
-                    isiInstallPath = Path.Combine(isiInstalledInfo.install_path);
-                }
-                return isiInstallPath;
-            }
-        }
-
         public static async Task LaunchIsi(Installed installedGameInfo, string gameId)
         {
-            var isiInstallPath = IsiInstallPath;
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+            var isiInstallPath = Path.Combine(dataDir "_redist", "ISI");
             if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
             {
                 var metaManifest = Gogdl.GetGameMetaManifest(gameId);

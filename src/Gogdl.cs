@@ -147,12 +147,12 @@ namespace GogOssLibraryNS
         {
             get
             {
-                var dependPath = Path.Combine(GamesInstallationPath, ".gogRedist");
-                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
-                if (dependPath.Contains(playniteDirectoryVariable))
+                var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+                var dependPath = Path.Combine(dataDir, ".gogRedist");
+                var heroicDependPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "tools", "redist", "gog");
+                if (Directory.Exists(heroicDependPath))
                 {
-                    var playniteAPI = API.Instance;
-                    dependPath = dependPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+                    dependPath = heroicDependPath;
                 }
                 return dependPath;
             }
