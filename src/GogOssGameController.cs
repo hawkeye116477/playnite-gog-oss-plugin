@@ -202,7 +202,7 @@ namespace GogOssLibraryNS
             if (installedAppList.ContainsKey(Game.GameId))
             {
                 var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
-                if (installedInfo.is_installed == false)
+                if (installedInfo.is_fully_installed == false)
                 {
                     var playniteAPI = API.Instance;
                     GlobalProgressOptions installProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssFinishingInstallation), false);
@@ -240,7 +240,7 @@ namespace GogOssLibraryNS
                                 Helpers.SaveJsonSettingsToFile(installedDependsManifest, "installedDepends");
                             }
                         }
-                        installedInfo.is_installed = true;
+                        installedInfo.is_fully_installed = true;
                         GogOssLibrary.Instance.installedAppListModified = true;
                     }, installProgressOptions);
                 }
