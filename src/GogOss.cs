@@ -1,6 +1,8 @@
 ﻿using CliWrap;
 using GogOssLibraryNS.Models;
+using Playnite.Common;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,6 +19,7 @@ namespace GogOssLibraryNS
         public static string TokensPath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "tokens.json");
         public static string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\gogicon.png");
         public static string UserAgent => @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+        private static readonly ILogger logger = LogManager.GetLogger();
 
         public static Installed GetInstalledInfo(string gameId)
         {
@@ -183,6 +186,49 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+        }
+
+        public static GogGameActionInfo GetGogGameInfo(string manifestFilePath)
+        {
+            var gameInfo = new GogGameActionInfo();
+            if (File.Exists(manifestFilePath))
+            {
+                var content = FileSystem.ReadFileAsStringSafe(manifestFilePath);
+                if (!content.IsNullOrWhiteSpace())
+                {
+                    try
+                    {
+                        gameInfo = Serialization.FromJson<GogGameActionInfo>(content);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.Error(e, $"Failed to read install gog game manifest: {manifestFilePath}.");
+                    }
+                }
+            }
+            return gameInfo;
+        }
+
+        public static GogGameActionInfo GetGogGameInfo(string gameId, string gamePath)
+        {
+            var manifestFile = Path.Combine(gamePath, $"goggame-{gameId}.info");
+            return GetGogGameInfo(manifestFile);
+        }
+
+        public static List<string> GetInstalledDlcs(string gameId, string gamePath)
+        {
+            var dlcs = new List<string>();
+            string[] files = Directory.GetFiles(gamePath, "goggame-*.info", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file);
+                if (!fileName.Contains(gameId))
+                {
+                    var dlcInfo = GetGogGameInfo(file);
+                    dlcs.Add(dlcInfo.gameId);
+                }
+            }
+            return dlcs;
         }
     }
 }

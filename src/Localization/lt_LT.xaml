@@ -30,6 +30,9 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Diegimas baigtas. Smagaus.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished"></sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished"></sys:String>
+  <sys:String x:Key="LOCGogOssImportInstalledGame"></sys:String>
+  <sys:String x:Key="LOCGogOssImportingGame">Importuojama {0}...</sys:String>
+  <sys:String x:Key="LOCGogOssImportFinished">Importas baigtas. Smagaus.</sys:String>
   <sys:String x:Key="LOCGogOssDownloadManager">Atsisiuntimų Tvarkyklė</sys:String>
   <sys:String x:Key="LOCGogOssDownloadStatus">Būsena</sys:String>
   <sys:String x:Key="LOCGogOssProgress"></sys:String>

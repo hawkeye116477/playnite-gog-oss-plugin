@@ -30,6 +30,9 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Kurulum tamamlandı. İyi eğlenceler.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Güncelleme tamamlandı. İyi eğlenceler.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Onarım tamamlandı. İyi eğlenceler.</sys:String>
+  <sys:String x:Key="LOCGogOssImportInstalledGame">Kurulu oyunu içe aktar</sys:String>
+  <sys:String x:Key="LOCGogOssImportingGame">İçe aktarılıyor {0}...</sys:String>
+  <sys:String x:Key="LOCGogOssImportFinished">İçe aktarma tamamlandı. İyi eğlenceler.</sys:String>
   <sys:String x:Key="LOCGogOssDownloadManager">İndirme Yöneticisi</sys:String>
   <sys:String x:Key="LOCGogOssDownloadStatus">Durum</sys:String>
   <sys:String x:Key="LOCGogOssProgress">İlerleyiş</sys:String>

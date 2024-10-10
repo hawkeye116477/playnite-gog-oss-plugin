@@ -91,3 +91,6 @@ LOCLegendaryMoveConfirm
 LOCLegendaryMovingGame
 LOCLegendaryMoveGameSuccess
 LOCLegendaryMoveGameError
+LOCLegendaryImportInstalledGame
+LOCLegendaryImportingGame
+LOCLegendaryImportFinished

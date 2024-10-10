@@ -116,21 +116,6 @@ namespace GogOssLibraryNS
             return Instance.SettingsViewModel?.Settings ?? null;
         }
 
-        public static GogGameActionInfo GetGogGameInfoManifest(string gameId, string installDir)
-        {
-            GogGameActionInfo gameTaskData = null;
-            var gameInfoPath = Path.Combine(installDir, string.Format("goggame-{0}.info", gameId));
-            try
-            {
-                gameTaskData = Serialization.FromJsonFile<GogGameActionInfo>(gameInfoPath);
-            }
-            catch (Exception e)
-            {
-                logger.Error(e, $"Failed to read install gog game manifest: {gameInfoPath}.");
-            }
-            return gameTaskData;
-        }
-
         internal static List<GameAction> GetPlayTasks(string gameId, string installDir)
         {
             var gameInfoPath = Path.Combine(installDir, string.Format("goggame-{0}.info", gameId));
@@ -292,11 +277,13 @@ namespace GogOssLibraryNS
                 {
                     continue; // Empty play task = DLC
                 }
-                var infoManifest = GetGogGameInfoManifest(gameId, game.install_path);
+                var infoManifest = GogOss.GetGogGameInfo(gameId, game.install_path);
                 if (infoManifest.buildId != null)
                 {
                     game.build_id = infoManifest.buildId;
                 }
+                var installedDlcs = GogOss.GetInstalledDlcs(gameId, game.install_path);
+                game.installed_DLCs = installedDlcs;
                 Instance.installedAppList.Add(gameId, game);
                 Instance.installedAppListModified = true;
             }
@@ -628,68 +615,68 @@ namespace GogOssLibraryNS
                     }
                     else
                     {
-                        //yield return new GameMenuItem
-                        //{
-                        //    Description = ResourceProvider.GetString(LOC.LegendaryImportInstalledGame),
-                        //    Icon = "AddGameIcon",
-                        //    Action = async (args) =>
-                        //    {
-                        //        if (!LegendaryLauncher.IsInstalled)
-                        //        {
-                        //            throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
-                        //        }
+                        yield return new GameMenuItem
+                        {
+                            Description = ResourceProvider.GetString(LOC.GogOssImportInstalledGame),
+                            Icon = "AddGameIcon",
+                            Action = (args) =>
+                            {
+                                var path = PlayniteApi.Dialogs.SelectFolder();
+                                if (path != "")
+                                {
+                                    GlobalProgressOptions importProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssImportingGame).Format(game.Name), false) { IsIndeterminate = true };
+                                    PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
+                                    {
+                                        game.InstallDirectory = path;
+                                        var gogGameInfo = GogOss.GetGogGameInfo(game.GameId, path);
+                                        var installedInfo = new Installed
+                                        {
+                                            install_path = path,
+                                            build_id = gogGameInfo.buildId,
+                                            title = gogGameInfo.name.RemoveTrademarks(),
+                                            platform = "windows",
+                                            is_fully_installed = true
+                                        };
+                                        var installedLanguage = "";
+                                        if (gogGameInfo.languages.Count > 0)
+                                        {
+                                            installedLanguage = gogGameInfo.languages[0];
+                                        }
+                                        else if (!gogGameInfo.language.IsNullOrEmpty())
+                                        {
+                                            installedLanguage = gogGameInfo.language;
+                                        }
+                                        else
+                                        {
+                                            installedLanguage = "en-US";
+                                        }
 
-                        //        var path = PlayniteApi.Dialogs.SelectFolder();
-                        //        if (path != "")
-                        //        {
-                        //            bool canContinue = StopDownloadManager(true);
-                        //            if (!canContinue)
-                        //            {
-                        //                return;
-                        //            }
-                        //            await LegendaryDownloadManager.WaitUntilLegendaryCloses();
-                        //            GlobalProgressOptions importProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.LegendaryImportingGame).Format(game.Name), false) { IsIndeterminate = true };
-                        //            PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
-                        //            {
-                        //                var importCmd = await Cli.Wrap(LegendaryLauncher.ClientExecPath)
-                        //                                         .WithArguments(new[] { "-y", "import", game.GameId, path })
-                        //                                         .WithEnvironmentVariables(LegendaryLauncher.DefaultEnvironmentVariables)
-                        //                                         .AddCommandToLog()
-                        //                                         .WithValidation(CommandResultValidation.None)
-                        //                                         .ExecuteBufferedAsync();
-                        //                logger.Debug("[Legendary] " + importCmd.StandardError);
-                        //                if (importCmd.StandardError.Contains("has been imported"))
-                        //                {
-                        //                    var installedAppList = LegendaryLauncher.GetInstalledAppList();
-                        //                    if (installedAppList.ContainsKey(game.GameId))
-                        //                    {
-                        //                        var installedGameInfo = installedAppList[game.GameId];
-                        //                        game.InstallDirectory = installedGameInfo.Install_path;
-                        //                        game.Version = installedGameInfo.Version;
-                        //                        game.InstallSize = (ulong?)installedGameInfo.Install_size;
-                        //                        game.IsInstalled = true;
-                        //                        var playtimeSyncEnabled = GetSettings().SyncPlaytime;
-                        //                        if (playtimeSyncEnabled)
-                        //                        {
-                        //                            var accountApi = new EpicAccountClient(PlayniteApi, LegendaryLauncher.TokensPath);
-                        //                            var playtimeItems = await accountApi.GetPlaytimeItems();
-                        //                            var playtimeItem = playtimeItems?.FirstOrDefault(x => x.artifactId == game.GameId);
-                        //                            if (playtimeItem != null)
-                        //                            {
-                        //                                game.Playtime = playtimeItem.totalTime;
-                        //                            }
-                        //                        }
-                        //                    }
-                        //                    PlayniteApi.Dialogs.ShowMessage(LOC.LegendaryImportFinished);
-                        //                }
-                        //                else
-                        //                {
-                        //                    PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.LegendaryGameImportFailure).Format(LOC.LegendaryCheckLog));
-                        //                }
-                        //            }, importProgressOptions);
-                        //        }
-                        //    }
-                        //};
+                                        game.Name = installedInfo.title;
+                                        var downloadGameInfo = await Gogdl.GetGameInfo(game.GameId, installedInfo);
+                                        installedInfo.version = downloadGameInfo.versionName;
+                                        var dlcs = GogOss.GetInstalledDlcs(game.GameId, path);
+                                        installedInfo.installed_DLCs = dlcs;
+                                        game.Version = downloadGameInfo.versionName;
+                                        game.IsInstalled = true;
+                                        var installedAppList = GetInstalledAppList();
+                                        installedAppList.Add(game.GameId, installedInfo);
+                                        Instance.installedAppListModified = true;
+                                        //var playtimeSyncEnabled = GetSettings().SyncPlaytime;
+                                        //if (playtimeSyncEnabled)
+                                        //{
+                                        //    var accountApi = new EpicAccountClient(PlayniteApi, LegendaryLauncher.TokensPath);
+                                        //    var playtimeItems = await accountApi.GetPlaytimeItems();
+                                        //    var playtimeItem = playtimeItems?.FirstOrDefault(x => x.artifactId == game.GameId);
+                                        //    if (playtimeItem != null)
+                                        //    {
+                                        //        game.Playtime = playtimeItem.totalTime;
+                                        //    }
+                                        //}
+                                        PlayniteApi.Dialogs.ShowMessage(LOC.GogOssImportFinished);
+                                    }, importProgressOptions);
+                                }
+                            }
+                        };
                     }
                     //yield return new GameMenuItem
                     //{

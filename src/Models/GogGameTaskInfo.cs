@@ -54,13 +54,14 @@ namespace GogOssLibraryNS.Models
             }
         }
 
-        public string buildId;
+        public string buildId = "";
         public string gameId;
         public string rootGameId;
         public bool standalone;
         public string dependencyGameId;
-        public string language;
-        public string name;
+        public string language = "";
+        public List<string> languages = new List<string>();
+        public string name = "";
         public List<Task> playTasks;
         public List<Task> supportTasks;
 

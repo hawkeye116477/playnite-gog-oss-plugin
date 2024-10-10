@@ -30,6 +30,9 @@
   <sys:String x:Key="LOCGogOssInstallationFinished"></sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished"></sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished"></sys:String>
+  <sys:String x:Key="LOCGogOssImportInstalledGame"></sys:String>
+  <sys:String x:Key="LOCGogOssImportingGame"></sys:String>
+  <sys:String x:Key="LOCGogOssImportFinished"></sys:String>
   <sys:String x:Key="LOCGogOssDownloadManager"></sys:String>
   <sys:String x:Key="LOCGogOssDownloadStatus"></sys:String>
   <sys:String x:Key="LOCGogOssProgress"></sys:String>

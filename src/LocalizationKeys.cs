@@ -194,6 +194,18 @@ namespace System
         /// </summary>
         public const string GogOssRepairFinished = "LOCGogOssRepairFinished";
         /// <summary>
+        /// Import installed game
+        /// </summary>
+        public const string GogOssImportInstalledGame = "LOCGogOssImportInstalledGame";
+        /// <summary>
+        /// Importing {0}...
+        /// </summary>
+        public const string GogOssImportingGame = "LOCGogOssImportingGame";
+        /// <summary>
+        /// Import finished. Have fun.
+        /// </summary>
+        public const string GogOssImportFinished = "LOCGogOssImportFinished";
+        /// <summary>
         /// Download Manager
         /// </summary>
         public const string GogOssDownloadManager = "LOCGogOssDownloadManager";

@@ -258,7 +258,16 @@ namespace GogOssLibraryNS
             return manifest;
         }
 
-        public static async Task<GogDownloadGameInfo> GetGameInfo(DownloadManagerData.Download downloadData, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
+        public static async Task<GogDownloadGameInfo> GetGameInfo(string gameId, Installed installedInfo, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
+        {
+            var downloadData = new DownloadManagerData.Download();
+            downloadData.gameID = gameId;
+            downloadData.name = installedInfo.title;
+            downloadData.downloadProperties.buildId = installedInfo.build_id;
+            return await GetGameInfo(downloadData);
+        }
+
+       public static async Task<GogDownloadGameInfo> GetGameInfo(DownloadManagerData.Download downloadData, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
         {
             var manifest = new GogDownloadGameInfo();
             var playniteAPI = API.Instance;

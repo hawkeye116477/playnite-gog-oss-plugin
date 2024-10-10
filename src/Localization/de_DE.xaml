@@ -30,6 +30,9 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Installation abgeschlossen. Viel Spaß.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Update abgeschlossen. Viel Spaß.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Reparatur abgeschlossen. Viel Spaß.</sys:String>
+  <sys:String x:Key="LOCGogOssImportInstalledGame">Installiertes Spiel importieren</sys:String>
+  <sys:String x:Key="LOCGogOssImportingGame">Importiere {0}...</sys:String>
+  <sys:String x:Key="LOCGogOssImportFinished">Import abgeschlossen. Viel Spaß.</sys:String>
   <sys:String x:Key="LOCGogOssDownloadManager">Download-Manager</sys:String>
   <sys:String x:Key="LOCGogOssDownloadStatus">Status</sys:String>
   <sys:String x:Key="LOCGogOssProgress">Fortschritt</sys:String>
