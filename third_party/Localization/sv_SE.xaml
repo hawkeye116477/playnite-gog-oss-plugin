@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Titel</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Installationskatalog</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Det gick inte att hämta metadata: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Avinstallerar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Gör inget</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Stäng</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Uppdatering tillgänglig</sys:String>

@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Meno</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Inštalačný priečinok</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Nepodarilo sa prevziať metadáta: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Prebieha odinštalácia</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Nerobiť nič</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Zavrieť</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Dostupná aktualizácia</sys:String>

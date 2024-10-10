@@ -90,5 +90,7 @@
   <sys:String x:Key="LOCGogOssSignOutConfirm">Sei sicuro di volerti disconnettere?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">L'utente non ha accesso in scrittura al percorso specificato. Cambia i permessi o avvia Playnite come amministratore.</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Non c'è abbastanza spazio libero su disco.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccess">{0} è stato disinstallato con successo.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther">I seguenti giochi sono stati disinstallati con successo: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Giochi</sys:String>
 </ResourceDictionary>

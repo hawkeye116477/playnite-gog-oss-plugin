@@ -36,3 +36,4 @@ LOCNoLabel
 LOCUninstallGame
 LOCSaveLabel
 LOCUpdaterInstallUpdate
+LOCUninstalling

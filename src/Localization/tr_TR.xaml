@@ -90,5 +90,7 @@
   <sys:String x:Key="LOCGogOssSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Kullanıcının belirtilen yola yazma erişimi yok. İzinleri değiştirin veya Playnite programını yönetici olarak başlatın.</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Yeterli boş disk alanı yok.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccess">{0} başarıyla kaldırıldı.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther">Aşağıdaki oyunlar başarıyla kaldırıldı: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Oyunlar</sys:String>
 </ResourceDictionary>

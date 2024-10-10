@@ -93,7 +93,7 @@ namespace GogOssLibraryNS
                         {
                             var playniteAPI = API.Instance;
                             var supportPath = Path.Combine(installedInfo.install_path, "gog-support", support_command.gameID);
-                            var supportExe = Path.GetFullPath(Path.Combine(supportPath, support_command.executable.TrimStart(["/"]));
+                            var supportExe = Path.GetFullPath(Path.Combine(supportPath, support_command.executable.TrimStart('/')));
                             var supportArgs = new List<string>
                             {
                                 "/VERYSILENT",
@@ -144,7 +144,7 @@ namespace GogOssLibraryNS
                 if (product != null && !product.temp_executable.IsNullOrEmpty())
                 {
                     var supportPath = Path.Combine(installedInfo.install_path, "gog-support", gameId);
-                    var tempExe = Path.GetFullPath(Path.Combine(supportPath, product.temp_executable.TrimStart(["/"]));
+                    var tempExe = Path.GetFullPath(Path.Combine(supportPath, product.temp_executable.TrimStart('/')));
                     var tempArgs = new List<string>
                     {
                         "/VERYSILENT",

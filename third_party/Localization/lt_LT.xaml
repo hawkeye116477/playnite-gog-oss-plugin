@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Pavadinimas</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Žaidimo direktorija</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Nepavyko atsisiųsti metadata: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Išdiegti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Nieko nedaryti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Uždaryti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Galimas atnaujinimas</sys:String>

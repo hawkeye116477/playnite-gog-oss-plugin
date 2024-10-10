@@ -107,57 +107,100 @@ namespace GogOssLibraryNS
             Name = "Uninstall";
         }
 
-        public override async void Uninstall(UninstallActionArgs args)
+        public static void LaunchUninstaller(List<Game> games)
         {
-            Dispose();
-            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(Game.Name), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var playniteAPI = API.Instance;
+            string gamesCombined = string.Join(", ", games.Select(item => item.Name));
+            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(gamesCombined), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
-                if (result.CheckboxChecked)
+                var uninstalledGames = new List<Game>();
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)}... ", false);
+                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
-                    var gameSettingsFile = Path.Combine(Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{Game.GameId}.json"));
-                    if (File.Exists(gameSettingsFile))
+                    a.IsIndeterminate = false;
+                    a.ProgressMaxValue = games.Count;
+                    using (playniteAPI.Database.BufferedUpdate())
                     {
-                        File.Delete(gameSettingsFile);
+                        var counter = 0;
+                        foreach (var game in games)
+                        {
+                            a.Text = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)} {game.Name}... ";
+                            var installedAppList = GogOssLibrary.GetInstalledAppList();
+                            if (installedAppList.ContainsKey(game.GameId))
+                            {
+                                installedAppList.Remove(game.GameId);
+                            }
+                            GogOssLibrary.Instance.installedAppListModified = true;
+                            var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", game.GameId);
+                            if (File.Exists(manifestFile))
+                            {
+                                File.Delete(manifestFile);
+                            }
+                            var uninstaller = Path.Combine(game.InstallDirectory, "unins000.exe");
+                            if (File.Exists(uninstaller))
+                            {
+                                var uninstallArgs = new List<string>
+                                {
+                                    "/VERYSILENT",
+                                    $"/ProductId={game.GameId}",
+                                    "/galaxyclient",
+                                    "/KEEPSAVES"
+                                };
+                                await Cli.Wrap(uninstaller)
+                                         .WithArguments(uninstallArgs)
+                                         .AddCommandToLog()
+                                         .ExecuteAsync();
+                            }
+                            if (Directory.Exists(game.InstallDirectory))
+                            {
+                                Directory.Delete(game.InstallDirectory, true);
+                            }
+
+                            if (result.CheckboxChecked)
+                            {
+                                var gameSettingsFile = Path.Combine(Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{game.GameId}.json"));
+                                if (File.Exists(gameSettingsFile))
+                                {
+                                    File.Delete(gameSettingsFile);
+                                }
+                            }
+                            game.IsInstalled = false;
+                            game.InstallDirectory = "";
+                            game.Version = "";
+                            playniteAPI.Database.Games.Update(game);
+                            uninstalledGames.Add(game);
+                            counter += 1;
+                            a.CurrentProgressValue = counter;
+
+                        }
+                    }
+                }, globalProgressOptions);
+
+                if (uninstalledGames.Count > 0)
+                {
+                    if (uninstalledGames.Count == 1)
+                    {
+                        playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssUninstallSuccess).Format(uninstalledGames[0].Name));
+                    }
+                    else
+                    {
+                        string uninstalledGamesCombined = string.Join(", ", uninstalledGames.Select(item => item.Name));
+                        playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssUninstallSuccessOther).Format(uninstalledGamesCombined));
                     }
                 }
-                var installedAppList = GogOssLibrary.GetInstalledAppList();
-                if (installedAppList.ContainsKey(Game.GameId))
-                {
-                    installedAppList.Remove(Game.GameId);
-                }
-                GogOssLibrary.Instance.installedAppListModified = true;
-                var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", Game.GameId);
-                if (File.Exists(manifestFile))
-                {
-                    File.Delete(manifestFile);
-                }
-                var uninstaller = Path.Combine(Game.InstallDirectory, "unins000.exe");
-                if (File.Exists(uninstaller))
-                {
-                    var uninstallArgs = new List<string>
-                    {
-                        "/VERYSILENT",
-                        $"/ProductId={Game.GameId}",
-                        "/galaxyclient",
-                        "/KEEPSAVES"
-                    };
-                    await Cli.Wrap(uninstaller)
-                             .WithArguments(uninstallArgs)
-                             .AddCommandToLog()
-                             .ExecuteAsync();
-                }
-                if (Directory.Exists(Game.InstallDirectory))
-                {
-                    Directory.Delete(Game.InstallDirectory, true);
-                }
-                var games = GogOssLibrary.GetInstalledGames();
-                if (!games.ContainsKey(Game.GameId))
-                {
-                    InvokeOnUninstalled(new GameUninstalledEventArgs());
-                    return;
-                }
             }
+        }
+
+        public override void Uninstall(UninstallActionArgs args)
+        {
+            Dispose();
+            var games = new List<Game>
+            {
+                Game
+            };
+            LaunchUninstaller(games);
+            Game.IsUninstalling = false;
         }
     }
 

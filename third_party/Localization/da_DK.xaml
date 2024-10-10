@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Navn</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Afinstallerer</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Gør ingenting</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Luk</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle"></sys:String>

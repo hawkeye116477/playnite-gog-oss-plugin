@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nome</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Cartella d'installazione</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Scaricamento del metadata fallito: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Disinstallazione...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Non fare niente</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Chiudi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Aggiornamento disponibile</sys:String>

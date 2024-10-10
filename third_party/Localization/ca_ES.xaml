@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nom</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Carpeta d'instal·lació</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">No s'ha pogut descarregar les metadades: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Desinstal·lant</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">No fer res</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Tancar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Actualització disponible</sys:String>

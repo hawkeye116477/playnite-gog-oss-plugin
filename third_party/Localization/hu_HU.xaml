@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Név</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Telepítési hely</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Hiba a metaadatok letöltésekor: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Eltávolítás</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ne tegyen semmit</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Bezárás</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Frissítés elérhető</sys:String>

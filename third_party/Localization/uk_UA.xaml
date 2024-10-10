@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Назва</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Тека встановлення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Не вдалося завантажити метадані: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Видалення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Нічого не робити</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Закрити</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Доступне оновлення</sys:String>

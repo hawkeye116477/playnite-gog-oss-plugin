@@ -434,6 +434,14 @@ namespace System
         /// </summary>
         public const string GogOssNotEnoughSpace = "LOCGogOssNotEnoughSpace";
         /// <summary>
+        /// {0} has been successfully uninstalled.
+        /// </summary>
+        public const string GogOssUninstallSuccess = "LOCGogOssUninstallSuccess";
+        /// <summary>
+        /// Following games have been successfully uninstalled: {0}.
+        /// </summary>
+        public const string GogOssUninstallSuccessOther = "LOCGogOssUninstallSuccessOther";
+        /// <summary>
         /// Games
         /// </summary>
         public const string GogOssGames = "LOCGogOssGames";
@@ -541,6 +549,10 @@ namespace System
         /// Failed to download metadata: {0}
         /// </summary>
         public const string GogOss3P_PlayniteMetadataDownloadError = "LOCGogOss3P_PlayniteMetadataDownloadError";
+        /// <summary>
+        /// Uninstalling
+        /// </summary>
+        public const string GogOss3P_PlayniteUninstalling = "LOCGogOss3P_PlayniteUninstalling";
         /// <summary>
         /// Do nothing
         /// </summary>

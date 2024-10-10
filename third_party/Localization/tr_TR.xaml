@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">İsim</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Kurulum Klasörü</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Üst veriler indirilemedi: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Kaldırılıyor</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Hiçbir şey yapma</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">Kapat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">Güncelleme Mevcut</sys:String>

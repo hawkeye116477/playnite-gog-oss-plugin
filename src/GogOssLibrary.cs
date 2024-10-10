@@ -804,8 +804,8 @@ namespace GogOssLibraryNS
                         };
                     }
                 }
-                var installedLegendaryGames = gogOssGames.Where(i => i.IsInstalled).ToList();
-                if (installedLegendaryGames.Count > 0)
+                var installedGogOssGames = gogOssGames.Where(i => i.IsInstalled).ToList();
+                if (installedGogOssGames.Count > 0)
                 {
                     yield return new GameMenuItem
                     {
@@ -814,7 +814,7 @@ namespace GogOssLibraryNS
                         Action = (args) =>
                         {
                             var installData = new List<DownloadManagerData.Download>();
-                            foreach (var game in installedLegendaryGames)
+                            foreach (var game in installedGogOssGames)
                             {
                                 var installProperties = new DownloadProperties { downloadAction = DownloadAction.Repair };
                                 installData.Add(new DownloadManagerData.Download { gameID = game.GameId, name = game.Name, downloadProperties = installProperties });
@@ -822,19 +822,18 @@ namespace GogOssLibraryNS
                             GogOssInstallController.LaunchInstaller(installData);
                         }
                     };
-                    //    if (gogOssGames.Count > 1)
-                    //    {
-                    //        yield return new GameMenuItem
-                    //        {
-                    //            Description = ResourceProvider.GetString(LOC.Legendary3P_PlayniteUninstallGame),
-                    //            Icon = "UninstallIcon",
-                    //            Action = (args) =>
-                    //            {
-                    //                LegendaryUninstallController.LaunchUninstaller(installedLegendaryGames);
-                    //            }
-                    //        };
-                    //    }
-                    //}
+                    if (gogOssGames.Count > 1)
+                    {
+                        yield return new GameMenuItem
+                        {
+                            Description = ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame),
+                            Icon = "UninstallIcon",
+                            Action = (args) =>
+                            {
+                                GogOssUninstallController.LaunchUninstaller(installedGogOssGames);
+                            }
+                        };
+                    }
                 }
             }
         }

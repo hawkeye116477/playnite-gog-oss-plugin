@@ -90,5 +90,7 @@
   <sys:String x:Key="LOCGogOssSignOutConfirm">Sind Sie sicher, dass Sie sich abmelden möchten?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Benutzer hat keinen Schreibzugriff auf den angegebenen Pfad. Ändern Sie die Berechtigungen oder starten Sie Playnite als Administrator.</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Nicht genügend freier Speicherplatz.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccess">{0} wurde erfolgreich deinstalliert.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther">Folgende Spiele wurden erfolgreich deinstalliert: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Spiele</sys:String>
 </ResourceDictionary>

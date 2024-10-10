@@ -90,5 +90,7 @@
   <sys:String x:Key="LOCGogOssSignOutConfirm">Czy na pewno chcesz się wylogować?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Użytkownik nie ma dostępu do zapisu w określonej ścieżce. Zmień uprawnienia lub uruchom Playnite jako administrator.</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Za mało wolnego miejsca na dysku.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccess">Program {0} został pomyślnie odinstalowany.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther">Następujące gry zostały pomyślnie odinstalowane: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Gry</sys:String>
 </ResourceDictionary>

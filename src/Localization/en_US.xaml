@@ -90,5 +90,7 @@
   <sys:String x:Key="LOCGogOssSignOutConfirm">Are you sure you want to sign out?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">User doesn't have write access to the specified path. Change permissions or launch Playnite as administrator.</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Not enough free disk space.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccess">{0} has been successfully uninstalled.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther">Following games have been successfully uninstalled: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Games</sys:String>
 </ResourceDictionary>

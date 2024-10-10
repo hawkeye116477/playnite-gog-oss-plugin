@@ -30,6 +30,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">الاسم</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">دليل التثبيت</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">فشل تحميل بيانات التعريف:{0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">جاري إلغاء التثبيت</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">‮لا تفعل شيئا</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteClose">إغلاق</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUpdaterWindowTitle">التحديث متوفر</sys:String>

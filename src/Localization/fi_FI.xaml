@@ -90,5 +90,7 @@
   <sys:String x:Key="LOCGogOssSignOutConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssPermissionError"></sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace"></sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccess"></sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther"></sys:String>
   <sys:String x:Key="LOCGogOssGames"></sys:String>
 </ResourceDictionary>
