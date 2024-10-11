@@ -48,21 +48,6 @@ namespace GogOssLibraryNS
                 throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
             }
             var playniteAPI = API.Instance;
-
-            var installedAppList = GogOssLibrary.GetInstalledAppList();
-
-            foreach (var game in installData)
-            {
-                if (installedAppList.ContainsKey(game.gameID))
-                {
-                    var installedGame = installedAppList[game.gameID];
-                    game.downloadProperties.version = installedGame.version;
-                    game.downloadProperties.buildId = installedGame.build_id;
-                    game.downloadProperties.installPath = installedGame.install_path;
-                    game.downloadProperties.language = installedGame.language;
-                }
-            }
-
             Window window = null;
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
