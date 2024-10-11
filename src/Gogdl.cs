@@ -260,9 +260,11 @@ namespace GogOssLibraryNS
 
         public static async Task<GogDownloadGameInfo> GetGameInfo(string gameId, Installed installedInfo, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
         {
-            var downloadData = new DownloadManagerData.Download();
-            downloadData.gameID = gameId;
-            downloadData.name = installedInfo.title;
+            var downloadData = new DownloadManagerData.Download
+            {
+                gameID = gameId,
+                name = installedInfo.title
+            };
             downloadData.downloadProperties.buildId = installedInfo.build_id;
             return await GetGameInfo(downloadData);
         }
@@ -483,6 +485,66 @@ namespace GogOssLibraryNS
                 }
             }
             return depends;
+        }
+
+        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
+        {
+            var manifest = await GetGameInfo(gameId, installedInfo);
+            var size = new GogDownloadGameInfo.SizeType
+            {
+                download_size = 0,
+                disk_size = 0
+            };
+            if (manifest.size.ContainsKey("*"))
+            {
+                size.download_size += manifest.size["*"].download_size;
+                size.disk_size += manifest.size["*"].disk_size;
+            }
+            var selectedLanguage = installedInfo.language;
+            if (manifest.size.Count == 2)
+            {
+                selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
+            }
+            if (manifest.size.ContainsKey(selectedLanguage))
+            {
+                size.download_size += manifest.size[selectedLanguage].download_size;
+                size.disk_size += manifest.size[selectedLanguage].disk_size;
+            }
+            var selectedDlcs = installedInfo.installed_DLCs;
+            if (selectedDlcs.Count() > 0)
+            {
+                foreach (var dlc in manifest.dlcs)
+                {
+                    if (selectedDlcs.Contains(dlc.id))
+                    {
+                        if (dlc.size.ContainsKey("*"))
+                        {
+                            size.download_size += dlc.size["*"].download_size;
+                            size.disk_size += dlc.size["*"].disk_size;
+                        }
+                        if (dlc.size.ContainsKey(selectedLanguage))
+                        {
+                            size.download_size += dlc.size[selectedLanguage].download_size;
+                            size.disk_size += dlc.size[selectedLanguage].disk_size;
+                        }
+                    }
+                }
+            }
+            return size;
+        }
+
+        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
+        {
+            var installedInfo = new Installed
+            {
+                installed_DLCs = installData.downloadProperties.extraContent,
+                language = installData.downloadProperties.language,
+                platform = installData.downloadProperties.os,
+                version = installData.downloadProperties.version,
+                title = installData.name,
+                build_id = installData.downloadProperties.buildId
+            };
+            return await CalculateGameSize(installData.gameID, installedInfo);
         }
     }
 }

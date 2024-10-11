@@ -214,6 +214,9 @@
     <Compile Include="GogOssDownloadManagerView.xaml.cs">
       <DependentUpon>GogOssDownloadManagerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GogOssDownloadPropertiesView.xaml.cs">
+      <DependentUpon>GogOssDownloadPropertiesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GogOssExtraInstallationSettingsView.xaml.cs">
       <DependentUpon>GogOssExtraInstallationSettingsView.xaml</DependentUpon>
     </Compile>
@@ -307,6 +310,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GogOssDownloadManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GogOssDownloadPropertiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -62,7 +62,6 @@ namespace GogOssLibraryNS.Models
             }
             public DownloadItemType downloadItemType { get; set; } = DownloadItemType.Game;
             public DownloadProperties downloadProperties { get; set; } = new DownloadProperties();
-            public bool? editDownloadPropertiesMode;
             public List<string> depends { get; set; } = new List<string>();
         }
     }

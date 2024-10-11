@@ -731,14 +731,9 @@ namespace GogOssLibraryNS
                     ShowMaximizeButton = false,
                 });
                 var selectedItem = DownloadsDG.SelectedItems[0] as DownloadManagerData.Download;
-                selectedItem.editDownloadPropertiesMode = true;
-                var specialList = new List<DownloadManagerData.Download>
-                {
-                    selectedItem
-                };
                 window.Title = selectedItem.name + " — " + ResourceProvider.GetString(LOC.GogOssDownloadProperties);
-                window.DataContext = specialList;
-                window.Content = new GogOssGameInstallerView();
+                window.DataContext = selectedItem;
+                window.Content = new GogOssDownloadPropertiesView();
                 window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
                 window.SizeToContent = SizeToContent.WidthAndHeight;
                 window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
