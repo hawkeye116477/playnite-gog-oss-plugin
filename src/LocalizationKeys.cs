@@ -426,6 +426,26 @@ namespace System
         /// </summary>
         public const string GogOssMoveGameError = "LOCGogOssMoveGameError";
         /// <summary>
+        /// Installed DLCs
+        /// </summary>
+        public const string GogOssInstalledDlcs = "LOCGogOssInstalledDlcs";
+        /// <summary>
+        /// Available DLCs
+        /// </summary>
+        public const string GogOssAvailableDlcs = "LOCGogOssAvailableDlcs";
+        /// <summary>
+        /// Manage DLCs
+        /// </summary>
+        public const string GogOssManageDlcs = "LOCGogOssManageDlcs";
+        /// <summary>
+        /// No installed DLCs.
+        /// </summary>
+        public const string GogOssNoInstalledDlcs = "LOCGogOssNoInstalledDlcs";
+        /// <summary>
+        /// No available DLCs.
+        /// </summary>
+        public const string GogOssNoAvailableDlcs = "LOCGogOssNoAvailableDlcs";
+        /// <summary>
         /// Remove launch settings
         /// </summary>
         public const string GogOssRemoveGameLaunchSettings = "LOCGogOssRemoveGameLaunchSettings";

@@ -88,6 +88,11 @@
   <sys:String x:Key="LOCGogOssMovingGame">Przenoszenie gry {0} do „{1}”...</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameSuccess">Gra {0} została pomyślnie przeniesiona do „{1}”.</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameError">Wystąpił błąd podczas przenoszenia gry {0} do „{1}”.</sys:String>
+  <sys:String x:Key="LOCGogOssInstalledDlcs">Zainstalowane DLC</sys:String>
+  <sys:String x:Key="LOCGogOssAvailableDlcs">Dostępne DLC</sys:String>
+  <sys:String x:Key="LOCGogOssManageDlcs">Zarządzaj dodatkami (DLC)</sys:String>
+  <sys:String x:Key="LOCGogOssNoInstalledDlcs">Brak zainstalowanych DLC.</sys:String>
+  <sys:String x:Key="LOCGogOssNoAvailableDlcs">Brak dostępnych DLC.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Usuń ustawienia uruchamiania</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Zalogowano jako {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Czy na pewno chcesz się wylogować?</sys:String>

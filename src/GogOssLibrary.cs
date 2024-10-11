@@ -678,31 +678,26 @@ namespace GogOssLibraryNS
                             }
                         };
                     }
-                    //yield return new GameMenuItem
-                    //{
-                    //    Description = ResourceProvider.GetString(LOC.LegendaryManageDlcs),
-                    //    Icon = "AddonsIcon",
-                    //    Action = (args) =>
-                    //    {
-                    //        if (!LegendaryLauncher.IsInstalled)
-                    //        {
-                    //            throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
-                    //        }
-
-                    //        Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
-                    //        {
-                    //            ShowMaximizeButton = false,
-                    //        });
-                    //        window.Title = $"{ResourceProvider.GetString(LOC.LegendaryManageDlcs)} - {game.Name}";
-                    //        window.DataContext = game;
-                    //        window.Content = new LegendaryDlcManager();
-                    //        window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
-                    //        window.SizeToContent = SizeToContent.WidthAndHeight;
-                    //        window.MinWidth = 600;
-                    //        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                    //        window.ShowDialog();
-                    //    }
-                    //};
+                    yield return new GameMenuItem
+                    {
+                        Description = ResourceProvider.GetString(LOC.GogOssManageDlcs),
+                        Icon = "AddonsIcon",
+                        Action = (args) =>
+                        {
+                            Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                            {
+                                ShowMaximizeButton = false,
+                            });
+                            window.Title = $"{ResourceProvider.GetString(LOC.GogOssManageDlcs)} - {game.Name}";
+                            window.DataContext = game;
+                            window.Content = new GogOssDlcManager();
+                            window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                            window.SizeToContent = SizeToContent.WidthAndHeight;
+                            window.MinWidth = 600;
+                            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            window.ShowDialog();
+                        }
+                    };
                     if (game.IsInstalled)
                     {
                         yield return new GameMenuItem

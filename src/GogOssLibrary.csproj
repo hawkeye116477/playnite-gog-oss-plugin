@@ -208,6 +208,9 @@
     <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="Comet.cs" />
     <Compile Include="GogOss.cs" />
+    <Compile Include="GogOssDlcManager.xaml.cs">
+      <DependentUpon>GogOssDlcManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GogOssDownloadManagerView.xaml.cs">
       <DependentUpon>GogOssDownloadManagerView.xaml</DependentUpon>
     </Compile>
@@ -298,6 +301,10 @@
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GogOssDlcManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GogOssDownloadManagerView.xaml">
       <SubType>Designer</SubType>

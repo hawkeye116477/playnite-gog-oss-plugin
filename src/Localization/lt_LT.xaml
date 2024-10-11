@@ -88,6 +88,11 @@
   <sys:String x:Key="LOCGogOssMovingGame"></sys:String>
   <sys:String x:Key="LOCGogOssMoveGameSuccess"></sys:String>
   <sys:String x:Key="LOCGogOssMoveGameError"></sys:String>
+  <sys:String x:Key="LOCGogOssInstalledDlcs"></sys:String>
+  <sys:String x:Key="LOCGogOssAvailableDlcs"></sys:String>
+  <sys:String x:Key="LOCGogOssManageDlcs"></sys:String>
+  <sys:String x:Key="LOCGogOssNoInstalledDlcs"></sys:String>
+  <sys:String x:Key="LOCGogOssNoAvailableDlcs"></sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs"></sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm"></sys:String>

@@ -88,6 +88,11 @@
   <sys:String x:Key="LOCGogOssMovingGame">Spostamento {0} in "{1}"...</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} è stato spostato con successo in "{1}".</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameError">Si è verificato un errore durante lo spostamento di {0} in "{1}".</sys:String>
+  <sys:String x:Key="LOCGogOssInstalledDlcs">DLC Installati</sys:String>
+  <sys:String x:Key="LOCGogOssAvailableDlcs">DLC disponibili</sys:String>
+  <sys:String x:Key="LOCGogOssManageDlcs">Gestione DLC</sys:String>
+  <sys:String x:Key="LOCGogOssNoInstalledDlcs">Nessun DLC installato.</sys:String>
+  <sys:String x:Key="LOCGogOssNoAvailableDlcs">Nessun DLC disponibile.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Rimuovi impostazioni di avvio</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Accesso effettuato come {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Sei sicuro di volerti disconnettere?</sys:String>

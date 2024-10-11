@@ -88,6 +88,11 @@
   <sys:String x:Key="LOCGogOssMovingGame">Перемещение {0} в "{1}"...</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} был успешно перемещен в "{1}".</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameError">Произошла ошибка при перемещении {0} на "{1}".</sys:String>
+  <sys:String x:Key="LOCGogOssInstalledDlcs">Установленные DLC</sys:String>
+  <sys:String x:Key="LOCGogOssAvailableDlcs">Доступные DLC</sys:String>
+  <sys:String x:Key="LOCGogOssManageDlcs">Управление DLC</sys:String>
+  <sys:String x:Key="LOCGogOssNoInstalledDlcs">Нет установленных DLC.</sys:String>
+  <sys:String x:Key="LOCGogOssNoAvailableDlcs">Нет доступных DLC.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Удаление настроек запуска</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Вы вошли как {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Вы действительно хотите выйти?</sys:String>

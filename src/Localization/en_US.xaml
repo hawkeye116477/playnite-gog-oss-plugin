@@ -88,6 +88,11 @@
   <sys:String x:Key="LOCGogOssMovingGame">Moving {0} to "{1}"...</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} has been successfully moved to "{1}".</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameError">An error occurred while moving {0} to "{1}".</sys:String>
+  <sys:String x:Key="LOCGogOssInstalledDlcs">Installed DLCs</sys:String>
+  <sys:String x:Key="LOCGogOssAvailableDlcs">Available DLCs</sys:String>
+  <sys:String x:Key="LOCGogOssManageDlcs">Manage DLCs</sys:String>
+  <sys:String x:Key="LOCGogOssNoInstalledDlcs">No installed DLCs.</sys:String>
+  <sys:String x:Key="LOCGogOssNoAvailableDlcs">No available DLCs.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Remove launch settings</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Signed in as {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Are you sure you want to sign out?</sys:String>

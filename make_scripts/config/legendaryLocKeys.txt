@@ -94,3 +94,8 @@ LOCLegendaryMoveGameError
 LOCLegendaryImportInstalledGame
 LOCLegendaryImportingGame
 LOCLegendaryImportFinished
+LOCLegendaryNoAvailableDlcs
+LOCLegendaryNoInstalledDlcs
+LOCLegendaryAvailableDlcs
+LOCLegendaryInstalledDlcs
+LOCLegendaryManageDlcs

@@ -50,6 +50,10 @@ namespace GogOssLibraryNS
                 }
                 foreach (var product in metaManifest.products)
                 {
+                    if (product.productId != gameId && !installedGameInfo.installed_DLCs.Contains(product.productId))
+                    {
+                        continue;
+                    }
                     var args = new List<string>
                     {
                         "/VERYSILENT",

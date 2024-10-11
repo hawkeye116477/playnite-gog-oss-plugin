@@ -88,6 +88,11 @@
   <sys:String x:Key="LOCGogOssMovingGame">{0}, "{1}" öğesine taşınıyor...</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameSuccess">{0} başarıyla "{1}" konumuna taşındı.</sys:String>
   <sys:String x:Key="LOCGogOssMoveGameError">{0}, "{1}" konumuna taşınırken bir hata oluştu.</sys:String>
+  <sys:String x:Key="LOCGogOssInstalledDlcs">Kurulu DLC</sys:String>
+  <sys:String x:Key="LOCGogOssAvailableDlcs">Mevcut DLC</sys:String>
+  <sys:String x:Key="LOCGogOssManageDlcs">DLC Yönetimi</sys:String>
+  <sys:String x:Key="LOCGogOssNoInstalledDlcs">Kurulu DLC yok.</sys:String>
+  <sys:String x:Key="LOCGogOssNoAvailableDlcs">Mevcut DLC yok.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Başlatma ayarlarını kaldır</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">{0} olarak oturum açıldı</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>
