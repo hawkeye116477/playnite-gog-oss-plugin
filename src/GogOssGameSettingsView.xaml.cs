@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Models;
+﻿using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -52,15 +53,15 @@ namespace GogOssLibraryNS
             {
                 newGameSettings.EnableCometSupport = EnableCometSupportChk.IsChecked;
             }
-            //bool globalDisableUpdates = false;
-            //if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)
-            //{
-            //    globalDisableUpdates = true;
-            //}
-            //if (DisableGameUpdateCheckingChk.IsChecked != globalDisableUpdates)
-            //{
-            //    newGameSettings.DisableGameVersionCheck = DisableGameUpdateCheckingChk.IsChecked;
-            //}
+            bool globalDisableUpdates = false;
+            if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)
+            {
+                globalDisableUpdates = true;
+            }
+            if (DisableGameUpdateCheckingChk.IsChecked != globalDisableUpdates)
+            {
+                newGameSettings.DisableGameVersionCheck = DisableGameUpdateCheckingChk.IsChecked;
+            }
             if (StartupArgumentsTxt.Text != "")
             {
                 newGameSettings.StartupArguments = StartupArgumentsTxt.Text.Split().ToList();
@@ -108,10 +109,10 @@ namespace GogOssLibraryNS
         {
             var globalSettings = GogOssLibrary.GetSettings();
             EnableCometSupportChk.IsChecked = globalSettings.EnableCometSupport;
-            //if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)
-            //{
-            //    DisableGameUpdateCheckingChk.IsChecked = true;
-            //}
+            if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)
+            {
+                DisableGameUpdateCheckingChk.IsChecked = true;
+            }
             //AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
             //AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
             gameSettings = LoadGameSettings(GameID);
@@ -119,10 +120,10 @@ namespace GogOssLibraryNS
             {
                 EnableCometSupportChk.IsChecked = gameSettings.EnableCometSupport;
             }
-            //if (gameSettings.DisableGameVersionCheck != null)
-            //{
-            //    DisableGameUpdateCheckingChk.IsChecked = gameSettings.DisableGameVersionCheck;
-            //}
+            if (gameSettings.DisableGameVersionCheck != null)
+            {
+                DisableGameUpdateCheckingChk.IsChecked = gameSettings.DisableGameVersionCheck;
+            }
             if (gameSettings.StartupArguments != null)
             {
                 StartupArgumentsTxt.Text = string.Join(" ", gameSettings.StartupArguments);

@@ -53,6 +53,31 @@ namespace GogOssLibraryNS
                 { DownloadCompleteAction.Sleep, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem) },
             };
             AfterDownloadCompleteCBo.ItemsSource = downloadCompleteActions;
+
+            var updatePolicyOptions = new Dictionary<UpdatePolicy, string>
+            {
+                { UpdatePolicy.PlayniteLaunch, ResourceProvider.GetString(LOC.GogOssCheckUpdatesEveryPlayniteStartup) },
+                { UpdatePolicy.Day, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
+                { UpdatePolicy.Week, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
+                { UpdatePolicy.Month, ResourceProvider.GetString(LOC.GogOssOnceAMonth) },
+                { UpdatePolicy.ThreeMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery3Months) },
+                { UpdatePolicy.SixMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery6Months) },
+                { UpdatePolicy.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnlyManually) }
+            };
+            GamesUpdatesCBo.ItemsSource = updatePolicyOptions;
+
+            var launcherUpdatePolicyOptions = new Dictionary<UpdatePolicy, string>
+            {
+                { UpdatePolicy.PlayniteLaunch, ResourceProvider.GetString(LOC.GogOssCheckUpdatesEveryPlayniteStartup) },
+                { UpdatePolicy.Day, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
+                { UpdatePolicy.Week, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
+                { UpdatePolicy.Month, ResourceProvider.GetString(LOC.GogOssOnceAMonth) },
+                { UpdatePolicy.ThreeMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery3Months) },
+                { UpdatePolicy.SixMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery6Months) },
+                { UpdatePolicy.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnlyManually) }
+            };
+            LauncherUpdatesCBo.ItemsSource = launcherUpdatePolicyOptions;
+
             troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)
             {
@@ -264,6 +289,20 @@ namespace GogOssLibraryNS
         private void OpenGogdlBinaryBtn_Click(object sender, RoutedEventArgs e)
         {
             ProcessStarter.StartProcess("cmd", $"/k {troubleshootingInformation.GogdlBinary} -h", Path.GetDirectoryName(troubleshootingInformation.GogdlBinary));
+        }
+
+        private void GamesUpdatesCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedValue = (KeyValuePair<UpdatePolicy, string>)GamesUpdatesCBo.SelectedItem;
+            if (selectedValue.Key == UpdatePolicy.Never)
+            {
+                AutoUpdateGamesChk.IsEnabled = false;
+            }
+            else
+            {
+                AutoUpdateGamesChk.IsEnabled = true;
+            }
+
         }
     }
 }

@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Paigalda</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Desinstalli</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Ära enam näita</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Värskendused</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Vali fail…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Vali kaust…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually">Ainult käsitsi</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">Kord päevas</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">Kord nädalas</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">Ava</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportInstalledLabel">Impordi paigaldatud mängud</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportUninstalledLabel">Impordi paigaldamata mängud</sys:String>

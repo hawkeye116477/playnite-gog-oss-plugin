@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair">Reparar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opções Avançadas</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Conteúdo Adicional</sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth">Mensalmente</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months">A cada 3 meses</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months">A cada 6 meses</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Verifique os arquivos de registro para mais informações.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Editar propriedades deste item</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Abrir diretório de download</sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs">Gerenciar DLCs</sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs">Nenhum DLC instalado.</sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs">Nenhum DLC disponível.</sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate">Atualizar jogos automaticamente</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Verificar atualizações de jogos</sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">Em toda inicialização do Playnite</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Atualizações de jogos da Epic Games estão sendo baixadas.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Remover configurações de inicialização</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Conectado como {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Tem certeza de que deseja sair?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Usuário não tem permissão de escrita no caminho especificado. Altere as permissões ou inicie o Playnite como administrador.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton">Verificar atualizações de jogos</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Espaço em disco insuficiente.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates">Procurando atualizações...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} foi desinstalado com sucesso.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Os seguintes jogos foram desinstalados com êxito: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Jogos</sys:String>

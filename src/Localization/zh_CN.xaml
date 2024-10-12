@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair"></sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions"></sys:String>
   <sys:String x:Key="LOCGogOssExtraContent"></sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth"></sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months"></sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months"></sys:String>
   <sys:String x:Key="LOCGogOssCheckLog"></sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties"></sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory"></sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs"></sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs"></sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs"></sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate"></sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy"></sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup"></sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs"></sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssPermissionError"></sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton"></sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace"></sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates"></sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess"></sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther"></sys:String>
   <sys:String x:Key="LOCGogOssGames"></sys:String>

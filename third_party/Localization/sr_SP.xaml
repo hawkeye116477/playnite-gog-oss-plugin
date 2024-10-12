@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Инсталирај</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Деинсталирај</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Не приказуј поново</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Ажурирања</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Изаберите фајл...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Изаберите фасциклу...</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually">Само ручно</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">Једном дневно</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">Једном недељно</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">Отвори</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportInstalledLabel">Увези инсталиране игре</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportUninstalledLabel">Увези неинсталиране игре</sys:String>

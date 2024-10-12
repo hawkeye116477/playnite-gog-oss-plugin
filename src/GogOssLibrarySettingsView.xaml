@@ -8,7 +8,7 @@
              xmlns:pcon="clr-namespace:Playnite.Converters"
              xmlns:pcmd="clr-namespace:Playnite.Commands"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=local:GogOssLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="420" x:Name="GogOssSettingsUC" Loaded="GogOssSettingsUC_Loaded">
+             d:DataContext="{d:DesignInstance Type=local:GogOssLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="578" x:Name="GogOssSettingsUC" Loaded="GogOssSettingsUC_Loaded">
     <UserControl.Resources>
         <pcon:NegateConverter x:Key="NegateConverter" />
         <sys:Boolean x:Key="True">True</sys:Boolean>
@@ -54,9 +54,23 @@
                                   SelectedValue="{Binding Settings.Locale}" ItemsSource="{Binding Path=Languages}"
                                   IsEditable="false" MinWidth="150"/>
                 </StackPanel>
+                <StackPanel Margin="0,15">
+                    <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteExtensionsUpdates}" FontSize="18"
+                        Margin="0,0,0,2" />
+                    <Separator Margin="0,0,0,10" />
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="{DynamicResource LOCGogOssGamesUpdatePolicy}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="GamesUpdatesCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.GamesUpdatePolicy}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GamesUpdatesCBo_SelectionChanged" />
+                    </StackPanel>
+                    <CheckBox Content="{DynamicResource LOCGogOssAutoUpdate}" Margin="0,0,0,10" Name="AutoUpdateGamesChk" IsChecked="{Binding Settings.AutoUpdateGames}"></CheckBox>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <TextBlock Text="{DynamicResource LOCGogOssCometUpdatePolicy}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="LauncherUpdatesCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.CometUpdatePolicy}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </TabItem>
-        <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}" VerticalAlignment="Bottom">
+        <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}" Margin="-2,0">
             <StackPanel Margin="20">
                 <Grid>
                     <Grid.ColumnDefinitions>

@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Installieren</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Deinstallieren</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Nicht erneut zeigen</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Aktualisierungen</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Datei auswählen …</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Ordner auswählen …</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually">Nur manuell</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">Täglich</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">Wöchentlich</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">Öffnen</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportInstalledLabel">Installierte Spiele importieren</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportUninstalledLabel">Nicht installierte Spiele importieren</sys:String>

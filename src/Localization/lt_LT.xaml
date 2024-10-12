@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair">Sutaisyti</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Išplėstinės Parinktys</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Papildomas turinys</sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth">Kartą per mėnesį</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months">Kartą per 3 mėnesius</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months">Kartą per 6 mėnesius</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daugiau informacijos ieškokite žurnaluose.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties"></sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory"></sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs"></sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs"></sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs"></sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate"></sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy"></sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup"></sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs"></sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssPermissionError"></sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton"></sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace"></sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates"></sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess"></sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther"></sys:String>
   <sys:String x:Key="LOCGogOssGames"></sys:String>

@@ -37,3 +37,7 @@ LOCUninstallGame
 LOCSaveLabel
 LOCUpdaterInstallUpdate
 LOCUninstalling
+LOCExtensionsUpdates
+LOCOptionOnceADay
+LOCOptionOnceAWeek
+LOCOptionOnlyManually

@@ -17,4 +17,5 @@
   <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Following games are already in the download list: {0}. You can see status of the download by accessing GOG OSS Panel via Menu =&gt; View or sidebar.</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupport">Enable Comet support</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">It's required for achievements, leaderboards and multiplayer mode, but may cause problems with operation of some games.</sys:String>
+  <sys:String x:Key="LOCGogOssCometUpdatePolicy">Check for Comet updates</sys:String>
 </ResourceDictionary>

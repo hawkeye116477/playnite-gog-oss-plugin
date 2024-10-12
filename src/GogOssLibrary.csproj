@@ -207,6 +207,7 @@
   <ItemGroup>
     <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="Comet.cs" />
+    <Compile Include="Enums\UpdatePolicy.cs" />
     <Compile Include="GogOss.cs" />
     <Compile Include="GogOssDlcManager.xaml.cs">
       <DependentUpon>GogOssDlcManager.xaml</DependentUpon>
@@ -242,6 +243,9 @@
     <Compile Include="Enums\DownloadStatus.cs" />
     <Compile Include="Gogdl.cs" />
     <Compile Include="GOGMetadataProvider.cs" />
+    <Compile Include="GogOssUpdaterView.xaml.cs">
+      <DependentUpon>GogOssUpdaterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers.cs" />
     <Compile Include="LocalizationKeys.cs" />
     <Compile Include="MessageCheckBoxDialog.xaml.cs">
@@ -265,6 +269,7 @@
     <Compile Include="Models\StoreGamesFilteredListResponse.cs" />
     <Compile Include="Models\StorePageResult.cs" />
     <Compile Include="Models\TokenResponse.cs" />
+    <Compile Include="Models\UpdateInfo.cs" />
     <Compile Include="NumericInput.xaml.cs">
       <DependentUpon>NumericInput.xaml</DependentUpon>
     </Compile>
@@ -330,6 +335,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GogOssLibrarySettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GogOssUpdaterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

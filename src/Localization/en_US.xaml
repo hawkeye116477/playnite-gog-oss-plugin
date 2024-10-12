@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair">Repair</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Advanced Options</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Extra Content</sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth">Once a month</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months">Once every 3 months</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months">Once every 6 months</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Check the log files for more information.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edit entry properties</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Open download directory</sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs">Manage DLCs</sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs">No installed DLCs.</sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs">No available DLCs.</sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate">Automatically update games</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Check for games updates</sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">On every Playnite startup</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Updates for games from Epic Games are being downloaded.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Remove launch settings</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Signed in as {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Are you sure you want to sign out?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">User doesn't have write access to the specified path. Change permissions or launch Playnite as administrator.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton">Check for games updates</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Not enough free disk space.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates">Checking for updates...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} has been successfully uninstalled.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Following games have been successfully uninstalled: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Games</sys:String>

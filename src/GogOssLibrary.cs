@@ -496,6 +496,95 @@ namespace GogOssLibraryNS
             yield return downloadManagerSidebarItem;
         }
 
+        public override async void OnApplicationStarted(OnApplicationStartedEventArgs args)
+        {
+            var globalSettings = GetSettings();
+            if (globalSettings != null)
+            {
+                if (globalSettings.GamesUpdatePolicy != UpdatePolicy.Never)
+                {
+                    var nextGamesUpdateTime = globalSettings.NextGamesUpdateTime;
+                    if (nextGamesUpdateTime != 0)
+                    {
+                        DateTimeOffset now = DateTime.UtcNow;
+                        if (now.ToUnixTimeSeconds() >= nextGamesUpdateTime)
+                        {
+                            globalSettings.NextGamesUpdateTime = GetNextUpdateCheckTime(globalSettings.GamesUpdatePolicy);
+                            SavePluginSettings(globalSettings);
+                            GogOssUpdateController GogOssUpdateController = new GogOssUpdateController();
+                            var gamesUpdates = await GogOssUpdateController.CheckAllGamesUpdates();
+                            if (gamesUpdates.Count > 0)
+                            {
+                                var successUpdates = gamesUpdates.Where(i => i.Value.Success).ToDictionary(i => i.Key, i => i.Value);
+                                if (successUpdates.Count > 0)
+                                {
+                                    if (globalSettings.AutoUpdateGames)
+                                    {
+                                        await GogOssUpdateController.UpdateGame(successUpdates, "", true);
+                                    }
+                                    else
+                                    {
+                                        Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                                        {
+                                            ShowMaximizeButton = false,
+                                        });
+                                        window.DataContext = successUpdates;
+                                        window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
+                                        window.Content = new GogOssUpdaterView();
+                                        window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                                        window.SizeToContent = SizeToContent.WidthAndHeight;
+                                        window.MinWidth = 600;
+                                        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                        window.ShowDialog();
+                                    }
+                                }
+                                else
+                                {
+                                    PlayniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdateCheckFail",
+                                                                                          $"{Name} {Environment.NewLine}{PlayniteApi.Resources.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage)}",
+                                                                                          NotificationType.Error));
+                                }
+                            }
+                        }
+                    }
+                }
+                if (globalSettings.CometUpdatePolicy != UpdatePolicy.Never && Comet.IsInstalled)
+                {
+                    var nextCometUpdateTime = globalSettings.NextCometUpdateTime;
+                    if (nextCometUpdateTime != 0)
+                    {
+                        DateTimeOffset now = DateTime.UtcNow;
+                        if (now.ToUnixTimeSeconds() >= nextCometUpdateTime)
+                        {
+                            globalSettings.NextCometUpdateTime = GetNextUpdateCheckTime(globalSettings.CometUpdatePolicy);
+                            SavePluginSettings(globalSettings);
+                            var versionInfoContent = await Comet.GetVersionInfoContent();
+                            if (versionInfoContent.Tag_name != null)
+                            {
+                                var newVersion = new Version(versionInfoContent.Tag_name.Replace("v", ""));
+                                var oldVersion = new Version(await Comet.GetCometVersion());
+                                if (oldVersion.CompareTo(newVersion) < 0)
+                                {
+                                    var options = new List<MessageBoxOption>
+                                    {
+                                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOssViewChangelog), true),
+                                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel), false, true),
+                                    };
+                                    var result = PlayniteApi.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssNewVersionAvailable), "Comet", newVersion), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                                    if (result == options[0])
+                                    {
+                                        var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
+                                        Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
             StopDownloadManager();
@@ -557,53 +646,48 @@ namespace GogOssLibraryNS
                                 window.ShowDialog();
                             }
                         };
-                        //    yield return new GameMenuItem
-                        //    {
-                        //        Description = ResourceProvider.GetString(LOC.Legendary3P_PlayniteCheckForUpdates),
-                        //        Icon = "UpdateDbIcon",
-                        //        Action = (args) =>
-                        //        {
-                        //            if (!LegendaryLauncher.IsInstalled)
-                        //            {
-                        //                throw new Exception(ResourceProvider.GetString(LOC.LegendaryLauncherNotInstalled));
-                        //            }
-
-                        //            LegendaryUpdateController legendaryUpdateController = new LegendaryUpdateController();
-                        //            var gamesToUpdate = new Dictionary<string, UpdateInfo>();
-                        //            GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.LegendaryCheckingForUpdates), false) { IsIndeterminate = true };
-                        //            PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
-                        //            {
-                        //                gamesToUpdate = await legendaryUpdateController.CheckGameUpdates(game.Name, game.GameId);
-                        //            }, updateCheckProgressOptions);
-                        //            if (gamesToUpdate.Count > 0)
-                        //            {
-                        //                var successUpdates = gamesToUpdate.Where(i => i.Value.Success).ToDictionary(i => i.Key, i => i.Value);
-                        //                if (successUpdates.Count > 0)
-                        //                {
-                        //                    Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
-                        //                    {
-                        //                        ShowMaximizeButton = false,
-                        //                    });
-                        //                    window.DataContext = successUpdates;
-                        //                    window.Title = $"{ResourceProvider.GetString(LOC.Legendary3P_PlayniteExtensionsUpdates)}";
-                        //                    window.Content = new LegendaryUpdater();
-                        //                    window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
-                        //                    window.SizeToContent = SizeToContent.WidthAndHeight;
-                        //                    window.MinWidth = 600;
-                        //                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                        //                    window.ShowDialog();
-                        //                }
-                        //                else
-                        //                {
-                        //                    PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.Legendary3P_PlayniteUpdateCheckFailMessage), game.Name);
-                        //                }
-                        //            }
-                        //            else
-                        //            {
-                        //                PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.LegendaryNoUpdatesAvailable), game.Name);
-                        //            }
-                        //        }
-                        //    };
+                        yield return new GameMenuItem
+                        {
+                            Description = ResourceProvider.GetString(LOC.GogOss3P_PlayniteCheckForUpdates),
+                            Icon = "UpdateDbIcon",
+                            Action = (args) =>
+                            {
+                                GogOssUpdateController gogOssUpdateController = new GogOssUpdateController();
+                                var gamesToUpdate = new Dictionary<string, UpdateInfo>();
+                                GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssCheckingForUpdates), false) { IsIndeterminate = true };
+                                PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
+                                {
+                                    gamesToUpdate = await gogOssUpdateController.CheckGameUpdates(game.Name, game.GameId);
+                                }, updateCheckProgressOptions);
+                                if (gamesToUpdate.Count > 0)
+                                {
+                                    var successUpdates = gamesToUpdate.Where(i => i.Value.Success).ToDictionary(i => i.Key, i => i.Value);
+                                    if (successUpdates.Count > 0)
+                                    {
+                                        Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                                        {
+                                            ShowMaximizeButton = false,
+                                        });
+                                        window.DataContext = successUpdates;
+                                        window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
+                                        window.Content = new GogOssUpdaterView();
+                                        window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                                        window.SizeToContent = SizeToContent.WidthAndHeight;
+                                        window.MinWidth = 600;
+                                        window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                        window.ShowDialog();
+                                    }
+                                    else
+                                    {
+                                        PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), game.Name);
+                                    }
+                                }
+                                else
+                                {
+                                    PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable), game.Name);
+                                }
+                            }
+                        };
                     }
                     else
                     {
@@ -810,6 +894,90 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+        }
+
+        public static long GetNextUpdateCheckTime(UpdatePolicy frequency)
+        {
+            DateTimeOffset? updateTime = null;
+            DateTimeOffset now = DateTime.UtcNow;
+            switch (frequency)
+            {
+                case UpdatePolicy.PlayniteLaunch:
+                    updateTime = now;
+                    break;
+                case UpdatePolicy.Day:
+                    updateTime = now.AddDays(1);
+                    break;
+                case UpdatePolicy.Week:
+                    updateTime = now.AddDays(7);
+                    break;
+                case UpdatePolicy.Month:
+                    updateTime = now.AddMonths(1);
+                    break;
+                case UpdatePolicy.ThreeMonths:
+                    updateTime = now.AddMonths(3);
+                    break;
+                case UpdatePolicy.SixMonths:
+                    updateTime = now.AddMonths(6);
+                    break;
+                default:
+                    break;
+            }
+            return updateTime?.ToUnixTimeSeconds() ?? 0;
+        }
+
+
+        public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
+        {
+            yield return new MainMenuItem
+            {
+                Description = ResourceProvider.GetString(LOC.GogOssCheckForGamesUpdatesButton),
+                MenuSection = $"@{Instance.Name}",
+                Icon = "UpdateDbIcon",
+                Action = (args) =>
+                {
+                    if (!Gogdl.IsInstalled)
+                    {
+                        PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
+                        return;
+                    }
+
+                    var gamesUpdates = new Dictionary<string, UpdateInfo>();
+                    GogOssUpdateController GogOssUpdateController = new GogOssUpdateController();
+                    GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssCheckingForUpdates), false) { IsIndeterminate = true };
+                    PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
+                    {
+                        gamesUpdates = await GogOssUpdateController.CheckAllGamesUpdates();
+                    }, updateCheckProgressOptions);
+                    if (gamesUpdates.Count > 0)
+                    {
+                        var successUpdates = gamesUpdates.Where(i => i.Value.Success).ToDictionary(i => i.Key, i => i.Value);
+                        if (successUpdates.Count > 0)
+                        {
+                            Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                            {
+                                ShowMaximizeButton = false,
+                            });
+                            window.DataContext = successUpdates;
+                            window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
+                            window.Content = new GogOssUpdaterView();
+                            window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                            window.SizeToContent = SizeToContent.WidthAndHeight;
+                            window.MinWidth = 600;
+                            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            window.ShowDialog();
+                        }
+                        else
+                        {
+                            PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage));
+                        }
+                    }
+                    else
+                    {
+                        PlayniteApi.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable));
+                    }
+                }
+            };
         }
     }
 }

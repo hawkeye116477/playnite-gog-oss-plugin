@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair">Восстановить</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Дополнительные параметры</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Доп. контент</sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth">Раз в месяц</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months">Раз в 3 месяца</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months">Раз в 6 месяцев</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Для получения дополнительной информации смотрите файлы журнала.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Изменить свойства записи</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Открыть каталог загрузок</sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs">Управление DLC</sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs">Нет установленных DLC.</sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs">Нет доступных DLC.</sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate">Автоматическое обновление игр</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Проверить наличие обновлений игр</sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">При каждом запуске Playnite</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Загружаются обновления для игр от Epic Games.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Удаление настроек запуска</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Вы вошли как {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Вы действительно хотите выйти?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Пользователь не имеет права записи по указанному пути. Измените права или запустите Playnite от имени администратора.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton">Проверить наличие обновлений игр</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Недостаточно свободного места на диске.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates">Проверка обновлений...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} была успешно удалена.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Следующие игры были успешно удалены: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Игры</sys:String>

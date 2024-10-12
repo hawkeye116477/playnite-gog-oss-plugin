@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair">Onar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Gelişmiş Seçenekler</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Ekstra İçerik</sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth">Ayda bir kez</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months">3 ayda bir kez</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months">6 ayda bir kez</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daha fazla bilgi için günlük dosyalarını kontrol edin.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Girdi özelliklerini düzenle</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">İndirilenler dizinini aç</sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs">DLC Yönetimi</sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs">Kurulu DLC yok.</sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs">Mevcut DLC yok.</sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate">Oyunları otomatik olarak güncelle</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Oyun güncellemelerini denetle</sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">Playnite her başlangıcında</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Epic Games oyunlarına yönelik güncellemeler indiriliyor.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Başlatma ayarlarını kaldır</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">{0} olarak oturum açıldı</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Kullanıcının belirtilen yola yazma erişimi yok. İzinleri değiştirin veya Playnite programını yönetici olarak başlatın.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton">Oyun güncellemelerini denetle</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Yeterli boş disk alanı yok.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates">Güncellemeler kontrol ediliyor...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} başarıyla kaldırıldı.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Aşağıdaki oyunlar başarıyla kaldırıldı: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Oyunlar</sys:String>

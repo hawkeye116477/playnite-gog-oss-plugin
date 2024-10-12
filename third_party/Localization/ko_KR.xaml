@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">설치</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">설치 제거</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">다시 표시 안함</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">업데이트</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">파일 선택...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">폴더 선택...</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually">수동으로만</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">하루에 한 번</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">일주일에 한 번</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">열기</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportInstalledLabel">설치된 게임 가져오기</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportUninstalledLabel">설치되지 않은 게임 가져오기</sys:String>

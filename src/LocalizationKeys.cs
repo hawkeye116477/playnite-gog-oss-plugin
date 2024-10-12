@@ -74,6 +74,10 @@ namespace System
         /// </summary>
         public const string GogOssEnableCometSupportToolTip = "LOCGogOssEnableCometSupportToolTip";
         /// <summary>
+        /// Check for Comet updates
+        /// </summary>
+        public const string GogOssCometUpdatePolicy = "LOCGogOssCometUpdatePolicy";
+        /// <summary>
         /// Games Installation Path
         /// </summary>
         public const string GogOssGamesInstallationPath = "LOCGogOssGamesInstallationPath";
@@ -290,6 +294,18 @@ namespace System
         /// </summary>
         public const string GogOssExtraContent = "LOCGogOssExtraContent";
         /// <summary>
+        /// Once a month
+        /// </summary>
+        public const string GogOssOnceAMonth = "LOCGogOssOnceAMonth";
+        /// <summary>
+        /// Once every 3 months
+        /// </summary>
+        public const string GogOssOnceEvery3Months = "LOCGogOssOnceEvery3Months";
+        /// <summary>
+        /// Once every 6 months
+        /// </summary>
+        public const string GogOssOnceEvery6Months = "LOCGogOssOnceEvery6Months";
+        /// <summary>
         /// Check the log files for more information.
         /// </summary>
         public const string GogOssCheckLog = "LOCGogOssCheckLog";
@@ -446,6 +462,22 @@ namespace System
         /// </summary>
         public const string GogOssNoAvailableDlcs = "LOCGogOssNoAvailableDlcs";
         /// <summary>
+        /// Automatically update games
+        /// </summary>
+        public const string GogOssAutoUpdate = "LOCGogOssAutoUpdate";
+        /// <summary>
+        /// Check for games updates
+        /// </summary>
+        public const string GogOssGamesUpdatePolicy = "LOCGogOssGamesUpdatePolicy";
+        /// <summary>
+        /// On every Playnite startup
+        /// </summary>
+        public const string GogOssCheckUpdatesEveryPlayniteStartup = "LOCGogOssCheckUpdatesEveryPlayniteStartup";
+        /// <summary>
+        /// Updates for games from Epic Games are being downloaded.
+        /// </summary>
+        public const string GogOssGamesUpdatesUnderway = "LOCGogOssGamesUpdatesUnderway";
+        /// <summary>
         /// Remove launch settings
         /// </summary>
         public const string GogOssRemoveGameLaunchSettings = "LOCGogOssRemoveGameLaunchSettings";
@@ -462,9 +494,17 @@ namespace System
         /// </summary>
         public const string GogOssPermissionError = "LOCGogOssPermissionError";
         /// <summary>
+        /// Check for games updates
+        /// </summary>
+        public const string GogOssCheckForGamesUpdatesButton = "LOCGogOssCheckForGamesUpdatesButton";
+        /// <summary>
         /// Not enough free disk space.
         /// </summary>
         public const string GogOssNotEnoughSpace = "LOCGogOssNotEnoughSpace";
+        /// <summary>
+        /// Checking for updates...
+        /// </summary>
+        public const string GogOssCheckingForUpdates = "LOCGogOssCheckingForUpdates";
         /// <summary>
         /// {0} has been successfully uninstalled.
         /// </summary>
@@ -622,6 +662,10 @@ namespace System
         /// </summary>
         public const string GogOss3P_PlayniteDontShowAgainTitle = "LOCGogOss3P_PlayniteDontShowAgainTitle";
         /// <summary>
+        /// Updates
+        /// </summary>
+        public const string GogOss3P_PlayniteExtensionsUpdates = "LOCGogOss3P_PlayniteExtensionsUpdates";
+        /// <summary>
         /// Select file…
         /// </summary>
         public const string GogOss3P_PlayniteSelectFileTooltip = "LOCGogOss3P_PlayniteSelectFileTooltip";
@@ -629,6 +673,18 @@ namespace System
         /// Select folder…
         /// </summary>
         public const string GogOss3P_PlayniteSelectDirectoryTooltip = "LOCGogOss3P_PlayniteSelectDirectoryTooltip";
+        /// <summary>
+        /// Only manually
+        /// </summary>
+        public const string GogOss3P_PlayniteOptionOnlyManually = "LOCGogOss3P_PlayniteOptionOnlyManually";
+        /// <summary>
+        /// Once a day
+        /// </summary>
+        public const string GogOss3P_PlayniteOptionOnceADay = "LOCGogOss3P_PlayniteOptionOnceADay";
+        /// <summary>
+        /// Once a week
+        /// </summary>
+        public const string GogOss3P_PlayniteOptionOnceAWeek = "LOCGogOss3P_PlayniteOptionOnceAWeek";
         /// <summary>
         /// Open
         /// </summary>

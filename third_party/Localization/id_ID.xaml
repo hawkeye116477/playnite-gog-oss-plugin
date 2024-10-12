@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Instal</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Uninstal</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Jangan Tampilkan Lagi</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Pembaruan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Pilih file…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Pilih folder…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">Sekali sehari</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">Sekali seminggu</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">Buka</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportInstalledLabel">Impor game yang terpasang</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportUninstalledLabel">Impor game tidak terpasang</sys:String>

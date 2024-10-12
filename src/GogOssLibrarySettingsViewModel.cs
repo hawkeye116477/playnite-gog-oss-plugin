@@ -23,6 +23,11 @@ namespace GogOssLibraryNS
         public bool DisplayDownloadSpeedInBits { get; set; } = false;
         public bool DisplayDownloadTaskFinishedNotifications { get; set; } = true;
         public DownloadCompleteAction DoActionAfterDownloadComplete { get; set; } = DownloadCompleteAction.Nothing;
+        public UpdatePolicy GamesUpdatePolicy { get; set; } = UpdatePolicy.Month;
+        public long NextGamesUpdateTime { get; set; } = 0;
+        public bool AutoUpdateGames { get; set; } = false;
+        public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
+        public long NextCometUpdateTime { get; set; } = 0;
     }
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {
@@ -40,5 +45,32 @@ namespace GogOssLibraryNS
             {"ru", "Pусский" },
             {"zh", "中文(简体)" },
         };
+
+        public override void EndEdit()
+        {
+            if (EditingClone.GamesUpdatePolicy != Settings.GamesUpdatePolicy)
+            {
+                if (Settings.GamesUpdatePolicy != UpdatePolicy.Never)
+                {
+                    Settings.NextGamesUpdateTime = GogOssLibrary.GetNextUpdateCheckTime(Settings.GamesUpdatePolicy);
+                }
+                else
+                {
+                    Settings.NextGamesUpdateTime = 0;
+                }
+            }
+            if (EditingClone.CometUpdatePolicy != Settings.CometUpdatePolicy)
+            {
+                if (Settings.CometUpdatePolicy != UpdatePolicy.Never)
+                {
+                    Settings.NextCometUpdateTime = GogOssLibrary.GetNextUpdateCheckTime(Settings.CometUpdatePolicy);
+                }
+                else
+                {
+                    Settings.NextCometUpdateTime = 0;
+                }
+            }
+            base.EndEdit();
+        }
     }
 }

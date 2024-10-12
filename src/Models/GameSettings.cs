@@ -8,6 +8,7 @@ namespace GogOssLibraryNS.Models
 {
     public class GameSettings
     {
+        public bool? DisableGameVersionCheck { get; set; }
         public bool? AutoSyncSaves { get; set; }
         public string CloudSaveFolder { get; set; } = "";
         public bool? AutoSyncPlaytime { get; set; }

@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">स्थापित करा</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">विस्थापित करा</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">पुन्हा दाखवू नका</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">अपडेट</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">फाईल निवडा…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">फोल्डर निवडा…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">दिवसातून एकदा</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">आठवड्यातून एकदा</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">उघडा</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsConnectAccount">खाते कनेक्ट करा</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGStartUsingClient">{0} क्लाएंट वापरून सुरू करा</sys:String>

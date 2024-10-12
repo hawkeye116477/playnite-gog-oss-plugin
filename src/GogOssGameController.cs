@@ -483,4 +483,165 @@ namespace GogOssLibraryNS
             });
         }
     }
+
+    public class GogOssUpdateController
+    {
+        private IPlayniteAPI playniteAPI = API.Instance;
+        private static ILogger logger = LogManager.GetLogger();
+
+        public async Task<Dictionary<string, UpdateInfo>> CheckGameUpdates(string gameTitle, string gameId, bool forceRefreshCache = false)
+        {
+            var gamesToUpdate = new Dictionary<string, UpdateInfo>();
+            var installedInfo = GogOss.GetInstalledInfo(gameId);
+            var oldGameData = new DownloadManagerData.Download
+            {
+                gameID = gameId,
+                name = gameTitle
+            };
+            var newGameInfo = await Gogdl.GetGameInfo(oldGameData, false, true, forceRefreshCache);
+            if (newGameInfo.buildId != null)
+            {
+                if (installedInfo.build_id != newGameInfo.buildId)
+                {
+                    var updateSize = await Gogdl.CalculateGameSize(gameId, installedInfo);
+                    var updateInfo = new UpdateInfo
+                    {
+                        Install_path = installedInfo.install_path,
+                        Version = newGameInfo.versionName,
+                        Title = installedInfo.title,
+                        Download_size = updateSize.download_size,
+                        Disk_size = updateSize.disk_size,
+                        Build_id = newGameInfo.buildId,
+                        Language = installedInfo.language,
+                        ExtraContent = installedInfo.installed_DLCs,
+                        Depends = newGameInfo.dependencies,
+                    };
+                    gamesToUpdate.Add(gameId, updateInfo);
+                }
+            }
+            else
+            {
+                logger.Error($"An error occured during checking {gameTitle} updates.");
+                var updateInfo = new UpdateInfo
+                {
+                    Version = "0",
+                    Title = gameTitle,
+                    Download_size = 0,
+                    Disk_size = 0,
+                    Success = false
+                };
+                gamesToUpdate.Add(gameId, updateInfo);
+            }
+            return gamesToUpdate;
+        }
+
+        public async Task UpdateGame(Dictionary<string, UpdateInfo> gamesToUpdate, string gameTitle = "", bool silently = false, DownloadProperties downloadProperties = null)
+        {
+            var updateTasks = new List<DownloadManagerData.Download>();
+            if (gamesToUpdate.Count > 0)
+            {
+                bool canUpdate = true;
+                if (canUpdate)
+                {
+                    if (silently)
+                    {
+                        var playniteApi = API.Instance;
+                        playniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdates", ResourceProvider.GetString(LOC.GogOssGamesUpdatesUnderway), NotificationType.Info));
+                    }
+                    GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
+                    foreach (var gameToUpdate in gamesToUpdate)
+                    {
+                        var downloadData = new DownloadManagerData.Download { gameID = gameToUpdate.Key, downloadProperties = downloadProperties };
+                        var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameToUpdate.Key);
+                        if (wantedItem != null)
+                        {
+                            if (wantedItem.status == DownloadStatus.Completed)
+                            {
+                                downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                                downloadManager.downloadsChanged = true;
+                                wantedItem = null;
+                            }
+                        }
+                        if (wantedItem != null)
+                        {
+                            if (!silently)
+                            {
+                                playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExists), wantedItem.name), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                        }
+                        else
+                        {
+                            if (downloadProperties == null)
+                            {
+                                var settings = GogOssLibrary.GetSettings();
+                                downloadProperties = new DownloadProperties()
+                                {
+                                    downloadAction = DownloadAction.Update,
+                                    maxWorkers = settings.MaxWorkers,
+                                };
+                            }
+                            downloadProperties.buildId = gameToUpdate.Value.Build_id;
+                            downloadProperties.version = gameToUpdate.Value.Version;
+                            downloadProperties.language = gameToUpdate.Value.Language;
+                            downloadProperties.extraContent = gameToUpdate.Value.ExtraContent;
+                            downloadProperties.os = gameToUpdate.Value.Os;
+                            downloadProperties.installPath = gameToUpdate.Value.Install_path;
+                            var updateTask = new DownloadManagerData.Download
+                            {
+                                gameID = gameToUpdate.Key,
+                                name = gameToUpdate.Value.Title,
+                                downloadSizeNumber = gameToUpdate.Value.Download_size,
+                                installSizeNumber = gameToUpdate.Value.Disk_size,
+                                downloadProperties = downloadProperties
+                            };
+                            updateTask.fullInstallPath = gameToUpdate.Value.Install_path;
+                            updateTask.depends = gameToUpdate.Value.Depends;
+                            updateTasks.Add(updateTask);
+                        }
+                    }
+                    if (updateTasks.Count > 0)
+                    {
+                        await downloadManager.EnqueueMultipleJobs(updateTasks, silently);
+                    }
+                }
+            }
+            else if (!silently)
+            {
+                playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable), gameTitle);
+            }
+        }
+
+        public async Task<Dictionary<string, UpdateInfo>> CheckAllGamesUpdates()
+        {
+            var appList = GogOssLibrary.GetInstalledAppList();
+            var gamesToUpdate = new Dictionary<string, UpdateInfo>();
+            foreach (var game in appList.OrderBy(item => item.Value.title))
+            {
+                if (game.Value.item_type == DownloadItemType.Dependency)
+                {
+                    continue;
+                }
+                var gameID = game.Key;
+                var gameSettings = GogOssGameSettingsView.LoadGameSettings(gameID);
+                bool canUpdate = true;
+                if (gameSettings.DisableGameVersionCheck == true)
+                {
+                    canUpdate = false;
+                }
+                if (canUpdate)
+                {
+                    GogOssUpdateController GogOssUpdateController = new GogOssUpdateController();
+                    var gameToUpdate = await GogOssUpdateController.CheckGameUpdates(game.Value.title, gameID);
+                    if (gameToUpdate.Count > 0)
+                    {
+                        foreach (var singleGame in gameToUpdate)
+                        {
+                            gamesToUpdate.Add(singleGame.Key, singleGame.Value);
+                        }
+                    }
+                }
+            }
+            return gamesToUpdate;
+        }
+    }
 }

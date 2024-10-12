@@ -54,6 +54,9 @@
   <sys:String x:Key="LOCGogOssRepair">Napraw</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opcje zaawansowane</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Dodatkowa zawartość</sys:String>
+  <sys:String x:Key="LOCGogOssOnceAMonth">Raz w miesiącu</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery3Months">Raz na 3 miesiące</sys:String>
+  <sys:String x:Key="LOCGogOssOnceEvery6Months">Raz na 6 miesięcy</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Sprawdź pliki dziennika, aby uzyskać więcej informacji.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edytuj właściwości wpisu</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Otwórz katalog pobierania</sys:String>
@@ -93,11 +96,17 @@
   <sys:String x:Key="LOCGogOssManageDlcs">Zarządzaj dodatkami (DLC)</sys:String>
   <sys:String x:Key="LOCGogOssNoInstalledDlcs">Brak zainstalowanych DLC.</sys:String>
   <sys:String x:Key="LOCGogOssNoAvailableDlcs">Brak dostępnych DLC.</sys:String>
+  <sys:String x:Key="LOCGogOssAutoUpdate">Automatycznie aktualizuj gry</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Sprawdzaj aktualizacje gier</sys:String>
+  <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">Przy każdym uruchomieniu Playnite</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Trwa pobieranie aktualizacji dla gier z Epic Games.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Usuń ustawienia uruchamiania</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Zalogowano jako {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Czy na pewno chcesz się wylogować?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">Użytkownik nie ma dostępu do zapisu w określonej ścieżce. Zmień uprawnienia lub uruchom Playnite jako administrator.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckForGamesUpdatesButton">Sprawdź aktualizacje gier</sys:String>
   <sys:String x:Key="LOCGogOssNotEnoughSpace">Za mało wolnego miejsca na dysku.</sys:String>
+  <sys:String x:Key="LOCGogOssCheckingForUpdates">Sprawdzanie aktualizacji...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">Program {0} został pomyślnie odinstalowany.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Następujące gry zostały pomyślnie odinstalowane: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Gry</sys:String>

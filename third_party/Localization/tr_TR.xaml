@@ -40,8 +40,12 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Kur</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Kurulumu Kaldır</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Bir Daha Gösterme</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Güncellemeler</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Dosya seç…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Klasör seç…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnlyManually">Sadece el ile</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceADay">Günde bir</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteOptionOnceAWeek">Haftada bir</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOpen">Aç</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportInstalledLabel">Kurulu oyunları içeri aktar</sys:String>
   <sys:String x:Key="LOCGogOss3P_GOGSettingsImportUninstalledLabel">Kurulu olmayan oyunları içe aktar</sys:String>
