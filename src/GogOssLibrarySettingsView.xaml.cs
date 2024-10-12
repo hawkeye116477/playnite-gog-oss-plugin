@@ -263,7 +263,7 @@ namespace GogOssLibraryNS
 
         private void OpenGogdlBinaryBtn_Click(object sender, RoutedEventArgs e)
         {
-            ProcessStarter.StartProcess("cmd", $"/K {troubleshootingInformation.GogdlBinary} -h");
+            ProcessStarter.StartProcess("cmd", $"/k {troubleshootingInformation.GogdlBinary} -h", Path.GetDirectoryName(troubleshootingInformation.GogdlBinary));
         }
     }
 }
