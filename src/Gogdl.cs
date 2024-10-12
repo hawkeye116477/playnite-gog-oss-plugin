@@ -149,11 +149,6 @@ namespace GogOssLibraryNS
             {
                 var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
                 var dependPath = Path.Combine(dataDir, ".gogRedist");
-                var heroicDependPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "tools", "redist", "gog");
-                if (Directory.Exists(heroicDependPath))
-                {
-                    dependPath = heroicDependPath;
-                }
                 return dependPath;
             }
         }
