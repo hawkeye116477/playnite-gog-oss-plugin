@@ -5,11 +5,8 @@ using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace GogOssLibraryNS

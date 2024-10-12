@@ -1,5 +1,4 @@
-﻿using GogOssLibraryNS.Models;
-using GogOssLibraryNS.Enums;
+﻿using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
@@ -8,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 

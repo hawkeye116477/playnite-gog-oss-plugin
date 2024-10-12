@@ -2,14 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Playnite.SDK;
 using GogOssLibraryNS.Models;
-using System.IO;
-using Playnite;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using GogOssLibraryNS.Services;
 using System.Text.RegularExpressions;
 using AngleSharp.Parser.Html;

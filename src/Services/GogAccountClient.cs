@@ -2,17 +2,13 @@
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
-using PlayniteExtensions.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.UI.WebControls;
 using static GogOssLibraryNS.Models.TokenResponse;
 
 namespace GogOssLibraryNS.Services

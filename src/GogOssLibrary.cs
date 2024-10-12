@@ -1,5 +1,4 @@
-﻿using CliWrap;
-using GogOssLibraryNS.Enums;
+﻿using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -10,17 +9,12 @@ using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace GogOssLibraryNS
 {
@@ -231,20 +225,18 @@ namespace GogOssLibraryNS
 
         public static Dictionary<string, Installed> GetInstalledAppList()
         {
-            var list = Instance.installedAppList;
-            if (list == null)
+            if (Instance.installedAppList == null)
             {
-                list = new Dictionary<string, Installed>();
+                Instance.installedAppList = new Dictionary<string, Installed>();
                 var installListPath = Path.Combine(Instance.GetPluginUserDataPath(), "installed.json");
                 if (File.Exists(installListPath))
                 {
                     var content = FileSystem.ReadFileAsStringSafe(installListPath);
                     if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out Dictionary<string, Installed> nonEmptyList))
                     {
-                        list = nonEmptyList;
+                        Instance.installedAppList = nonEmptyList;
                     }
                 }
-                Instance.installedAppList = list;
             }
             var programs = Programs.GetUnistallProgramsList();
             foreach (var program in programs)

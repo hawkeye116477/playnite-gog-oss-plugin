@@ -1,6 +1,5 @@
 ﻿using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
-using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
