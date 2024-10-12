@@ -236,7 +236,7 @@ namespace GogOssLibraryNS
                 var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
                 if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out newManifest))
                 {
-                    if (newManifest != null && (newManifest.buildId != null || newManifest.product.rootGameID != null))
+                    if (newManifest != null && (newManifest.baseProductId != null || newManifest.product.rootGameID != null))
                     {
                         correctJson = true;
                     }

@@ -9,7 +9,7 @@ namespace GogOssLibraryNS.Models
     public class GogGameMetaManifest
     {
         public string baseProductId { get; set; }
-        public string buildId { get; set; }
+        public string buildId { get; set; } = "";
         public string clientId { get; set; }
         public string clientSecret { get; set; }
         public Depot[] depots { get; set; }
@@ -23,7 +23,7 @@ namespace GogOssLibraryNS.Models
         public string HGLInstallLanguage { get; set; }
         public object[] HGLdlcs { get; set; }
         public List<string> dependencies { get; set; } = new List<string>();
-        public ProductV1 product { get; set; }
+        public ProductV1 product { get; set; } = new ProductV1();
 
         public class Offlinedepot
         {
