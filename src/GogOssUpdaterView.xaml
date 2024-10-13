@@ -70,7 +70,7 @@
                         </Grid.RowDefinitions>
                         <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}" Grid.Row="2" Grid.Column="0" Margin="0,0,0,5" 
                                    VerticalAlignment="Center" HorizontalAlignment="Left" />
-                        <local:NumericInput Grid.Row="2" Grid.Column="1" Margin="15,0,0,5" MinValue="0" MaxValue="16" x:Name="MaxWorkersNI"/>
+                        <local:NumericInput Grid.Row="2" Grid.Column="1" Margin="15,0,0,5" MinValue="0" x:Name="MaxWorkersNI"/>
                     </Grid>
                 </Expander>
             </Border>

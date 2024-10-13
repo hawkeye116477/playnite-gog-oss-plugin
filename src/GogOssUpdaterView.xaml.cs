@@ -89,6 +89,7 @@ namespace GogOssLibraryNS
             UpdatesLB.Visibility = Visibility.Visible;
             UpdatesLB.SelectAll();
             var settings = GogOssLibrary.GetSettings();
+            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
         }
     }
