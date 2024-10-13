@@ -286,11 +286,11 @@ namespace GogOssLibraryNS
             if (cometSupportEnabled && Comet.IsInstalled)
             {
                 var gogAccountClient = new GogAccountClient();
-                var tokens = gogAccountClient.LoadTokens();
-                if (tokens != null)
+                var account = await gogAccountClient.GetAccountInfo();
+                if (account.isLoggedIn)
                 {
-                    var account = await gogAccountClient.GetAccountInfo();
-                    if (account.isLoggedIn)
+                    var tokens = gogAccountClient.LoadTokens();
+                    if (tokens != null)
                     {
                         var playArgs = new List<string>();
                         playArgs.AddRange(new[] { "--access-token", tokens.access_token });
@@ -319,7 +319,10 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
-
+                else
+                {
+                    logger.Error("User is not authenticated, so can't launch Comet");
+                }
             }
         }
 
@@ -371,7 +374,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
+                                playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
                                 logger.Error($"Can't upload playtime, because user is not authenticated.");
                             }
                         }
