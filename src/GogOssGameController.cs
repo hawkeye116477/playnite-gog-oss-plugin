@@ -335,18 +335,18 @@ namespace GogOssLibraryNS
                 }
                 if (playtimeSyncEnabled)
                 {
-                    using (var httpClient = new HttpClient())
+                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssUploadingPlaytime).Format(Game.Name), false);
+                    playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                     {
-                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssUploadingPlaytime).Format(Game.Name), false);
-                        playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                        a.IsIndeterminate = true;
+                        using (var httpClient = new HttpClient())
                         {
-                            a.ProgressMaxValue = 100;
-                            a.CurrentProgressValue = 0;
                             httpClient.DefaultRequestHeaders.Clear();
                             var gogAccountClient = new GogAccountClient();
-                            var tokens = gogAccountClient.LoadTokens();
-                            if (tokens != null)
+                            var accountInfo = await gogAccountClient.GetAccountInfo();
+                            if (accountInfo.isLoggedIn)
                             {
+                                var tokens = gogAccountClient.LoadTokens();
                                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
                                 var uri = $"https://gameplay.gog.com/games/{Game.GameId}/users/{tokens.user_id}/sessions";
                                 PlaytimePayload playtimePayload = new PlaytimePayload();
@@ -359,20 +359,23 @@ namespace GogOssLibraryNS
                                 var playtimeJson = Serialization.ToJson(playtimePayload);
                                 var content = new StringContent(playtimeJson, Encoding.UTF8, "application/json");
                                 a.CurrentProgressValue = 1;
-                                var result = await httpClient.PostAsync(uri, content);
-                                if (!result.IsSuccessStatusCode)
+                                if (playtimePayload.time > 0)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
-                                    logger.Error($"An error occured during uploading playtime to the cloud. Status code: {result.StatusCode}.");
+                                    var result = await httpClient.PostAsync(uri, content);
+                                    if (!result.IsSuccessStatusCode)
+                                    {
+                                        playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
+                                        logger.Error($"An error occured during uploading playtime to the cloud. Status code: {result.StatusCode}.");
+                                    }
                                 }
                             }
                             else
                             {
                                 playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
+                                logger.Error($"Can't upload playtime, because user is not authenticated.");
                             }
-                            a.CurrentProgressValue = 100;
-                        }, globalProgressOptions);
-                    }
+                        }
+                    }, globalProgressOptions);
                 }
             }
 

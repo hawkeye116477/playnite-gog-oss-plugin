@@ -747,17 +747,6 @@ namespace GogOssLibraryNS
                                         var installedAppList = GetInstalledAppList();
                                         installedAppList.Add(game.GameId, installedInfo);
                                         Instance.installedAppListModified = true;
-                                        //var playtimeSyncEnabled = GetSettings().SyncPlaytime;
-                                        //if (playtimeSyncEnabled)
-                                        //{
-                                        //    var accountApi = new EpicAccountClient(PlayniteApi, LegendaryLauncher.TokensPath);
-                                        //    var playtimeItems = await accountApi.GetPlaytimeItems();
-                                        //    var playtimeItem = playtimeItems?.FirstOrDefault(x => x.artifactId == game.GameId);
-                                        //    if (playtimeItem != null)
-                                        //    {
-                                        //        game.Playtime = playtimeItem.totalTime;
-                                        //    }
-                                        //}
                                         PlayniteApi.Dialogs.ShowMessage(LOC.GogOssImportFinished);
                                     }, importProgressOptions);
                                 }

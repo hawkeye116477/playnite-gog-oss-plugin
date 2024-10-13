@@ -114,7 +114,7 @@ namespace GogOssLibraryNS
                 DisableGameUpdateCheckingChk.IsChecked = true;
             }
             //AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
-            //AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
+            AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
             gameSettings = LoadGameSettings(GameID);
             if (gameSettings.EnableCometSupport != null)
             {

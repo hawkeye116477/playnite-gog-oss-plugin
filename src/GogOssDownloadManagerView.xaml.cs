@@ -464,17 +464,6 @@ namespace GogOssLibraryNS
                                         game.InstallDirectory = installedGameInfo.install_path;
                                         game.Version = installedGameInfo.version;
                                         game.IsInstalled = true;
-                                        //var playtimeSyncEnabled = GogOssLibrary.GetSettings().SyncPlaytime;
-                                        //if (playtimeSyncEnabled && downloadProperties.downloadAction != DownloadAction.Update)
-                                        //{
-                                        //    var accountApi = new GogAccountClient(playniteAPI, CometLauncher.TokensPath);
-                                        //    var playtimeItems = await accountApi.GetPlaytimeItems();
-                                        //    var playtimeItem = playtimeItems?.FirstOrDefault(x => x.artifactId == gameID);
-                                        //    if (playtimeItem != null)
-                                        //    {
-                                        //        game.Playtime = playtimeItem.totalTime;
-                                        //    }
-                                        //}
                                         playniteAPI.Database.Games.Update(game);
                                     }
                                 }
