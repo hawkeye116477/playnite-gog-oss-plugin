@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair"></sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions"></sys:String>
   <sys:String x:Key="LOCGogOssExtraContent"></sys:String>
+  <sys:String x:Key="LOCGogOssCache"></sys:String>
+  <sys:String x:Key="LOCGogOssClearCache"></sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache"></sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth"></sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months"></sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months"></sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssCheckLog"></sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties"></sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory"></sys:String>

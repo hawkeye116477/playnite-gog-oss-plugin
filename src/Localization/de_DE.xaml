@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair">Reparieren</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Erweiterte Einstellungen</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Extra Content</sys:String>
+  <sys:String x:Key="LOCGogOssCache">Zwischenspeicher</sys:String>
+  <sys:String x:Key="LOCGogOssClearCache">Zwischenspeicher leeren</sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache">Zwischenspeicher automatisch leeren</sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth">Einmal pro Monat</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months">Einmal alle 3 Monate</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Einmal alle 6 Monate</sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm">Sind Sie sicher, dass Sie den Zwischenspeicher leeren möchten?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Überprüfen Sie die Logdateien für weitere Informationen.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Eintragseigenschaften bearbeiten</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Download-Verzeichnis öffnen</sys:String>

@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Pengaturan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Umum</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Opsi Lanjut</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Bersihkan Cache?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Tidak pernah</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Login dibutuhkan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">File program (file .exe/.sh/.bat, dll..)</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nama</sys:String>

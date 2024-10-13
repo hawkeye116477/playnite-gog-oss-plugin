@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair">Sutaisyti</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Išplėstinės Parinktys</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Papildomas turinys</sys:String>
+  <sys:String x:Key="LOCGogOssCache">Podėlis</sys:String>
+  <sys:String x:Key="LOCGogOssClearCache">Išvalyti podėlį</sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache">Podėlį išvalyti automatškai</sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth">Kartą per mėnesį</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months">Kartą per 3 mėnesius</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Kartą per 6 mėnesius</sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm">Ar tikrai norite išvalyti podėlį?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daugiau informacijos ieškokite žurnaluose.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties"></sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory"></sys:String>

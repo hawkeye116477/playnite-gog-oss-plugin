@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair">Reparar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opciones Avanzadas</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Contenido extra</sys:String>
+  <sys:String x:Key="LOCGogOssCache">Caché</sys:String>
+  <sys:String x:Key="LOCGogOssClearCache">Borrar caché</sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache">Borrar caché automáticamente</sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth">Una vez al mes</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months">Una vez cada 3 meses</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Una vez cada 6 meses</sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm">¿Estás seguro de que quieres borrar el caché?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Revisa los archivos de registro para más información.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Editar propiedades de la entrada</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Abrir directorio de descarga</sys:String>

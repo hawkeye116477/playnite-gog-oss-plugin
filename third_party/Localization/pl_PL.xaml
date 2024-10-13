@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Ustawienia</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Ogólne</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Zaawansowane</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Wyczyścić pamięć podręczną?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Nigdy</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Wymagane uwierzytelnienie</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Plik wykonywalny</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nazwa</sys:String>

@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Paramètres</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Général</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Autres</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Vider le cache ?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Jamais</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Statut : Authentification requise</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Exécutable</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nom</sys:String>

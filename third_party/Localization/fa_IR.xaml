@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">تنظیمات</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">عمومی</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">پیشرفته</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">حافظه پنهان پاک شود؟</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">هرگز</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">نیاز به تایید هویت دارد</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">قابل اجرا</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">نام</sys:String>

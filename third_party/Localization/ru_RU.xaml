@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Настройки</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Основные</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Расширенные</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Очистить кэш?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Никогда</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Требуется авторизация</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Исполняемый файл</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Название игры</sys:String>

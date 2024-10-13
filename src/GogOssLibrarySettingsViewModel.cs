@@ -29,6 +29,8 @@ namespace GogOssLibraryNS
         public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
         public long NextCometUpdateTime { get; set; } = 0;
         public bool SyncPlaytime { get; set; } = false;
+        public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
+        public long NextClearingTime { get; set; } = 0;
     }
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {
@@ -49,6 +51,17 @@ namespace GogOssLibraryNS
 
         public override void EndEdit()
         {
+            if (EditingClone.AutoClearCache != Settings.AutoClearCache)
+            {
+                if (Settings.AutoClearCache != ClearCacheTime.Never)
+                {
+                    Settings.NextClearingTime = GogOssLibrary.GetNextClearingTime(Settings.AutoClearCache);
+                }
+                else
+                {
+                    Settings.NextClearingTime = 0;
+                }
+            }
             if (EditingClone.GamesUpdatePolicy != Settings.GamesUpdatePolicy)
             {
                 if (Settings.GamesUpdatePolicy != UpdatePolicy.Never)

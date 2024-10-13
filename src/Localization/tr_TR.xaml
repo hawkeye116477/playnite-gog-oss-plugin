@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair">Onar</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Gelişmiş Seçenekler</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Ekstra İçerik</sys:String>
+  <sys:String x:Key="LOCGogOssCache">Önbellek</sys:String>
+  <sys:String x:Key="LOCGogOssClearCache">Önbelleği temizle</sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache">Önbelleği otomatik temizle</sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth">Ayda bir kez</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months">3 ayda bir kez</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months">6 ayda bir kez</sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm">Önbelleği temizlemek istediğinizden emin misiniz?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daha fazla bilgi için günlük dosyalarını kontrol edin.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Girdi özelliklerini düzenle</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">İndirilenler dizinini aç</sys:String>

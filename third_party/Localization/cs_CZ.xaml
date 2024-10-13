@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Nastavení</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Obecné</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Pokročilé</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Vyčistit Mezipaměť?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Nikdy</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Vyžaduje se přihlášení</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Spustitelný soubor</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Jméno</sys:String>

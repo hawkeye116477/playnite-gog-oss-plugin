@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Seaded</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Üldine</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Täpsem</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Tühjenda vahemälu?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Mitte kunagi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Autentimine vajalik</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Täitmisprogramm</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nimi</sys:String>

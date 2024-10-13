@@ -41,3 +41,5 @@ LOCExtensionsUpdates
 LOCOptionOnceADay
 LOCOptionOnceAWeek
 LOCOptionOnlyManually
+LOCSettingsClearCacheTitle
+LOCSettingsPlaytimeImportModeNever

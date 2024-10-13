@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">設定</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">一般</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">進階設定</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">清除快取？</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">永不</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">需要驗證</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">執行檔</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">名稱</sys:String>

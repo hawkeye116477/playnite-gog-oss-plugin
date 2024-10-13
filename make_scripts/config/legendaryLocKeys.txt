@@ -110,3 +110,7 @@ LOCLegendaryAutoUpdate
 LOCLegendaryCheckForGamesUpdatesButton
 LOCLegendaryUploadingPlaytime
 LOCLegendaryUploadPlaytimeError
+LOCLegendaryCache
+LOCLegendaryAutoClearCache
+LOCLegendaryClearCache
+LOCLegendaryClearCacheConfirm

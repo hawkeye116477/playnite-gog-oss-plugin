@@ -207,6 +207,7 @@
   <ItemGroup>
     <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="Comet.cs" />
+    <Compile Include="Enums\ClearCacheTime.cs" />
     <Compile Include="Enums\UpdatePolicy.cs" />
     <Compile Include="GogOss.cs" />
     <Compile Include="GogOssDlcManager.xaml.cs">

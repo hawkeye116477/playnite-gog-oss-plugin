@@ -234,5 +234,15 @@ namespace GogOssLibraryNS
             }
             return dlcs;
         }
+
+        public static void ClearCache()
+        {
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+            var cacheDir = Path.Combine(dataDir, "cache");
+            if (Directory.Exists(cacheDir))
+            {
+                Directory.Delete(cacheDir, true);
+            }
+        }
     }
 }

@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Ayarlar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Genel</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Gelişmiş</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Önbelleği Temizle?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Asla</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Doğrulama gerekli</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Uygulama</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">İsim</sys:String>

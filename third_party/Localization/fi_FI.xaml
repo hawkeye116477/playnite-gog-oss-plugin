@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Asetukset</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Yleiset</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Lisäasetukset</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Tyhjennä välimuisti?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Ei koskaan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Todennus vaaditaan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Suoritettava ohjelma</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nimi</sys:String>

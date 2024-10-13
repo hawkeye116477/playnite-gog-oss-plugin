@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Подешавања</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Опште</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Напредно</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Очисти кеширане податке?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Никад</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Потребна је провера</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Покретни фајл</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Назив</sys:String>

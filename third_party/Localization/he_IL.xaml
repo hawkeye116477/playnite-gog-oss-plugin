@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">הגדרות</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">כללי</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">מתקדם</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">לנקות מטמון?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">אף פעם</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">נדרש אימות</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">ניתן להרצה</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">שם</sys:String>

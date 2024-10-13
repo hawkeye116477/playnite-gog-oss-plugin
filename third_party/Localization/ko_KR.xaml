@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">설정</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">일반</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">고급 설정</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">캐시를 삭제하시겠습니까?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">가져오지 않음</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">인증이 필요함</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">실행파일</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">이름</sys:String>

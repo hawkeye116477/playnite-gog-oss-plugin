@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair">Восстановить</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Дополнительные параметры</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Доп. контент</sys:String>
+  <sys:String x:Key="LOCGogOssCache">Кэш</sys:String>
+  <sys:String x:Key="LOCGogOssClearCache">Очистить кэш</sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache">Автоматически очищать кэш</sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth">Раз в месяц</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months">Раз в 3 месяца</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Раз в 6 месяцев</sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm">Вы уверены, что хотите очистить кэш?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Для получения дополнительной информации смотрите файлы журнала.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Изменить свойства записи</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Открыть каталог загрузок</sys:String>

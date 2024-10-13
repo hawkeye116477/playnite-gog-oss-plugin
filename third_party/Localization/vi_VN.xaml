@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Cài đặt</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Cài đặt chung</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Nâng cao</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Xóa bộ nhớ cache?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Không bao giờ</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Yêu cầu xác thực</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Thực hiện</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Tên</sys:String>

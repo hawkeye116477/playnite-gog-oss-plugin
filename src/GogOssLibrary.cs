@@ -602,6 +602,29 @@ namespace GogOssLibraryNS
             {
                 Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
             }
+            var settings = GetSettings();
+            if (settings != null)
+            {
+                if (settings.AutoClearCache != ClearCacheTime.Never)
+                {
+                    var nextClearingTime = settings.NextClearingTime;
+                    if (nextClearingTime != 0)
+                    {
+                        DateTimeOffset now = DateTime.UtcNow;
+                        if (now.ToUnixTimeSeconds() >= nextClearingTime)
+                        {
+                            GogOss.ClearCache();
+                            settings.NextClearingTime = GetNextClearingTime(settings.AutoClearCache);
+                            SavePluginSettings(settings);
+                        }
+                    }
+                    else
+                    {
+                        settings.NextClearingTime = GetNextClearingTime(settings.AutoClearCache);
+                        SavePluginSettings(settings);
+                    }
+                }
+            }
         }
 
         public bool StopDownloadManager()
@@ -925,6 +948,32 @@ namespace GogOssLibraryNS
             return updateTime?.ToUnixTimeSeconds() ?? 0;
         }
 
+        public static long GetNextClearingTime(ClearCacheTime frequency)
+        {
+            DateTimeOffset? clearingTime = null;
+            DateTimeOffset now = DateTime.UtcNow;
+            switch (frequency)
+            {
+                case ClearCacheTime.Day:
+                    clearingTime = now.AddDays(1);
+                    break;
+                case ClearCacheTime.Week:
+                    clearingTime = now.AddDays(7);
+                    break;
+                case ClearCacheTime.Month:
+                    clearingTime = now.AddMonths(1);
+                    break;
+                case ClearCacheTime.ThreeMonths:
+                    clearingTime = now.AddMonths(3);
+                    break;
+                case ClearCacheTime.SixMonths:
+                    clearingTime = now.AddMonths(6);
+                    break;
+                default:
+                    break;
+            }
+            return clearingTime?.ToUnixTimeSeconds() ?? 0;
+        }
 
         public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
         {

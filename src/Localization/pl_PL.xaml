@@ -54,9 +54,13 @@
   <sys:String x:Key="LOCGogOssRepair">Napraw</sys:String>
   <sys:String x:Key="LOCGogOssAdvancedOptions">Opcje zaawansowane</sys:String>
   <sys:String x:Key="LOCGogOssExtraContent">Dodatkowa zawartość</sys:String>
+  <sys:String x:Key="LOCGogOssCache">Pamięć podręczna</sys:String>
+  <sys:String x:Key="LOCGogOssClearCache">Wyczyść pamięć podręczną</sys:String>
+  <sys:String x:Key="LOCGogOssAutoClearCache">Automatycznie czyść pamięć podręczną</sys:String>
   <sys:String x:Key="LOCGogOssOnceAMonth">Raz w miesiącu</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery3Months">Raz na 3 miesiące</sys:String>
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Raz na 6 miesięcy</sys:String>
+  <sys:String x:Key="LOCGogOssClearCacheConfirm">Czy na pewno chcesz wyczyścić pamięć podręczną?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Sprawdź pliki dziennika, aby uzyskać więcej informacji.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edytuj właściwości wpisu</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Otwórz katalog pobierania</sys:String>

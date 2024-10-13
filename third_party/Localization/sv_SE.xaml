@@ -25,6 +25,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsLabel">Inställningar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsGeneralLabel">Allmänt</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSettingsAdvancedLabel">Avancerat</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsClearCacheTitle">Rensa Cache?</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever">Aldrig</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoginRequired">Autentisering krävs</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Kör fil</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Titel</sys:String>

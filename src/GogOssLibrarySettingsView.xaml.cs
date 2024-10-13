@@ -78,6 +78,17 @@ namespace GogOssLibraryNS
             };
             LauncherUpdatesCBo.ItemsSource = launcherUpdatePolicyOptions;
 
+            var autoClearOptions = new Dictionary<ClearCacheTime, string>
+            {
+                { ClearCacheTime.Day, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
+                { ClearCacheTime.Week, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
+                { ClearCacheTime.Month, ResourceProvider.GetString(LOC.GogOssOnceAMonth) },
+                { ClearCacheTime.ThreeMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery3Months) },
+                { ClearCacheTime.SixMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery6Months) },
+                { ClearCacheTime.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteSettingsPlaytimeImportModeNever) }
+            };
+            AutoClearCacheCBo.ItemsSource = autoClearOptions;
+
             troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)
             {
@@ -308,6 +319,15 @@ namespace GogOssLibraryNS
                 AutoUpdateGamesChk.IsEnabled = true;
             }
 
+        }
+
+        private void ClearCacheBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssClearCacheConfirm), ResourceProvider.GetString(LOC.GogOss3P_PlayniteSettingsClearCacheTitle), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                GogOss.ClearCache();
+            }
         }
     }
 }

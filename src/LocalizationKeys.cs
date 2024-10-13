@@ -294,6 +294,18 @@ namespace System
         /// </summary>
         public const string GogOssExtraContent = "LOCGogOssExtraContent";
         /// <summary>
+        /// Cache
+        /// </summary>
+        public const string GogOssCache = "LOCGogOssCache";
+        /// <summary>
+        /// Clear cache
+        /// </summary>
+        public const string GogOssClearCache = "LOCGogOssClearCache";
+        /// <summary>
+        /// Automatically clear cache
+        /// </summary>
+        public const string GogOssAutoClearCache = "LOCGogOssAutoClearCache";
+        /// <summary>
         /// Once a month
         /// </summary>
         public const string GogOssOnceAMonth = "LOCGogOssOnceAMonth";
@@ -305,6 +317,10 @@ namespace System
         /// Once every 6 months
         /// </summary>
         public const string GogOssOnceEvery6Months = "LOCGogOssOnceEvery6Months";
+        /// <summary>
+        /// Are you sure you want to clear cache?
+        /// </summary>
+        public const string GogOssClearCacheConfirm = "LOCGogOssClearCacheConfirm";
         /// <summary>
         /// Check the log files for more information.
         /// </summary>
@@ -609,6 +625,14 @@ namespace System
         /// Advanced
         /// </summary>
         public const string GogOss3P_PlayniteSettingsAdvancedLabel = "LOCGogOss3P_PlayniteSettingsAdvancedLabel";
+        /// <summary>
+        /// Clear Cache?
+        /// </summary>
+        public const string GogOss3P_PlayniteSettingsClearCacheTitle = "LOCGogOss3P_PlayniteSettingsClearCacheTitle";
+        /// <summary>
+        /// Never
+        /// </summary>
+        public const string GogOss3P_PlayniteSettingsPlaytimeImportModeNever = "LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever";
         /// <summary>
         /// Authentification required
         /// </summary>
