@@ -86,6 +86,8 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Manual sync saves</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sync</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sync playtime to the cloud</sys:String>
+  <sys:String x:Key="LOCGogOssUploadingPlaytime">Uploading {0} game playtime to the cloud...</sys:String>
+  <sys:String x:Key="LOCGogOssUploadPlaytimeError">An error occurred while uploading {0} game playtime to the cloud.</sys:String>
   <sys:String x:Key="LOCGogOssMove">Move</sys:String>
   <sys:String x:Key="LOCGogOssMoveConfirm">Are you sure you want to move {0} to "{1}"? This may take a long time.</sys:String>
   <sys:String x:Key="LOCGogOssMovingGame">Moving {0} to "{1}"...</sys:String>

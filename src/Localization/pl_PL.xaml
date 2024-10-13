@@ -86,6 +86,8 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Ręczna synchronizacja zapisów</sys:String>
   <sys:String x:Key="LOCGogOssSync">Synchronizuj</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronizuj czas grania z chmurą</sys:String>
+  <sys:String x:Key="LOCGogOssUploadingPlaytime">Przesyłanie czasu grania w grę {0} do chmury...</sys:String>
+  <sys:String x:Key="LOCGogOssUploadPlaytimeError">Wystąpił błąd podczas przesyłania czasu grania w grę {0} do chmury.</sys:String>
   <sys:String x:Key="LOCGogOssMove">Przenieś</sys:String>
   <sys:String x:Key="LOCGogOssMoveConfirm">Czy na pewno chcesz przenieść grę {0} do „{1}”? To może zająć sporo czasu.</sys:String>
   <sys:String x:Key="LOCGogOssMovingGame">Przenoszenie gry {0} do „{1}”...</sys:String>

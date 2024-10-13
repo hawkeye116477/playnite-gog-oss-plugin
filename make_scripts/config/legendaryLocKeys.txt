@@ -108,3 +108,5 @@ LOCLegendaryOnceEvery6Months
 LOCLegendaryGamesUpdatePolicy
 LOCLegendaryAutoUpdate
 LOCLegendaryCheckForGamesUpdatesButton
+LOCLegendaryUploadingPlaytime
+LOCLegendaryUploadPlaytimeError

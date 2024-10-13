@@ -86,6 +86,8 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Ручная синхронизация сохраняет</sys:String>
   <sys:String x:Key="LOCGogOssSync">Синх</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Синхронизируйте время игры с облаком</sys:String>
+  <sys:String x:Key="LOCGogOssUploadingPlaytime">Загрузка {0} игрового времени в облако...</sys:String>
+  <sys:String x:Key="LOCGogOssUploadPlaytimeError">Произошла ошибка при загрузке {0} игрового времени в облако.</sys:String>
   <sys:String x:Key="LOCGogOssMove">Переместить</sys:String>
   <sys:String x:Key="LOCGogOssMoveConfirm">Вы уверены, что хотите переместить {0} в "{1}"? Это может занять много времени.</sys:String>
   <sys:String x:Key="LOCGogOssMovingGame">Перемещение {0} в "{1}"...</sys:String>

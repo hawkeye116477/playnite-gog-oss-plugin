@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +15,7 @@ using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 
@@ -194,6 +197,7 @@ namespace GogOssLibraryNS
         public bool cometSupportEnabled = false;
         public GameSettings gameSettings;
         public GogOssLibrarySettings globalSettings = GogOssLibrary.GetSettings();
+        private IPlayniteAPI playniteAPI = API.Instance;
 
         public GogOssPlayController(Game game) : base(game)
         {
@@ -321,6 +325,57 @@ namespace GogOssLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
+            var playtimeSyncEnabled = false;
+            if (playniteAPI.ApplicationSettings.PlaytimeImportMode != PlaytimeImportMode.Never)
+            {
+                playtimeSyncEnabled = globalSettings.SyncPlaytime;
+                if (gameSettings?.AutoSyncPlaytime != null)
+                {
+                    playtimeSyncEnabled = (bool)gameSettings.AutoSyncPlaytime;
+                }
+                if (playtimeSyncEnabled)
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssUploadingPlaytime).Format(Game.Name), false);
+                        playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                        {
+                            a.ProgressMaxValue = 100;
+                            a.CurrentProgressValue = 0;
+                            httpClient.DefaultRequestHeaders.Clear();
+                            var gogAccountClient = new GogAccountClient();
+                            var tokens = gogAccountClient.LoadTokens();
+                            if (tokens != null)
+                            {
+                                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+                                var uri = $"https://gameplay.gog.com/games/{Game.GameId}/users/{tokens.user_id}/sessions";
+                                PlaytimePayload playtimePayload = new PlaytimePayload();
+                                DateTimeOffset now = DateTime.UtcNow;
+                                var totalSeconds = sessionLength;
+                                var startTime = now.AddSeconds(-(double)totalSeconds);
+                                playtimePayload.session_date = startTime.ToUnixTimeSeconds();
+                                TimeSpan totalTimeSpan = TimeSpan.FromSeconds(totalSeconds);
+                                playtimePayload.time = totalTimeSpan.Minutes;
+                                var playtimeJson = Serialization.ToJson(playtimePayload);
+                                var content = new StringContent(playtimeJson, Encoding.UTF8, "application/json");
+                                a.CurrentProgressValue = 1;
+                                var result = await httpClient.PostAsync(uri, content);
+                                if (!result.IsSuccessStatusCode)
+                                {
+                                    playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
+                                    logger.Error($"An error occured during uploading playtime to the cloud. Status code: {result.StatusCode}.");
+                                }
+                            }
+                            else
+                            {
+                                playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
+                            }
+                            a.CurrentProgressValue = 100;
+                        }, globalProgressOptions);
+                    }
+                }
+            }
+
             if (cometSupportEnabled && Comet.IsInstalled)
             {
                 Process cometProcess = null;

@@ -28,6 +28,7 @@ namespace GogOssLibraryNS
         public bool AutoUpdateGames { get; set; } = false;
         public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
         public long NextCometUpdateTime { get; set; } = 0;
+        public bool SyncPlaytime { get; set; } = false;
     }
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {

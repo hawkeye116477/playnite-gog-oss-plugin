@@ -86,6 +86,8 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">Sincronização manual de jogos salvos</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tempo de jogo com a nuvem</sys:String>
+  <sys:String x:Key="LOCGogOssUploadingPlaytime">Enviando {0} tempo(s) de jogo para a nuvem...</sys:String>
+  <sys:String x:Key="LOCGogOssUploadPlaytimeError">Ocorreu um erro ao enviar {0} tempo(s) de jogo para a nuvem.</sys:String>
   <sys:String x:Key="LOCGogOssMove">Mover</sys:String>
   <sys:String x:Key="LOCGogOssMoveConfirm">Tem certeza que deseja mover {0} para "{1}"? Isso pode demorar.</sys:String>
   <sys:String x:Key="LOCGogOssMovingGame">Movendo {0} para "{1}"...</sys:String>

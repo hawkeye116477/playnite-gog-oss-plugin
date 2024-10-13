@@ -86,6 +86,8 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves">El ile eşitlenen kayıtlar</sys:String>
   <sys:String x:Key="LOCGogOssSync">Eşitleme</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Oynatma süresini bulutla eşitle</sys:String>
+  <sys:String x:Key="LOCGogOssUploadingPlaytime">{0} oyun oynama süresi buluta yükleniyor...</sys:String>
+  <sys:String x:Key="LOCGogOssUploadPlaytimeError">{0} oyun oynama süresi buluta yüklenirken bir hata oluştu.</sys:String>
   <sys:String x:Key="LOCGogOssMove">Taşı</sys:String>
   <sys:String x:Key="LOCGogOssMoveConfirm">{0} öğesini "{1}" konumuna taşımak istediğinizden emin misiniz? Bu uzun zaman alabilir.</sys:String>
   <sys:String x:Key="LOCGogOssMovingGame">{0}, "{1}" öğesine taşınıyor...</sys:String>

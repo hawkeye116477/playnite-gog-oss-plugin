@@ -332,10 +332,20 @@ namespace GogOssLibraryNS
                 // For some reason game stats are returned as an empty array if no stats exist for a game.
                 // But single object representation is returned instead if stats do exits.
                 // Better solution would require adding JSON.NET dependency.
+                var playtimeSyncEnabled = GetSettings().SyncPlaytime;
+                var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.game.id);
+                if (gameSettings.AutoSyncPlaytime != null)
+                {
+                    playtimeSyncEnabled = (bool)gameSettings.AutoSyncPlaytime;
+                }
                 if (game.stats?.GetType().Name == "JObject")
                 {
                     var stats = ((dynamic)game.stats).ToObject<Dictionary<string, LibraryGameResponse.Stats>>() as Dictionary<string, LibraryGameResponse.Stats>;
-                    if (stats.Keys?.Any() == true)
+                    if (gameSettings?.AutoSyncPlaytime != null)
+                    {
+                        playtimeSyncEnabled = (bool)gameSettings.AutoSyncPlaytime;
+                    }
+                    if (stats.Keys?.Any() == true && playtimeSyncEnabled)
                     {
                         var acc = stats.Keys.First();
                         newGame.Playtime = Convert.ToUInt64(stats[acc].playtime * 60);

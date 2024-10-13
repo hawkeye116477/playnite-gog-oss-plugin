@@ -120,6 +120,11 @@ namespace GogOssLibraryNS
             GamesInstallationPathTxt.Text = troubleshootingInformation.GamesInstallationPath;
             LogFilesPathTxt.Text = playniteAPI.Paths.ConfigurationPath;
             ReportBugHyp.NavigateUri = new Uri($"https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&pluginV={troubleshootingInformation.PluginVersion}&playniteV={troubleshootingInformation.PlayniteVersion}&cometV={troubleshootingInformation.CometVersion}&gogdlV={troubleshootingInformation.GogdlVersion}");
+
+            if (playniteAPI.ApplicationSettings.PlaytimeImportMode == PlaytimeImportMode.Never)
+            {
+                SyncPlaytimeChk.IsEnabled = false;
+            }
         }
 
 

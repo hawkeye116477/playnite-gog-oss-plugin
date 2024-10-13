@@ -422,6 +422,14 @@ namespace System
         /// </summary>
         public const string GogOssSyncPlaytime = "LOCGogOssSyncPlaytime";
         /// <summary>
+        /// Uploading {0} game playtime to the cloud...
+        /// </summary>
+        public const string GogOssUploadingPlaytime = "LOCGogOssUploadingPlaytime";
+        /// <summary>
+        /// An error occurred while uploading {0} game playtime to the cloud.
+        /// </summary>
+        public const string GogOssUploadPlaytimeError = "LOCGogOssUploadPlaytimeError";
+        /// <summary>
         /// Move
         /// </summary>
         public const string GogOssMove = "LOCGogOssMove";

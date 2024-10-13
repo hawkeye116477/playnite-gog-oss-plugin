@@ -86,6 +86,8 @@
   <sys:String x:Key="LOCGogOssManualSyncSaves"></sys:String>
   <sys:String x:Key="LOCGogOssSync"></sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime"></sys:String>
+  <sys:String x:Key="LOCGogOssUploadingPlaytime"></sys:String>
+  <sys:String x:Key="LOCGogOssUploadPlaytimeError"></sys:String>
   <sys:String x:Key="LOCGogOssMove"></sys:String>
   <sys:String x:Key="LOCGogOssMoveConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssMovingGame"></sys:String>
