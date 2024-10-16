@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">아니오</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">다운로드 중…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">로딩 중…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">메타데이터 다운로드 중...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">시스템 재시작</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">시스템 종료</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">시스템 정지</sys:String>

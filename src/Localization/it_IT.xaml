@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Installazione finita. Buon divertimento.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Aggiornamento finito. Divertiti.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Riparazione finita. Divertiti.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Sincronizza i salvataggi del gioco nel cloud</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Sincronizzando {0} salvataggi nel cloud...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Importa gioco installato</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Importazione {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Importazione finita. Buon divertimento.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Una volta ogni 6 mesi</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Sei sicuro di voler cancellare la cache?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Controllare i log per ulteriori informazioni.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">La funzionalità di salvataggio cloud è sperimentale. Si consiglia di eseguire il backup del gioco nel caso in cui qualcosa vada storto.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Modifica proprietà</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Apri cartella download</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Il percorso specificato non esiste.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Argomenti di avvio</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Modifica impostazioni di avvio</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">File eseguibile alternativo</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Salvataggi cloud</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Seleziona tutto</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Percorso di salvataggio</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Cloud</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Questo gioco non supporta i salvataggi cloud.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Sincronizza salvataggi manualmente</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sincronizza</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Download</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Upload</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Forza download</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Forza upload</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">La funzionalità di salvataggio cloud è sperimentale. Si consiglia di eseguire il backup del gioco nel caso in cui qualcosa vada storto. Sei sicuro di voler continuare?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizza il tempo di gioco nel cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Upload del tempo di gioco di {0} nel cloud...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">Si è verificato un errore durante il caricamento del tempo di gioco di {0} sul cloud.</sys:String>

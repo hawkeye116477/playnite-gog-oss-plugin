@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Installation abgeschlossen. Viel Spaß.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Update abgeschlossen. Viel Spaß.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Reparatur abgeschlossen. Viel Spaß.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Spielstände mit der Cloud synchronisieren</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Synchronisiere {0} Spielstände mit der Cloud...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Installiertes Spiel importieren</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Importiere {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Import abgeschlossen. Viel Spaß.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Einmal alle 6 Monate</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Sind Sie sicher, dass Sie den Zwischenspeicher leeren möchten?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Überprüfen Sie die Logdateien für weitere Informationen.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">Die Cloud-Speicherstands-Funktion ist experimentell. Es wird empfohlen, Spielstände zu sichern, falls etwas schief geht.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Eintragseigenschaften bearbeiten</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Download-Verzeichnis öffnen</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Der angegebene Pfad existiert nicht.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Startparameter</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Starteinstellungen ändern</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternative ausführbare Datei</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Cloud Spielstände</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Alle auswählen</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Speicherstände Dateipfad</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Cloud</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Dieses Spiel unterstützt keine Cloud-Speicherstände.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Manuelle Synchronisierung der Speicherstände</sys:String>
   <sys:String x:Key="LOCGogOssSync">Synchronisieren</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Herunterladen</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Hochladen</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Download erzwingen</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Upload erzwingen</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">Die Cloud-Speicherstände-Funktion ist experimentell. Es wird empfohlen, Spielstände zu sichern, falls etwas schief geht. Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronisiere Spielzeit mit der Cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Lade {0} Spielzeit in die Cloud hoch...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">Beim Hochladen von {0} Spielzeit in die Cloud ist ein Fehler aufgetreten.</sys:String>

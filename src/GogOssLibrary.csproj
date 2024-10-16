@@ -208,8 +208,10 @@
     <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="Comet.cs" />
     <Compile Include="Enums\ClearCacheTime.cs" />
+    <Compile Include="Enums\CloudSyncAction.cs" />
     <Compile Include="Enums\UpdatePolicy.cs" />
     <Compile Include="GogOss.cs" />
+    <Compile Include="GogOssCloud.cs" />
     <Compile Include="GogOssDlcManager.xaml.cs">
       <DependentUpon>GogOssDlcManager.xaml</DependentUpon>
     </Compile>
@@ -253,7 +255,9 @@
       <DependentUpon>MessageCheckBoxDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountBasicResponse.cs" />
+    <Compile Include="Models\CloudFile.cs" />
     <Compile Include="Models\DownloadManagerData.cs" />
+    <Compile Include="Models\GogRemoteConfig.cs" />
     <Compile Include="Models\GogGameMetaManifest.cs" />
     <Compile Include="Models\GameSettings.cs" />
     <Compile Include="Models\GogDownloadGameInfo.cs" />

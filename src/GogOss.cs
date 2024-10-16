@@ -192,7 +192,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        public static GogGameActionInfo GetGogGameInfo(string manifestFilePath)
+        public static GogGameActionInfo GetGogGameInfoFromFile(string manifestFilePath)
         {
             var gameInfo = new GogGameActionInfo();
             if (File.Exists(manifestFilePath))
@@ -213,10 +213,11 @@ namespace GogOssLibraryNS
             return gameInfo;
         }
 
-        public static GogGameActionInfo GetGogGameInfo(string gameId, string gamePath)
+        public static GogGameActionInfo GetGogGameInfo(string gameId)
         {
-            var manifestFile = Path.Combine(gamePath, $"goggame-{gameId}.info");
-            return GetGogGameInfo(manifestFile);
+            var installedGame = GetInstalledInfo(gameId);
+            var manifestFile = Path.Combine(installedGame.install_path, $"goggame-{gameId}.info");
+            return GetGogGameInfoFromFile(manifestFile);
         }
 
         public static List<string> GetInstalledDlcs(string gameId, string gamePath)
@@ -228,7 +229,7 @@ namespace GogOssLibraryNS
                 var fileName = Path.GetFileName(file);
                 if (!fileName.Contains(gameId))
                 {
-                    var dlcInfo = GetGogGameInfo(file);
+                    var dlcInfo = GetGogGameInfoFromFile(file);
                     dlcs.Add(dlcInfo.gameId);
                 }
             }

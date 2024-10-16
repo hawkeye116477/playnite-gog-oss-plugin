@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Nee</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">Downloaden…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">Laden…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">Metadata aan het downloaden…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">Opnieuw opstarten</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Systeem uitschakelen</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Systeem Onderbreken</sys:String>

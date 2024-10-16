@@ -198,6 +198,14 @@ namespace System
         /// </summary>
         public const string GogOssRepairFinished = "LOCGogOssRepairFinished";
         /// <summary>
+        /// Sync game saves to the cloud
+        /// </summary>
+        public const string GogOssSyncGameSaves = "LOCGogOssSyncGameSaves";
+        /// <summary>
+        /// Syncing {0} game saves to the cloud...
+        /// </summary>
+        public const string GogOssSyncing = "LOCGogOssSyncing";
+        /// <summary>
         /// Import installed game
         /// </summary>
         public const string GogOssImportInstalledGame = "LOCGogOssImportInstalledGame";
@@ -326,6 +334,10 @@ namespace System
         /// </summary>
         public const string GogOssCheckLog = "LOCGogOssCheckLog";
         /// <summary>
+        /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong.
+        /// </summary>
+        public const string GogOssSyncGameSavesWarn = "LOCGogOssSyncGameSavesWarn";
+        /// <summary>
         /// Edit entry properties
         /// </summary>
         public const string GogOssEditSelectedDownloadProperties = "LOCGogOssEditSelectedDownloadProperties";
@@ -402,6 +414,10 @@ namespace System
         /// </summary>
         public const string GogOssAlternativeExe = "LOCGogOssAlternativeExe";
         /// <summary>
+        /// Cloud saves
+        /// </summary>
+        public const string GogOssCloudSaves = "LOCGogOssCloudSaves";
+        /// <summary>
         /// Check all
         /// </summary>
         public const string GogOssCheckAllContent = "LOCGogOssCheckAllContent";
@@ -433,6 +449,26 @@ namespace System
         /// Sync
         /// </summary>
         public const string GogOssSync = "LOCGogOssSync";
+        /// <summary>
+        /// Download
+        /// </summary>
+        public const string GogOssDownload = "LOCGogOssDownload";
+        /// <summary>
+        /// Upload
+        /// </summary>
+        public const string GogOssUpload = "LOCGogOssUpload";
+        /// <summary>
+        /// Force download
+        /// </summary>
+        public const string GogOssForceDownload = "LOCGogOssForceDownload";
+        /// <summary>
+        /// Force upload
+        /// </summary>
+        public const string GogOssForceUpload = "LOCGogOssForceUpload";
+        /// <summary>
+        /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong. Are you sure you want to continue?
+        /// </summary>
+        public const string GogOssCloudSaveConfirm = "LOCGogOssCloudSaveConfirm";
         /// <summary>
         /// Sync playtime to the cloud
         /// </summary>
@@ -597,6 +633,10 @@ namespace System
         /// Loading…
         /// </summary>
         public const string GogOss3P_PlayniteLoadingLabel = "LOCGogOss3P_PlayniteLoadingLabel";
+        /// <summary>
+        /// Downloading metadata…
+        /// </summary>
+        public const string GogOss3P_PlayniteProgressMetadata = "LOCGogOss3P_PlayniteProgressMetadata";
         /// <summary>
         /// Restart System
         /// </summary>

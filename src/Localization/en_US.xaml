@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Installation finished. Have fun.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Update finished. Have fun.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Repair finished. Have fun.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Sync game saves to the cloud</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Syncing {0} game saves to the cloud...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Import installed game</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Importing {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Import finished. Have fun.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Once every 6 months</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Are you sure you want to clear cache?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Check the log files for more information.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edit entry properties</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Open download directory</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">The specified path does not exist.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Startup arguments</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Modify launch settings</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternative executable file</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Cloud saves</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Check all</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Save path</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Cloud</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">This game doesn't support cloud saves.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Manual sync saves</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sync</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Download</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Upload</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Force download</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Force upload</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong. Are you sure you want to continue?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sync playtime to the cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Uploading {0} game playtime to the cloud...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">An error occurred while uploading {0} game playtime to the cloud.</sys:String>

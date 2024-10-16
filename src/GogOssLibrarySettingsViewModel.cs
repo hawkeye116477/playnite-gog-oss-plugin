@@ -31,6 +31,7 @@ namespace GogOssLibraryNS
         public bool SyncPlaytime { get; set; } = false;
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
         public long NextClearingTime { get; set; } = 0;
+        public bool SyncGameSaves { get; set; } = false;
     }
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {

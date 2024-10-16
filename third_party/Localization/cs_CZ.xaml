@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Ne</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">Stahování…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">Načítání…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">Stahují se metadata…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">Restartovat Systém</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Vypnout Systém</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Uspat Systém</sys:String>

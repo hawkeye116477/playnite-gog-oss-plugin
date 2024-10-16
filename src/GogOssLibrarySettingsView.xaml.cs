@@ -329,5 +329,13 @@ namespace GogOssLibraryNS
                 GogOss.ClearCache();
             }
         }
+
+        private void SyncGameSavesChk_Click(object sender, RoutedEventArgs e)
+        {
+            if (SyncGameSavesChk.IsChecked == true)
+            {
+                playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssSyncGameSavesWarn), "", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
     }
 }

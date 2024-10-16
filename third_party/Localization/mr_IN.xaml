@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">नाही</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">डाउनलोड करत आहे…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">लोड करत आहे…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">मेटाडेटा डाउनलोड करत आहे…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">सिस्टम रीस्टार्ट करा</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">सिस्टम बंद करा</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">सिस्टम विलंबित करा</sys:String>

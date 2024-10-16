@@ -269,7 +269,7 @@ namespace GogOssLibraryNS
                 {
                     continue; // Empty play task = DLC
                 }
-                var infoManifest = GogOss.GetGogGameInfo(gameId, game.install_path);
+                var infoManifest = GogOss.GetGogGameInfo(gameId);
                 if (infoManifest.buildId != null)
                 {
                     game.build_id = infoManifest.buildId;
@@ -737,7 +737,7 @@ namespace GogOssLibraryNS
                                     PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
                                     {
                                         game.InstallDirectory = path;
-                                        var gogGameInfo = GogOss.GetGogGameInfo(game.GameId, path);
+                                        var gogGameInfo = GogOss.GetGogGameInfo(game.GameId);
                                         var installedInfo = new Installed
                                         {
                                             install_path = path,

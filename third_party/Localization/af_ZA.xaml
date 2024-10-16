@@ -16,6 +16,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem"></sys:String>

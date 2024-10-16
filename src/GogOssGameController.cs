@@ -274,6 +274,7 @@ namespace GogOssLibraryNS
                     }, installProgressOptions);
                 }
             }
+            GogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Download);
         }
 
         public async Task AfterGameStarting()
@@ -328,6 +329,7 @@ namespace GogOssLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
+            GogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Upload);
             var playtimeSyncEnabled = false;
             if (playniteAPI.ApplicationSettings.PlaytimeImportMode != PlaytimeImportMode.Never)
             {

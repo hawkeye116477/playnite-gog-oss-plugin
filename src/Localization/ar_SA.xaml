@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished"></sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished"></sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished"></sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves"></sys:String>
+  <sys:String x:Key="LOCGogOssSyncing"></sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame"></sys:String>
   <sys:String x:Key="LOCGogOssImportingGame"></sys:String>
   <sys:String x:Key="LOCGogOssImportFinished"></sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months"></sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssCheckLog"></sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn"></sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties"></sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory"></sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError"></sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments"></sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings"></sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe"></sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves"></sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent"></sys:String>
   <sys:String x:Key="LOCGogOssSavePath"></sys:String>
   <sys:String x:Key="LOCGogOssCloud"></sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported"></sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves"></sys:String>
   <sys:String x:Key="LOCGogOssSync"></sys:String>
+  <sys:String x:Key="LOCGogOssDownload"></sys:String>
+  <sys:String x:Key="LOCGogOssUpload"></sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload"></sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload"></sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime"></sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime"></sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError"></sys:String>

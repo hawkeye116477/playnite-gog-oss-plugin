@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Kurulum tamamlandı. İyi eğlenceler.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Güncelleme tamamlandı. İyi eğlenceler.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Onarım tamamlandı. İyi eğlenceler.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Oyun kayıtlarını buluta eşitle</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">{0} oyun kaydı buluta eşitleniyor...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Kurulu oyunu içe aktar</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">İçe aktarılıyor {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">İçe aktarma tamamlandı. İyi eğlenceler.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">6 ayda bir kez</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Önbelleği temizlemek istediğinizden emin misiniz?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Daha fazla bilgi için günlük dosyalarını kontrol edin.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">Bulut kaydetme özelliği deneyseldir. Bir şeyler ters giderse diye oyun kayıtlarını yedeklemeniz önerilir.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Girdi özelliklerini düzenle</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">İndirilenler dizinini aç</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Belirtilen yol mevcut değil.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Başlangıç ​​etkenleri</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Başlatma ayarlarını değiştir</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternatif yürütülebilir dosya</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Bulut kayıtları</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Tümünü denetle</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Kayıt yolu</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Bulut</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Bu oyun buluta kaydetmeyi desteklemiyor.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">El ile eşitlenen kayıtlar</sys:String>
   <sys:String x:Key="LOCGogOssSync">Eşitleme</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">İndir</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Yükle</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Zorla indir</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Zorla yükle</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">Bulut kaydetme özelliği deneyseldir. Bir şeylerin ters gitmesi durumunda oyun kayıtlarının yedeklenmesi önerilir. Devam etmek istediğine emin misin?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Oynatma süresini bulutla eşitle</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">{0} oyun oynama süresi buluta yükleniyor...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">{0} oyun oynama süresi buluta yüklenirken bir hata oluştu.</sys:String>

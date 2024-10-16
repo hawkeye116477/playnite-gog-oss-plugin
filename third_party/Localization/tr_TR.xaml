@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Hayır</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">İndiriliyor…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">Yükleniyor…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">Üst veriler indiriliyor…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">Sistemi Yeniden Başlat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Sistemi Kapat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Sistemi Askıya Al</sys:String>

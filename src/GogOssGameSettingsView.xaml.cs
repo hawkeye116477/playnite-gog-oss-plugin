@@ -5,6 +5,7 @@ using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -20,7 +21,6 @@ namespace GogOssLibraryNS
         private Game Game => DataContext as Game;
         public string GameID => Game.GameId;
         private IPlayniteAPI playniteAPI = API.Instance;
-        //private string cloudPath;
         public GameSettings gameSettings;
 
         public GogOssGameSettingsView()
@@ -70,18 +70,18 @@ namespace GogOssLibraryNS
             {
                 newGameSettings.OverrideExe = SelectedAlternativeExeTxt.Text;
             }
-            //if (AutoSyncSavesChk.IsChecked != globalSettings.SyncGameSaves)
-            //{
-            //    newGameSettings.AutoSyncSaves = AutoSyncSavesChk.IsChecked;
-            //}
+            if (AutoSyncSavesChk.IsChecked != globalSettings.SyncGameSaves)
+            {
+                newGameSettings.AutoSyncSaves = AutoSyncSavesChk.IsChecked;
+            }
             if (SelectedSavePathTxt.Text != "")
             {
                 newGameSettings.CloudSaveFolder = SelectedSavePathTxt.Text;
             }
-            //if (AutoSyncPlaytimeChk.IsChecked != globalSettings.SyncPlaytime)
-            //{
-            //    newGameSettings.AutoSyncPlaytime = AutoSyncPlaytimeChk.IsChecked;
-            //}
+            if (AutoSyncPlaytimeChk.IsChecked != globalSettings.SyncPlaytime)
+            {
+                newGameSettings.AutoSyncPlaytime = AutoSyncPlaytimeChk.IsChecked;
+            }
             var gameSettingsFile = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{GameID}.json");
             if (newGameSettings.GetType().GetProperties().Any(p => p.GetValue(newGameSettings) != null) || File.Exists(gameSettingsFile))
             {
@@ -92,28 +92,45 @@ namespace GogOssLibraryNS
 
         private void SyncSavesBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssCloudSaveConfirm), ResourceProvider.GetString(LOC.GogOssCloudSaves), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                CloudSyncAction selectedCloudSyncAction = (CloudSyncAction)ManualSyncSavesCBo.SelectedValue;
+                if (SelectedSavePathTxt.Text != "")
+                {
+                    GogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true, true, SelectedSavePathTxt.Text);
+                }
+                else
+                {
+                    GogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true);
+                }
+            }
         }
 
         private void ChooseSavePathBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            var selectedCloudPath = playniteAPI.Dialogs.SelectFolder();
+            if (selectedCloudPath != "")
+            {
+                SelectedSavePathTxt.Text = selectedCloudPath;
+            }
         }
 
         private void CalculatePathBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            var saveLocations = GogOssCloud.CalculateGameSavesPath(GameID);
+            SelectedSavePathTxt.Text = saveLocations[0].location;
         }
 
         private void GameSettingsViewUC_Loaded(object sender, RoutedEventArgs e)
         {
             var globalSettings = GogOssLibrary.GetSettings();
-            EnableCometSupportChk.IsChecked = globalSettings.EnableCometSupport;
+            EnableCometSupportChk.IsEnabled = globalSettings.EnableCometSupport;
             if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)
             {
                 DisableGameUpdateCheckingChk.IsChecked = true;
             }
-            //AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
+            AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
             AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
             gameSettings = LoadGameSettings(GameID);
             if (gameSettings.EnableCometSupport != null)
@@ -148,25 +165,23 @@ namespace GogOssLibraryNS
             {
                 AutoSyncPlaytimeChk.IsEnabled = false;
             }
-            //var cloudSyncActions = new Dictionary<CloudSyncAction, string>
-            //{
-            //    { CloudSyncAction.Download, ResourceProvider.GetString(LOC.LegendaryDownload) },
-            //    { CloudSyncAction.Upload, ResourceProvider.GetString(LOC.LegendaryUpload) },
-            //    { CloudSyncAction.ForceDownload, ResourceProvider.GetString(LOC.LegendaryForceDownload) },
-            //    { CloudSyncAction.ForceUpload, ResourceProvider.GetString(LOC.LegendaryForceUpload) }
-            //};
-            //ManualSyncSavesCBo.ItemsSource = cloudSyncActions;
-            //ManualSyncSavesCBo.SelectedIndex = 0;
 
-            //Dispatcher.BeginInvoke((Action)(() =>
-            //{
-            //    cloudPath = LegendaryCloud.CalculateGameSavesPath(Game.Name, Game.GameId, Game.InstallDirectory);
-            //    if (cloudPath.IsNullOrEmpty())
-            //    {
-            //        CloudSavesSP.Visibility = Visibility.Collapsed;
-            //        CloudSavesNotSupportedTB.Visibility = Visibility.Visible;
-            //    }
-            //}));
+            var remoteConfig = GogOssCloud.GetCloudConfig(GameID);
+            if (!remoteConfig.content.Windows.cloudStorage.enabled)
+            {
+                CloudSavesSP.Visibility = Visibility.Collapsed;
+                CloudSavesNotSupportedTB.Visibility = Visibility.Visible;
+            }
+
+            var cloudSyncActions = new Dictionary<CloudSyncAction, string>
+            {
+                { CloudSyncAction.Download, ResourceProvider.GetString(LOC.GogOssDownload) },
+                { CloudSyncAction.Upload, ResourceProvider.GetString(LOC.GogOssUpload) },
+                { CloudSyncAction.ForceDownload, ResourceProvider.GetString(LOC.GogOssForceDownload) },
+                { CloudSyncAction.ForceUpload, ResourceProvider.GetString(LOC.GogOssForceUpload) }
+            };
+            ManualSyncSavesCBo.ItemsSource = cloudSyncActions;
+            ManualSyncSavesCBo.SelectedIndex = 0;
         }
 
         private void ChooseAlternativeExeBtn_Click(object sender, RoutedEventArgs e)

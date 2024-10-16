@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Ні</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">Завантаження...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">Завантаження...</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">Завантаження метаданих...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">Перезавантажити систему</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Вимкнути систему</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Призупинити систему</sys:String>

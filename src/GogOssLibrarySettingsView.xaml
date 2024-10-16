@@ -76,6 +76,10 @@
                     Margin="0,0,0,10"
                     IsChecked="{Binding Settings.SyncPlaytime}"
                     Content="{DynamicResource LOCGogOssSyncPlaytime}" Name="SyncPlaytimeChk" />
+                    <CheckBox DockPanel.Dock="Top"
+                    Margin="0"
+                    IsChecked="{Binding Settings.SyncGameSaves}"
+                    Content="{DynamicResource LOCGogOssSyncGameSaves}" Name="SyncGameSavesChk" Click="SyncGameSavesChk_Click" />
                 </StackPanel>
             </StackPanel>
         </TabItem>

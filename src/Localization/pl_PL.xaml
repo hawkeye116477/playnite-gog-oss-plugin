@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Instalacja została zakończona. Dobrej zabawy.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Aktualizacja zakończona. Dobrej zabawy.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Naprawa zakończona. Dobrej zabawy.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Synchronizuj zapisy gier z chmurą</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Synchronizowanie zapisów gry {0} z chmurą...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Importuj zainstalowaną grę</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Importowanie gry {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Importowanie zakończone. Dobrej zabawy.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Raz na 6 miesięcy</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Czy na pewno chcesz wyczyścić pamięć podręczną?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Sprawdź pliki dziennika, aby uzyskać więcej informacji.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">Funkcja zapisywania w chmurze jest eksperymentalna. Zalecane jest utworzenie kopii zapasowej zapisów gier na wypadek, gdyby coś poszło nie tak.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Edytuj właściwości wpisu</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Otwórz katalog pobierania</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Podana ścieżka nie istnieje.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Argumenty startowe</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Modyfikuj ustawienia uruchamiania</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Alternatywny plik wykonywalny</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Zapisy w chmurze</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Zaznacz wszystko</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Ścieżka zapisu</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Chmura</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Ta gra nie obsługuje zapisów w chmurze.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Ręczna synchronizacja zapisów</sys:String>
   <sys:String x:Key="LOCGogOssSync">Synchronizuj</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Pobierz</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Wyślij</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Wymuś pobieranie</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Wymuś wysyłanie</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">Funkcja zapisywania w chmurze jest eksperymentalna. Zalecane jest utworzenie kopii zapasowej zapisów gry na wypadek, gdyby coś poszło nie tak. Czy na pewno chcesz kontynuować?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronizuj czas grania z chmurą</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Przesyłanie czasu grania w grę {0} do chmury...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">Wystąpił błąd podczas przesyłania czasu grania w grę {0} do chmury.</sys:String>

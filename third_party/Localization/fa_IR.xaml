@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">خیر</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">بارگيري...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">بارگذاری…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">در حال بارگیری ابرداده...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">راه اندازی مجدد سیستم</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">خاموش کردن سیستم</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">تعلیق سیستم</sys:String>

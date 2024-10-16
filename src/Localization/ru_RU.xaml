@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Установка завершена. Приятного время препровождения.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Обновление завершено. Развлекайтесь.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Ремонт закончен. Развлекайтесь.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Синхронизировать сохранения игры в облако</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Синхронизация {0} сохранений игр с облаком...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Импорт установленной игры</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Импорт {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Импорт завершен. Приятного время препровождения.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Раз в 6 месяцев</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Вы уверены, что хотите очистить кэш?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Для получения дополнительной информации смотрите файлы журнала.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">Функция облачных сохранений является экспериментальной. Рекомендуется создавать резервные копии сохранений игры на случай, если что-то пойдет не так.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Изменить свойства записи</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Открыть каталог загрузок</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">Указанный путь не существует.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Аргументы для запуска</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Изменить настройки запуска</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Альтернативный исполняемый файл</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Облачные сохранения</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Выбрать все</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Сохранить путь</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Облако</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Эта игра не поддерживает облачные сохранения.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Ручная синхронизация сохраняет</sys:String>
   <sys:String x:Key="LOCGogOssSync">Синх</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Скачать</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Загрузить</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Принудительная загрузка</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Принудительная загрузка</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">Функция облачных сохранений является экспериментальной. Рекомендуется создавать резервные копии сохранений игры на случай, если что-то пойдет не так. Вы уверены, что хотите продолжить?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Синхронизируйте время игры с облаком</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Загрузка {0} игрового времени в облако...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">Произошла ошибка при загрузке {0} игрового времени в облако.</sys:String>

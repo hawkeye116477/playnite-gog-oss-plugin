@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">No</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">Download…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">Caricamento…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">Scaricamento dei metadati…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">Riavvia il sistema</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Arresta il sistema</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Sospendi il sistema</sys:String>

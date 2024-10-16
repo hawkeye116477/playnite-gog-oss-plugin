@@ -20,7 +20,7 @@ src_path = pj(main_path, "src")
 if os.path.exists(pj(third_party_path, "PlayniteExtensions")):
     shutil.rmtree(pj(third_party_path, "PlayniteExtensions"))
 
-comet_csproj = ET.parse(pj(src_path, "CometLibrary.csproj"))
+comet_csproj = ET.parse(pj(src_path, "GogOssLibrary.csproj"))
 xml_ns = "{http://schemas.microsoft.com/developer/msbuild/2003}"
 for child in comet_csproj.getroot():
     if child.tag == f"{xml_ns}ItemGroup":

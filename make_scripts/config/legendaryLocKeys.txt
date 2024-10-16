@@ -114,3 +114,12 @@ LOCLegendaryCache
 LOCLegendaryAutoClearCache
 LOCLegendaryClearCache
 LOCLegendaryClearCacheConfirm
+LOCLegendarySyncGameSaves
+LOCLegendaryDownload
+LOCLegendaryUpload
+LOCLegendaryForceDownload
+LOCLegendaryForceUpload
+LOCLegendaryCloudSaveConfirm
+LOCLegendaryCloudSaves
+LOCLegendarySyncing
+LOCLegendarySyncGameSavesWarn

@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Instalación terminada. Diviértete.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished"></sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished"></sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Sincronizar partidas guardadas en la nube</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Sincronizando {0} partidas guardadas en la nube...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Importar juego instalado</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Importando {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Importación terminada. Diviértete.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">Una vez cada 6 meses</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">¿Estás seguro de que quieres borrar el caché?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Revisa los archivos de registro para más información.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">La función de Guardado en la nube es experimental. Se recomienda hacer una copia de seguridad de los juegos guardados en caso de que algo vaya mal.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Editar propiedades de la entrada</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Abrir directorio de descarga</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">La ruta especificada no existe.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Argumentos de inicio</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Modificar ajustes de inicio</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Archivo ejecutable alternativo</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Guardados en la nube</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Marcar todo</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Ruta de partidas guardadas</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Nube</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Este juego no soporta guardado en la nube.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Sincronización manual de partidas guardadas</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Descargar</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Subir</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Forzar descarga</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Forzar subida</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">La función de guardado en la nube es experimental. Se recomienda hacer una copia de seguridad de los juegos guardados en caso de que algo vaya mal. ¿Estás seguro de que quieres continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tiempo de juego a la nube</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Subiendo {0} tiempo de juego a la nube...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">Se ha producido un error al subir el tiempo de juego de {0} a la nube.</sys:String>

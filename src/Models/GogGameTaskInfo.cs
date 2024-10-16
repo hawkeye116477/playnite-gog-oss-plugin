@@ -55,6 +55,7 @@ namespace GogOssLibraryNS.Models
         }
 
         public string buildId = "";
+        public string clientId = "";
         public string gameId;
         public string rootGameId;
         public bool standalone;

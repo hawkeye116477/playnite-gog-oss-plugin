@@ -30,6 +30,8 @@
   <sys:String x:Key="LOCGogOssInstallationFinished">Instalação concluída. Divirta-se.</sys:String>
   <sys:String x:Key="LOCGogOssUpdateFinished">Atualização concluída. Divirta-se.</sys:String>
   <sys:String x:Key="LOCGogOssRepairFinished">Reparo concluído. Divirta-se.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSaves">Sincronizar jogos salvos na nuvem</sys:String>
+  <sys:String x:Key="LOCGogOssSyncing">Sincronizando {0} jogo(s) salvo(s) na nuvem...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Importar jogo instalado</sys:String>
   <sys:String x:Key="LOCGogOssImportingGame">Importando {0}...</sys:String>
   <sys:String x:Key="LOCGogOssImportFinished">Importação concluída. Divirta-se.</sys:String>
@@ -62,6 +64,7 @@
   <sys:String x:Key="LOCGogOssOnceEvery6Months">A cada 6 meses</sys:String>
   <sys:String x:Key="LOCGogOssClearCacheConfirm">Tem certeza que deseja apagar o cache?</sys:String>
   <sys:String x:Key="LOCGogOssCheckLog">Verifique os arquivos de registro para mais informações.</sys:String>
+  <sys:String x:Key="LOCGogOssSyncGameSavesWarn">A função de salvamento na nuvem é experimental. É recomendável fazer backup dos arquivos caso algo dê errado.</sys:String>
   <sys:String x:Key="LOCGogOssEditSelectedDownloadProperties">Editar propriedades deste item</sys:String>
   <sys:String x:Key="LOCGogOssOpenDownloadDirectory">Abrir diretório de download</sys:String>
   <sys:String x:Key="LOCGogOssPathNotExistsError">O caminho especificado não existe.</sys:String>
@@ -81,6 +84,7 @@
   <sys:String x:Key="LOCGogOssStartupArguments">Argumentos de inicialização</sys:String>
   <sys:String x:Key="LOCGogOssLauncherSettings">Modificar configurações de inicialização</sys:String>
   <sys:String x:Key="LOCGogOssAlternativeExe">Arquivo executável alternativo</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaves">Salvamento na nuvem</sys:String>
   <sys:String x:Key="LOCGogOssCheckAllContent">Marcar tudo</sys:String>
   <sys:String x:Key="LOCGogOssSavePath">Caminho dos arquivos</sys:String>
   <sys:String x:Key="LOCGogOssCloud">Nuvem</sys:String>
@@ -89,6 +93,11 @@
   <sys:String x:Key="LOCGogOssCloudSavesNotSupported">Este jogo não suporta salvamento na nuvem.</sys:String>
   <sys:String x:Key="LOCGogOssManualSyncSaves">Sincronização manual de jogos salvos</sys:String>
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
+  <sys:String x:Key="LOCGogOssDownload">Baixar</sys:String>
+  <sys:String x:Key="LOCGogOssUpload">Enviar</sys:String>
+  <sys:String x:Key="LOCGogOssForceDownload">Baixar forçadamente</sys:String>
+  <sys:String x:Key="LOCGogOssForceUpload">Enviar forçadamente</sys:String>
+  <sys:String x:Key="LOCGogOssCloudSaveConfirm">A função de salvamento na nuvem é experimental. É recomendável fazer backup dos arquivos caso algo dê errado. Tem certeza que deseja continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tempo de jogo com a nuvem</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Enviando {0} tempo(s) de jogo para a nuvem...</sys:String>
   <sys:String x:Key="LOCGogOssUploadPlaytimeError">Ocorreu um erro ao enviar {0} tempo(s) de jogo para a nuvem.</sys:String>

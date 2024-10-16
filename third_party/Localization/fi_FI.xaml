@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">Ei</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">Ladataan…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">Ladataan…</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">Ladataan metadataa…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">Käynnistä järjestelmä uudelleen</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">Sammuta järjestelmä</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">Aseta järjestelmä valmiustilaan</sys:String>

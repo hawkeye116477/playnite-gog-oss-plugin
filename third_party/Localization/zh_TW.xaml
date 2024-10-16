@@ -18,6 +18,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteNoLabel">否</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDownloadingLabel">下載中....</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteLoadingLabel">載入中...</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteProgressMetadata">正在下載元資料...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuRestartSystem">系統重啟</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuShutdownSystem">關閉系統</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMenuSuspendSystem">系統睡眠</sys:String>
