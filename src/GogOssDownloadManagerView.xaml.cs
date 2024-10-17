@@ -516,6 +516,7 @@ namespace GogOssLibraryNS
             }
             finally
             {
+                downloadsChanged = true;
                 await DoNextJobInQueue();
             }
         }

@@ -307,6 +307,7 @@ namespace GogOssLibraryNS
                 if (downloadData.downloadItemType == DownloadItemType.Dependency)
                 {
                     var redistManifest = await GetRedistInfo(downloadData.gameID, skipRefreshing, silently, forceRefreshCache);
+                    manifest.executable = redistManifest.executable;
                     manifest.buildId = redistManifest.build_id;
                     manifest.size = new Dictionary<string, GogDownloadGameInfo.SizeType>();
                     manifest.readableName = redistManifest.readableName;
@@ -484,7 +485,26 @@ namespace GogOssLibraryNS
 
         public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
         {
-            var manifest = await GetGameInfo(gameId, installedInfo);
+            var downloadProperties = new DownloadProperties
+            {
+                buildId = installedInfo.build_id,
+                extraContent = installedInfo.installed_DLCs,
+                language = installedInfo.language,
+                version = installedInfo.version,
+                os = installedInfo.platform
+            };
+            var downloadData = new DownloadManagerData.Download
+            {
+                gameID = gameId,
+                name = installedInfo.title,
+                downloadProperties = downloadProperties
+            };
+            return await CalculateGameSize(downloadData);
+        }
+
+        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
+        {
+            var manifest = await GetGameInfo(installData);
             var size = new GogDownloadGameInfo.SizeType
             {
                 download_size = 0,
@@ -495,7 +515,7 @@ namespace GogOssLibraryNS
                 size.download_size += manifest.size["*"].download_size;
                 size.disk_size += manifest.size["*"].disk_size;
             }
-            var selectedLanguage = installedInfo.language;
+            var selectedLanguage = installData.downloadProperties.language;
             if (manifest.size.Count == 2)
             {
                 selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
@@ -505,7 +525,7 @@ namespace GogOssLibraryNS
                 size.download_size += manifest.size[selectedLanguage].download_size;
                 size.disk_size += manifest.size[selectedLanguage].disk_size;
             }
-            var selectedDlcs = installedInfo.installed_DLCs;
+            var selectedDlcs = installData.downloadProperties.extraContent;
             if (selectedDlcs.Count() > 0)
             {
                 foreach (var dlc in manifest.dlcs)
@@ -526,20 +546,6 @@ namespace GogOssLibraryNS
                 }
             }
             return size;
-        }
-
-        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
-        {
-            var installedInfo = new Installed
-            {
-                installed_DLCs = installData.downloadProperties.extraContent,
-                language = installData.downloadProperties.language,
-                platform = installData.downloadProperties.os,
-                version = installData.downloadProperties.version,
-                title = installData.name,
-                build_id = installData.downloadProperties.buildId
-            };
-            return await CalculateGameSize(installData.gameID, installedInfo);
         }
     }
 }
