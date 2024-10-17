@@ -34,7 +34,7 @@ namespace GogOssLibraryNS
 
         public static async Task LaunchIsi(Installed installedGameInfo, string gameId)
         {
-            var isiInstallPath = Path.Combine(Gogdl.DependenciesInstallationPath, "_redist", "ISI");
+            var isiInstallPath = Path.Combine(Gogdl.DependenciesInstallationPath, "__redist", "ISI");
             if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
             {
                 var metaManifest = Gogdl.GetGameMetaManifest(gameId);
