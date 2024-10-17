@@ -198,6 +198,7 @@ namespace GogOssLibraryNS
         public GameSettings gameSettings;
         public GogOssLibrarySettings globalSettings = GogOssLibrary.GetSettings();
         private IPlayniteAPI playniteAPI = API.Instance;
+        public GogOssCloud gogOssCloud = new GogOssCloud();
 
         public GogOssPlayController(Game game) : base(game)
         {
@@ -274,7 +275,7 @@ namespace GogOssLibraryNS
                     }, installProgressOptions);
                 }
             }
-            GogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Download);
+            gogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Download);
         }
 
         public async Task AfterGameStarting()
@@ -329,7 +330,7 @@ namespace GogOssLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
-            GogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Upload);
+            gogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Upload);
             var playtimeSyncEnabled = false;
             if (playniteAPI.ApplicationSettings.PlaytimeImportMode != PlaytimeImportMode.Never)
             {

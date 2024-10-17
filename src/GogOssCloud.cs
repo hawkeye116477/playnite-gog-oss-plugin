@@ -12,6 +12,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using static GogOssLibraryNS.Models.GogRemoteConfig;
 using static GogOssLibraryNS.Models.TokenResponse;
 
@@ -19,9 +20,10 @@ namespace GogOssLibraryNS
 {
     public class GogOssCloud
     {
-        public static GogRemoteConfig GetCloudConfig(string gameId, bool skipRefreshingMetadata = true)
+        private static ILogger logger = LogManager.GetLogger();
+
+        public GogRemoteConfig GetCloudConfig(string gameId, bool skipRefreshingMetadata = true)
         {
-            var logger = LogManager.GetLogger();
             string content = null;
             var cacheCloudPath = GogOssLibrary.Instance.GetCachePath("cloudcache");
             var cacheCloudFile = Path.Combine(cacheCloudPath, $"cloudConfig-{gameId}.json");
@@ -72,7 +74,7 @@ namespace GogOssLibraryNS
             return remoteConfig;
         }
 
-        internal static List<CloudLocation> CalculateGameSavesPath(string gameID, bool skipRefreshingMetadata = true)
+        internal List<CloudLocation> CalculateGameSavesPath(string gameID, bool skipRefreshingMetadata = true)
         {
             var logger = LogManager.GetLogger();
             var installedInfo = GogOss.GetInstalledInfo(gameID);
@@ -124,7 +126,154 @@ namespace GogOssLibraryNS
             return calculatedPaths;
         }
 
-        internal static void SyncGameSaves(string gameName, string gameID, CloudSyncAction cloudSyncAction, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
+        internal async Task UploadGameSaves(CloudFile localFile, List<CloudFile> cloudFiles, HttpClient httpClient, string urlPart, bool force, int attempts = 3)
+        {
+            var data = File.ReadAllBytes(localFile.real_file_path);
+            StreamContent compressedData;
+            MemoryStream outputStream = new MemoryStream();
+            using (GZipStream gzip = new GZipStream(outputStream, CompressionLevel.Optimal, true))
+            {
+                gzip.Write(data, 0, data.Length);
+                gzip.Close();
+            }
+            outputStream.Position = 0;
+            compressedData = new StreamContent(outputStream);
+            var compressedStream = await compressedData.ReadAsByteArrayAsync();
+            var hash = Helpers.GetMD5(compressedStream).ToLower();
+
+            var fileExistsInCloud = cloudFiles.FirstOrDefault(f => f.name == localFile.name);
+            if (fileExistsInCloud != null)
+            {
+                if (force != true && fileExistsInCloud.timestamp > localFile.timestamp)
+                {
+                    logger.Warn($"Skipping upload, cuz '{localFile.name}' file in the cloud is newer.");
+                    return;
+                }
+                if (fileExistsInCloud.hash == hash)
+                {
+                    logger.Warn($"Skipping upload, cuz identical '{localFile.name}' file is already in the cloud.");
+                    return;
+                }
+            }
+            httpClient.DefaultRequestHeaders.Remove("Accept");
+            httpClient.DefaultRequestHeaders.Remove("Etag");
+            httpClient.DefaultRequestHeaders.Remove("X-Object-Meta-LocalLastModified");
+            httpClient.DefaultRequestHeaders.Add("Etag", hash);
+            httpClient.DefaultRequestHeaders.Add("X-Object-Meta-LocalLastModified", localFile.last_modified);
+            compressedData.Headers.Add("Content-Encoding", "gzip");
+            try
+            {
+                var uploadResponse = await httpClient.PutAsync($"https://cloudstorage.gog.com/v1/{urlPart}", compressedData);
+                uploadResponse.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException exception)
+            {
+                if (attempts > 1)
+                {
+                    attempts -= 1;
+                    logger.Debug($"Retrying upload of '{localFile.real_file_path}' file. Attempts left: {attempts}");
+                    await Task.Delay(2000);
+                    await UploadGameSaves(localFile, cloudFiles, httpClient, urlPart, force, attempts);
+                }
+                else
+                {
+                    logger.Error($"An error occured while uploading '{localFile.real_file_path}' file: {exception}.");
+                }
+            }
+            catch (Exception exception)
+            {
+                logger.Error($"An error occured while uploading '{localFile.real_file_path}' file: {exception}.");
+            }
+            finally
+            {
+                compressedData.Dispose();
+            }
+        }
+
+        internal async Task<bool> DownloadGameSaves(long lastCloudSavesDownloadAttempt, CloudFile cloudFile, List<CloudFile> localFiles, HttpClient httpClient, string urlPart, bool force, int attempts = 3)
+        {
+            bool errorDisplayed = false;
+            var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
+            if (fileExistsLocally != null && force != true)
+            {
+                var cloudTimeStamp = cloudFile.timestamp;
+                if (lastCloudSavesDownloadAttempt > cloudTimeStamp)
+                {
+                    cloudTimeStamp = lastCloudSavesDownloadAttempt;
+                }
+                if (fileExistsLocally.timestamp > cloudTimeStamp)
+                {
+                    logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' local file is newer.");
+                    return errorDisplayed;
+                }
+                if (fileExistsLocally.timestamp == cloudTimeStamp)
+                {
+                    logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
+                    return errorDisplayed;
+                }
+            }
+            httpClient.DefaultRequestHeaders.Remove("Accept");
+            try
+            {
+                var downloadResponse = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{urlPart}");
+                downloadResponse.EnsureSuccessStatusCode();
+                var localLastModifiedHeader = downloadResponse.Headers.GetValues("X-Object-Meta-LocalLastModified").FirstOrDefault();
+                if (localLastModifiedHeader.IsNullOrEmpty())
+                {
+                    localLastModifiedHeader = cloudFile.last_modified;
+                }
+
+                DateTime cloudLocalLastModified = DateTime.Parse(localLastModifiedHeader);
+                if (fileExistsLocally != null)
+                {
+                    var cloudLocalLastModifiedTs = ((DateTimeOffset)cloudLocalLastModified).ToUnixTimeSeconds();
+                    if (force != true && fileExistsLocally.timestamp == cloudLocalLastModifiedTs)
+                    {
+                        logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
+                        return errorDisplayed;
+                    }
+                }
+
+                var downloadStream = await downloadResponse.Content.ReadAsStreamAsync();
+                var neededDirectory = Path.GetDirectoryName(cloudFile.real_file_path);
+                if (!Directory.Exists(neededDirectory))
+                {
+                    Directory.CreateDirectory(neededDirectory);
+                }
+                using (GZipStream gzip = new GZipStream(downloadStream, CompressionMode.Decompress, true))
+                {
+                    using (var fileStream = File.Create(cloudFile.real_file_path))
+                    {
+                        gzip.CopyTo(fileStream);
+                    }
+                    gzip.Close();
+                }
+                File.SetLastWriteTime(cloudFile.real_file_path, cloudLocalLastModified);
+            }
+            catch (HttpRequestException exception)
+            {
+                if (attempts > 1)
+                {
+                    attempts -= 1;
+                    logger.Debug($"Retrying download of '{cloudFile.real_file_path}' file. Attempts left: {attempts}");
+                    await Task.Delay(2000);
+                    await DownloadGameSaves(lastCloudSavesDownloadAttempt, cloudFile, localFiles, httpClient, urlPart, force, attempts);
+                }
+                else
+                {
+                    logger.Error($"An error occured while downloading '{cloudFile.real_file_path}' file: {exception}.");
+                    errorDisplayed = true;
+                }
+            }
+            catch (Exception exception)
+            {
+                logger.Error($"An error occured while downloading '{cloudFile.real_file_path}' file: {exception}.");
+                errorDisplayed = true;
+            }
+            return errorDisplayed;
+        }
+
+        internal void SyncGameSaves(string gameName, string gameID, CloudSyncAction cloudSyncAction, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
         {
             var logger = LogManager.GetLogger();
             var cloudSyncEnabled = GogOssLibrary.GetSettings().SyncGameSaves;
@@ -166,244 +315,156 @@ namespace GogOssLibraryNS
                     };
                     cloudSaveFolders.Add(newCloudSaveFolder);
                 }
-            }
-            var playniteAPI = API.Instance;
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssSyncing).Format(gameName), false);
-            playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
-            {
-                a.IsIndeterminate = true;
-                var gogAccountClient = new GogAccountClient();
-                var account = await gogAccountClient.GetAccountInfo();
-                if (account.isLoggedIn)
+                var playniteAPI = API.Instance;
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssSyncing).Format(gameName), false);
+                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
-                    var tokens = gogAccountClient.LoadTokens();
-                    if (tokens != null)
+                    a.IsIndeterminate = true;
+                    var gogAccountClient = new GogAccountClient();
+                    var account = await gogAccountClient.GetAccountInfo();
+                    if (account.isLoggedIn)
                     {
-                        using var httpClient = new HttpClient();
-                        httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-                        var metaManifest = Gogdl.GetGameMetaManifest(gameID);
-                        var urlParams = new Dictionary<string, string>
+                        var tokens = gogAccountClient.LoadTokens();
+                        if (tokens != null)
                         {
-                            { "client_id", metaManifest.clientId },
-                            { "client_secret", metaManifest.clientSecret },
-                            { "grant_type", "refresh_token" },
-                            { "refresh_token", tokens.refresh_token }
-                        };
-                        var tokenUrl = GogAccountClient.FormatUrl(urlParams, "https://auth.gog.com/token?");
-                        var credentialsResponse = await httpClient.GetAsync(tokenUrl);
-                        if (credentialsResponse.IsSuccessStatusCode)
-                        {
-                            var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
-                            var credentialsResponseJson = Serialization.FromJson<TokenResponsePart>(credentialsResponseContent);
-                            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + credentialsResponseJson.access_token);
-                        }
-                        else
-                        {
-                            logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
-                        }
-                        var cloudFiles = new List<CloudFile>();
-                        var gameInfo = GogOss.GetGogGameInfo(gameID);
-                        var gogUserAgent = "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
-                        httpClient.DefaultRequestHeaders.Add("User-Agent", gogUserAgent);
-                        httpClient.DefaultRequestHeaders.Add("X-Object-Meta-User-Agent", gogUserAgent);
-                        var response = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}");
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var responseHeaders = response.Headers;
-                            var content = await response.Content.ReadAsStringAsync();
-                            if (!content.IsNullOrEmpty())
+                            using var httpClient = new HttpClient();
+                            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                            var metaManifest = Gogdl.GetGameMetaManifest(gameID);
+                            var urlParams = new Dictionary<string, string>
                             {
-                                cloudFiles = Serialization.FromJson<List<CloudFile>>(content);
+                                { "client_id", metaManifest.clientId },
+                                { "client_secret", metaManifest.clientSecret },
+                                { "grant_type", "refresh_token" },
+                                { "refresh_token", tokens.refresh_token }
+                            };
+                            var tokenUrl = GogAccountClient.FormatUrl(urlParams, "https://auth.gog.com/token?");
+                            var credentialsResponse = await httpClient.GetAsync(tokenUrl);
+                            if (credentialsResponse.IsSuccessStatusCode)
+                            {
+                                var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
+                                var credentialsResponseJson = Serialization.FromJson<TokenResponsePart>(credentialsResponseContent);
+                                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + credentialsResponseJson.access_token);
                             }
-                        }
-                        else
-                        {
-                            logger.Error($"{response.ReasonPhrase}: {response.StatusCode}");
-                        }
-                        if (cloudFiles.Count > 0)
-                        {
-                            foreach (var cloudFile in cloudFiles.ToList())
+                            else
                             {
-                                DateTimeOffset cloudLastModified = DateTime.Parse(cloudFile.last_modified);
-                                cloudFile.timestamp = cloudLastModified.ToUnixTimeSeconds();
-                                if (cloudFile.hash == "aadd86936a80ee8a369579c3926f1b3c")
+                                logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
+                            }
+                            var cloudFiles = new List<CloudFile>();
+                            var gameInfo = GogOss.GetGogGameInfo(gameID);
+                            var gogUserAgent = "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
+                            httpClient.DefaultRequestHeaders.Add("User-Agent", gogUserAgent);
+                            httpClient.DefaultRequestHeaders.Add("X-Object-Meta-User-Agent", gogUserAgent);
+                            var response = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}");
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var responseHeaders = response.Headers;
+                                var content = await response.Content.ReadAsStringAsync();
+                                if (!content.IsNullOrEmpty())
                                 {
-                                    cloudFiles.Remove(cloudFile);
-                                }
-                                var wantedItem = cloudSaveFolders.FirstOrDefault(s => cloudFile.name.Contains(s.name));
-                                if (wantedItem != null)
-                                {
-                                    cloudFile.real_file_path = Path.GetFullPath(cloudFile.name.Replace(wantedItem.name, wantedItem.location));
+                                    cloudFiles = Serialization.FromJson<List<CloudFile>>(content);
                                 }
                             }
-                        }
-                        var localFiles = new List<CloudFile>();
-                        foreach (var cloudSaveFolder in cloudSaveFolders)
-                        {
-                            if (!Directory.Exists(cloudSaveFolder.location))
+                            else
                             {
-                                Directory.CreateDirectory(cloudSaveFolder.location);
+                                logger.Error($"{response.ReasonPhrase}: {response.StatusCode}");
                             }
-                            foreach (var fileName in Directory.GetFiles(cloudSaveFolder.location))
+                            if (cloudFiles.Count > 0)
                             {
-                                if (File.Exists(fileName))
+                                foreach (var cloudFile in cloudFiles.ToList())
                                 {
-                                    DateTimeOffset lastWriteTime = File.GetLastWriteTimeUtc(fileName);
-                                    var lastWriteTimeTs = lastWriteTime.ToUnixTimeSeconds();
-                                    var newCloudFile = new CloudFile
+                                    DateTimeOffset cloudLastModified = DateTime.Parse(cloudFile.last_modified);
+                                    cloudFile.timestamp = cloudLastModified.ToUnixTimeSeconds();
+                                    if (cloudFile.hash == "aadd86936a80ee8a369579c3926f1b3c")
                                     {
-                                        real_file_path = fileName,
-                                        timestamp = lastWriteTimeTs,
-                                        last_modified = lastWriteTime.UtcDateTime.ToString("o", CultureInfo.InvariantCulture),
-                                        name = $"{cloudSaveFolder.name}/{Helpers.GetRelativePath(cloudSaveFolder.location, fileName)}"
-                                    };
-                                    localFiles.Add(newCloudFile);
-                                }
-                            }
-                        }
-                        switch (cloudSyncAction)
-                        {
-                            case CloudSyncAction.Upload:
-                            case CloudSyncAction.ForceUpload:
-                                if (localFiles.Count == 0)
-                                {
-                                    logger.Info($"No local files with {gameName} saves.");
-                                }
-                                else
-                                {
-                                    foreach (var localFile in localFiles.ToList())
+                                        cloudFiles.Remove(cloudFile);
+                                    }
+                                    var wantedItem = cloudSaveFolders.FirstOrDefault(s => cloudFile.name.Contains(s.name));
+                                    if (wantedItem != null)
                                     {
-                                        var data = File.ReadAllBytes(localFile.real_file_path);
-                                        StreamContent compressedData;
-                                        MemoryStream outputStream = new MemoryStream();
-                                        using (GZipStream gzip = new GZipStream(outputStream, CompressionLevel.Optimal, true))
-                                        {
-                                            gzip.Write(data, 0, data.Length);
-                                            gzip.Close();
-                                        }
-                                        outputStream.Position = 0;
-                                        compressedData = new StreamContent(outputStream);
-                                        var compressedStream = await compressedData.ReadAsByteArrayAsync();
-                                        var hash = Helpers.GetMD5(compressedStream).ToLower();
-
-                                        var fileExistsInCloud = cloudFiles.FirstOrDefault(f => f.name == localFile.name);
-                                        if (fileExistsInCloud != null)
-                                        {
-                                            if (cloudSyncAction != CloudSyncAction.ForceUpload && fileExistsInCloud.timestamp > localFile.timestamp)
-                                            {
-                                                logger.Warn($"Skipping upload, cuz '{localFile.name}' file in the cloud is newer.");
-                                                continue;
-                                            }
-                                            if (fileExistsInCloud.hash == hash)
-                                            {
-                                                logger.Warn($"Skipping upload, cuz identical '{localFile.name}' file is already in the cloud.");
-                                                continue;
-                                            }
-                                        }
-                                        httpClient.DefaultRequestHeaders.Remove("Accept");
-                                        httpClient.DefaultRequestHeaders.Remove("Etag");
-                                        httpClient.DefaultRequestHeaders.Remove("X-Object-Meta-LocalLastModified");
-                                        httpClient.DefaultRequestHeaders.Add("Etag", hash);
-                                        httpClient.DefaultRequestHeaders.Add("X-Object-Meta-LocalLastModified", localFile.last_modified);
-                                        compressedData.Headers.Add("Content-Encoding", "gzip");
-                                        var uploadResponse = await httpClient.PutAsync($"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", compressedData);
-                                        if (!uploadResponse.IsSuccessStatusCode)
-                                        {
-                                            logger.Error($"An error occured while uploading '{localFile.real_file_path}' file: {await uploadResponse.RequestMessage.Content.ReadAsStringAsync()}, {uploadResponse.StatusCode}.");
-                                        }
-                                        else
-                                        {
-                                            logger.Info($"'{localFile.real_file_path}' file was uploaded successfully.");
-                                        }
-                                        compressedData.Dispose();
+                                        cloudFile.real_file_path = Path.GetFullPath(cloudFile.name.Replace(wantedItem.name, wantedItem.location));
                                     }
                                 }
-                                break;
-                            case CloudSyncAction.Download:
-                            case CloudSyncAction.ForceDownload:
-                                if (cloudFiles.Count == 0)
+                            }
+                            var localFiles = new List<CloudFile>();
+                            foreach (var cloudSaveFolder in cloudSaveFolders)
+                            {
+                                if (!Directory.Exists(cloudSaveFolder.location))
                                 {
-                                    logger.Info($"No cloud files with {gameName} saves.");
+                                    Directory.CreateDirectory(cloudSaveFolder.location);
                                 }
-                                else
+                                foreach (var fileName in Directory.GetFiles(cloudSaveFolder.location))
                                 {
-                                    bool errorDisplayed = false;
-                                    foreach (var cloudFile in cloudFiles)
+                                    if (File.Exists(fileName))
                                     {
-                                        var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
-                                        if (fileExistsLocally != null && cloudSyncAction != CloudSyncAction.ForceDownload)
+                                        DateTimeOffset lastWriteTime = File.GetLastWriteTimeUtc(fileName);
+                                        var lastWriteTimeTs = lastWriteTime.ToUnixTimeSeconds();
+                                        var newCloudFile = new CloudFile
                                         {
-                                            var cloudTimeStamp = cloudFile.timestamp;
-                                            if (gameSettings.LastCloudSavesDownloadAttempt > cloudTimeStamp)
-                                            {
-                                                cloudTimeStamp = gameSettings.LastCloudSavesDownloadAttempt;
-                                            }
-                                            if (fileExistsLocally.timestamp > cloudTimeStamp)
-                                            {
-                                                logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' local file is newer.");
-                                                continue;
-                                            }
-                                            if (fileExistsLocally.timestamp == cloudTimeStamp)
-                                            {
-                                                logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
-                                                continue;
-                                            }
+                                            real_file_path = fileName,
+                                            timestamp = lastWriteTimeTs,
+                                            last_modified = lastWriteTime.UtcDateTime.ToString("o", CultureInfo.InvariantCulture),
+                                            name = $"{cloudSaveFolder.name}/{Helpers.GetRelativePath(cloudSaveFolder.location, fileName)}"
+                                        };
+                                        localFiles.Add(newCloudFile);
+                                    }
+                                }
+                            }
+                            switch (cloudSyncAction)
+                            {
+                                case CloudSyncAction.Upload:
+                                case CloudSyncAction.ForceUpload:
+                                    if (localFiles.Count == 0)
+                                    {
+                                        logger.Info($"No local files with {gameName} saves.");
+                                    }
+                                    else
+                                    {
+                                        bool force = false;
+                                        if (cloudSyncAction == CloudSyncAction.ForceUpload)
+                                        {
+                                            force = true;
                                         }
-                                        httpClient.DefaultRequestHeaders.Remove("Accept");
-                                        var downloadResponse = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}");
-                                        if (downloadResponse.IsSuccessStatusCode)
+                                        foreach (var localFile in localFiles.ToList())
                                         {
-                                            var localLastModifiedHeader = downloadResponse.Headers.GetValues("X-Object-Meta-LocalLastModified").FirstOrDefault();
-                                            if (localLastModifiedHeader.IsNullOrEmpty())
-                                            {
-                                                localLastModifiedHeader = cloudFile.last_modified;
-                                            }
-
-                                            DateTime cloudLocalLastModified = DateTime.Parse(localLastModifiedHeader);
-                                            if (fileExistsLocally != null)
-                                            {
-                                                var cloudLocalLastModifiedTs = ((DateTimeOffset)cloudLocalLastModified).ToUnixTimeSeconds();
-                                                if (cloudSyncAction != CloudSyncAction.ForceDownload && fileExistsLocally.timestamp == cloudLocalLastModifiedTs)
-                                                {
-                                                    logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
-                                                    continue;
-                                                }
-                                            }
-
-                                            var downloadStream = await downloadResponse.Content.ReadAsStreamAsync();
-                                            var neededDirectory = Path.GetDirectoryName(cloudFile.real_file_path);
-                                            if (!Directory.Exists(neededDirectory))
-                                            {
-                                                Directory.CreateDirectory(neededDirectory);
-                                            }
-                                            using (GZipStream gzip = new GZipStream(downloadStream, CompressionMode.Decompress, true))
-                                            {
-                                                using (var fileStream = File.Create(cloudFile.real_file_path))
-                                                {
-                                                    gzip.CopyTo(fileStream);
-                                                }
-                                                gzip.Close();
-                                            }
-                                            File.SetLastWriteTime(cloudFile.real_file_path, cloudLocalLastModified);
-                                            logger.Info($"'{cloudFile.real_file_path}' file was downloaded successfully.");
-                                        }
-                                        else
-                                        {
-                                            errorDisplayed = true;
+                                            await UploadGameSaves(localFile, cloudFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force, 3);
                                         }
                                     }
-                                    if (!errorDisplayed)
+                                    break;
+                                case CloudSyncAction.Download:
+                                case CloudSyncAction.ForceDownload:
+                                    if (cloudFiles.Count == 0)
                                     {
+                                        logger.Info($"No cloud files with {gameName} saves.");
+                                    }
+                                    else
+                                    {
+                                        bool force = false;
+                                        if (cloudSyncAction == CloudSyncAction.ForceDownload)
+                                        {
+                                            force = true;
+                                        }
+                                        bool errorDisplayed = false;
                                         var gameSettings = GogOssGameSettingsView.LoadGameSettings(gameID);
-                                        gameSettings.LastCloudSavesDownloadAttempt = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
-                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
+                                        foreach (var cloudFile in cloudFiles)
+                                        {
+                                            var result = await DownloadGameSaves(gameSettings.LastCloudSavesDownloadAttempt, cloudFile, localFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
+                                            if (result)
+                                            {
+                                                errorDisplayed = true;
+                                            }
+                                        }
+                                        if (!errorDisplayed)
+                                        {
+                                            gameSettings.LastCloudSavesDownloadAttempt = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
+                                            Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
+                                        }
                                     }
-                                }
-                                break;
+                                    break;
+                            }
                         }
                     }
-                }
-            }, globalProgressOptions);
+                }, globalProgressOptions);
+            }
         }
     }
 }

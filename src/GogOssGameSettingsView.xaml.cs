@@ -22,6 +22,7 @@ namespace GogOssLibraryNS
         public string GameID => Game.GameId;
         private IPlayniteAPI playniteAPI = API.Instance;
         public GameSettings gameSettings;
+        public GogOssCloud gogOssCloud = new GogOssCloud();
 
         public GogOssGameSettingsView()
         {
@@ -98,11 +99,11 @@ namespace GogOssLibraryNS
                 CloudSyncAction selectedCloudSyncAction = (CloudSyncAction)ManualSyncSavesCBo.SelectedValue;
                 if (SelectedSavePathTxt.Text != "")
                 {
-                    GogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true, true, SelectedSavePathTxt.Text);
+                    gogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true, true, SelectedSavePathTxt.Text);
                 }
                 else
                 {
-                    GogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true);
+                    gogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true);
                 }
             }
         }
@@ -118,7 +119,7 @@ namespace GogOssLibraryNS
 
         private void CalculatePathBtn_Click(object sender, RoutedEventArgs e)
         {
-            var saveLocations = GogOssCloud.CalculateGameSavesPath(GameID);
+            var saveLocations = gogOssCloud.CalculateGameSavesPath(GameID);
             SelectedSavePathTxt.Text = saveLocations[0].location;
         }
 
@@ -166,7 +167,7 @@ namespace GogOssLibraryNS
                 AutoSyncPlaytimeChk.IsEnabled = false;
             }
 
-            var remoteConfig = GogOssCloud.GetCloudConfig(GameID);
+            var remoteConfig = gogOssCloud.GetCloudConfig(GameID);
             if (!remoteConfig.content.Windows.cloudStorage.enabled)
             {
                 CloudSavesSP.Visibility = Visibility.Collapsed;
