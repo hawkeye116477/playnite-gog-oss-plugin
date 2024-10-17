@@ -420,6 +420,15 @@ namespace GogOssLibraryNS
                 {
                     var playArgs = new List<string>();
                     var gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
+                    if (!task[0].Arguments.IsNullOrEmpty())
+                    {
+                        var providedArgs = Helpers.SplitArguments(task[0].Arguments);
+                        playArgs.AddRange(providedArgs);
+                        if (workingDir.IsNullOrEmpty())
+                        {
+                            workingDir = Path.GetDirectoryName(gameExeFullPath);
+                        }
+                    }
                     if (gameSettings.StartupArguments?.Any() == true)
                     {
                         playArgs.AddRange(gameSettings.StartupArguments);
@@ -427,11 +436,6 @@ namespace GogOssLibraryNS
                     if (!gameSettings.OverrideExe.IsNullOrEmpty())
                     {
                         gameExe = gameSettings.OverrideExe;
-                    }
-                    if (!task[0].Arguments.IsNullOrEmpty())
-                    {
-                        var providedArgs = task[0].Arguments.Replace("\"", "").Replace("'", "").Split().ToList();
-                        playArgs.AddRange(providedArgs);
                     }
                     var cmd = Cli.Wrap(gameExeFullPath)
                                  .WithArguments(playArgs)
