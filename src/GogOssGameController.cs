@@ -410,7 +410,13 @@ namespace GogOssLibraryNS
             {
                 var task = GogOssLibrary.GetPlayTasks(Game.GameId, Game.InstallDirectory);
                 var gameExe = task[0].Path;
-                if (File.Exists(gameExe))
+                var workingDir = task[0].WorkingDir;
+                var gameExeFullPath = gameExe;
+                if (!workingDir.IsNullOrEmpty())
+                {
+                    gameExeFullPath = Path.Combine(workingDir, gameExe);
+                }
+                if (File.Exists(gameExeFullPath))
                 {
                     var playArgs = new List<string>();
                     var gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
@@ -422,10 +428,19 @@ namespace GogOssLibraryNS
                     {
                         gameExe = gameSettings.OverrideExe;
                     }
-                    var cmd = Cli.Wrap(gameExe)
+                    if (!task[0].Arguments.IsNullOrEmpty())
+                    {
+                        var providedArgs = task[0].Arguments.Replace("\"", "").Replace("'", "").Split().ToList();
+                        playArgs.AddRange(providedArgs);
+                    }
+                    var cmd = Cli.Wrap(gameExeFullPath)
                                  .WithArguments(playArgs)
                                  .AddCommandToLog()
                                  .WithValidation(CommandResultValidation.None);
+                    if (!workingDir.IsNullOrEmpty())
+                    {
+                        cmd = cmd.WithWorkingDirectory(workingDir);
+                    }
                     await foreach (var cmdEvent in cmd.ListenAsync())
                     {
                         switch (cmdEvent)
@@ -439,6 +454,14 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+                else
+                {
+                    InvokeOnStopped(new GameStoppedEventArgs());
+                }
+            }
+            else
+            {
+                InvokeOnStopped(new GameStoppedEventArgs());
             }
         }
 
