@@ -11,5 +11,6 @@ namespace GogOssLibraryNS.Models
         public List<string> StartupArguments { get; set; } = new List<string>();
         public bool? EnableCometSupport { get; set; }
         public string OverrideExe { get; set; } = "";
+        public long LastCloudSavesDownloadAttempt { get; set; } = 0;
     }
 }

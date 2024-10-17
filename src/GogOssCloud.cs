@@ -6,6 +6,7 @@ using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -248,18 +249,12 @@ namespace GogOssLibraryNS
                                 if (File.Exists(fileName))
                                 {
                                     DateTimeOffset lastWriteTime = File.GetLastWriteTimeUtc(fileName);
-                                    DateTimeOffset lastCreationTime = File.GetCreationTimeUtc(fileName);
                                     var lastWriteTimeTs = lastWriteTime.ToUnixTimeSeconds();
-                                    var lastCreationTimeTs = lastCreationTime.ToUnixTimeSeconds();
-                                    if (lastCreationTimeTs > lastWriteTimeTs)
-                                    {
-                                        lastWriteTimeTs = lastCreationTimeTs;
-                                    }
                                     var newCloudFile = new CloudFile
                                     {
                                         real_file_path = fileName,
                                         timestamp = lastWriteTimeTs,
-                                        last_modified = lastWriteTime.UtcDateTime.ToString("o"),
+                                        last_modified = lastWriteTime.UtcDateTime.ToString("o", CultureInfo.InvariantCulture),
                                         name = $"{cloudSaveFolder.name}/{Helpers.GetRelativePath(cloudSaveFolder.location, fileName)}"
                                     };
                                     localFiles.Add(newCloudFile);
@@ -299,13 +294,10 @@ namespace GogOssLibraryNS
                                                 logger.Warn($"Skipping upload, cuz '{localFile.name}' file in the cloud is newer.");
                                                 continue;
                                             }
-                                            if (fileExistsInCloud.timestamp == localFile.timestamp)
+                                            if (fileExistsInCloud.hash == hash)
                                             {
-                                                if (fileExistsInCloud.hash == localFile.hash)
-                                                {
-                                                    logger.Warn($"Skipping upload, cuz identical '{localFile.name}' file is already in the cloud.");
-                                                    continue;
-                                                }
+                                                logger.Warn($"Skipping upload, cuz identical '{localFile.name}' file is already in the cloud.");
+                                                continue;
                                             }
                                         }
                                         httpClient.DefaultRequestHeaders.Remove("Accept");
@@ -323,6 +315,7 @@ namespace GogOssLibraryNS
                                         {
                                             logger.Info($"'{localFile.real_file_path}' file was uploaded successfully.");
                                         }
+                                        compressedData.Dispose();
                                     }
                                 }
                                 break;
@@ -334,17 +327,23 @@ namespace GogOssLibraryNS
                                 }
                                 else
                                 {
+                                    bool errorDisplayed = false;
                                     foreach (var cloudFile in cloudFiles)
                                     {
                                         var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
-                                        if (fileExistsLocally != null)
+                                        if (fileExistsLocally != null && cloudSyncAction != CloudSyncAction.ForceDownload)
                                         {
-                                            if (cloudSyncAction != CloudSyncAction.ForceDownload && fileExistsLocally.timestamp > cloudFile.timestamp)
+                                            var cloudTimeStamp = cloudFile.timestamp;
+                                            if (gameSettings.LastCloudSavesDownloadAttempt > cloudTimeStamp)
+                                            {
+                                                cloudTimeStamp = gameSettings.LastCloudSavesDownloadAttempt;
+                                            }
+                                            if (fileExistsLocally.timestamp > cloudTimeStamp)
                                             {
                                                 logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' local file is newer.");
                                                 continue;
                                             }
-                                            if (cloudSyncAction != CloudSyncAction.ForceDownload && fileExistsLocally.timestamp == cloudFile.timestamp)
+                                            if (fileExistsLocally.timestamp == cloudTimeStamp)
                                             {
                                                 logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
                                                 continue;
@@ -354,6 +353,23 @@ namespace GogOssLibraryNS
                                         var downloadResponse = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}");
                                         if (downloadResponse.IsSuccessStatusCode)
                                         {
+                                            var localLastModifiedHeader = downloadResponse.Headers.GetValues("X-Object-Meta-LocalLastModified").FirstOrDefault();
+                                            if (localLastModifiedHeader.IsNullOrEmpty())
+                                            {
+                                                localLastModifiedHeader = cloudFile.last_modified;
+                                            }
+
+                                            DateTime cloudLocalLastModified = DateTime.Parse(localLastModifiedHeader);
+                                            if (fileExistsLocally != null)
+                                            {
+                                                var cloudLocalLastModifiedTs = ((DateTimeOffset)cloudLocalLastModified).ToUnixTimeSeconds();
+                                                if (cloudSyncAction != CloudSyncAction.ForceDownload && fileExistsLocally.timestamp == cloudLocalLastModifiedTs)
+                                                {
+                                                    logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
+                                                    continue;
+                                                }
+                                            }
+
                                             var downloadStream = await downloadResponse.Content.ReadAsStreamAsync();
                                             var neededDirectory = Path.GetDirectoryName(cloudFile.real_file_path);
                                             if (!Directory.Exists(neededDirectory))
@@ -368,13 +384,19 @@ namespace GogOssLibraryNS
                                                 }
                                                 gzip.Close();
                                             }
-                                            var localLastModifiedHeader = downloadResponse.Headers.GetValues("X-Object-Meta-LocalLastModified").FirstOrDefault();
-                                            if (localLastModifiedHeader != null)
-                                            {
-                                                File.SetLastWriteTime(cloudFile.real_file_path, DateTime.Parse(localLastModifiedHeader));
-                                            }
+                                            File.SetLastWriteTime(cloudFile.real_file_path, cloudLocalLastModified);
                                             logger.Info($"'{cloudFile.real_file_path}' file was downloaded successfully.");
                                         }
+                                        else
+                                        {
+                                            errorDisplayed = true;
+                                        }
+                                    }
+                                    if (!errorDisplayed)
+                                    {
+                                        var gameSettings = GogOssGameSettingsView.LoadGameSettings(gameID);
+                                        gameSettings.LastCloudSavesDownloadAttempt = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
+                                        Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
                                     }
                                 }
                                 break;
