@@ -114,7 +114,6 @@
   <sys:String x:Key="LOCGogOssAutoUpdate">Actualizar automáticamente los juegos</sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Buscar actualizaciones de juegos</sys:String>
   <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">En cada inicio de Playnite</sys:String>
-  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Se están descargando actualizaciones de juegos de Epic Games.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Sesión iniciada como {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">¿Estás seguro de que quieres cerrar sesión?</sys:String>

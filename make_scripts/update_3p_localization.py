@@ -54,12 +54,13 @@ for filename in os.listdir(legendary_loc_path):
     path = os.path.join(legendary_loc_path, filename)
     if os.path.isdir(path):
         continue
+    if "legendary" in filename:
+        continue
     legendary_loc = ET.parse(pj(legendary_loc_path, filename))
 
     xml_root = ET.Element("ResourceDictionary", nsmap=NSMAP)
     xml_doc = ET.ElementTree(xml_root)
 
-    gog_oss_i18n_file = pj(src_path, "Localization", f'{filename}')
     for child in legendary_loc.getroot():
         key = child.get(ET.QName(xmlns_x, "Key"))
         if key in legendary_loc_keys:

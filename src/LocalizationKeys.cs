@@ -10,33 +10,17 @@ namespace System
         /// </summary>
         public const string GogOssCometCustomPath = "LOCGogOssCometCustomPath";
         /// <summary>
-        /// Gogdl Path
-        /// </summary>
-        public const string GogOssGogdlCustomPath = "LOCGogOssGogdlCustomPath";
-        /// <summary>
         /// Comet is not installed.
         /// </summary>
         public const string GogOssCometNotInstalled = "LOCGogOssCometNotInstalled";
-        /// <summary>
-        /// Gogdl is not installed.
-        /// </summary>
-        public const string GogOssGogdlNotInstalled = "LOCGogOssGogdlNotInstalled";
         /// <summary>
         /// Comet version
         /// </summary>
         public const string GogOssCometVersion = "LOCGogOssCometVersion";
         /// <summary>
-        /// Gogdl version
-        /// </summary>
-        public const string GogOssGogdlVersion = "LOCGogOssGogdlVersion";
-        /// <summary>
         /// Comet binary
         /// </summary>
         public const string GogOssCometBinary = "LOCGogOssCometBinary";
-        /// <summary>
-        /// Gogdl binary
-        /// </summary>
-        public const string GogOssGogdlBinary = "LOCGogOssGogdlBinary";
         /// <summary>
         /// Language
         /// </summary>
@@ -77,6 +61,10 @@ namespace System
         /// Check for Comet updates
         /// </summary>
         public const string GogOssCometUpdatePolicy = "LOCGogOssCometUpdatePolicy";
+        /// <summary>
+        /// Updates for games from GOG are being downloaded.
+        /// </summary>
+        public const string GogOssGamesUpdatesUnderway = "LOCGogOssGamesUpdatesUnderway";
         /// <summary>
         /// Games Installation Path
         /// </summary>
@@ -533,10 +521,6 @@ namespace System
         /// On every Playnite startup
         /// </summary>
         public const string GogOssCheckUpdatesEveryPlayniteStartup = "LOCGogOssCheckUpdatesEveryPlayniteStartup";
-        /// <summary>
-        /// Updates for games from Epic Games are being downloaded.
-        /// </summary>
-        public const string GogOssGamesUpdatesUnderway = "LOCGogOssGamesUpdatesUnderway";
         /// <summary>
         /// Remove launch settings
         /// </summary>

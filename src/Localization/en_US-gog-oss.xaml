@@ -1,13 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCGogOssCometCustomPath">Comet Path</sys:String>
-  <sys:String x:Key="LOCGogOssGogdlCustomPath">Gogdl Path</sys:String>
   <sys:String x:Key="LOCGogOssCometNotInstalled">Comet is not installed.</sys:String>
-  <sys:String x:Key="LOCGogOssGogdlNotInstalled">Gogdl is not installed.</sys:String>
   <sys:String x:Key="LOCGogOssCometVersion">Comet version</sys:String>
-  <sys:String x:Key="LOCGogOssGogdlVersion">Gogdl version</sys:String>
   <sys:String x:Key="LOCGogOssCometBinary">Comet binary</sys:String>
-  <sys:String x:Key="LOCGogOssGogdlBinary">Gogdl binary</sys:String>
   <sys:String x:Key="LOCGogOssLanguage">Language</sys:String>
   <sys:String x:Key="LOCGogOssBetaChannel">Beta channel</sys:String>
   <sys:String x:Key="LOCGogOssGameNotInstallable">{0} doesn't appear to be installable. Check downloadable content at {1}.</sys:String>
@@ -18,4 +14,5 @@
   <sys:String x:Key="LOCGogOssEnableCometSupport">Enable Comet support</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">It's required for achievements, leaderboards and multiplayer mode, but may cause problems with operation of some games.</sys:String>
   <sys:String x:Key="LOCGogOssCometUpdatePolicy">Check for Comet updates</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Updates for games from GOG are being downloaded.</sys:String>
 </ResourceDictionary>

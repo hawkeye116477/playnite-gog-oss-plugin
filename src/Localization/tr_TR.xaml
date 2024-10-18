@@ -114,7 +114,6 @@
   <sys:String x:Key="LOCGogOssAutoUpdate">Oyunları otomatik olarak güncelle</sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Oyun güncellemelerini denetle</sys:String>
   <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">Playnite her başlangıcında</sys:String>
-  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Epic Games oyunlarına yönelik güncellemeler indiriliyor.</sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Başlatma ayarlarını kaldır</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">{0} olarak oturum açıldı</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">Oturumu kapatmak istiyor musunuz?</sys:String>

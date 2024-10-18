@@ -114,7 +114,6 @@
   <sys:String x:Key="LOCGogOssAutoUpdate"></sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatePolicy"></sys:String>
   <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup"></sys:String>
-  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
   <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs"></sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm"></sys:String>
