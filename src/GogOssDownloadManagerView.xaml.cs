@@ -148,22 +148,18 @@ namespace GogOssLibraryNS
                 SaveData();
                 downloadsChanged = false;
                 var downloadCompleteSettings = GogOssLibrary.GetSettings().DoActionAfterDownloadComplete;
-                switch (downloadCompleteSettings)
+                if (downloadCompleteSettings != DownloadCompleteAction.Nothing)
                 {
-                    case DownloadCompleteAction.ShutDown:
-                        Process.Start("shutdown", "/s /t 0");
-                        break;
-                    case DownloadCompleteAction.Reboot:
-                        Process.Start("shutdown", "/r /t 0");
-                        break;
-                    case DownloadCompleteAction.Hibernate:
-                        Playnite.Native.Powrprof.SetSuspendState(true, true, false);
-                        break;
-                    case DownloadCompleteAction.Sleep:
-                        Playnite.Native.Powrprof.SetSuspendState(false, true, false);
-                        break;
-                    default:
-                        break;
+                    Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                    {
+                        ShowMaximizeButton = false,
+                    });
+                    window.Title = "GOG OSS library integration";
+                    window.Content = new GogOssDownloadCompleteActionView();
+                    window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+                    window.SizeToContent = SizeToContent.WidthAndHeight;
+                    window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    window.ShowDialog();
                 }
             }
         }

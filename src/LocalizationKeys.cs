@@ -114,6 +114,22 @@ namespace System
         /// </summary>
         public const string GogOssAfterDownloadComplete = "LOCGogOssAfterDownloadComplete";
         /// <summary>
+        /// System will be turned off soon...
+        /// </summary>
+        public const string GogOssSystemShutdownCountdown = "LOCGogOssSystemShutdownCountdown";
+        /// <summary>
+        /// System will be restarted soon...
+        /// </summary>
+        public const string GogOssSystemRestartCountdown = "LOCGogOssSystemRestartCountdown";
+        /// <summary>
+        /// System will be hibernated soon...
+        /// </summary>
+        public const string GogOssSystemHibernateCountdown = "LOCGogOssSystemHibernateCountdown";
+        /// <summary>
+        /// System will be suspended soon...
+        /// </summary>
+        public const string GogOssSystemSuspendCountdown = "LOCGogOssSystemSuspendCountdown";
+        /// <summary>
         /// Space Available:
         /// </summary>
         public const string GogOssSpaceAvailable = "LOCGogOssSpaceAvailable";

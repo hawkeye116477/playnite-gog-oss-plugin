@@ -215,6 +215,9 @@
     <Compile Include="GogOssDlcManager.xaml.cs">
       <DependentUpon>GogOssDlcManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GogOssDownloadCompleteActionView.xaml.cs">
+      <DependentUpon>GogOssDownloadCompleteActionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GogOssDownloadManagerView.xaml.cs">
       <DependentUpon>GogOssDownloadManagerView.xaml</DependentUpon>
     </Compile>
@@ -317,6 +320,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="GogOssDlcManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GogOssDownloadCompleteActionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
