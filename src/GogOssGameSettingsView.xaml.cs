@@ -96,14 +96,15 @@ namespace GogOssLibraryNS
             var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssCloudSaveConfirm), ResourceProvider.GetString(LOC.GogOssCloudSaves), MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
+                bool forceCloudSync = (bool)ForceCloudActionChk.IsChecked;
                 CloudSyncAction selectedCloudSyncAction = (CloudSyncAction)ManualSyncSavesCBo.SelectedValue;
                 if (SelectedSavePathTxt.Text != "")
                 {
-                    gogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true, true, SelectedSavePathTxt.Text);
+                    gogOssCloud.SyncGameSaves(Game, selectedCloudSyncAction, forceCloudSync, true, true, SelectedSavePathTxt.Text);
                 }
                 else
                 {
-                    gogOssCloud.SyncGameSaves(Game.Name, GameID, selectedCloudSyncAction, true);
+                    gogOssCloud.SyncGameSaves(Game, selectedCloudSyncAction, forceCloudSync, true);
                 }
             }
         }
@@ -178,8 +179,6 @@ namespace GogOssLibraryNS
             {
                 { CloudSyncAction.Download, ResourceProvider.GetString(LOC.GogOssDownload) },
                 { CloudSyncAction.Upload, ResourceProvider.GetString(LOC.GogOssUpload) },
-                { CloudSyncAction.ForceDownload, ResourceProvider.GetString(LOC.GogOssForceDownload) },
-                { CloudSyncAction.ForceUpload, ResourceProvider.GetString(LOC.GogOssForceUpload) }
             };
             ManualSyncSavesCBo.ItemsSource = cloudSyncActions;
             ManualSyncSavesCBo.SelectedIndex = 0;

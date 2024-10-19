@@ -110,7 +110,7 @@ namespace System
         /// </summary>
         public const string GogOssMaxWorkers = "LOCGogOssMaxWorkers";
         /// <summary>
-        /// After download is complete:
+        /// Action after download is complete
         /// </summary>
         public const string GogOssAfterDownloadComplete = "LOCGogOssAfterDownloadComplete";
         /// <summary>
@@ -446,13 +446,9 @@ namespace System
         /// </summary>
         public const string GogOssUpload = "LOCGogOssUpload";
         /// <summary>
-        /// Force download
+        /// Force action
         /// </summary>
-        public const string GogOssForceDownload = "LOCGogOssForceDownload";
-        /// <summary>
-        /// Force upload
-        /// </summary>
-        public const string GogOssForceUpload = "LOCGogOssForceUpload";
+        public const string GogOssForceAction = "LOCGogOssForceAction";
         /// <summary>
         /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong. Are you sure you want to continue?
         /// </summary>

@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync">Синх</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Скачать</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Загрузить</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Принудительная загрузка</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Принудительная загрузка</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Функция облачных сохранений является экспериментальной. Рекомендуется создавать резервные копии сохранений игры на случай, если что-то пойдет не так. Вы уверены, что хотите продолжить?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Синхронизируйте время игры с облаком</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Загрузка {0} игрового времени в облако...</sys:String>

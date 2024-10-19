@@ -121,8 +121,8 @@ namespace GogOssLibraryNS
             else
             {
                 troubleshootingInformation.GogdlVersion = "Not%20installed";
-                GogdlVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled);
-                GogdlBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled);
+                //GogdlVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled);
+                //GogdlBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled);
                 CheckForGogdlUpdatesBtn.IsEnabled = false;
                 OpenGogdlBinaryBtn.IsEnabled = false;
             }

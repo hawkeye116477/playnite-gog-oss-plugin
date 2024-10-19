@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync">Synchronizuj</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Pobierz</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Wyślij</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Wymuś pobieranie</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Wymuś wysyłanie</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Funkcja zapisywania w chmurze jest eksperymentalna. Zalecane jest utworzenie kopii zapasowej zapisów gry na wypadek, gdyby coś poszło nie tak. Czy na pewno chcesz kontynuować?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronizuj czas grania z chmurą</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Przesyłanie czasu grania w grę {0} do chmury...</sys:String>

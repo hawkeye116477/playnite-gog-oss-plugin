@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Baixar</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Enviar</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Baixar forçadamente</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Enviar forçadamente</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">A função de salvamento na nuvem é experimental. É recomendável fazer backup dos arquivos caso algo dê errado. Tem certeza que deseja continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tempo de jogo com a nuvem</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Enviando {0} tempo(s) de jogo para a nuvem...</sys:String>

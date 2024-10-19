@@ -175,10 +175,10 @@ namespace GogOssLibraryNS
         {
             var newVersionInfoContent = new LauncherVersion();
             var logger = LogManager.GetLogger();
-            if (!IsInstalled)
-            {
-                throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
-            }
+            //if (!IsInstalled)
+            //{
+            //    throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
+            //}
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
             {

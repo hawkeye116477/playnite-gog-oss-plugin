@@ -986,7 +986,7 @@ namespace GogOssLibraryNS
                 {
                     if (!Gogdl.IsInstalled)
                     {
-                        PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
+                        //PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
                         return;
                     }
 

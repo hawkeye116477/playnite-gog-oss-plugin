@@ -10,7 +10,5 @@ namespace GogOssLibraryNS.Enums
     {
         Download,
         Upload,
-        ForceDownload,
-        ForceUpload
     }
 }

@@ -11,7 +11,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Enable unattended installation mode</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">You won't have to choose anything in the installer window and the installation will start automatically after downloading the required information.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Maximum number of worker processes</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">After download is complete:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Action after download is complete</sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Space Available:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">After Installing:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Downloaded</sys:String>
@@ -95,8 +95,7 @@
   <sys:String x:Key="LOCGogOssSync">Sync</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Download</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Upload</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Force download</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Force upload</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction">Force action</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong. Are you sure you want to continue?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sync playtime to the cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Uploading {0} game playtime to the cloud...</sys:String>

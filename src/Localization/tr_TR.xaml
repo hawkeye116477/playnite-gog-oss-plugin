@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync">Eşitleme</sys:String>
   <sys:String x:Key="LOCGogOssDownload">İndir</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Yükle</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Zorla indir</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Zorla yükle</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Bulut kaydetme özelliği deneyseldir. Bir şeylerin ters gitmesi durumunda oyun kayıtlarının yedeklenmesi önerilir. Devam etmek istediğine emin misin?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Oynatma süresini bulutla eşitle</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">{0} oyun oynama süresi buluta yükleniyor...</sys:String>

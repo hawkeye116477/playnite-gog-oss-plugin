@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Descargar</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Subir</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Forzar descarga</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Forzar subida</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">La función de guardado en la nube es experimental. Se recomienda hacer una copia de seguridad de los juegos guardados en caso de que algo vaya mal. ¿Estás seguro de que quieres continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tiempo de juego a la nube</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Subiendo {0} tiempo de juego a la nube...</sys:String>

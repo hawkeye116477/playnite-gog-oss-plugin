@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync">Synchronisieren</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Herunterladen</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Hochladen</sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload">Download erzwingen</sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload">Upload erzwingen</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Die Cloud-Speicherstände-Funktion ist experimentell. Es wird empfohlen, Spielstände zu sichern, falls etwas schief geht. Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronisiere Spielzeit mit der Cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Lade {0} Spielzeit in die Cloud hoch...</sys:String>

@@ -117,8 +117,7 @@ LOCLegendaryClearCacheConfirm
 LOCLegendarySyncGameSaves
 LOCLegendaryDownload
 LOCLegendaryUpload
-LOCLegendaryForceDownload
-LOCLegendaryForceUpload
+LOCLegendaryForceAction
 LOCLegendaryCloudSaveConfirm
 LOCLegendaryCloudSaves
 LOCLegendarySyncing

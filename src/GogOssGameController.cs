@@ -45,7 +45,7 @@ namespace GogOssLibraryNS
         {
             if (!Gogdl.IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
+                //throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
             }
             var playniteAPI = API.Instance;
             Window window = null;
@@ -275,7 +275,7 @@ namespace GogOssLibraryNS
                     }, installProgressOptions);
                 }
             }
-            gogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Download);
+            gogOssCloud.SyncGameSaves(Game, CloudSyncAction.Download);
         }
 
         public async Task AfterGameStarting()
@@ -330,7 +330,7 @@ namespace GogOssLibraryNS
 
         public void OnGameClosed(double sessionLength)
         {
-            gogOssCloud.SyncGameSaves(Game.Name, Game.GameId, CloudSyncAction.Upload);
+            gogOssCloud.SyncGameSaves(Game, CloudSyncAction.Upload);
             var playtimeSyncEnabled = false;
             if (playniteAPI.ApplicationSettings.PlaytimeImportMode != PlaytimeImportMode.Never)
             {

@@ -273,11 +273,11 @@ namespace GogOssLibraryNS
             return errorDisplayed;
         }
 
-        internal void SyncGameSaves(string gameName, string gameID, CloudSyncAction cloudSyncAction, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
+        internal void SyncGameSaves(Playnite.SDK.Models.Game game, CloudSyncAction cloudSyncAction, bool force = false, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
         {
             var logger = LogManager.GetLogger();
             var cloudSyncEnabled = GogOssLibrary.GetSettings().SyncGameSaves;
-            var gameSettings = GogOssGameSettingsView.LoadGameSettings(gameID);
+            var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.GameId);
             if (gameSettings?.AutoSyncSaves != null)
             {
                 cloudSyncEnabled = (bool)gameSettings.AutoSyncSaves;
@@ -289,7 +289,7 @@ namespace GogOssLibraryNS
             var cloudSaveFolders = new List<CloudLocation>();
             if (cloudSyncEnabled)
             {
-                var calculatedCloudSaveFolders = CalculateGameSavesPath(gameID, skipRefreshingMetadata);
+                var calculatedCloudSaveFolders = CalculateGameSavesPath(game.GameId, skipRefreshingMetadata);
                 if (cloudSaveFolder.IsNullOrEmpty())
                 {
                     if (!gameSettings.CloudSaveFolder.IsNullOrEmpty())
@@ -316,7 +316,7 @@ namespace GogOssLibraryNS
                     cloudSaveFolders.Add(newCloudSaveFolder);
                 }
                 var playniteAPI = API.Instance;
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssSyncing).Format(gameName), false);
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssSyncing).Format(game.Name), false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
                     a.IsIndeterminate = true;
@@ -329,7 +329,7 @@ namespace GogOssLibraryNS
                         {
                             using var httpClient = new HttpClient();
                             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-                            var metaManifest = Gogdl.GetGameMetaManifest(gameID);
+                            var metaManifest = Gogdl.GetGameMetaManifest(game.GameId);
                             var urlParams = new Dictionary<string, string>
                             {
                                 { "client_id", metaManifest.clientId },
@@ -350,7 +350,7 @@ namespace GogOssLibraryNS
                                 logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
                             }
                             var cloudFiles = new List<CloudFile>();
-                            var gameInfo = GogOss.GetGogGameInfo(gameID);
+                            var gameInfo = GogOss.GetGogGameInfo(game.GameId);
                             var gogUserAgent = "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
                             httpClient.DefaultRequestHeaders.Add("User-Agent", gogUserAgent);
                             httpClient.DefaultRequestHeaders.Add("X-Object-Meta-User-Agent", gogUserAgent);
@@ -412,18 +412,12 @@ namespace GogOssLibraryNS
                             switch (cloudSyncAction)
                             {
                                 case CloudSyncAction.Upload:
-                                case CloudSyncAction.ForceUpload:
                                     if (localFiles.Count == 0)
                                     {
-                                        logger.Info($"No local files with {gameName} saves.");
+                                        logger.Info($"No local files with {game.Name} saves.");
                                     }
                                     else
                                     {
-                                        bool force = false;
-                                        if (cloudSyncAction == CloudSyncAction.ForceUpload)
-                                        {
-                                            force = true;
-                                        }
                                         foreach (var localFile in localFiles.ToList())
                                         {
                                             await UploadGameSaves(localFile, cloudFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force, 3);
@@ -431,20 +425,14 @@ namespace GogOssLibraryNS
                                     }
                                     break;
                                 case CloudSyncAction.Download:
-                                case CloudSyncAction.ForceDownload:
                                     if (cloudFiles.Count == 0)
                                     {
-                                        logger.Info($"No cloud files with {gameName} saves.");
+                                        logger.Info($"No cloud files with {game.Name} saves.");
                                     }
                                     else
                                     {
-                                        bool force = false;
-                                        if (cloudSyncAction == CloudSyncAction.ForceDownload)
-                                        {
-                                            force = true;
-                                        }
                                         bool errorDisplayed = false;
-                                        var gameSettings = GogOssGameSettingsView.LoadGameSettings(gameID);
+                                        var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.GameId);
                                         foreach (var cloudFile in cloudFiles)
                                         {
                                             var result = await DownloadGameSaves(gameSettings.LastCloudSavesDownloadAttempt, cloudFile, localFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
@@ -456,7 +444,7 @@ namespace GogOssLibraryNS
                                         if (!errorDisplayed)
                                         {
                                             gameSettings.LastCloudSavesDownloadAttempt = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
-                                            Helpers.SaveJsonSettingsToFile(gameSettings, gameID, "GamesSettings");
+                                            Helpers.SaveJsonSettingsToFile(gameSettings, game.GameId, "GamesSettings");
                                         }
                                     }
                                     break;

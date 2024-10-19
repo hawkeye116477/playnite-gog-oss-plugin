@@ -95,8 +95,6 @@
   <sys:String x:Key="LOCGogOssSync"></sys:String>
   <sys:String x:Key="LOCGogOssDownload"></sys:String>
   <sys:String x:Key="LOCGogOssUpload"></sys:String>
-  <sys:String x:Key="LOCGogOssForceDownload"></sys:String>
-  <sys:String x:Key="LOCGogOssForceUpload"></sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime"></sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime"></sys:String>
