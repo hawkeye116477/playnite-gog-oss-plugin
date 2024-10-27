@@ -16,13 +16,10 @@ jobs:
     - name: Install and Configure Python
       shell: bash
       run: |
-        python3 -m venv .venv
-        source .venv/bin/activate
-        python3 -m pip install lxml requests crowdin-api-client
+        pip install lxml requests crowdin-api-client --no-cache-dir
 
     - name: Download translations from Crowdin
       run: |
-        source .venv/bin/activate
         python3 ./make_scripts/download_translations.py
       env:
         crowdin_project_id: ${{ secrets.CROWDIN_PROJECT_ID }}

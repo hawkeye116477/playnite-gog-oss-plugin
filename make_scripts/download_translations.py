@@ -1,4 +1,5 @@
 import os
+import shutil
 import tempfile
 from zipfile import ZipFile
 import requests
@@ -59,12 +60,14 @@ with tempfile.TemporaryDirectory() as tmpdirname:
             if line := line.strip():
                 legendary_loc_keys[line] = ""
     
-    legendary_loc_path = pj(tmpdirname)
+    legendary_loc_path = pj(tmpdirname, "src", "Localization")
     for filename in os.listdir(legendary_loc_path):
         path = os.path.join(legendary_loc_path, filename)
         if os.path.isdir(path):
             continue
-        if "legendary" in filename:
+        if any(x in filename for x in ["legendary", "gog-oss"]):
+            if "gog-oss" in filename:
+                shutil.copy(path, pj(src_path, "Localization"))
             continue
         legendary_loc = ET.parse(pj(legendary_loc_path, filename))
     
