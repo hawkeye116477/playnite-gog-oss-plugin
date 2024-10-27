@@ -1,7 +1,7 @@
 ﻿Id: GogOssLibrary
 Name: GOG OSS library integration
 Author: hawkeye116477
-Version: 0.0
+Version: _version_
 Module: GogOssLibrary.dll
 Type: GameLibrary
 Icon: Resources\gogicon.png

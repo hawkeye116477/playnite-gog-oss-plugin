@@ -373,5 +373,6 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)/..'))=Dev:/playnite-gog-oss-plugin</PathMap>
+    <PostBuildEvent>python "$(ProjectDir)..\make_scripts\after_build.py" $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>
