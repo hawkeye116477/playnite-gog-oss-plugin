@@ -1,3 +1,7 @@
+permissions:
+  contents: write
+  pull-requests: write
+
 name: Download translations from Crowdin
 
 on: workflow_dispatch
