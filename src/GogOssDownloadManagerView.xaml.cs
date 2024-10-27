@@ -399,6 +399,15 @@ namespace GogOssLibraryNS
                                 if (!errorMessage.Contains("old manifest"))
                                 {
                                     errorDisplayed = true;
+                                    if (errorMessage.Contains("multiprocessing.queues.Queue"))
+                                    {
+                                        var installDirSize = FileSystem.GetDirectorySize(taskData.fullInstallPath, false);
+                                        if (installDirSize == taskData.installSizeNumber)
+                                        {
+                                            taskData.downloadedNumber = taskData.downloadSizeNumber;
+                                            errorDisplayed = false;
+                                        }
+                                    }
                                 }
                             }
                             break;
