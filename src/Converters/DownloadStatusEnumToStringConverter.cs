@@ -12,19 +12,19 @@ namespace GogOssLibraryNS.Converters
         {
             switch (value)
             {
-                case DownloadStatus.Queued:
+                case Enums.DownloadStatus.Queued:
                     value = ResourceProvider.GetString(LOC.GogOssDownloadQueued);
                     break;
-                case DownloadStatus.Running:
+                case Enums.DownloadStatus.Running:
                     value = ResourceProvider.GetString(LOC.GogOssDownloadRunning);
                     break;
-                case DownloadStatus.Canceled:
+                case Enums.DownloadStatus.Canceled:
                     value = ResourceProvider.GetString(LOC.GogOssDownloadCanceled);
                     break;
-                case DownloadStatus.Paused:
+                case Enums.DownloadStatus.Paused:
                     value = ResourceProvider.GetString(LOC.GogOssDownloadPaused);
                     break;
-                case DownloadStatus.Completed:
+                case Enums.DownloadStatus.Completed:
                     value = ResourceProvider.GetString(LOC.GogOssDownloadCompleted);
                     break;
             }

@@ -1,9 +1,14 @@
 ﻿using ByteSizeLib;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
+using SharpCompress.IO;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace GogOssLibraryNS
 {
@@ -86,6 +91,18 @@ namespace GogOssLibraryNS
             return false;
         }
 
+        public static bool IsDirectoryLocked(string path)
+        {
+            bool locked = false;
+            foreach (var file in Directory.GetFiles(path, "*.*", SearchOption.AllDirectories))
+            {
+                if (IsFileLocked(file))
+                {
+                    locked = true;
+                }
+            }
+            return locked;
+        }
 
         public static bool IsDirectoryWritable(string folderPath)
         {
@@ -173,6 +190,46 @@ namespace GogOssLibraryNS
                     parmChars[index] = '\n';
             }
             return new string(parmChars).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+
+        public static async Task<Stream> DecompressZlibToStream(Stream content)
+        {
+            using var outputStream = new MemoryStream();
+            using (var zlibStream = new ZlibStream(new NonDisposingStream(content), CompressionMode.Decompress))
+            {
+                zlibStream.Position = 0;
+                await zlibStream.CopyToAsync(outputStream);
+                //zlibStream.Dispose();
+            }
+            return outputStream;
+        }
+
+        public static byte[] DecompressZlibToByte(byte[] bytes)
+        {
+            using (var memoryStream = new MemoryStream(bytes))
+            {
+                using (var outputStream = new MemoryStream())
+                {
+                    using (var zlibStream = new ZlibStream(new NonDisposingStream(memoryStream), CompressionMode.Decompress))
+                    {
+                        zlibStream.CopyTo(outputStream);
+                    }
+                    return outputStream.ToArray();
+                }
+            }
+
+        }
+
+        public static string DecompressZlib(Stream content)
+        {
+            string result;
+            using (var zlibStream = new ZlibStream(new NonDisposingStream(content), CompressionMode.Decompress))
+            using (var streamReader = new StreamReader(zlibStream))
+            {
+                result = streamReader.ReadToEnd();
+            }
+            return result;
         }
     }
 }

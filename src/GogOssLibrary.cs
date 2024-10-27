@@ -630,19 +630,18 @@ namespace GogOssLibraryNS
         public bool StopDownloadManager()
         {
             GogOssDownloadManagerView downloadManager = GetGogOssDownloadManager();
-            var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
-                                                                                                     || i.status == DownloadStatus.Queued).ToList();
+            var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == Enums.DownloadStatus.Running
+                                                                                                     || i.status == Enums.DownloadStatus.Queued).ToList();
             if (runningAndQueuedDownloads.Count > 0)
             {
                 foreach (var download in runningAndQueuedDownloads)
                 {
-                    if (download.status == DownloadStatus.Running)
+                    if (download.status == Enums.DownloadStatus.Running)
                     {
                         downloadManager.gracefulInstallerCTS?.Cancel();
                         downloadManager.gracefulInstallerCTS?.Dispose();
-                        downloadManager.forcefulInstallerCTS?.Dispose();
                     }
-                    download.status = DownloadStatus.Paused;
+                    download.status = Enums.DownloadStatus.Paused;
                 }
             }
             downloadManager.SaveData();
@@ -761,7 +760,7 @@ namespace GogOssLibraryNS
                                         }
 
                                         game.Name = installedInfo.title;
-                                        var downloadGameInfo = await Gogdl.GetGameInfo(game.GameId, installedInfo);
+                                        var downloadGameInfo = await GogOss.GetGameMetaManifest(game.GameId, installedInfo);
                                         installedInfo.version = downloadGameInfo.versionName;
                                         var dlcs = GogOss.GetInstalledDlcs(game.GameId, path);
                                         installedInfo.installed_DLCs = dlcs;
@@ -870,7 +869,7 @@ namespace GogOssLibraryNS
                         var installData = new List<DownloadManagerData.Download>();
                         foreach (var notInstalledLegendaryGame in notInstalledGogOssGames)
                         {
-                            var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install };
+                            var installProperties = new DownloadManagerData.DownloadProperties { downloadAction = DownloadAction.Install };
                             installData.Add(new DownloadManagerData.Download { gameID = notInstalledLegendaryGame.GameId, name = notInstalledLegendaryGame.Name, downloadProperties = installProperties });
                         }
                         yield return new GameMenuItem
@@ -896,7 +895,7 @@ namespace GogOssLibraryNS
                             var installData = new List<DownloadManagerData.Download>();
                             foreach (var game in installedGogOssGames)
                             {
-                                var installProperties = new DownloadProperties { downloadAction = DownloadAction.Repair };
+                                var installProperties = new DownloadManagerData.DownloadProperties { downloadAction = DownloadAction.Repair };
                                 installData.Add(new DownloadManagerData.Download { gameID = game.GameId, name = game.Name, downloadProperties = installProperties });
                             }
                             GogOssInstallController.LaunchInstaller(installData);

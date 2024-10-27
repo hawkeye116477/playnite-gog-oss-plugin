@@ -253,171 +253,111 @@ namespace GogOssLibraryNS
             return manifest;
         }
 
-        public static async Task<GogDownloadGameInfo> GetGameInfo(string gameId, Installed installedInfo, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
-        {
-            var downloadData = new DownloadManagerData.Download
-            {
-                gameID = gameId,
-                name = installedInfo.title
-            };
-            downloadData.downloadProperties.buildId = installedInfo.build_id;
-            return await GetGameInfo(downloadData);
-        }
+       //public static async Task<GogDownloadGameInfo> GetGameInfo(DownloadManagerData.Download downloadData, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
+       // {
+       //     var manifest = new GogDownloadGameInfo();
+       //     var playniteAPI = API.Instance;
+       //     var logger = LogManager.GetLogger();
+       //     var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("infocache");
+       //     var cacheInfoFileName = $"{downloadData.gameID}.json";
+       //     if (downloadData.downloadProperties.buildId != "")
+       //     {
+       //         cacheInfoFileName = $"{downloadData.gameID}_build{downloadData.downloadProperties.buildId}.json";
+       //     }
+       //     var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
+       //     if (!Directory.Exists(cacheInfoPath))
+       //     {
+       //         Directory.CreateDirectory(cacheInfoPath);
+       //     }
+       //     bool correctJson = false;
+       //     if (File.Exists(cacheInfoFile))
+       //     {
+       //         if (!skipRefreshing)
+       //         {
+       //             if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
+       //             {
+       //                 File.Delete(cacheInfoFile);
+       //             }
+       //         }
+       //     }
+       //     if (File.Exists(cacheInfoFile))
+       //     {
+       //         var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
+       //         if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out manifest))
+       //         {
+       //             if (manifest != null && manifest.builds != null)
+       //             {
+       //                 correctJson = true;
+       //             }
+       //         }
+       //     }
+       //     if (!correctJson)
+       //     {
+       //         if (downloadData.downloadItemType == DownloadItemType.Dependency)
+       //         {
+       //             var redistManifest = await GogOss.GetRedistInfo(downloadData.gameID, "2", skipRefreshing, silently, forceRefreshCache);
+       //             manifest.executable = redistManifest.executable;
+       //             manifest.buildId = redistManifest.build_id;
+       //             manifest.size = new Dictionary<string, GogDownloadGameInfo.SizeType>();
+       //             manifest.readableName = redistManifest.readableName;
+       //             downloadData.name = manifest.readableName;
+       //             var redistSizes = new GogDownloadGameInfo.SizeType
+       //             {
+       //                 disk_size = redistManifest.size,
+       //                 download_size = redistManifest.compressedSize
+       //             };
+       //             manifest.size.Add("*", redistSizes);
+       //             manifest.executable = redistManifest.executable;
+       //             File.WriteAllText(cacheInfoFile, Serialization.ToJson(manifest));
+       //             return manifest;
+       //         }
 
-       public static async Task<GogDownloadGameInfo> GetGameInfo(DownloadManagerData.Download downloadData, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
-        {
-            var manifest = new GogDownloadGameInfo();
-            var playniteAPI = API.Instance;
-            var logger = LogManager.GetLogger();
-            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("infocache");
-            var cacheInfoFileName = $"{downloadData.gameID}.json";
-            if (downloadData.downloadProperties.buildId != "")
-            {
-                cacheInfoFileName = $"{downloadData.gameID}_build{downloadData.downloadProperties.buildId}.json";
-            }
-            var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
-            if (!Directory.Exists(cacheInfoPath))
-            {
-                Directory.CreateDirectory(cacheInfoPath);
-            }
-            bool correctJson = false;
-            if (File.Exists(cacheInfoFile))
-            {
-                if (!skipRefreshing)
-                {
-                    if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
-                    {
-                        File.Delete(cacheInfoFile);
-                    }
-                }
-            }
-            if (File.Exists(cacheInfoFile))
-            {
-                var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
-                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out manifest))
-                {
-                    if (manifest != null && manifest.builds != null)
-                    {
-                        correctJson = true;
-                    }
-                }
-            }
-            if (!correctJson)
-            {
-                if (downloadData.downloadItemType == DownloadItemType.Dependency)
-                {
-                    var redistManifest = await GetRedistInfo(downloadData.gameID, skipRefreshing, silently, forceRefreshCache);
-                    manifest.executable = redistManifest.executable;
-                    manifest.buildId = redistManifest.build_id;
-                    manifest.size = new Dictionary<string, GogDownloadGameInfo.SizeType>();
-                    manifest.readableName = redistManifest.readableName;
-                    downloadData.name = manifest.readableName;
-                    var redistSizes = new GogDownloadGameInfo.SizeType
-                    {
-                        disk_size = redistManifest.size,
-                        download_size = redistManifest.compressedSize
-                    };
-                    manifest.size.Add("*", redistSizes);
-                    manifest.executable = redistManifest.executable;
-                    File.WriteAllText(cacheInfoFile, Serialization.ToJson(manifest));
-                    return manifest;
-                }
+       //         BufferedCommandResult result;
+       //         var infoArgs = new List<string>();
+       //         infoArgs.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
+       //         infoArgs.AddRange(new[] { "info", downloadData.gameID, "--platform", downloadData.downloadProperties.os, "--json" });
 
-                BufferedCommandResult result;
-                var infoArgs = new List<string>();
-                infoArgs.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
-                infoArgs.AddRange(new[] { "info", downloadData.gameID, "--platform", downloadData.downloadProperties.os, "--json" });
-
-                if (downloadData.downloadProperties.buildId != "")
-                {
-                    infoArgs.AddRange(new[] { "--build", downloadData.downloadProperties.buildId });
-                }
-                result = await Cli.Wrap(ClientInstallationPath)
-                                      .WithArguments(infoArgs)
-                                      .AddCommandToLog()
-                                      .WithValidation(CommandResultValidation.None)
-                                      .ExecuteBufferedAsync();
-                var errorMessage = result.StandardError;
-                if (result.ExitCode != 0 || errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error"))
-                {
-                    logger.Error(result.StandardError);
-                    if (!silently)
-                    {
-                        if (result.StandardError.Contains("Failed to establish a new connection")
-                            || result.StandardError.Contains("Log in failed")
-                            || result.StandardError.Contains("Login failed")
-                            || result.StandardError.Contains("No saved credentials"))
-                        {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)), downloadData.name);
-                        }
-                        else if (result.StandardError.Contains("Game doesn't support content system api"))
-                        {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGameNotInstallable).Format(downloadData.name, "https://gog.com/account "));
-                        }
-                        else
-                        {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)), downloadData.name);
-                        }
-                    }
-                    manifest.errorDisplayed = true;
-                }
-                else
-                {
-                    File.WriteAllText(cacheInfoFile, result.StandardOutput);
-                    manifest = Serialization.FromJson<GogDownloadGameInfo>(result.StandardOutput);
-                }
-            }
-            return manifest;
-        }
-
-        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string gameId, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false)
-        {
-            var redistManifest = new GogDownloadRedistManifest.Depot();
-            var manifest = new GogDownloadRedistManifest();
-            var playniteAPI = API.Instance;
-            var logger = LogManager.GetLogger();
-            bool correctJson = false;
-            if (!correctJson)
-            {
-                BufferedCommandResult result;
-                var infoArgs = new List<string>();
-                infoArgs.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
-                infoArgs.AddRange(new[] { "redist", "--ids", gameId, "--path", "/", "--print-manifest" });
-
-                result = await Cli.Wrap(ClientInstallationPath)
-                                      .WithArguments(infoArgs)
-                                      .AddCommandToLog()
-                                      .WithValidation(CommandResultValidation.None)
-                                      .ExecuteBufferedAsync();
-                var errorMessage = result.StandardError;
-                if (result.ExitCode != 0 || errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error"))
-                {
-                    logger.Error(result.StandardError);
-                    if (!silently)
-                    {
-                        if (result.StandardError.Contains("Failed to establish a new connection")
-                            || result.StandardError.Contains("Log in failed")
-                            || result.StandardError.Contains("Login failed")
-                            || result.StandardError.Contains("No saved credentials"))
-                        {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
-                        }
-                        else
-                        {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)));
-                        }
-                    }
-                }
-                else
-                {
-                    manifest = Serialization.FromJson<GogDownloadRedistManifest>(result.StandardOutput);
-                    var depots = manifest.depots;
-                    redistManifest = depots.First(d => d.dependencyId == gameId);
-                    redistManifest.build_id = manifest.build_id;
-                }
-            }
-            return redistManifest;
-        }
+       //         if (downloadData.downloadProperties.buildId != "")
+       //         {
+       //             infoArgs.AddRange(new[] { "--build", downloadData.downloadProperties.buildId });
+       //         }
+       //         result = await Cli.Wrap(ClientInstallationPath)
+       //                               .WithArguments(infoArgs)
+       //                               .AddCommandToLog()
+       //                               .WithValidation(CommandResultValidation.None)
+       //                               .ExecuteBufferedAsync();
+       //         var errorMessage = result.StandardError;
+       //         if (result.ExitCode != 0 || errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error"))
+       //         {
+       //             logger.Error(result.StandardError);
+       //             if (!silently)
+       //             {
+       //                 if (result.StandardError.Contains("Failed to establish a new connection")
+       //                     || result.StandardError.Contains("Log in failed")
+       //                     || result.StandardError.Contains("Login failed")
+       //                     || result.StandardError.Contains("No saved credentials"))
+       //                 {
+       //                     playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)), downloadData.name);
+       //                 }
+       //                 else if (result.StandardError.Contains("Game doesn't support content system api"))
+       //                 {
+       //                     playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGameNotInstallable).Format(downloadData.name, "https://gog.com/account "));
+       //                 }
+       //                 else
+       //                 {
+       //                     playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)), downloadData.name);
+       //                 }
+       //             }
+       //             manifest.errorDisplayed = true;
+       //         }
+       //         else
+       //         {
+       //             File.WriteAllText(cacheInfoFile, result.StandardOutput);
+       //             manifest = Serialization.FromJson<GogDownloadGameInfo>(result.StandardOutput);
+       //         }
+       //     }
+       //     return manifest;
+       // }
 
         public static List<string> GetDownloadedDepends()
         {
@@ -485,7 +425,7 @@ namespace GogOssLibraryNS
 
         public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
         {
-            var downloadProperties = new DownloadProperties
+            var downloadProperties = new DownloadManagerData.DownloadProperties
             {
                 buildId = installedInfo.build_id,
                 extraContent = installedInfo.installed_DLCs,
@@ -504,7 +444,7 @@ namespace GogOssLibraryNS
 
         public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
         {
-            var manifest = await GetGameInfo(installData);
+            var manifest = await GogOss.GetGameMetaManifest(installData);
             var size = new GogDownloadGameInfo.SizeType
             {
                 download_size = 0,
@@ -516,9 +456,9 @@ namespace GogOssLibraryNS
                 size.disk_size += manifest.size["*"].disk_size;
             }
             var selectedLanguage = installData.downloadProperties.language;
-            if (manifest.size.Count == 2)
+            if (manifest.languages.Count == 1)
             {
-                selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
+                selectedLanguage = manifest.languages.First();
             }
             if (manifest.size.ContainsKey(selectedLanguage))
             {
@@ -530,17 +470,17 @@ namespace GogOssLibraryNS
             {
                 foreach (var dlc in manifest.dlcs)
                 {
-                    if (selectedDlcs.Contains(dlc.id))
+                    if (selectedDlcs.Contains(dlc.Key))
                     {
-                        if (dlc.size.ContainsKey("*"))
+                        if (dlc.Value.size.ContainsKey("*"))
                         {
-                            size.download_size += dlc.size["*"].download_size;
-                            size.disk_size += dlc.size["*"].disk_size;
+                            size.download_size += dlc.Value.size["*"].download_size;
+                            size.disk_size += dlc.Value.size["*"].disk_size;
                         }
-                        if (dlc.size.ContainsKey(selectedLanguage))
+                        if (dlc.Value.size.ContainsKey(selectedLanguage))
                         {
-                            size.download_size += dlc.size[selectedLanguage].download_size;
-                            size.disk_size += dlc.size[selectedLanguage].disk_size;
+                            size.download_size += dlc.Value.size[selectedLanguage].download_size;
+                            size.disk_size += dlc.Value.size[selectedLanguage].disk_size;
                         }
                     }
                 }

@@ -32,7 +32,7 @@ namespace GogOssLibraryNS
 
         public override void Install(InstallActionArgs args)
         {
-            var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install };
+            var installProperties = new DownloadManagerData.DownloadProperties { downloadAction = DownloadAction.Install };
             var installData = new List<DownloadManagerData.Download>
             {
                 new DownloadManagerData.Download { gameID = Game.GameId, name = Game.Name, downloadProperties = installProperties }
@@ -248,7 +248,7 @@ namespace GogOssLibraryNS
                             {
                                 if (!installedDepends.Contains(depend))
                                 {
-                                    var dependManifest = await Gogdl.GetRedistInfo(depend);
+                                    var dependManifest = await GogOss.GetRedistInfo(depend);
                                     if (dependManifest.executable.path != "")
                                     {
                                         var dependExe = Path.GetFullPath(Path.Combine(Gogdl.DependenciesInstallationPath, dependManifest.executable.path));
@@ -589,7 +589,7 @@ namespace GogOssLibraryNS
                 gameID = gameId,
                 name = gameTitle
             };
-            var newGameInfo = await Gogdl.GetGameInfo(oldGameData, false, true, forceRefreshCache);
+            var newGameInfo = await GogOss.GetGameMetaManifest(oldGameData, false, true, forceRefreshCache);
             if (newGameInfo.buildId != null)
             {
                 if (installedInfo.build_id != newGameInfo.buildId)
@@ -626,7 +626,7 @@ namespace GogOssLibraryNS
             return gamesToUpdate;
         }
 
-        public async Task UpdateGame(Dictionary<string, UpdateInfo> gamesToUpdate, string gameTitle = "", bool silently = false, DownloadProperties downloadProperties = null)
+        public async Task UpdateGame(Dictionary<string, UpdateInfo> gamesToUpdate, string gameTitle = "", bool silently = false, DownloadManagerData.DownloadProperties downloadProperties = null)
         {
             var updateTasks = new List<DownloadManagerData.Download>();
             if (gamesToUpdate.Count > 0)
@@ -646,7 +646,7 @@ namespace GogOssLibraryNS
                         var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameToUpdate.Key);
                         if (wantedItem != null)
                         {
-                            if (wantedItem.status == DownloadStatus.Completed)
+                            if (wantedItem.status == Enums.DownloadStatus.Completed)
                             {
                                 downloadManager.downloadManagerData.downloads.Remove(wantedItem);
                                 downloadManager.downloadsChanged = true;
@@ -665,7 +665,7 @@ namespace GogOssLibraryNS
                             if (downloadProperties == null)
                             {
                                 var settings = GogOssLibrary.GetSettings();
-                                downloadProperties = new DownloadProperties()
+                                downloadProperties = new DownloadManagerData.DownloadProperties()
                                 {
                                     downloadAction = DownloadAction.Update,
                                     maxWorkers = settings.MaxWorkers,

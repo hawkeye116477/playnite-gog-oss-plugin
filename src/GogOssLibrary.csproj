@@ -43,6 +43,9 @@
     <Reference Include="CliWrap, Version=3.6.6.0, Culture=neutral, PublicKeyToken=1c4a4fc2d6886e5a, processorArchitecture=MSIL">
       <HintPath>packages\CliWrap.3.6.6\lib\net462\CliWrap.dll</HintPath>
     </Reference>
+    <Reference Include="Downloader, Version=3.1.2.0, Culture=neutral, PublicKeyToken=844973e732f6cdf4, processorArchitecture=MSIL">
+      <HintPath>packages\Downloader.3.1.2\lib\net462\Downloader.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -51,6 +54,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SharpCompress, Version=0.26.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>packages\SharpCompress.0.26.0\lib\net46\SharpCompress.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -260,6 +266,9 @@
     <Compile Include="Models\AccountBasicResponse.cs" />
     <Compile Include="Models\CloudFile.cs" />
     <Compile Include="Models\DownloadManagerData.cs" />
+    <Compile Include="Models\GogBuildsData.cs" />
+    <Compile Include="Models\GogDepot.cs" />
+    <Compile Include="Models\GogOwned.cs" />
     <Compile Include="Models\GogRemoteConfig.cs" />
     <Compile Include="Models\GogGameMetaManifest.cs" />
     <Compile Include="Models\GameSettings.cs" />
@@ -268,6 +277,7 @@
     <Compile Include="Models\GogGameMetadata.cs" />
     <Compile Include="Models\GogGameTaskInfo.cs" />
     <Compile Include="Models\GetOwnedGamesResult.cs" />
+    <Compile Include="Models\GogSecureLinks.cs" />
     <Compile Include="Models\Installed.cs" />
     <Compile Include="Models\InstalledDepends.cs" />
     <Compile Include="Models\LauncherVersion.cs" />

@@ -312,5 +312,33 @@ namespace GogOssLibraryNS.Services
 
             return games;
         }
+
+        public async Task<List<int>> GetOwnedIds()
+        {
+            var ownedItems = new GogOwned();
+            var ownedList = ownedItems.owned;
+            if (await GetIsUserLoggedIn())
+            {
+                var tokens = LoadTokens();
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+                httpClient.DefaultRequestHeaders.Add("User-Agent", GogOss.UserAgent);
+                var response = await httpClient.GetAsync(@"https://embed.gog.com/user/data/games");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (!content.IsNullOrWhiteSpace())
+                    {
+                        var responseJson = Serialization.FromJson<GogOwned>(content);
+                        if (responseJson.owned.Count > 0)
+                        {
+                            ownedList = responseJson.owned;
+                        }
+                    }
+                }
+            }
+            return ownedList;
+        }
     }
 }

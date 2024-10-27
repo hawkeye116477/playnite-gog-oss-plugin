@@ -59,7 +59,7 @@ namespace GogOssLibraryNS
                     maxWorkers = int.Parse(MaxWorkersNI.Value);
                 }
                 GogOssUpdateController gogOssUpdateController = new GogOssUpdateController();
-                DownloadProperties downloadProperties = new DownloadProperties
+                DownloadManagerData.DownloadProperties downloadProperties = new DownloadManagerData.DownloadProperties
                 {
                     downloadAction = DownloadAction.Update,
                     maxWorkers = maxWorkers,

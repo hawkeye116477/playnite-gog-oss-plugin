@@ -21,6 +21,13 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Playnite.SDK.Plugins;
 using System.Collections.Specialized;
+using System.Net.Http;
+using GogOssLibraryNS.Services;
+using Downloader;
+using System.Net;
+using SharpCompress.Compressors.Deflate;
+using SharpCompress.IO;
+using SharpCompress.Compressors;
 
 namespace GogOssLibraryNS
 {
@@ -29,13 +36,15 @@ namespace GogOssLibraryNS
     /// </summary>
     public partial class GogOssDownloadManagerView : UserControl
     {
-        public CancellationTokenSource forcefulInstallerCTS;
         public CancellationTokenSource gracefulInstallerCTS;
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI playniteAPI = API.Instance;
         public DownloadManagerData.Rootobject downloadManagerData;
         public SidebarItem gogPanel = GogOssLibrary.GetPanel();
         public bool downloadsChanged = false;
+        private static readonly HttpClient httpClient = new HttpClient();
+        private GogAccountClient gogAccountClient = new GogAccountClient();
+        private Stopwatch stopWatch;
 
         public GogOssDownloadManagerView()
         {
@@ -56,13 +65,13 @@ namespace GogOssLibraryNS
                 download.PropertyChanged += OnPropertyChanged;
             }
             downloadManagerData.downloads.CollectionChanged += OnCollectionChanged;
-            var runningAndQueuedDownloads = downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
-                                                                                     || i.status == DownloadStatus.Queued).ToList();
+            var runningAndQueuedDownloads = downloadManagerData.downloads.Where(i => i.status == Enums.DownloadStatus.Running
+                                                                                     || i.status == Enums.DownloadStatus.Queued).ToList();
             if (runningAndQueuedDownloads.Count > 0)
             {
                 foreach (var download in runningAndQueuedDownloads)
                 {
-                    download.status = DownloadStatus.Paused;
+                    download.status = Enums.DownloadStatus.Paused;
                 }
             }
         }
@@ -127,8 +136,8 @@ namespace GogOssLibraryNS
 
         public async Task DoNextJobInQueue()
         {
-            var running = downloadManagerData.downloads.Any(item => item.status == DownloadStatus.Running);
-            var queuedList = downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Queued).ToList();
+            var running = downloadManagerData.downloads.Any(item => item.status == Enums.DownloadStatus.Running);
+            var queuedList = downloadManagerData.downloads.Where(i => i.status == Enums.DownloadStatus.Queued).ToList();
             if (!running)
             {
                 DiskSpeedTB.Text = "";
@@ -190,16 +199,207 @@ namespace GogOssLibraryNS
                 if (wantedItem == null)
                 {
                     DateTimeOffset now = DateTime.UtcNow;
-                    downloadJob.status = DownloadStatus.Queued;
+                    downloadJob.status = Enums.DownloadStatus.Queued;
                     downloadJob.addedTime = now.ToUnixTimeSeconds();
                     downloadManagerData.downloads.Add(downloadJob);
                 }
                 else
                 {
-                    wantedItem.status = DownloadStatus.Queued;
+                    wantedItem.status = Enums.DownloadStatus.Queued;
                 }
             }
             await DoNextJobInQueue();
+        }
+
+        public string GetGalaxyPath(string manifestHash)
+        {
+            var galaxyPath = manifestHash;
+            if (galaxyPath.IndexOf("/") == -1)
+            {
+                galaxyPath = manifestHash.Substring(0, 2) + "/" + manifestHash.Substring(2, 2) + "/" + galaxyPath;
+            }
+            return galaxyPath;
+        }
+
+        public async Task<List<string>> GetSecureLinks(DownloadManagerData.Download taskData, string path = "/")
+        {
+            List<string> directUrls = new List<string>();
+            List<string> urls = new List<string>();
+            var url = "";
+            var metaManifest = await GogOss.GetGameMetaManifest(taskData);
+            if (metaManifest.version == 2)
+            {
+                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?generation=2&_version=2&path={path}";
+            }
+            else
+            {
+                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&type=depot%path={path}";
+            }
+            if (await gogAccountClient.GetIsUserLoggedIn())
+            {
+                var tokens = gogAccountClient.LoadTokens();
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", GogOss.UserAgent);
+                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+                var response = await httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (!content.IsNullOrWhiteSpace())
+                    {
+                        if (Serialization.TryFromJson<GogSecureLinks>(content, out var validJsonResponse))
+                        {
+                            foreach (var endpoint in validJsonResponse.urls)
+                            {
+                                var newUrl = endpoint.url_format;
+
+                                foreach (var key in endpoint.parameters.Keys)
+                                {
+                                    var keyValue = endpoint.parameters[key].ToString();
+                                    if (key == "path")
+                                    {
+                                        keyValue += "/{GALAXY_PATH}";
+                                    }
+                                    newUrl = newUrl.Replace('{' + key + '}', keyValue);
+                                }
+                                logger.Debug(newUrl);
+                                urls.Add(newUrl);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
+                logger.Error($"Can't get secure links, cuz user is not authenticated.");
+            }
+            //if (urls.Count > 0)
+            //{
+            //    foreach (var depot in metaManifest.depots)
+            //    {
+            //        var chosenLanguage = taskData.downloadProperties.language;
+            //        if (chosenLanguage.IsNullOrEmpty())
+            //        {
+            //            chosenLanguage = metaManifest.languages.First();
+            //        }
+            //        if (depot.languages.Contains(chosenLanguage))
+            //        {
+            //            var productIds = new List<string>
+            //            {
+            //                taskData.gameID
+            //            };
+            //            if (taskData.downloadProperties.extraContent.Count > 0)
+            //            {
+            //                foreach (var dlc in taskData.downloadProperties.extraContent)
+            //                {
+            //                    productIds.Add(dlc);
+            //                }
+            //            }
+            //            if (productIds.Contains(depot.productId))
+            //            {
+            //                var manifestHash = depot.manifest;
+            //                foreach (var newUrl in urls)
+            //                {
+            //                    var formatedUrl = newUrl.Replace("{GALAXY_PATH}", GetGalaxyPath(manifestHash));
+            //                    directUrls.Add(formatedUrl);
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            return urls;
+        }
+
+        private async Task<GogDepot> GetDepotInfo(string manifest, int version = 2)
+        {
+            var depotManifest = new GogDepot();
+            var logger = LogManager.GetLogger();
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("depotcache");
+            var cacheInfoFileName = $"{manifest}.json";
+            var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
+            bool correctJson = false;
+            if (File.Exists(cacheInfoFile))
+            {
+                if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7))
+                {
+                    File.Delete(cacheInfoFile);
+                }
+            }
+            if (File.Exists(cacheInfoFile))
+            {
+                var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
+                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson<GogDepot>(content, out var newManifest))
+                {
+                    if (newManifest != null)
+                    {
+                        correctJson = true;
+                        depotManifest = newManifest;
+                    }
+                }
+            }
+            if (!correctJson)
+            {
+                if (!Directory.Exists(cacheInfoPath))
+                {
+                    Directory.CreateDirectory(cacheInfoPath);
+                }
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", GogOss.UserAgent);
+                var response = await httpClient.GetAsync($"https://gog-cdn-fastly.gog.com/content-system/v2/meta/{GetGalaxyPath(manifest)}");
+                Stream content;
+                if (response.IsSuccessStatusCode)
+                {
+                    content = await response.Content.ReadAsStreamAsync();
+                }
+                else
+                {
+                    logger.Error($"An error occurred while downloading depot manifest {manifest}.");
+                    return depotManifest;
+                }
+                if (!Directory.Exists(cacheInfoPath))
+                {
+                    Directory.CreateDirectory(cacheInfoPath);
+                }
+                var result = Helpers.DecompressZlib(content);
+                File.WriteAllText(cacheInfoFile, result);
+                depotManifest = Serialization.FromJson<GogDepot>(result);
+            }
+            return depotManifest;
+        }
+
+        public async Task<List<string>> GetNeededDepotManifestHashes(DownloadManagerData.Download taskData)
+        {
+            List<string> depotHashes = new List<string>();
+            var metaManifest = await GogOss.GetGameMetaManifest(taskData);
+            foreach (var depot in metaManifest.depots)
+            {
+                var chosenlanguage = taskData.downloadProperties.language;
+                if (chosenlanguage.IsNullOrEmpty())
+                {
+                    chosenlanguage = metaManifest.languages.First();
+                }
+                if (depot.languages.Contains(chosenlanguage))
+                {
+                    var productids = new List<string>
+                    {
+                        taskData.gameID
+                    };
+                    if (taskData.downloadProperties.extraContent.Count > 0)
+                    {
+                        foreach (var dlc in taskData.downloadProperties.extraContent)
+                        {
+                            productids.Add(dlc);
+                        }
+                    }
+                    if (productids.Contains(depot.productId))
+                    {
+                        var manifestHash = depot.manifest;
+                        depotHashes.Add(manifestHash);
+                    }
+                }
+            }
+            return depotHashes;
         }
 
         public async Task Install(DownloadManagerData.Download taskData)
@@ -210,329 +410,309 @@ namespace GogOssLibraryNS
             var downloadProperties = taskData.downloadProperties;
             var gameTitle = taskData.name;
             double cachedDownloadSizeNumber = taskData.downloadSizeNumber;
-            double downloadCache = 0;
+            //double downloadCache = 0;
             bool downloadSpeedInBits = false;
             if (settings.DisplayDownloadSpeedInBits)
             {
                 downloadSpeedInBits = true;
             }
 
-            installCommand.AddRange(new[] { "--auth-config-path", GogOss.TokensPath });
 
-            if (taskData.downloadItemType != DownloadItemType.Dependency)
-            {
-                if (downloadProperties.downloadAction == DownloadAction.Install)
-                {
-                    installCommand.Add("download");
-                }
-                if (downloadProperties.downloadAction == DownloadAction.Repair)
-                {
-                    installCommand.Add("repair");
-                }
-                if (downloadProperties.downloadAction == DownloadAction.Update)
-                {
-                    installCommand.Add("update");
-                }
-                installCommand.Add(taskData.gameID);
-            }
-            else
-            {
-                installCommand.AddRange(new[] { "redist", "--ids", string.Join(",", taskData.depends) });
-            }
+            List<string> depotHashes = await GetNeededDepotManifestHashes(taskData);
+            List<GogDepot.Item> depotItems = new List<GogDepot.Item>();
+            List<string> chunksToDownload = new List<string>();
 
-            if (downloadProperties.installPath != "")
+            foreach (var depotHash in depotHashes)
             {
-                installCommand.AddRange(new[] { "--path", downloadProperties.installPath });
-            }
-            if (downloadProperties.maxWorkers != 0)
-            {
-                installCommand.AddRange(new[] { "--max-workers", downloadProperties.maxWorkers.ToString() });
-            }
-            if (downloadProperties.betaChannel != "disabled")
-            {
-                installCommand.AddRange(new[] { "--branch", downloadProperties.betaChannel });
-            }
-            if (!downloadProperties.buildId.IsNullOrEmpty())
-            {
-                installCommand.AddRange(new[] { "--build", downloadProperties.buildId });
-            }
-            if (!downloadProperties.language.IsNullOrEmpty())
-            {
-                installCommand.AddRange(new[] { "--lang", downloadProperties.language });
-            }
-            installCommand.AddRange(new[] { "--platform", downloadProperties.os });
-            if (downloadProperties.extraContent.Count == 0)
-            {
-                installCommand.Add("--skip-dlcs");
-            }
-            else
-            {
-                installCommand.Add("--with-dlcs");
-                installCommand.AddRange(new[] { "--dlcs", string.Join(",", downloadProperties.extraContent) });
-            }
-            forcefulInstallerCTS = new CancellationTokenSource();
-            gracefulInstallerCTS = new CancellationTokenSource();
-            try
-            {
-                bool errorDisplayed = false;
-                bool successDisplayed = false;
-                bool loginErrorDisplayed = false;
-                bool permissionErrorDisplayed = false;
-                bool diskSpaceErrorDisplayed = false;
-                var cmd = Cli.Wrap(Gogdl.ClientInstallationPath)
-                             .WithArguments(installCommand)
-                             .WithEnvironmentVariables(Gogdl.DefaultEnvironmentVariables)
-                             .AddCommandToLog()
-                             .WithValidation(CommandResultValidation.None);
-                var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
-                await foreach (CommandEvent cmdEvent in cmd.ListenAsync(Console.OutputEncoding, Console.OutputEncoding, forcefulInstallerCTS.Token, gracefulInstallerCTS.Token))
+                var depotManifest = await GetDepotInfo(depotHash);
+                if (depotManifest.depot.items.Count > 0)
                 {
-                    switch (cmdEvent)
+                    foreach (var depotItem in depotManifest.depot.items)
                     {
-                        case StartedCommandEvent started:
-                            wantedItem.status = DownloadStatus.Running;
-                            GameTitleTB.Text = gameTitle;
-                            gogPanel.ProgressValue = 0;
-                            break;
-                        case StandardErrorCommandEvent stdErr:
-                            if (stdErr.Text.Contains("Verification") || stdErr.Text.Contains("Verifying"))
-                            {
-                                DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssVerifying);
-                            }
-                            var fullInstallPathMatch = Regex.Match(stdErr.Text, @"Install path: (\S+)");
-                            if (fullInstallPathMatch.Length >= 2)
-                            {
-                                wantedItem.fullInstallPath = fullInstallPathMatch.Groups[1].Value;
-                            }
-                            var progressMatch = Regex.Match(stdErr.Text, @"Progress: (\d+\.\d+)");
-                            if (progressMatch.Length >= 2)
-                            {
-                                if (downloadProperties.downloadAction != DownloadAction.Update)
-                                {
-                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
-                                }
-                                else
-                                {
-                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssDownloadingUpdate);
-                                }
-                                double progress = Helpers.GetDouble(progressMatch.Groups[1].Value);
-                                wantedItem.progress = progress;
-                                gogPanel.ProgressValue = progress;
-                            }
-                            var elapsedMatch = Regex.Match(stdErr.Text, @"Running for: (\d\d:\d\d:\d\d)");
-                            if (elapsedMatch.Length >= 2)
-                            {
-                                ElapsedTB.Text = elapsedMatch.Groups[1].Value;
-                            }
-                            var ETAMatch = Regex.Match(stdErr.Text, @"ETA: (\d\d:\d\d:\d\d)");
-                            if (ETAMatch.Length >= 2)
-                            {
-                                EtaTB.Text = ETAMatch.Groups[1].Value;
-                            }
-                            var downloadedMatch = Regex.Match(stdErr.Text, @"Downloaded: (\S+) (\wiB)");
-                            if (downloadedMatch.Length >= 2)
-                            {
-                                double downloadedNumber = Helpers.ToBytes(Helpers.GetDouble(downloadedMatch.Groups[1].Value), downloadedMatch.Groups[2].Value);
-                                double totalDownloadedNumber = downloadedNumber + downloadCache;
-                                wantedItem.downloadedNumber = totalDownloadedNumber;
-                                //double newProgress = totalDownloadedNumber / wantedItem.downloadSizeNumber * 100;
-                                //wantedItem.progress = newProgress;
-                                //gogPanel.ProgressValue = newProgress;
-
-                                if (totalDownloadedNumber == wantedItem.downloadSizeNumber)
-                                {
-                                    switch (downloadProperties.downloadAction)
-                                    {
-                                        case DownloadAction.Install:
-                                            DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingInstallation);
-                                            break;
-                                        case DownloadAction.Update:
-                                            DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingUpdate);
-                                            break;
-                                        case DownloadAction.Repair:
-                                            DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingRepair);
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                            }
-                            var downloadSpeedMatch = Regex.Match(stdErr.Text, @"Download\t- (\S+) (\wiB)");
-                            if (downloadSpeedMatch.Length >= 2)
-                            {
-                                string downloadSpeed = Helpers.FormatSize(Helpers.GetDouble(downloadSpeedMatch.Groups[1].Value), downloadSpeedMatch.Groups[2].Value, downloadSpeedInBits);
-                                DownloadSpeedTB.Text = downloadSpeed + "/s";
-                            }
-                            var diskSpeedMatch = Regex.Match(stdErr.Text, @"Disk\t- (\S+) (\wiB)");
-                            if (diskSpeedMatch.Length >= 2)
-                            {
-                                string diskSpeed = Helpers.FormatSize(Helpers.GetDouble(diskSpeedMatch.Groups[1].Value), diskSpeedMatch.Groups[2].Value, downloadSpeedInBits);
-                                DiskSpeedTB.Text = diskSpeed + "/s";
-                            }
-                            var errorMessage = stdErr.Text;
-                            if (errorMessage.Contains("finished") || errorMessage.Contains("Finished") || errorMessage.Contains("already up to date"))
-                            {
-                                successDisplayed = true;
-                            }
-                            else if (errorMessage.Contains("WARNING") && !errorMessage.Contains("exit requested") && !errorMessage.Contains("PermissionError"))
-                            {
-                                logger.Warn($"{errorMessage}");
-                            }
-                            else if (errorMessage.Contains("ERROR") || errorMessage.Contains("CRITICAL") || errorMessage.Contains("Error") || errorMessage.Contains("Failure"))
-                            {
-                                logger.Error($"{errorMessage}");
-                                if (errorMessage.Contains("Failed to establish a new connection")
-                                    || errorMessage.Contains("Log in failed")
-                                    || errorMessage.Contains("Login failed")
-                                    || errorMessage.Contains("No saved credentials"))
-                                {
-                                    loginErrorDisplayed = true;
-                                }
-                                else if (errorMessage.Contains("PermissionError"))
-                                {
-                                    permissionErrorDisplayed = true;
-                                }
-                                else if (errorMessage.Contains("Not enough available disk space"))
-                                {
-                                    diskSpaceErrorDisplayed = true;
-                                }
-                                if (!errorMessage.Contains("old manifest"))
-                                {
-                                    errorDisplayed = true;
-                                }
-                            }
-                            break;
-                        case ExitedCommandEvent exited:
-                            if ((!successDisplayed && errorDisplayed) || exited.ExitCode != 0)
-                            {
-                                if (loginErrorDisplayed)
-                                {
-                                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
-                                }
-                                else if (permissionErrorDisplayed)
-                                {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssPermissionError)));
-                                }
-                                else if (diskSpaceErrorDisplayed)
-                                {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssNotEnoughSpace)));
-                                }
-                                else
-                                {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssCheckLog)));
-                                }
-                                wantedItem.status = DownloadStatus.Paused;
-                            }
-                            else
-                            {
-                                var installedAppList = GogOssLibrary.GetInstalledAppList();
-                                var installedGameInfo = new Installed
-                                {
-                                    build_id = downloadProperties.buildId,
-                                    version = downloadProperties.version,
-                                    item_type = taskData.downloadItemType,
-                                    title = gameTitle,
-                                    platform = downloadProperties.os,
-                                    install_path = taskData.fullInstallPath,
-                                    language = downloadProperties.language,
-                                    installed_DLCs = downloadProperties.extraContent
-                                };
-                                if (installedAppList.ContainsKey(gameID))
-                                {
-                                    installedAppList.Remove(gameID);
-                                }
-
-                                if (taskData.downloadItemType != DownloadItemType.Dependency)
-                                {
-                                    var gameMetaManifest = Gogdl.GetGameMetaManifest(gameID);
-                                    var dependencies = installedGameInfo.Dependencies;
-                                    if (taskData.depends.Count > 0)
-                                    {
-                                        foreach (var depend in taskData.depends)
-                                        {
-                                            dependencies.Add(depend);
-                                        }
-                                    }
-                                    Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
-                                    {
-                                        game = playniteAPI.Database.Games.FirstOrDefault(item => item.PluginId == GogOssLibrary.Instance.Id
-                                                                                                 && item.GameId == gameID);
-                                        game.InstallDirectory = installedGameInfo.install_path;
-                                        game.Version = installedGameInfo.version;
-                                        game.IsInstalled = true;
-                                        playniteAPI.Database.Games.Update(game);
-                                    }
-                                }
-                                if (taskData.downloadItemType != DownloadItemType.Dependency)
-                                {
-                                    if (installedAppList.ContainsKey(gameID))
-                                    {
-                                        installedAppList.Remove(gameID);
-                                    }
-                                    installedAppList.Add(gameID, installedGameInfo);
-                                }
-
-                                GogOssLibrary.Instance.installedAppListModified = true;
-
-                                wantedItem.status = DownloadStatus.Completed;
-                                wantedItem.progress = 100.0;
-                                DateTimeOffset now = DateTime.UtcNow;
-                                wantedItem.completedTime = now.ToUnixTimeSeconds();
-                                if (settings.DisplayDownloadTaskFinishedNotifications)
-                                {
-                                    var notificationMessage = LOC.GogOssInstallationFinished;
-                                    switch (downloadProperties.downloadAction)
-                                    {
-                                        case DownloadAction.Repair:
-                                            notificationMessage = LOC.GogOssRepairFinished;
-                                            break;
-                                        case DownloadAction.Update:
-                                            notificationMessage = LOC.GogOssUpdateFinished;
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                    var bitmap = new System.Drawing.Bitmap(GogOss.Icon);
-                                    var iconHandle = bitmap.GetHicon();
-                                    Playnite.WindowsNotifyIconManager.Notify(System.Drawing.Icon.FromHandle(iconHandle), gameTitle, ResourceProvider.GetString(notificationMessage), null);
-                                    bitmap.Dispose();
-                                }
-                            }
-                            gracefulInstallerCTS?.Dispose();
-                            forcefulInstallerCTS?.Dispose();
-                            break;
-                        default:
-                            break;
+                        depotItems.Add(depotItem);
                     }
                 }
             }
-            catch (OperationCanceledException)
+
+            foreach (var depotItem in depotItems)
             {
-                // Command was canceled
+                foreach (var chunk in depotItem.chunks)
+                {
+                    chunksToDownload.Add(chunk.compressedMd5);
+                }
             }
-            finally
+
+            DirectoryInfo installPath = new DirectoryInfo(Path.Combine(taskData.fullInstallPath, ".chunks"));
+
+            //List<string> finalLinks = new List<string>();
+            //var secureLinks = await GetSecureLinks(taskData);
+            //foreach (var secureLink in secureLinks)
+            //{
+            //    var newLink = secureLink.Replace("{GALAXY_PATH}", GetGalaxyPath(chunksToDownload[0]));
+            //    finalLinks.Add(newLink);
+            //}
+
+            List<Dictionary<string, List<string>>> finalLinksList = new List<Dictionary<string, List<string>>>();
+            var secureLinks = await GetSecureLinks(taskData);
+            foreach (var chunk in chunksToDownload)
             {
-                downloadsChanged = true;
+                Dictionary<string, List<string>> finalLinks = new Dictionary<string, List<string>>();
+                foreach (var secureLink in secureLinks)
+                {
+                    var newLink = secureLink.Replace("{GALAXY_PATH}", GetGalaxyPath(chunk));
+                    if (!finalLinks.ContainsKey(chunk))
+                    {
+                        finalLinks.Add(chunk, new List<string>());
+                        finalLinks[chunk].Add(newLink);
+                    }
+                }
+                finalLinksList.Add(finalLinks);
+            }
+
+            var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == taskData.gameID);
+            stopWatch = new Stopwatch();
+            gracefulInstallerCTS = new CancellationTokenSource();
+
+            var downloadOpt = new DownloadConfiguration()
+            {
+                // usually, hosts support max to 8000 bytes, default value is 8000
+                BufferBlockSize = 10000,
+                // file parts to download, the default value is 1
+                ChunkCount = 10,
+                // download speed limited to 2MB/s, default values is zero or unlimited
+                //MaximumBytesPerSecond = 1024 * 1024 * 2,
+                // the maximum number of times to fail
+                MaxTryAgainOnFailover = 5,
+                //// release memory buffer after each 50 MB
+                MaximumMemoryBufferBytes = 1024 * 1024 * 50,
+                //// download parts of the file as parallel or not. The default value is false
+                //ParallelDownload = true,
+                //// number of parallel downloads. The default value is the same as the chunk count
+                //ParallelCount = 4,
+                // timeout (millisecond) per stream block reader, default values is 1000
+                Timeout = 1000,
+                // clear package chunks data when download completed with failure, default value is false
+                ClearPackageOnCompletionWithFailure = false,
+                // minimum size of chunking to download a file in multiple parts, the default value is 512
+                MinimumSizeOfChunking = 512,
+                // Before starting the download, reserve the storage space of the file as file size, the default value is false
+                ReserveStorageSpaceBeforeStartingDownload = true,
+                // config and customize request headers
+                RequestConfiguration =
+                {
+                    Accept = "*/*",
+                    // your custom user agent or your_app_name/app_version.
+                    UserAgent = GogOss.DownloaderUserAgent,
+                }
+            };
+
+            wantedItem.chunksData = new Dictionary<string, DownloadManagerData.ChunkData>();
+            foreach (var chunk in chunksToDownload)
+            {
+                if (!wantedItem.chunksData.ContainsKey(chunk))
+                {
+                    wantedItem.chunksData.Add(chunk, new DownloadManagerData.ChunkData());
+                }
+            }
+
+            stopWatch.Start();
+            wantedItem.status = Enums.DownloadStatus.Running;
+            GameTitleTB.Text = gameTitle;
+            gogPanel.ProgressValue = 0;
+
+            if (downloadProperties.downloadAction != DownloadAction.Update)
+            {
+                DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
+            }
+            else
+            {
+                DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssDownloadingUpdate);
+            }
+
+            var allTasks = new List<Task>();
+            var options = new ParallelOptions { MaxDegreeOfParallelism = Helpers.CpuThreadsNumber };
+
+            var throttler = new SemaphoreSlim(Helpers.CpuThreadsNumber /2, Helpers.CpuThreadsNumber -1);
+            foreach (var finalLinks in finalLinksList)
+            {
+                var chunk = finalLinks.First().Key;
+                var finalLinksRealList = finalLinks.First().Value;
+                await throttler.WaitAsync();
+                allTasks.Add(
+                    Task.Run(async () =>
+                    {
+                        await DownloadChunk(chunk, finalLinksRealList, installPath, downloadOpt, wantedItem, downloadSpeedInBits);
+                        await ReportProgress(wantedItem, downloadSpeedInBits);
+                        throttler.Release();
+                    }));
+            }
+            await Task.WhenAll(allTasks);
+            await Task.Run(() =>
+            {
+                if (wantedItem.status == Enums.DownloadStatus.Running)
+                {
+                    if (Directory.Exists(installPath.FullName))
+                    {
+                        Dispatcher.Invoke(() =>
+                        {
+                            switch (downloadProperties.downloadAction)
+                            {
+                                case DownloadAction.Install:
+                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingInstallation);
+                                    break;
+                                case DownloadAction.Update:
+                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingUpdate);
+                                    break;
+                                case DownloadAction.Repair:
+                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingRepair);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
+                        foreach (var depotItem in depotItems)
+                        {
+                            if (depotItem.chunks.Count > 0)
+                            {
+                                var finalFile = Path.GetFullPath(Path.Combine(wantedItem.fullInstallPath, depotItem.path));
+                                bool notEnoughChunks = false;
+                                Stream decompressedData = new MemoryStream();
+                                foreach (var chunk in depotItem.chunks)
+                                {
+                                    var chunkFile = Path.Combine(installPath.FullName, chunk.compressedMd5);
+                                    if (File.Exists(chunkFile))
+                                    {
+                                        var fileBytes = File.ReadAllBytes(chunkFile);
+                                        var decompressedStream = Helpers.DecompressZlibToByte(fileBytes);
+                                        decompressedData.Write(decompressedStream, 0, decompressedStream.Length);
+                                        File.Delete(chunkFile);
+                                    }
+                                    else
+                                    {
+                                        notEnoughChunks = true;
+                                    }
+                                }
+                                if (!notEnoughChunks)
+                                {
+                                    var finalDir = Path.GetDirectoryName(finalFile);
+                                    if (!Directory.Exists(finalDir))
+                                    {
+                                        Directory.CreateDirectory(finalDir);
+                                    }
+                                    var finalFileStream = File.Create(finalFile);
+                                    decompressedData.Seek(0, SeekOrigin.Begin);
+                                    decompressedData.CopyTo(finalFileStream);
+                                    finalFileStream.Dispose();
+                                }
+                                else
+                                {
+                                    logger.Debug($"Not enough chunks downloaded for {depotItem.path} file");
+                                }
+                            }
+                        }
+                        Directory.Delete(installPath.FullName);
+                    }
+                }
+            });
+
+            await Dispatcher.Invoke(async () =>
+            {
+                stopWatch.Stop();
+                if (wantedItem.status == Enums.DownloadStatus.Running)
+                {
+                    ElapsedTB.Text = stopWatch.Elapsed.ToString(@"dd\:hh\:mm\:ss");
+                    DateTimeOffset now = DateTime.UtcNow;
+                    wantedItem.completedTime = now.ToUnixTimeSeconds();
+                    gogPanel.ProgressValue = 100.0;
+                    wantedItem.progress = 100.0;
+                    wantedItem.status = Enums.DownloadStatus.Completed;
+                    wantedItem.chunksData = null;
+                    gracefulInstallerCTS?.Dispose();
+                    if (settings.DisplayDownloadTaskFinishedNotifications)
+                    {
+                        var notificationMessage = LOC.GogOssInstallationFinished;
+                        switch (downloadProperties.downloadAction)
+                        {
+                            case DownloadAction.Repair:
+                                notificationMessage = LOC.GogOssRepairFinished;
+                                break;
+                            case DownloadAction.Update:
+                                notificationMessage = LOC.GogOssUpdateFinished;
+                                break;
+                            default:
+                                break;
+                        }
+                        var bitmap = new System.Drawing.Bitmap(GogOss.Icon);
+                        var iconHandle = bitmap.GetHicon();
+                        Playnite.WindowsNotifyIconManager.Notify(System.Drawing.Icon.FromHandle(iconHandle), gameTitle, ResourceProvider.GetString(notificationMessage), null);
+                        bitmap.Dispose();
+                    }
+                }
                 await DoNextJobInQueue();
-            }
+            });
+        }
+
+        public async Task ReportProgress(DownloadManagerData.Download wantedItem, bool downloadSpeedInBits)
+        {
+            await Dispatcher.BeginInvoke((Action)(() =>
+            {
+                double downloadedNumber = 0;
+                foreach (var chunk in wantedItem.chunksData)
+                {
+                    downloadedNumber += chunk.Value.downloadedNumber;
+                }
+                wantedItem.downloadedNumber = downloadedNumber;
+                double newProgress = downloadedNumber / wantedItem.downloadSizeNumber * 100;
+                if (newProgress < 99.0)
+                {
+                    wantedItem.progress = newProgress;
+                    gogPanel.ProgressValue = newProgress;
+                }
+                double downloadSpeedNumber = downloadedNumber / stopWatch.Elapsed.TotalSeconds;
+                string downloadSpeed = Helpers.FormatSize(downloadSpeedNumber, "B", downloadSpeedInBits);
+                DownloadSpeedTB.Text = downloadSpeed + "/s";
+                ElapsedTB.Text = stopWatch.Elapsed.ToString(@"dd\:hh\:mm\:ss");
+                TimeSpan totalEstimatedTimeSpan = TimeSpan.FromSeconds((wantedItem.downloadSizeNumber - downloadedNumber) / downloadSpeedNumber);
+                EtaTB.Text = totalEstimatedTimeSpan.ToString(@"dd\:hh\:mm\:ss");
+            }));
+        }
+
+        public async Task DownloadChunk(string chunk, List<string> finalLinks, DirectoryInfo installPath, DownloadConfiguration downloadConfiguration, DownloadManagerData.Download wantedItem, bool downloadSpeedInBits)
+        {
+            var downloader = new DownloadService(downloadConfiguration);
+
+            downloader.DownloadProgressChanged += (sender, args) =>
+            {
+                var wantedChunk = chunk;
+                wantedItem.chunksData[wantedChunk].downloadedNumber = args.ReceivedBytesSize;
+            };
+
+            downloader.DownloadFileCompleted += (sender, args) =>
+            {
+                if (args.Error != null && !args.Cancelled)
+                {
+                    logger.Debug(args.Error.Message);
+                    wantedItem.status = Enums.DownloadStatus.Paused;
+                }
+            };
+            await downloader.DownloadFileTaskAsync(finalLinks.ToArray(), installPath, gracefulInstallerCTS.Token);
         }
 
         private void PauseBtn_Click(object sender, RoutedEventArgs e)
         {
             if (DownloadsDG.SelectedIndex != -1)
             {
-                var runningOrQueuedDownloads = DownloadsDG.SelectedItems.Cast<DownloadManagerData.Download>().Where(i => i.status == DownloadStatus.Running || i.status == DownloadStatus.Queued).ToList();
+                var runningOrQueuedDownloads = DownloadsDG.SelectedItems.Cast<DownloadManagerData.Download>().Where(i => i.status == Enums.DownloadStatus.Running || i.status == Enums.DownloadStatus.Queued).ToList();
                 if (runningOrQueuedDownloads.Count > 0)
                 {
                     foreach (var selectedRow in runningOrQueuedDownloads)
                     {
-                        if (selectedRow.status == DownloadStatus.Running)
+                        if (selectedRow.status == Enums.DownloadStatus.Running)
                         {
                             gracefulInstallerCTS?.Cancel();
                             gracefulInstallerCTS?.Dispose();
-                            forcefulInstallerCTS?.Dispose();
                         }
-                        selectedRow.status = DownloadStatus.Paused;
+                        selectedRow.status = Enums.DownloadStatus.Paused;
                     }
                 }
             }
@@ -543,38 +723,62 @@ namespace GogOssLibraryNS
             if (DownloadsDG.SelectedIndex != -1)
             {
                 var downloadsToResume = DownloadsDG.SelectedItems.Cast<DownloadManagerData.Download>()
-                                                                 .Where(i => i.status == DownloadStatus.Canceled || i.status == DownloadStatus.Paused)
+                                                                 .Where(i => i.status == Enums.DownloadStatus.Canceled || i.status == Enums.DownloadStatus.Paused)
                                                                  .ToList();
                 await EnqueueMultipleJobs(downloadsToResume, true);
             }
         }
 
-        private void CancelDownloadBtn_Click(object sender, RoutedEventArgs e)
+        public async Task WaitUntilDownloaderCloses(string fullInstallPath)
+        {
+            bool locked = Helpers.IsDirectoryLocked(fullInstallPath);
+            if (locked)
+            {
+                await Task.Delay(1000);
+                await WaitUntilDownloaderCloses(fullInstallPath);
+            }
+        }
+
+        private async void CancelDownloadBtn_Click(object sender, RoutedEventArgs e)
         {
             if (DownloadsDG.SelectedIndex != -1)
             {
                 var cancelableDownloads = DownloadsDG.SelectedItems.Cast<DownloadManagerData.Download>()
-                                                                   .Where(i => i.status == DownloadStatus.Running || i.status == DownloadStatus.Queued || i.status == DownloadStatus.Paused)
+                                                                   .Where(i => i.status == Enums.DownloadStatus.Running || i.status == Enums.DownloadStatus.Queued || i.status == Enums.DownloadStatus.Paused)
                                                                    .ToList();
                 if (cancelableDownloads.Count > 0)
                 {
                     foreach (var selectedRow in cancelableDownloads)
                     {
-                        if (selectedRow.status == DownloadStatus.Running)
+                        if (selectedRow.status == Enums.DownloadStatus.Running)
                         {
-                            // Gogdl can't properly gracefully cancel, so we need to force it :-)
-                            forcefulInstallerCTS?.Cancel();
+                            gracefulInstallerCTS?.Cancel();
                             gracefulInstallerCTS?.Dispose();
-                            forcefulInstallerCTS?.Dispose();
+                            await WaitUntilDownloaderCloses(Path.GetFullPath(selectedRow.fullInstallPath));
                         }
                         if (selectedRow.fullInstallPath != null && selectedRow.downloadProperties.downloadAction == DownloadAction.Install)
                         {
-                            if (Directory.Exists(selectedRow.fullInstallPath))
+                            var mainDir = Path.Combine(selectedRow.fullInstallPath);
+                            if (Directory.Exists(mainDir))
                             {
-                                Directory.Delete(selectedRow.fullInstallPath, true);
+                                try
+                                {
+                                    if (Directory.Exists(mainDir))
+                                    {
+                                        Directory.Delete(mainDir, true);
+                                    }
+                                }
+                                catch
+                                {
+                                    await Task.Delay(2000);
+                                    if (Directory.Exists(mainDir))
+                                    {
+                                        Directory.Delete(mainDir, true);
+                                    }
+                                }
                             }
                         }
-                        selectedRow.status = DownloadStatus.Canceled;
+                        selectedRow.status = Enums.DownloadStatus.Canceled;
                         selectedRow.downloadedNumber = 0;
                         selectedRow.progress = 0;
                     }
@@ -587,21 +791,21 @@ namespace GogOssLibraryNS
                     DiskSpeedTB.Text = "";
                 }
             }
+
         }
 
         private void RemoveDownloadEntry(DownloadManagerData.Download selectedEntry)
         {
-            if (selectedEntry.status != DownloadStatus.Completed && selectedEntry.status != DownloadStatus.Canceled)
+            if (selectedEntry.status != Enums.DownloadStatus.Completed && selectedEntry.status != Enums.DownloadStatus.Canceled)
             {
-                if (selectedEntry.status == DownloadStatus.Running)
+                if (selectedEntry.status == Enums.DownloadStatus.Running)
                 {
                     gracefulInstallerCTS?.Cancel();
                     gracefulInstallerCTS?.Dispose();
-                    forcefulInstallerCTS?.Dispose();
                 }
-                selectedEntry.status = DownloadStatus.Canceled;
+                selectedEntry.status = Enums.DownloadStatus.Canceled;
             }
-            if (selectedEntry.fullInstallPath != null && selectedEntry.status != DownloadStatus.Completed
+            if (selectedEntry.fullInstallPath != null && selectedEntry.status != Enums.DownloadStatus.Completed
                 && selectedEntry.downloadProperties.downloadAction == DownloadAction.Install)
             {
                 if (Directory.Exists(selectedEntry.fullInstallPath))
@@ -646,7 +850,7 @@ namespace GogOssLibraryNS
                 {
                     foreach (var row in DownloadsDG.Items.Cast<DownloadManagerData.Download>().ToList())
                     {
-                        if (row.status == DownloadStatus.Completed)
+                        if (row.status == Enums.DownloadStatus.Completed)
                         {
                             RemoveDownloadEntry(row);
                         }
@@ -668,10 +872,10 @@ namespace GogOssLibraryNS
         private void DownloadFiltersChk_IsCheckedChanged(object sender, RoutedEventArgs e)
         {
             ICollectionView downloadsView = CollectionViewSource.GetDefaultView(downloadManagerData.downloads);
-            var checkedStatus = new List<DownloadStatus>();
+            var checkedStatus = new List<Enums.DownloadStatus>();
             foreach (CheckBox checkBox in FilterStatusSP.Children)
             {
-                var downloadStatus = (DownloadStatus)Enum.Parse(typeof(DownloadStatus), checkBox.Name.Replace("Chk", ""));
+                var downloadStatus = (Enums.DownloadStatus)Enum.Parse(typeof(Enums.DownloadStatus), checkBox.Name.Replace("Chk", ""));
                 if (checkBox.IsChecked == true)
                 {
                     checkedStatus.Add(downloadStatus);

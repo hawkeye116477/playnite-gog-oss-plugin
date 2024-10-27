@@ -11,6 +11,11 @@ namespace GogOssLibraryNS.Models
             public ObservableCollection<Download> downloads { get; set; }
         }
 
+        public class ChunkData
+        {
+            public double downloadedNumber { get; set; } = 0.0;
+        }
+
         public class Download : ObservableObject
         {
             public string gameID { get; set; }
@@ -63,19 +68,20 @@ namespace GogOssLibraryNS.Models
             public DownloadItemType downloadItemType { get; set; } = DownloadItemType.Game;
             public DownloadProperties downloadProperties { get; set; } = new DownloadProperties();
             public List<string> depends { get; set; } = new List<string>();
+            public Dictionary<string, ChunkData> chunksData { get; set; }
         }
-    }
 
-    public class DownloadProperties : ObservableObject
-    {
-        public string installPath { get; set; } = "";
-        public DownloadAction downloadAction { get; set; }
-        public int maxWorkers { get; set; }
-        public List<string> extraContent { get; set; } = new List<string>();
-        public string language { get; set; } = "";
-        public string buildId { get; set; } = "";
-        public string version { get; set; } = "";
-        public string betaChannel { get; set; } = "disabled";
-        public string os { get; set; } = "windows";
+        public class DownloadProperties : ObservableObject
+        {
+            public string installPath { get; set; } = "";
+            public DownloadAction downloadAction { get; set; }
+            public int maxWorkers { get; set; }
+            public List<string> extraContent { get; set; } = new List<string>();
+            public string language { get; set; } = "";
+            public string buildId { get; set; } = "";
+            public string version { get; set; } = "";
+            public string betaChannel { get; set; } = "disabled";
+            public string os { get; set; } = "windows";
+        }
     }
 }

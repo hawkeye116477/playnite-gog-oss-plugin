@@ -57,7 +57,7 @@ namespace GogOssLibraryNS
             wantedItem.downloadProperties.downloadAction = (DownloadAction)TaskCBo.SelectedValue;
             wantedItem.downloadProperties.maxWorkers = int.Parse(MaxWorkersNI.Value);
 
-            if (wantedItem.status == DownloadStatus.Canceled)
+            if (wantedItem.status == Enums.DownloadStatus.Canceled)
             {
                 wantedItem.downloadProperties.betaChannel = selectedBetaChannel;
                 wantedItem.downloadProperties.buildId = gameInfo.build_id;
@@ -151,11 +151,12 @@ namespace GogOssLibraryNS
                 { DownloadAction.Update, ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterInstallUpdate) }
             };
             TaskCBo.ItemsSource = downloadActionOptions;
-            var manifest = await Gogdl.GetGameInfo(wantedItem);
+            var buildsManifest = await GogOss.GetGameBuilds(wantedItem.gameID);
+            var manifest = await GogOss.GetGameMetaManifest(wantedItem);
             var betaChannels = new Dictionary<string, string>();
-            if (manifest.available_branches.Count > 1)
+            if (buildsManifest.available_branches.Count > 1)
             {
-                foreach (var branch in manifest.available_branches)
+                foreach (var branch in buildsManifest.available_branches)
                 {
                     if (branch == null)
                     {
@@ -170,7 +171,7 @@ namespace GogOssLibraryNS
                 {
                     BetaChannelCBo.ItemsSource = betaChannels;
                     var selectedBetaChannel = "disabled";
-                    if (!wantedItem.downloadProperties.betaChannel.IsNullOrEmpty() && manifest.available_branches.Contains(wantedItem.downloadProperties.betaChannel))
+                    if (!wantedItem.downloadProperties.betaChannel.IsNullOrEmpty() && buildsManifest.available_branches.Contains(wantedItem.downloadProperties.betaChannel))
                     {
                         selectedBetaChannel = wantedItem.downloadProperties.betaChannel;
                     }
@@ -190,7 +191,7 @@ namespace GogOssLibraryNS
             selectedBetaChannel = SelectedDownload.downloadProperties.betaChannel;
             await RefreshVersions();
 
-            if (wantedItem.status != DownloadStatus.Canceled)
+            if (wantedItem.status != Enums.DownloadStatus.Canceled)
             {
                 GameLanguageCBo.IsEnabled = false;
                 GameVersionCBo.IsEnabled = false;
@@ -198,7 +199,7 @@ namespace GogOssLibraryNS
                 ExtraContentLB.IsEnabled = false;
             }
 
-            if (wantedItem.status == DownloadStatus.Completed)
+            if (wantedItem.status == Enums.DownloadStatus.Completed)
             {
                 SelectedGamePathTxt.IsEnabled = false;
                 ChooseGamePathBtn.IsEnabled = false;
@@ -211,8 +212,9 @@ namespace GogOssLibraryNS
         private async Task RefreshVersions()
         {
             VersionSP.Visibility = Visibility.Collapsed;
-            var manifest = await Gogdl.GetGameInfo(SelectedDownload.gameID, gameInfo);
-            var builds = manifest.builds.items;
+            var buildsManifest = await GogOss.GetGameBuilds(SelectedDownload.gameID);
+            var manifest = await GogOss.GetGameMetaManifest(SelectedDownload.gameID, gameInfo);
+            var builds = buildsManifest.items;
             var gameVersions = new Dictionary<string, string>();
             if (builds.Count > 0)
             {
@@ -257,7 +259,7 @@ namespace GogOssLibraryNS
             var selectedVersionName = selectedVersion.Value.Split('—')[0].Trim();
             gameInfo.build_id = selectedBuildId;
             gameInfo.version = selectedVersionName;
-            var manifest = await Gogdl.GetGameInfo(SelectedDownload.gameID, gameInfo);
+            var manifest = await GogOss.GetGameMetaManifest(SelectedDownload.gameID, gameInfo);
             var gameLanguages = await RefreshLanguages();
             if (gameLanguages.Count > 1)
             {
@@ -295,8 +297,8 @@ namespace GogOssLibraryNS
                 {
                     foreach (var selectedDlc in gameInfo.installed_DLCs)
                     {
-                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
-                        if (selectedDlcItem != null)
+                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.Key == selectedDlc);
+                        if (selectedDlcItem.Key != null)
                         {
                             ExtraContentLB.SelectedItems.Add(selectedDlcItem);
                         }
@@ -315,7 +317,7 @@ namespace GogOssLibraryNS
 
         private async Task<Dictionary<string, string>> RefreshLanguages()
         {
-            var manifest = await Gogdl.GetGameInfo(SelectedDownload.gameID, gameInfo);
+            var manifest = await GogOss.GetGameMetaManifest(SelectedDownload.gameID, gameInfo);
             var languages = manifest.languages;
             var gameLanguages = new Dictionary<string, string>();
             if (languages.Count > 1)

@@ -32,7 +32,8 @@ namespace GogOssLibraryNS
 
         }
 
-        public GogDownloadGameInfo manifest;
+        public GogGameMetaManifest manifest;
+        public GogBuildsData buildsManifest;
         private IPlayniteAPI playniteAPI = API.Instance;
         private bool uncheckedByUser = true;
         private bool checkedByUser = true;
@@ -54,11 +55,12 @@ namespace GogOssLibraryNS
         }
         private async void GogOssExtraInstallationSettingsUC_Loaded(object sender, RoutedEventArgs e)
         {
-            manifest = await Gogdl.GetGameInfo(ChosenGame);
+            buildsManifest = await GogOss.GetGameBuilds(ChosenGame.gameID);
+            manifest = await GogOss.GetGameMetaManifest(ChosenGame);
             var betaChannels = new Dictionary<string, string>();
-            if (manifest.available_branches.Count > 1)
+            if (buildsManifest.available_branches.Count > 1)
             {
-                foreach (var branch in manifest.available_branches)
+                foreach (var branch in buildsManifest.available_branches)
                 {
                     if (branch == null)
                     {
@@ -87,7 +89,7 @@ namespace GogOssLibraryNS
         private async Task RefreshVersions()
         {
             VersionSP.Visibility = Visibility.Collapsed;
-            var builds = manifest.builds.items;
+            var builds = buildsManifest.items;
             var gameVersions = new Dictionary<string, string>();
             if (builds.Count > 0)
             {
@@ -117,7 +119,7 @@ namespace GogOssLibraryNS
                     selectedVersion = gameVersions.FirstOrDefault().Key;
                 }
                 GameVersionCBo.SelectedItem = gameVersions.First(i => i.Key == selectedVersion);
-                manifest = await Gogdl.GetGameInfo(ChosenGame);
+                manifest = await GogOss.GetGameMetaManifest(ChosenGame);
                 if (gameVersions.Count > 1)
                 {
                     VersionSP.Visibility = Visibility.Visible;
@@ -174,7 +176,7 @@ namespace GogOssLibraryNS
             KeyValuePair<string, string> selectedVersion = (KeyValuePair<string, string>)GameVersionCBo.SelectedItem;
             ChosenGame.downloadProperties.buildId = selectedVersion.Key;
             ChosenGame.downloadProperties.version = selectedVersion.Value.Split('—')[0].Trim();
-            manifest = await Gogdl.GetGameInfo(ChosenGame);
+            manifest = await GogOss.GetGameMetaManifest(ChosenGame);
             RefreshLanguages();
             if (manifest.dlcs.Count > 0)
             {
@@ -185,8 +187,8 @@ namespace GogOssLibraryNS
                 {
                     foreach (var selectedDlc in ChosenGame.downloadProperties.extraContent)
                     {
-                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
-                        if (selectedDlcItem != null)
+                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.Key == selectedDlc);
+                        if (selectedDlcItem.Key != null)
                         {
                             ExtraContentLB.SelectedItems.Add(selectedDlcItem);
                         }

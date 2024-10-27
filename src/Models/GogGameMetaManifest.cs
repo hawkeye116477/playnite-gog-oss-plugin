@@ -24,6 +24,25 @@ namespace GogOssLibraryNS.Models
         public object[] HGLdlcs { get; set; }
         public List<string> dependencies { get; set; } = new List<string>();
         public ProductV1 product { get; set; } = new ProductV1();
+        public List<string> languages = new List<string>();
+        public Dictionary<string, Dlc> dlcs { get; set; } = new Dictionary<string, Dlc>();
+        public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
+        public bool errorDisplayed = false;
+        public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
+        public string readableName { get; set; } = "";
+        public string versionName { get; set; } = "";
+
+        public class SizeType
+        {
+            public double download_size { get; set; } = 0;
+            public double disk_size { get; set; } = 0;
+        }
+
+        public class Dlc
+        {
+            public string title { get; set; }
+            public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
+        }
 
         public class Offlinedepot
         {
