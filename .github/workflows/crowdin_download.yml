@@ -1,0 +1,33 @@
+name: Download translations from Crowdin
+
+on: workflow_dispatch
+
+jobs:
+  download-crowdin:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install and Configure Python
+      shell: bash
+      run: |
+        python3 -m venv .venv
+        source .venv/bin/activate
+        python3 -m pip install lxml requests crowdin-api-client
+
+    - name: Download translations from Crowdin
+      run: |
+        source .venv/bin/activate
+        python3 ./make_scripts/download_translations.py
+      env:
+        crowdin_project_id: ${{ secrets.CROWDIN_PROJECT_ID }}
+        crowdin_token: ${{ secrets.CROWDIN_TOKEN }}
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v7
+      with:
+        commit-message: Import translation work from Crowdin
+        title: New Crowdin translations
+        branch: l10n_crowdin_action
+        delete-branch: true

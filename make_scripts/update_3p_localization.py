@@ -48,36 +48,6 @@ NSMAP = {None: xmlns,
         "sys": xmlns_sys,
         "x":  xmlns_x}
 
-# Copy localizations from Legendary
-legendary_loc_path = pj(main_path, "..", "playnite-legendary-plugin", "src", "Localization")
-for filename in os.listdir(legendary_loc_path):
-    path = os.path.join(legendary_loc_path, filename)
-    if os.path.isdir(path):
-        continue
-    if "legendary" in filename:
-        continue
-    legendary_loc = ET.parse(pj(legendary_loc_path, filename))
-
-    xml_root = ET.Element("ResourceDictionary", nsmap=NSMAP)
-    xml_doc = ET.ElementTree(xml_root)
-
-    for child in legendary_loc.getroot():
-        key = child.get(ET.QName(xmlns_x, "Key"))
-        if key in legendary_loc_keys:
-            key_text = child.text
-            if not key_text:
-                key_text = ""
-            key = key.replace("Legendary", "GogOss")
-            new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-            new_key.set(ET.QName(xmlns_x, "Key"), key)
-            new_key.text = key_text.replace("Legendary", "GOG OSS")
-            xml_root.append(new_key)
-
-    ET.indent(xml_doc, level=0)
-
-    with open(pj(src_path, "Localization", filename), "w", encoding="utf-8") as i18n_file:
-        i18n_file.write(ET.tostring(xml_doc, encoding="utf-8", xml_declaration=True, pretty_print=True).decode())
-
 # Copy localizations from Playnite
 for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRepo", "source", "Playnite", "Localization")):
     git_repo = git.Repo(
