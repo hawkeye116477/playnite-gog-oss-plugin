@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <sys:String x:Key="LOCGogOssCometCustomPath"></sys:String>
+  <sys:String x:Key="LOCGogOssCometNotInstalled"></sys:String>
+  <sys:String x:Key="LOCGogOssCometVersion"></sys:String>
+  <sys:String x:Key="LOCGogOssCometBinary"></sys:String>
+  <sys:String x:Key="LOCGogOssLanguage"></sys:String>
+  <sys:String x:Key="LOCGogOssBetaChannel"></sys:String>
+  <sys:String x:Key="LOCGogOssGameNotInstallable"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp"></sys:String>
+  <sys:String x:Key="LOCGogOssPanel"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther"></sys:String>
+  <sys:String x:Key="LOCGogOssEnableCometSupport"></sys:String>
+  <sys:String x:Key="LOCGogOssEnableCometSupportToolTip"></sys:String>
+  <sys:String x:Key="LOCGogOssCometUpdatePolicy"></sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
+</ResourceDictionary>

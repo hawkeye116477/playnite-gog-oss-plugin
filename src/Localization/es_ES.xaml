@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall"></sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip"></sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Número máximo de procesos de trabajo</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Una vez finalizada la descarga:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Espacio disponible:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Después de instalar:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded"></sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Descargar</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Subir</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">La función de guardado en la nube es experimental. Se recomienda hacer una copia de seguridad de los juegos guardados en caso de que algo vaya mal. ¿Estás seguro de que quieres continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tiempo de juego a la nube</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Subiendo {0} tiempo de juego a la nube...</sys:String>

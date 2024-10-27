@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Включить режим автоматической установки</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Вам не нужно ничего выбирать в окне установщика. Установка начнется автоматически после загрузки информации.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Максимальное количество рабочих процессов</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">После завершения загрузки:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Доступное место:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">После установки:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Загружено</sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Синх</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Скачать</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Загрузить</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Функция облачных сохранений является экспериментальной. Рекомендуется создавать резервные копии сохранений игры на случай, если что-то пойдет не так. Вы уверены, что хотите продолжить?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Синхронизируйте время игры с облаком</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Загрузка {0} игрового времени в облако...</sys:String>

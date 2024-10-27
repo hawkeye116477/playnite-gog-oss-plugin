@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Katılımsız kurulum modunu etkinleştir</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Kurulum penceresinde herhangi bir şey seçmeniz gerekiyor ve gerekli bilgiler indirildikten sonra kurulum otomatik olarak başlayacaktır.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">En fazla çalışan işlem sayısı</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">İndirme tamamlandıktan sonra:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete">İndirme tamamlandıktan sonraki eylem</sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown">Sistem yakında kapatılacak...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown">Sistem yakında yeniden başlatılacak...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown">Sistem yakında hazırda bekletme moduna geçecek...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown">Sistem yakında askıya alınacak...</sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Mevcut Alan:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Kurulumdan Sonra:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">İndirilen</sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Eşitleme</sys:String>
   <sys:String x:Key="LOCGogOssDownload">İndir</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Yükle</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction">Eylemi zorla</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Bulut kaydetme özelliği deneyseldir. Bir şeylerin ters gitmesi durumunda oyun kayıtlarının yedeklenmesi önerilir. Devam etmek istediğine emin misin?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Oynatma süresini bulutla eşitle</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">{0} oyun oynama süresi buluta yükleniyor...</sys:String>
