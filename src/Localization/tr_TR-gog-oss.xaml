@@ -4,6 +4,11 @@
   <sys:String x:Key="LOCGogOssCometNotInstalled">Comet kurulu değil.</sys:String>
   <sys:String x:Key="LOCGogOssCometVersion">Comet sürümü</sys:String>
   <sys:String x:Key="LOCGogOssCometBinary">Comet binary</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlCustomPath"></sys:String>
+  <sys:String x:Key="LOCGogOssGogdlVersion"></sys:String>
+  <sys:String x:Key="LOCGogOssGogdlBinary"></sys:String>
+  <sys:String x:Key="LOCGogOssGogdlNotInstalled"></sys:String>
+  <sys:String x:Key="LOCGogOssUseVerticalCovers"></sys:String>
   <sys:String x:Key="LOCGogOssLanguage">Dil</sys:String>
   <sys:String x:Key="LOCGogOssBetaChannel">Beta kanal</sys:String>
   <sys:String x:Key="LOCGogOssGameNotInstallable">{0} kurulabilecek gibi görünmüyor. {1} adresinden indirilebilir içeriği kontrol edin.</sys:String>
@@ -13,6 +18,6 @@
   <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Şu oyunlar zaten indirme listesinde bulunuyor: {0}. Menü =&gt; Görünüm veya kenar çubuğundan GOG OSS Panele erişerek indirme durumunu görebilirsiniz.</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupport">Comet desteğini etkinleştir</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">Başarılar, skor tabloları ve çok oyunculu mod için gereklidir ancak bazı oyunların çalışmasında sorunlara neden olabilir.</sys:String>
-  <sys:String x:Key="LOCGogOssCometUpdatePolicy">Comet güncellemelerini denetle</sys:String>
+  <sys:String x:Key="LOCGogOssCometUpdatePolicy"></sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">GOG oyunlarına yönelik güncellemeler indiriliyor.</sys:String>
 </ResourceDictionary>
