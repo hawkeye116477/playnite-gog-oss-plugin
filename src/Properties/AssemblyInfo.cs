@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("GogOssLibraryNS")]
-[assembly: AssemblyCopyright("Copyright © 2023-2024 hawkeye116477\n Copyright © 2020 Josef Nemec")]
+[assembly: AssemblyCopyright("Copyright © 2024 hawkeye116477\n Copyright © 2020 Josef Nemec")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
