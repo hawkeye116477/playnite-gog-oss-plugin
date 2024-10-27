@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Aktiviere unbeaufsichtigten Installationsmodus</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Sie müssen im Installationsfenster nichts auswählen und die Installation wird automatisch nach dem Herunterladen der benötigten Informationen gestartet.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Maximale Anzahl von Arbeits-Prozessen</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Nachdem der Download ist abgeschlossen:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Verfügbarer Speicherplatz:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Nach der Installation:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Heruntergeladen</sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Synchronisieren</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Herunterladen</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Hochladen</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Die Cloud-Speicherstände-Funktion ist experimentell. Es wird empfohlen, Spielstände zu sichern, falls etwas schief geht. Sind Sie sicher, dass Sie fortfahren möchten?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronisiere Spielzeit mit der Cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Lade {0} Spielzeit in die Cloud hoch...</sys:String>

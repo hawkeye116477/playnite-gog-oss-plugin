@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Ativar modo de instalação não assistido</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Você não terá que escolher nada na janela do instalador e a instalação começará automaticamente após o download das informações necessárias.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Número máximo de processos</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Quando o download terminar:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Quando o download terminar</sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown">O sistema será desligado em breve...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown">O sistema será reiniciado em breve...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown">O sistema hibernará em breve...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown">O sistema será suspenso em breve...</sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Espaço Disponível:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Após a instalação:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Baixado</sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Baixar</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Enviar</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction">Forçar ação</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">A função de salvamento na nuvem é experimental. É recomendável fazer backup dos arquivos caso algo dê errado. Tem certeza que deseja continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tempo de jogo com a nuvem</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Enviando {0} tempo(s) de jogo para a nuvem...</sys:String>

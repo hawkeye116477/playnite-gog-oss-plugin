@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Abilita la modalità d'installazione automatica</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Non sarà necessario scegliere nulla nella finestra d'installazione e l'installazione inizierà automaticamente dopo aver scaricato le informazioni richieste.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Numero massimo di processi di lavoro</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Dopo il completamento del download:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Spazio disponibile:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Dopo l'installazione:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Scaricato</sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizza</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Download</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Upload</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">La funzionalità di salvataggio cloud è sperimentale. Si consiglia di eseguire il backup del gioco nel caso in cui qualcosa vada storto. Sei sicuro di voler continuare?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizza il tempo di gioco nel cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Upload del tempo di gioco di {0} nel cloud...</sys:String>

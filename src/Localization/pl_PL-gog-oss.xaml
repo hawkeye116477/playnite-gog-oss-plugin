@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <sys:String x:Key="LOCGogOssCometCustomPath">Ścieżka Comet</sys:String>
+  <sys:String x:Key="LOCGogOssCometNotInstalled">Comet nie jest zainstalowany.</sys:String>
+  <sys:String x:Key="LOCGogOssCometVersion">Wersja Comet</sys:String>
+  <sys:String x:Key="LOCGogOssCometBinary">Plik binarny Comet</sys:String>
+  <sys:String x:Key="LOCGogOssLanguage">Język</sys:String>
+  <sys:String x:Key="LOCGogOssBetaChannel">Kanał beta</sys:String>
+  <sys:String x:Key="LOCGogOssGameNotInstallable">Wydaje się, że {0} nie jest możliwy do zainstalowania. Sprawdź zawartość do pobrania na {1}.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">Pobieranie rozpocznie się wkrótce. Możesz zobaczyć jego stan, uzyskując dostęp do panelu GOG OSS poprzez Menu =&gt; Widok lub pasek boczny.</sys:String>
+  <sys:String x:Key="LOCGogOssPanel">Panel GOG OSS</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} jest już na liście pobierania. Możesz zobaczyć stan pobierania, uzyskując dostęp do panelu GOG OSS za pośrednictwem Menu =&gt; Widok lub paska bocznego.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Następujące gry są już na liście pobierania: {0}. Możesz zobaczyć status pobierania, uzyskując dostęp do Panelu GOG OSS za pośrednictwem Menu =&gt; Widok lub paska bocznego.</sys:String>
+  <sys:String x:Key="LOCGogOssEnableCometSupport">Włącz obsługę Comet</sys:String>
+  <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">Jest to wymagane dla osiągnięć, tablic wyników i trybu wieloosobowego, ale może powodować problemy z działaniem niektórych gier.</sys:String>
+  <sys:String x:Key="LOCGogOssCometUpdatePolicy">Sprawdź aktualizacje Comet</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Trwa pobieranie aktualizacji dla gier z GOG.</sys:String>
+</ResourceDictionary>

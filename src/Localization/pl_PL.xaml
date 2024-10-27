@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Włącz tryb instalacji nienadzorowanej</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Nie będziesz niczego musiał wybierać w oknie instalatora, a instalacja rozpocznie się automatycznie po pobraniu wymaganych informacji.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Maksymalna liczba procesów roboczych</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Po zakończeniu pobierania:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Akcja po zakończeniu pobierania</sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown">System niedługo zostanie wyłączony...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown">System niedługo zostanie zrestartowany...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown">System niedługo zostanie przełączony w stan hibernacji...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown">System niedługo zostanie zawieszony...</sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Dostępne miejsce:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Po zainstalowaniu:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Pobrano</sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync">Synchronizuj</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Pobierz</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Wyślij</sys:String>
+  <sys:String x:Key="LOCGogOssForceAction">Wymuś akcję</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">Funkcja zapisywania w chmurze jest eksperymentalna. Zalecane jest utworzenie kopii zapasowej zapisów gry na wypadek, gdyby coś poszło nie tak. Czy na pewno chcesz kontynuować?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Synchronizuj czas grania z chmurą</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Przesyłanie czasu grania w grę {0} do chmury...</sys:String>

@@ -11,7 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall"></sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip"></sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers"></sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Atsiuntus:</sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Yra vietos:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling"></sys:String>
   <sys:String x:Key="LOCGogOssDownloaded"></sys:String>
@@ -95,6 +99,7 @@
   <sys:String x:Key="LOCGogOssSync"></sys:String>
   <sys:String x:Key="LOCGogOssDownload"></sys:String>
   <sys:String x:Key="LOCGogOssUpload"></sys:String>
+  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm"></sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime"></sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime"></sys:String>
