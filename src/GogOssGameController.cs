@@ -45,7 +45,7 @@ namespace GogOssLibraryNS
         {
             if (!Gogdl.IsInstalled)
             {
-                //throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
+                throw new Exception(ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled));
             }
             var playniteAPI = API.Instance;
             Window window = null;
