@@ -38,6 +38,10 @@ namespace System
         /// </summary>
         public const string GogOssGogdlNotInstalled = "LOCGogOssGogdlNotInstalled";
         /// <summary>
+        /// Use vertical covers
+        /// </summary>
+        public const string GogOssUseVerticalCovers = "LOCGogOssUseVerticalCovers";
+        /// <summary>
         /// Language
         /// </summary>
         public const string GogOssLanguage = "LOCGogOssLanguage";
@@ -74,7 +78,7 @@ namespace System
         /// </summary>
         public const string GogOssEnableCometSupportToolTip = "LOCGogOssEnableCometSupportToolTip";
         /// <summary>
-        /// Check for Comet updates
+        /// Check for Comet and Gogdl updates
         /// </summary>
         public const string GogOssCometUpdatePolicy = "LOCGogOssCometUpdatePolicy";
         /// <summary>
