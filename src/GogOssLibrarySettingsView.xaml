@@ -46,7 +46,7 @@
                 <CheckBox IsChecked="{Binding Settings.EnableCometSupport}" DockPanel.Dock="Top" Margin="0,15,0,0"
                   Content="{DynamicResource LOCGogOssEnableCometSupport}" ToolTip="{DynamicResource LOCGogOssEnableCometSupportToolTip}"/>
                 <CheckBox IsChecked="{Binding Settings.UseVerticalCovers}" DockPanel.Dock="Top"
-                  Content="{DynamicResource LOCGogOss3P_GOGSettingsUseVerticalCovers}" Margin="0,10,0,0"/>
+                  Content="{DynamicResource LOCGogOssUseVerticalCovers}" Margin="0,10,0,0"/>
 
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <TextBlock VerticalAlignment="Center" Text="{DynamicResource LOCGogOss3P_GOGMetadataLanguageLabel}" Margin="0,0,10,0"/>

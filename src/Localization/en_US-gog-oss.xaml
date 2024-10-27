@@ -8,6 +8,7 @@
   <sys:String x:Key="LOCGogOssGogdlVersion">Gogdl version</sys:String>
   <sys:String x:Key="LOCGogOssGogdlBinary">Gogdl binary</sys:String>
   <sys:String x:Key="LOCGogOssGogdlNotInstalled">Gogdl is not installed.</sys:String>
+  <sys:String x:Key="LOCGogOssUseVerticalCovers">Use vertical covers</sys:String>
   <sys:String x:Key="LOCGogOssLanguage">Language</sys:String>
   <sys:String x:Key="LOCGogOssBetaChannel">Beta channel</sys:String>
   <sys:String x:Key="LOCGogOssGameNotInstallable">{0} doesn't appear to be installable. Check downloadable content at {1}.</sys:String>
