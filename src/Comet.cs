@@ -55,13 +55,13 @@ namespace GogOssLibraryNS
                     {
                         pf64 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                     }
-                    launcherPath = Path.Combine(pf64, "Comet", "comet-x86_64-pc-windows-msvc.exe");
+                    launcherPath = Path.Combine(pf64, "GOG OSS", "comet-x86_64-pc-windows-msvc.exe");
                     if (!File.Exists(launcherPath))
                     {
                         var playniteAPI = API.Instance;
                         if (playniteAPI.ApplicationInfo.IsPortable)
                         {
-                            launcherPath = Path.Combine(playniteAPI.Paths.ApplicationPath, "Comet", "comet-x86_64-pc-windows-msvc.exe");
+                            launcherPath = Path.Combine(playniteAPI.Paths.ApplicationPath, "GOG OSS", "comet-x86_64-pc-windows-msvc.exe");
                         }
                     }
                 }
