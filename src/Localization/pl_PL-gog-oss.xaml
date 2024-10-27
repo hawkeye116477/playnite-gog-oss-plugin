@@ -4,6 +4,11 @@
   <sys:String x:Key="LOCGogOssCometNotInstalled">Comet nie jest zainstalowany.</sys:String>
   <sys:String x:Key="LOCGogOssCometVersion">Wersja Comet</sys:String>
   <sys:String x:Key="LOCGogOssCometBinary">Plik binarny Comet</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlCustomPath">Ścieżka Gogdl</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlVersion">Wersja Gogdl</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlBinary">Plik binarny Gogdl</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlNotInstalled">Gogdl nie jest zainstalowany.</sys:String>
+  <sys:String x:Key="LOCGogOssUseVerticalCovers">Używaj okładek pionowych</sys:String>
   <sys:String x:Key="LOCGogOssLanguage">Język</sys:String>
   <sys:String x:Key="LOCGogOssBetaChannel">Kanał beta</sys:String>
   <sys:String x:Key="LOCGogOssGameNotInstallable">Wydaje się, że {0} nie jest możliwy do zainstalowania. Sprawdź zawartość do pobrania na {1}.</sys:String>
@@ -13,6 +18,6 @@
   <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Następujące gry są już na liście pobierania: {0}. Możesz zobaczyć status pobierania, uzyskując dostęp do Panelu GOG OSS za pośrednictwem Menu =&gt; Widok lub paska bocznego.</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupport">Włącz obsługę Comet</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">Jest to wymagane dla osiągnięć, tablic wyników i trybu wieloosobowego, ale może powodować problemy z działaniem niektórych gier.</sys:String>
-  <sys:String x:Key="LOCGogOssCometUpdatePolicy">Sprawdź aktualizacje Comet</sys:String>
+  <sys:String x:Key="LOCGogOssCometUpdatePolicy">Sprawdzaj aktualizacje Comet i Gogdl</sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Trwa pobieranie aktualizacji dla gier z GOG.</sys:String>
 </ResourceDictionary>
