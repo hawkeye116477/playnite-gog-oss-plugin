@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Playnite.SDK.Plugins;
 using System.Collections.Specialized;
+using System.Text;
 
 namespace GogOssLibraryNS
 {
@@ -284,7 +285,7 @@ namespace GogOssLibraryNS
                              .AddCommandToLog()
                              .WithValidation(CommandResultValidation.None);
                 var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
-                await foreach (CommandEvent cmdEvent in cmd.ListenAsync(Console.OutputEncoding, Console.OutputEncoding, forcefulInstallerCTS.Token, gracefulInstallerCTS.Token))
+                await foreach (CommandEvent cmdEvent in cmd.ListenAsync(Encoding.Default, Encoding.Default, forcefulInstallerCTS.Token, gracefulInstallerCTS.Token))
                 {
                     switch (cmdEvent)
                     {
