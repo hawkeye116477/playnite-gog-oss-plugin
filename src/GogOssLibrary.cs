@@ -558,7 +558,7 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
-                if (globalSettings.CometUpdatePolicy != UpdatePolicy.Never && Comet.IsInstalled)
+                if (globalSettings.CometUpdatePolicy != UpdatePolicy.Never && (Comet.IsInstalled || Gogdl.IsInstalled))
                 {
                     var nextCometUpdateTime = globalSettings.NextCometUpdateTime;
                     if (nextCometUpdateTime != 0)
@@ -568,10 +568,10 @@ namespace GogOssLibraryNS
                         {
                             globalSettings.NextCometUpdateTime = GetNextUpdateCheckTime(globalSettings.CometUpdatePolicy);
                             SavePluginSettings(globalSettings);
-                            var versionInfoContent = await Comet.GetVersionInfoContent();
-                            if (versionInfoContent.Tag_name != null)
+                            var cometVersionInfoContent = await Comet.GetVersionInfoContent();
+                            if (cometVersionInfoContent.Tag_name != null)
                             {
-                                var newVersion = new Version(versionInfoContent.Tag_name.Replace("v", ""));
+                                var newVersion = new Version(cometVersionInfoContent.Tag_name.Replace("v", ""));
                                 var oldVersion = new Version(await Comet.GetCometVersion());
                                 if (oldVersion.CompareTo(newVersion) < 0)
                                 {
@@ -584,6 +584,26 @@ namespace GogOssLibraryNS
                                     if (result == options[0])
                                     {
                                         var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
+                                        Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
+                                    }
+                                }
+                            }
+                            var gogdlVersionInfoContent = await Gogdl.GetVersionInfoContent();
+                            if (gogdlVersionInfoContent.Tag_name != null)
+                            {
+                                var newVersion = new Version(gogdlVersionInfoContent.Tag_name.Replace("v", ""));
+                                var oldVersion = new Version(await Gogdl.GetVersion());
+                                if (oldVersion.CompareTo(newVersion) < 0)
+                                {
+                                    var options = new List<MessageBoxOption>
+                                    {
+                                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOssViewChangelog), true),
+                                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel), false, true),
+                                    };
+                                    var result = PlayniteApi.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssNewVersionAvailable), "Gogdl", newVersion), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                                    if (result == options[0])
+                                    {
+                                        var changelogURL = $"https://github.com/Heroic-Games-Launcher/heroic-gogdl/releases/tag/v{newVersion}";
                                         Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
                                     }
                                 }
