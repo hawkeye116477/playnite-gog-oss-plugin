@@ -22,6 +22,22 @@ namespace System
         /// </summary>
         public const string GogOssCometBinary = "LOCGogOssCometBinary";
         /// <summary>
+        /// Gogdl Path
+        /// </summary>
+        public const string GogOssGogdlCustomPath = "LOCGogOssGogdlCustomPath";
+        /// <summary>
+        /// Gogdl version
+        /// </summary>
+        public const string GogOssGogdlVersion = "LOCGogOssGogdlVersion";
+        /// <summary>
+        /// Gogdl binary
+        /// </summary>
+        public const string GogOssGogdlBinary = "LOCGogOssGogdlBinary";
+        /// <summary>
+        /// Gogdl is not installed.
+        /// </summary>
+        public const string GogOssGogdlNotInstalled = "LOCGogOssGogdlNotInstalled";
+        /// <summary>
         /// Language
         /// </summary>
         public const string GogOssLanguage = "LOCGogOssLanguage";
