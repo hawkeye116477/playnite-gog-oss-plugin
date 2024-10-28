@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2E4F6F47-C3AC-4650-936A-09E675B9B3B3}</ProjectGuid>
+    <ProjectGuid>{03689811-3F33-4DFB-A121-2EE168FB9A5C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GogOssLibraryNS</RootNamespace>
