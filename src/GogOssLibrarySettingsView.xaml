@@ -20,19 +20,19 @@
         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsGeneralLabel}">
             <StackPanel Margin="20">
-                <CheckBox DockPanel.Dock="Top" Name="CheckGOGImportInstalled"
+                <CheckBox DockPanel.Dock="Top" Name="GOGImportInstalledChk"
                   Margin="0,0,0,15"
                   IsChecked="{Binding Settings.ImportInstalledGames}"
                   Content="{DynamicResource LOCGogOss3P_GOGSettingsImportInstalledLabel}"/>
 
-                <CheckBox DockPanel.Dock="Top" Name="CheckGOGConnectAccount"
+                <CheckBox DockPanel.Dock="Top" Name="GOGConnectAccountChk"
                   IsChecked="{Binding Settings.ConnectAccount}"
-                  Content="{DynamicResource LOCGogOss3P_GOGSettingsConnectAccount}" Checked="CheckGOGConnectAccount_Checked"/>
+                  Content="{DynamicResource LOCGogOss3P_GOGSettingsConnectAccount}" Checked="GOGConnectAccountChk_Checked"/>
 
                 <StackPanel DockPanel.Dock="Top" Margin="40,5,5,0"
-                   IsEnabled="{Binding IsChecked, ElementName=CheckGOGConnectAccount}">
+                   IsEnabled="{Binding IsChecked, ElementName=GOGConnectAccountChk}">
 
-                    <CheckBox DockPanel.Dock="Top" Name="CheckGOGImportUninstalled"
+                    <CheckBox DockPanel.Dock="Top" Name="GOGImportUninstalledChk"
                       IsChecked="{Binding Settings.ImportUninstalledGames}"
                       Margin="0,10,0,0"
                       Content="{DynamicResource LOCGogOss3P_GOGSettingsImportUninstalledLabel}"/>

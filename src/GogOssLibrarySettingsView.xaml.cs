@@ -274,7 +274,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void CheckGOGConnectAccount_Checked(object sender, RoutedEventArgs e)
+        private void GOGConnectAccountChk_Checked(object sender, RoutedEventArgs e)
         {
             UpdateAuthStatus();
         }
