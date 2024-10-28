@@ -20,4 +20,7 @@
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">It's required for achievements, leaderboards and multiplayer mode, but may cause problems with operation of some games.</sys:String>
   <sys:String x:Key="LOCGogOssCometUpdatePolicy">Check for Comet and Gogdl updates</sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Updates for games from GOG are being downloaded.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog">Migrate all games from GOG plugin</sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog">Migrating all games from GOG plugin...</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm">All games will be removed from GOG plugin and moved to GOG OSS. Are you sure you want to do this?</sys:String>
 </ResourceDictionary>

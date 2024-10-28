@@ -126,3 +126,5 @@ LOCLegendarySystemShutdownCountdown
 LOCLegendarySystemRestartCountdown
 LOCLegendarySystemHibernateCountdown
 LOCLegendarySystemSuspendCountdown
+LOCLegendaryMigrationCompleted
+LOCLegendaryMigrationNoGames

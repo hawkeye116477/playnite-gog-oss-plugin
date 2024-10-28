@@ -74,6 +74,8 @@
   <sys:String x:Key="LOCGogOssPathNotExistsError">Der angegebene Pfad existiert nicht.</sys:String>
   <sys:String x:Key="LOCGogOssTask">Aufgabe</sys:String>
   <sys:String x:Key="LOCGogOssDownloadProperties">Download-Eigenschaften</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationCompleted">Migration erfolgreich abgeschlossen.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationNoGames">Keine Spiele für die Migration gefunden.</sys:String>
   <sys:String x:Key="LOCGogOssSignOut">Abmelden</sys:String>
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Informationen zur Fehlerbehebung</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Playnite Version</sys:String>

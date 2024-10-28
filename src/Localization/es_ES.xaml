@@ -74,6 +74,8 @@
   <sys:String x:Key="LOCGogOssPathNotExistsError">La ruta especificada no existe.</sys:String>
   <sys:String x:Key="LOCGogOssTask">Tarea</sys:String>
   <sys:String x:Key="LOCGogOssDownloadProperties">Propiedades de la descarga</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationCompleted">Migración completada con éxito.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationNoGames">No se encontraron juegos para la migración.</sys:String>
   <sys:String x:Key="LOCGogOssSignOut">Cerrar sesión</sys:String>
   <sys:String x:Key="LOCGogOssTroubleshootingInformation">Información para solucionar problemas</sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion">Versión de Playnite</sys:String>

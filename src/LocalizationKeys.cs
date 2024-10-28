@@ -86,6 +86,18 @@ namespace System
         /// </summary>
         public const string GogOssGamesUpdatesUnderway = "LOCGogOssGamesUpdatesUnderway";
         /// <summary>
+        /// Migrate all games from GOG plugin
+        /// </summary>
+        public const string GogOssMigrateGamesGog = "LOCGogOssMigrateGamesGog";
+        /// <summary>
+        /// Migrating all games from GOG plugin...
+        /// </summary>
+        public const string GogOssMigratingGamesGog = "LOCGogOssMigratingGamesGog";
+        /// <summary>
+        /// All games will be removed from GOG plugin and moved to GOG OSS. Are you sure you want to do this?
+        /// </summary>
+        public const string GogOssMigrationConfirm = "LOCGogOssMigrationConfirm";
+        /// <summary>
         /// Games Installation Path
         /// </summary>
         public const string GogOssGamesInstallationPath = "LOCGogOssGamesInstallationPath";
@@ -381,6 +393,14 @@ namespace System
         /// Download Properties
         /// </summary>
         public const string GogOssDownloadProperties = "LOCGogOssDownloadProperties";
+        /// <summary>
+        /// Migration completed successfully.
+        /// </summary>
+        public const string GogOssMigrationCompleted = "LOCGogOssMigrationCompleted";
+        /// <summary>
+        /// No games found for migration.
+        /// </summary>
+        public const string GogOssMigrationNoGames = "LOCGogOssMigrationNoGames";
         /// <summary>
         /// Sign out
         /// </summary>

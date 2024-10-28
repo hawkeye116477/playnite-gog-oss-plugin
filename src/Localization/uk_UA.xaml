@@ -74,6 +74,8 @@
   <sys:String x:Key="LOCGogOssPathNotExistsError"></sys:String>
   <sys:String x:Key="LOCGogOssTask"></sys:String>
   <sys:String x:Key="LOCGogOssDownloadProperties"></sys:String>
+  <sys:String x:Key="LOCGogOssMigrationCompleted"></sys:String>
+  <sys:String x:Key="LOCGogOssMigrationNoGames"></sys:String>
   <sys:String x:Key="LOCGogOssSignOut"></sys:String>
   <sys:String x:Key="LOCGogOssTroubleshootingInformation"></sys:String>
   <sys:String x:Key="LOCGogOssPlayniteVersion"></sys:String>

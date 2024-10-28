@@ -1,4 +1,5 @@
 ﻿using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -44,6 +46,12 @@ namespace GogOssLibraryNS
 
         private async void GogOssSettingsUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var installedAddons = playniteAPI.Addons.Addons;
+            if (installedAddons.Contains("GogLibrary_Builtin"))
+            {
+                MigrateGogBtn.IsEnabled = true;
+            }
+
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
             {
                 { DownloadCompleteAction.Nothing, ResourceProvider.GetString(LOC.GogOss3P_PlayniteDoNothing) },
@@ -336,6 +344,55 @@ namespace GogOssLibraryNS
             {
                 playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssSyncGameSavesWarn), "", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+        }
+
+        private void MigrateGogBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssMigrationConfirm), ResourceProvider.GetString(LOC.GogOssMigrateGamesGog), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssMigratingGamesGog), false) { IsIndeterminate = false };
+            playniteAPI.Dialogs.ActivateGlobalProgress((a) =>
+            {
+                using (playniteAPI.Database.BufferedUpdate())
+                {
+                    var gamesToMigrate = playniteAPI.Database.Games.Where(i => i.PluginId == Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E")).ToList();
+                    var migratedGames = new List<string>();
+                    var notImportedGames = new List<string>();
+                    if (gamesToMigrate.Count > 0)
+                    {
+                        var iterator = 0;
+                        a.ProgressMaxValue = gamesToMigrate.Count() + 1;
+                        a.CurrentProgressValue = 0;
+                        foreach (var game in gamesToMigrate.ToList())
+                        {
+                            iterator++;
+                            var alreadyExists = playniteAPI.Database.Games.FirstOrDefault(i => i.GameId == game.GameId && i.PluginId == GogOssLibrary.Instance.Id);
+                            if (alreadyExists == null)
+                            {
+                                game.PluginId = GogOssLibrary.Instance.Id;
+                                playniteAPI.Database.Games.Update(game);
+                                migratedGames.Add(game.GameId);
+                                a.CurrentProgressValue = iterator;
+                            }
+                        }
+                        a.CurrentProgressValue = gamesToMigrate.Count() + 1;
+                        if (migratedGames.Count > 0)
+                        {
+                            playniteAPI.Dialogs.ShowMessage(LOC.GogOssMigrationCompleted, LOC.GogOssMigrateGamesGog, MessageBoxButton.OK, MessageBoxImage.Information);
+                            logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG to GOG OSS.");
+                        }
+                    }
+                    else
+                    {
+                        a.ProgressMaxValue = 1;
+                        a.CurrentProgressValue = 1;
+                        playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssMigrationNoGames);
+                    }
+                }
+            }, globalProgressOptions);
         }
     }
 }
