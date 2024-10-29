@@ -63,10 +63,6 @@
                     Name="ChooseGamePathBtn" Click="ChooseGamePathBtn_Click" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectDirectoryTooltip}" />
                 <TextBox Name="SelectedGamePathTxt" Text="" VerticalAlignment="Center" Margin="0" />
             </DockPanel>
-            <StackPanel Orientation="Horizontal" Name="TaskSP" Visibility="Collapsed" Margin="0,0,0,5">
-                <TextBlock Text="{DynamicResource LOCGogOssTask}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0"></TextBlock>
-                <ComboBox x:Name="TaskCBo" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="Auto" Margin="10,0,0,0"/>
-            </StackPanel>
             <StackPanel Orientation="Horizontal" Name="LanguageSP" Visibility="Collapsed" Margin="0,0,0,5">
                 <TextBlock Text="{DynamicResource LOCGogOssLanguage}"
                                    Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
