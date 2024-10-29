@@ -20,4 +20,7 @@
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip"></sys:String>
   <sys:String x:Key="LOCGogOssCometUpdatePolicy"></sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog"></sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog"></sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm"></sys:String>
 </ResourceDictionary>
