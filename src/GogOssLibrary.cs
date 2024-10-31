@@ -200,14 +200,6 @@ namespace GogOssLibraryNS
             var games = new Dictionary<string, GameMetadata>();
             foreach (var entry in GetInstalledAppList())
             {
-                if (entry.Value.is_dlc)
-                {
-                    continue;
-                }
-                if (entry.Value.item_type != DownloadItemType.Game)
-                {
-                    continue;
-                }
                 var game = new GameMetadata()
                 {
                     InstallDirectory = entry.Value.install_path,

@@ -265,6 +265,7 @@
     <Compile Include="Models\GogGameMetadata.cs" />
     <Compile Include="Models\GogGameTaskInfo.cs" />
     <Compile Include="Models\GetOwnedGamesResult.cs" />
+    <Compile Include="Models\HeroicInstalled.cs" />
     <Compile Include="Models\Installed.cs" />
     <Compile Include="Models\InstalledDepends.cs" />
     <Compile Include="Models\LauncherVersion.cs" />

@@ -111,17 +111,6 @@ namespace GogOssLibraryNS
                         foreach (var game in games)
                         {
                             a.Text = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)} {game.Name}... ";
-                            var installedAppList = GogOssLibrary.GetInstalledAppList();
-                            if (installedAppList.ContainsKey(game.GameId))
-                            {
-                                installedAppList.Remove(game.GameId);
-                            }
-                            GogOssLibrary.Instance.installedAppListModified = true;
-                            var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", game.GameId);
-                            if (File.Exists(manifestFile))
-                            {
-                                File.Delete(manifestFile);
-                            }
                             var uninstaller = Path.Combine(game.InstallDirectory, "unins000.exe");
                             if (File.Exists(uninstaller))
                             {
@@ -141,6 +130,17 @@ namespace GogOssLibraryNS
                             {
                                 Directory.Delete(game.InstallDirectory, true);
                             }
+                            var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", game.GameId);
+                            if (File.Exists(manifestFile))
+                            {
+                                File.Delete(manifestFile);
+                            }
+                            var installedAppList = GogOssLibrary.GetInstalledAppList();
+                            if (installedAppList.ContainsKey(game.GameId))
+                            {
+                                installedAppList.Remove(game.GameId);
+                            }
+                            GogOssLibrary.Instance.installedAppListModified = true;
 
                             if (result.CheckboxChecked)
                             {
@@ -708,10 +708,6 @@ namespace GogOssLibraryNS
             var gamesToUpdate = new Dictionary<string, UpdateInfo>();
             foreach (var game in appList.OrderBy(item => item.Value.title))
             {
-                if (game.Value.item_type == DownloadItemType.Dependency)
-                {
-                    continue;
-                }
                 var gameID = game.Key;
                 var gameSettings = GogOssGameSettingsView.LoadGameSettings(gameID);
                 bool canUpdate = true;

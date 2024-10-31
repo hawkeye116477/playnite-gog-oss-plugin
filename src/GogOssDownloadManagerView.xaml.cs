@@ -439,7 +439,6 @@ namespace GogOssLibraryNS
                                 {
                                     build_id = downloadProperties.buildId,
                                     version = downloadProperties.version,
-                                    item_type = taskData.downloadItemType,
                                     title = gameTitle,
                                     platform = downloadProperties.os,
                                     install_path = taskData.fullInstallPath,
@@ -471,14 +470,36 @@ namespace GogOssLibraryNS
                                         game.IsInstalled = true;
                                         playniteAPI.Database.Games.Update(game);
                                     }
-                                }
-                                if (taskData.downloadItemType != DownloadItemType.Dependency)
-                                {
-                                    if (installedAppList.ContainsKey(gameID))
-                                    {
-                                        installedAppList.Remove(gameID);
-                                    }
                                     installedAppList.Add(gameID, installedGameInfo);
+                                    var heroicInstalledPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gog_store", "installed.json");
+                                    if (File.Exists(heroicInstalledPath))
+                                    {
+                                        var heroicInstalledContent = FileSystem.ReadFileAsStringSafe(heroicInstalledPath);
+                                        if (!heroicInstalledContent.IsNullOrWhiteSpace())
+                                        {
+                                            var heroicInstallInfo = new HeroicInstalled.HeroicInstalledSingle
+                                            {
+                                                appName = gameID,
+                                                build_id = installedGameInfo.build_id,
+                                                title = installedGameInfo.title,
+                                                version = installedGameInfo.version,
+                                                platform = installedGameInfo.platform,
+                                                install_path = installedGameInfo.install_path,
+                                                language = installedGameInfo.language,
+                                                installed_DLCs = installedGameInfo.installed_DLCs,
+                                                install_size = Helpers.FormatSize(taskData.installSizeNumber)
+                                            };
+                                            var heroicInstalledJson = Serialization.FromJson<HeroicInstalled>(heroicInstalledContent);
+                                            var wantedHeroicItem = heroicInstalledJson.installed.FirstOrDefault(i => i.appName == taskData.gameID);
+                                            if (wantedHeroicItem != null)
+                                            {
+                                                heroicInstalledJson.installed.Remove(wantedHeroicItem);
+                                            }
+                                            heroicInstalledJson.installed.Add(heroicInstallInfo);
+                                            var strConf = Serialization.ToJson(heroicInstalledJson, true);
+                                            File.WriteAllText(heroicInstalledPath, strConf);
+                                        }
+                                    }
                                 }
 
                                 GogOssLibrary.Instance.installedAppListModified = true;
