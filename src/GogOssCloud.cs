@@ -4,6 +4,7 @@ using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,11 +23,11 @@ namespace GogOssLibraryNS
     {
         private static ILogger logger = LogManager.GetLogger();
 
-        public GogRemoteConfig GetCloudConfig(string gameId, bool skipRefreshingMetadata = true)
+        public GogRemoteConfig GetCloudConfig(Game game, bool skipRefreshingMetadata = true)
         {
             string content = null;
             var cacheCloudPath = GogOssLibrary.Instance.GetCachePath("cloudcache");
-            var cacheCloudFile = Path.Combine(cacheCloudPath, $"cloudConfig-{gameId}.json");
+            var cacheCloudFile = Path.Combine(cacheCloudPath, $"cloudConfig-{game.GameId}.json");
             if (File.Exists(cacheCloudFile))
             {
                 if (!skipRefreshingMetadata)
@@ -45,7 +46,7 @@ namespace GogOssLibraryNS
                 {
                     using var httpClient = new HttpClient();
                     httpClient.DefaultRequestHeaders.Clear();
-                    var gameInfo = GogOss.GetGogGameInfo(gameId);
+                    var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                     var response = await httpClient.GetAsync($"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
                     if (response.IsSuccessStatusCode)
                     {
@@ -74,18 +75,17 @@ namespace GogOssLibraryNS
             return remoteConfig;
         }
 
-        internal List<CloudLocation> CalculateGameSavesPath(string gameID, bool skipRefreshingMetadata = true)
+        internal List<CloudLocation> CalculateGameSavesPath(Game game, bool skipRefreshingMetadata = true)
         {
             var logger = LogManager.GetLogger();
-            var installedInfo = GogOss.GetInstalledInfo(gameID);
-            var cloudConfig = GetCloudConfig(gameID, skipRefreshingMetadata);
+            var cloudConfig = GetCloudConfig(game, skipRefreshingMetadata);
             var calculatedPaths = new List<CloudLocation>();
             var cloudLocations = cloudConfig.content.Windows.cloudStorage.locations;
             if (cloudLocations.Count > 0)
             {
                 var pathVariables = new Dictionary<string, string>
                 {
-                    { "INSTALL", installedInfo.install_path },
+                    { "INSTALL", game.InstallDirectory },
                     { "APPLICATION_DATA_LOCAL", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) },
                     { "APPLICATION_DATA_LOCAL_LOW", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow") },
                     { "APPLICATION_DATA_ROAMING",  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) },
@@ -115,7 +115,7 @@ namespace GogOssLibraryNS
             }
             else
             {
-                var gameInfo = GogOss.GetGogGameInfo(gameID);
+                var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                 var cloudLocation = new CloudLocation
                 {
                     name = "__default",
@@ -273,7 +273,7 @@ namespace GogOssLibraryNS
             return errorDisplayed;
         }
 
-        internal void SyncGameSaves(Playnite.SDK.Models.Game game, CloudSyncAction cloudSyncAction, bool force = false, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
+        internal void SyncGameSaves(Game game, CloudSyncAction cloudSyncAction, bool force = false, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
         {
             var logger = LogManager.GetLogger();
             var cloudSyncEnabled = GogOssLibrary.GetSettings().SyncGameSaves;
@@ -289,7 +289,7 @@ namespace GogOssLibraryNS
             var cloudSaveFolders = new List<CloudLocation>();
             if (cloudSyncEnabled)
             {
-                var calculatedCloudSaveFolders = CalculateGameSavesPath(game.GameId, skipRefreshingMetadata);
+                var calculatedCloudSaveFolders = CalculateGameSavesPath(game, skipRefreshingMetadata);
                 if (cloudSaveFolder.IsNullOrEmpty())
                 {
                     if (!gameSettings.CloudSaveFolder.IsNullOrEmpty())
@@ -350,7 +350,7 @@ namespace GogOssLibraryNS
                                 logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
                             }
                             var cloudFiles = new List<CloudFile>();
-                            var gameInfo = GogOss.GetGogGameInfo(game.GameId);
+                            var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                             var gogUserAgent = "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
                             httpClient.DefaultRequestHeaders.Add("User-Agent", gogUserAgent);
                             httpClient.DefaultRequestHeaders.Add("X-Object-Meta-User-Agent", gogUserAgent);

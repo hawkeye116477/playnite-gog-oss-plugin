@@ -120,7 +120,7 @@ namespace GogOssLibraryNS
 
         private void CalculatePathBtn_Click(object sender, RoutedEventArgs e)
         {
-            var saveLocations = gogOssCloud.CalculateGameSavesPath(GameID);
+            var saveLocations = gogOssCloud.CalculateGameSavesPath(Game);
             SelectedSavePathTxt.Text = saveLocations[0].location;
         }
 
@@ -168,7 +168,7 @@ namespace GogOssLibraryNS
                 AutoSyncPlaytimeChk.IsEnabled = false;
             }
 
-            var remoteConfig = gogOssCloud.GetCloudConfig(GameID);
+            var remoteConfig = gogOssCloud.GetCloudConfig(Game);
             if (!remoteConfig.content.Windows.cloudStorage.enabled)
             {
                 CloudSavesSP.Visibility = Visibility.Collapsed;

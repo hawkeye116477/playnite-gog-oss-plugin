@@ -213,10 +213,9 @@ namespace GogOssLibraryNS
             return gameInfo;
         }
 
-        public static GogGameActionInfo GetGogGameInfo(string gameId)
+        public static GogGameActionInfo GetGogGameInfo(string gameId, string installPath)
         {
-            var installedGame = GetInstalledInfo(gameId);
-            var manifestFile = Path.Combine(installedGame.install_path, $"goggame-{gameId}.info");
+            var manifestFile = Path.Combine(installPath, $"goggame-{gameId}.info");
             return GetGogGameInfoFromFile(manifestFile);
         }
 

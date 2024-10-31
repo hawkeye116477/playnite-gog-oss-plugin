@@ -262,14 +262,17 @@ namespace GogOssLibraryNS
                 {
                     platform = "windows",
                     install_path = Paths.FixSeparators(program.InstallLocation),
-                    version = program.DisplayVersion,
                     title = program.DisplayName.RemoveTrademarks(),
                 };
+                if (!program.DisplayVersion.IsNullOrWhiteSpace())
+                {
+                    game.version = program.DisplayVersion;
+                }
                 if (!GetPlayTasks(gameId, game.install_path).HasItems())
                 {
                     continue; // Empty play task = DLC
                 }
-                var infoManifest = GogOss.GetGogGameInfo(gameId);
+                var infoManifest = GogOss.GetGogGameInfo(gameId, game.install_path);
                 if (infoManifest.buildId != null)
                 {
                     game.build_id = infoManifest.buildId;
@@ -757,7 +760,7 @@ namespace GogOssLibraryNS
                                     PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
                                     {
                                         game.InstallDirectory = path;
-                                        var gogGameInfo = GogOss.GetGogGameInfo(game.GameId);
+                                        var gogGameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                                         var installedInfo = new Installed
                                         {
                                             install_path = path,
