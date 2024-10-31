@@ -436,6 +436,7 @@ namespace GogOssLibraryNS
                     if (!gameSettings.OverrideExe.IsNullOrEmpty())
                     {
                         gameExe = gameSettings.OverrideExe;
+                        gameExeFullPath = gameExe;
                     }
                     var cmd = Cli.Wrap(gameExeFullPath)
                                  .WithArguments(playArgs)
