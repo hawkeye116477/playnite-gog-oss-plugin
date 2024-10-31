@@ -113,8 +113,8 @@
                     <TextBox Text="{Binding Settings.SelectedGogdlPath, UpdateSourceTrigger=PropertyChanged}" x:Name="SelectedGogdlPathTxt" 
                              Grid.Row="1" Grid.Column="1" Margin="10,0,0,5" VerticalAlignment="Center"/>
                     <Button Name="ChooseGogdlBtn"
-                            Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}"  Grid.Row="1" Grid.Column="2"
-                            ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center"/>
+                            Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Grid.Row="1" Grid.Column="2"
+                            ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center" Click="ChooseGogdlBtn_Click"/>
                     <TextBlock Text="{DynamicResource LOCGogOssGamesInstallationPath}" Grid.Row="2" Grid.Column="0"
                                Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                     </TextBlock>

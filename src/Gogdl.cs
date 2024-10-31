@@ -71,10 +71,7 @@ namespace GogOssLibraryNS
                             var playniteAPI = API.Instance;
                             savedGogdlPath = savedGogdlPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
                         }
-                        if (Directory.Exists(savedGogdlPath))
-                        {
-                            gogdlPath = savedGogdlPath;
-                        }
+                        gogdlPath = savedGogdlPath;
                     }
                 }
                 if (!File.Exists(gogdlPath))

@@ -32,7 +32,11 @@ namespace GogOssLibraryNS
 
         private void ChooseGamePathBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            var path = playniteAPI.Dialogs.SelectFolder();
+            if (path != "")
+            {
+                SelectedGamePathTxt.Text = path;
+            }
         }
 
         private void ChooseCometBtn_Click(object sender, RoutedEventArgs e)
@@ -393,6 +397,15 @@ namespace GogOssLibraryNS
                     }
                 }
             }, globalProgressOptions);
+        }
+
+        private void ChooseGogdlBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
+            if (file != "")
+            {
+                SelectedGogdlPathTxt.Text = file;
+            }
         }
     }
 }
