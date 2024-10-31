@@ -33,7 +33,7 @@ namespace GogOssLibraryNS
         public CancellationTokenSource gracefulInstallerCTS;
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI playniteAPI = API.Instance;
-        public DownloadManagerData.Rootobject downloadManagerData;
+        public DownloadManagerData downloadManagerData;
         public SidebarItem gogPanel = GogOssLibrary.GetPanel();
         public bool downloadsChanged = false;
 
@@ -90,7 +90,7 @@ namespace GogOssLibraryNS
             return $"{ResourceProvider.GetString(description)} [{shortcut}]";
         }
 
-        public DownloadManagerData.Rootobject LoadSavedData()
+        public DownloadManagerData LoadSavedData()
         {
             var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
             var dataFile = Path.Combine(dataDir, "downloadManager.json");
@@ -108,7 +108,7 @@ namespace GogOssLibraryNS
             }
             if (!correctJson)
             {
-                downloadManagerData = new DownloadManagerData.Rootobject
+                downloadManagerData = new DownloadManagerData
                 {
                     downloads = new ObservableCollection<DownloadManagerData.Download>()
                 };

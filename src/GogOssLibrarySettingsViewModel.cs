@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Playnite.SDK;
-using GogOssLibraryNS.Services;
 using GogOssLibraryNS.Enums;
 
 namespace GogOssLibraryNS

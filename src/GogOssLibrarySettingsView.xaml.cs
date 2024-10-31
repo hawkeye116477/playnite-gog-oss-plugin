@@ -1,5 +1,4 @@
 ﻿using GogOssLibraryNS.Enums;
-using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;

@@ -18,7 +18,7 @@ namespace GogOssLibraryNS
     public partial class GogOssDownloadPropertiesView : UserControl
     {
         private DownloadManagerData.Download SelectedDownload => (DownloadManagerData.Download)DataContext;
-        public DownloadManagerData.Rootobject downloadManagerData;
+        public DownloadManagerData downloadManagerData;
         public bool uncheckedByUser = true;
         private bool checkedByUser = true;
         private IPlayniteAPI playniteAPI = API.Instance;
@@ -31,7 +31,7 @@ namespace GogOssLibraryNS
             LoadSavedData();
         }
 
-        private DownloadManagerData.Rootobject LoadSavedData()
+        private DownloadManagerData LoadSavedData()
         {
             var downloadManager = GogOssLibrary.GetGogOssDownloadManager();
             downloadManagerData = downloadManager.downloadManagerData;
