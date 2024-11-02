@@ -248,6 +248,11 @@
     <Compile Include="..\third_party\playnite-common-plugin\src\Enums\DownloadStatus.cs">
       <Link>Shared\Enums\DownloadStatus.cs</Link>
     </Compile>
+    <Resource Include="..\third_party\playnite-common-plugin\src\Resources\Icons.xaml">
+      <Link>Shared\Resources\Icons.xaml</Link>
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CliWrapCommandExtensions.cs" />

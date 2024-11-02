@@ -44,6 +44,7 @@ namespace GogOssLibraryNS
             commonHelpers = new CommonHelpers(Instance);
             SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
             LoadExtraLocalization();
+            LoadMenuIcons();
             downloadManagerSidebarItem = new SidebarItem
             {
                 Title = ResourceProvider.GetString(LOC.GogOssPanel),
@@ -667,6 +668,16 @@ namespace GogOssLibraryNS
             }
             downloadManager.SaveData();
             return true;
+        }
+
+        public void LoadMenuIcons()
+        {
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
+            ResourceDictionary iconsDict = new ResourceDictionary
+            {
+                Source = new Uri("/GogOssLibrary;component/Shared/Resources/Icons.xaml", UriKind.RelativeOrAbsolute)
+            };
+            dictionaries.Add(iconsDict);
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
