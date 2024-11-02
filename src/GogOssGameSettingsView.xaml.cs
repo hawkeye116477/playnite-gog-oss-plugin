@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
@@ -86,7 +87,8 @@ namespace GogOssLibraryNS
             var gameSettingsFile = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{GameID}.json");
             if (newGameSettings.GetType().GetProperties().Any(p => p.GetValue(newGameSettings) != null) || File.Exists(gameSettingsFile))
             {
-                Helpers.SaveJsonSettingsToFile(newGameSettings, GameID, "GamesSettings");
+                var commonHelpers = GogOssLibrary.Instance.commonHelpers;
+                commonHelpers.SaveJsonSettingsToFile(newGameSettings, "GamesSettings", GameID, true);
             }
             Window.GetWindow(this).Close();
         }

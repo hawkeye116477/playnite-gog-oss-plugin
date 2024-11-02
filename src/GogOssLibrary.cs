@@ -1,4 +1,6 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -27,6 +29,7 @@ namespace GogOssLibraryNS
         private readonly SidebarItem downloadManagerSidebarItem;
         public Dictionary<string, Installed> installedAppList { get; set; }
         public bool installedAppListModified { get; set; } = false;
+        public CommonHelpers commonHelpers { get; set; }
 
         public GogOssLibrary(IPlayniteAPI api) : base(
             "GOG OSS",
@@ -38,6 +41,7 @@ namespace GogOssLibraryNS
             api)
         {
             Instance = this;
+            commonHelpers = new CommonHelpers(Instance);
             SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
             LoadExtraLocalization();
             downloadManagerSidebarItem = new SidebarItem
@@ -615,7 +619,8 @@ namespace GogOssLibraryNS
             StopDownloadManager();
             if (installedAppList != null && installedAppListModified)
             {
-                Helpers.SaveJsonSettingsToFile(installedAppList, "installed");
+                var commonHelpers = Instance.commonHelpers;
+                commonHelpers.SaveJsonSettingsToFile(installedAppList, "", "installed", true);
             }
             var settings = GetSettings();
             if (settings != null)

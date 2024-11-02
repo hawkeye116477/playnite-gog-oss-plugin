@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Playnite.SDK;
 using GogOssLibraryNS.Enums;
+using CommonPlugin.Enums;
 
 namespace GogOssLibraryNS
 {

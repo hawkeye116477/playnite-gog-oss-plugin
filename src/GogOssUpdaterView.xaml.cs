@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
 using System;
 using System.Collections.Generic;
@@ -30,9 +31,9 @@ namespace GogOssLibraryNS
                 initialDownloadSizeNumber += selectedOption.Value.Download_size;
                 initialInstallSizeNumber += selectedOption.Value.Disk_size;
             }
-            var downloadSize = Helpers.FormatSize(initialDownloadSizeNumber);
+            var downloadSize = CommonHelpers.FormatSize(initialDownloadSizeNumber);
             DownloadSizeTB.Text = downloadSize;
-            var installSize = Helpers.FormatSize(initialInstallSizeNumber);
+            var installSize = CommonHelpers.FormatSize(initialInstallSizeNumber);
             InstallSizeTB.Text = installSize;
         }
 
@@ -89,7 +90,7 @@ namespace GogOssLibraryNS
             UpdatesLB.Visibility = Visibility.Visible;
             UpdatesLB.SelectAll();
             var settings = GogOssLibrary.GetSettings();
-            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
         }
     }

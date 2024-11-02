@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GogOssLibraryNS
+namespace CommonPlugin
 {
     /// <summary>
     /// Interaction logic for NumericInput.xaml

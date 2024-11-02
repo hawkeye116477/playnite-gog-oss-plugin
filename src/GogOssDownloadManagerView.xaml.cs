@@ -21,6 +21,8 @@ using System.Windows.Input;
 using Playnite.SDK.Plugins;
 using System.Collections.Specialized;
 using System.Text;
+using CommonPlugin.Enums;
+using CommonPlugin;
 
 namespace GogOssLibraryNS
 {
@@ -121,7 +123,8 @@ namespace GogOssLibraryNS
         {
             if (downloadsChanged)
             {
-                Helpers.SaveJsonSettingsToFile(downloadManagerData, "downloadManager");
+                var commonHelpers = GogOssLibrary.Instance.commonHelpers;
+                commonHelpers.SaveJsonSettingsToFile(downloadManagerData, "", "downloadManager", true);
             }
         }
 
@@ -315,7 +318,7 @@ namespace GogOssLibraryNS
                                 {
                                     DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssDownloadingUpdate);
                                 }
-                                double progress = Helpers.GetDouble(progressMatch.Groups[1].Value);
+                                double progress = CommonHelpers.ToDouble(progressMatch.Groups[1].Value);
                                 wantedItem.progress = progress;
                                 gogPanel.ProgressValue = progress;
                             }
@@ -332,7 +335,7 @@ namespace GogOssLibraryNS
                             var downloadedMatch = Regex.Match(stdErr.Text, @"Downloaded: (\S+) (\wiB)");
                             if (downloadedMatch.Length >= 2)
                             {
-                                double downloadedNumber = Helpers.ToBytes(Helpers.GetDouble(downloadedMatch.Groups[1].Value), downloadedMatch.Groups[2].Value);
+                                double downloadedNumber = CommonHelpers.ToBytes(CommonHelpers.ToDouble(downloadedMatch.Groups[1].Value), downloadedMatch.Groups[2].Value);
                                 double totalDownloadedNumber = downloadedNumber + downloadCache;
                                 wantedItem.downloadedNumber = totalDownloadedNumber;
                                 //double newProgress = totalDownloadedNumber / wantedItem.downloadSizeNumber * 100;
@@ -360,13 +363,13 @@ namespace GogOssLibraryNS
                             var downloadSpeedMatch = Regex.Match(stdErr.Text, @"Download\t- (\S+) (\wiB)");
                             if (downloadSpeedMatch.Length >= 2)
                             {
-                                string downloadSpeed = Helpers.FormatSize(Helpers.GetDouble(downloadSpeedMatch.Groups[1].Value), downloadSpeedMatch.Groups[2].Value, downloadSpeedInBits);
+                                string downloadSpeed = CommonHelpers.FormatSize(CommonHelpers.ToDouble(downloadSpeedMatch.Groups[1].Value), downloadSpeedMatch.Groups[2].Value, downloadSpeedInBits);
                                 DownloadSpeedTB.Text = downloadSpeed + "/s";
                             }
                             var diskSpeedMatch = Regex.Match(stdErr.Text, @"Disk\t- (\S+) (\wiB)");
                             if (diskSpeedMatch.Length >= 2)
                             {
-                                string diskSpeed = Helpers.FormatSize(Helpers.GetDouble(diskSpeedMatch.Groups[1].Value), diskSpeedMatch.Groups[2].Value, downloadSpeedInBits);
+                                string diskSpeed = CommonHelpers.FormatSize(CommonHelpers.ToDouble(diskSpeedMatch.Groups[1].Value), diskSpeedMatch.Groups[2].Value, downloadSpeedInBits);
                                 DiskSpeedTB.Text = diskSpeed + "/s";
                             }
                             var errorMessage = stdErr.Text;
@@ -487,7 +490,7 @@ namespace GogOssLibraryNS
                                                 install_path = installedGameInfo.install_path,
                                                 language = installedGameInfo.language,
                                                 installed_DLCs = installedGameInfo.installed_DLCs,
-                                                install_size = Helpers.FormatSize(taskData.installSizeNumber)
+                                                install_size = CommonHelpers.FormatSize(taskData.installSizeNumber)
                                             };
                                             var heroicInstalledJson = Serialization.FromJson<HeroicInstalled>(heroicInstalledContent);
                                             var wantedHeroicItem = heroicInstalledJson.installed.FirstOrDefault(i => i.appName == taskData.gameID);

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GogOssLibraryNS" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:common="clr-namespace:CommonPlugin"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Name="GogOssDlcManagerUC" Loaded="GogOssDlcManagerUC_Loaded">
     <UserControl.Resources>
@@ -81,7 +82,7 @@
                                 <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}"
                                            Grid.Row="2" Grid.Column="0" Margin="0,0,0,5" 
                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                <local:NumericInput Grid.Row="2" Grid.Column="1" Margin="15,0,0,5" MinValue="0" MaxValue="16" x:Name="MaxWorkersNI"/>
+                                <common:NumericInput Grid.Row="2" Grid.Column="1" Margin="15,0,0,5" MinValue="0" MaxValue="16" x:Name="MaxWorkersNI"/>
                             </Grid>
                         </Expander>
                     </Border>

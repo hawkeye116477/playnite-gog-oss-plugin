@@ -35,7 +35,8 @@ namespace GogOssLibraryNS
 
         public static void SaveSettings(GogOssMessagesSettingsModel messagesSettings)
         {
-            Helpers.SaveJsonSettingsToFile(messagesSettings, "messages");
+            var commonHelpers = GogOssLibrary.Instance.commonHelpers;
+            commonHelpers.SaveJsonSettingsToFile(messagesSettings, "", "messages", true);
         }
     }
 }

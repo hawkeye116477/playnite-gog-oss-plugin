@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using CliWrap;
 using CliWrap.EventStream;
-using GogOssLibraryNS.Enums;
+using CommonPlugin;
+using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -267,7 +268,8 @@ namespace GogOssLibraryNS
                             {
                                 var installedDependsManifest = new InstalledDepends();
                                 installedDependsManifest.InstalledDependsList = installedDepends;
-                                Helpers.SaveJsonSettingsToFile(installedDependsManifest, "installedDepends");
+                                var commonHelpers = GogOssLibrary.Instance.commonHelpers;
+                                commonHelpers.SaveJsonSettingsToFile(installedDependsManifest, "", "installedDepends", true);
                             }
                         }
                         installedInfo.is_fully_installed = true;

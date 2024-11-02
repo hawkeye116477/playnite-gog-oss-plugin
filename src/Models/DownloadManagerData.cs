@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 

@@ -1,4 +1,4 @@
-﻿namespace GogOssLibraryNS.Enums
+﻿namespace CommonPlugin.Enums
 {
     public enum ClearCacheTime
     {

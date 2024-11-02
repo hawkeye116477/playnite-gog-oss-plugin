@@ -1,4 +1,6 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
@@ -26,7 +28,7 @@ namespace GogOssLibraryNS
         {
             InitializeComponent();
             UpdateAuthStatus();
-            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
         }
 
         private void ChooseGamePathBtn_Click(object sender, RoutedEventArgs e)

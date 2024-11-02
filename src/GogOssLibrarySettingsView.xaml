@@ -7,6 +7,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:pcon="clr-namespace:Playnite.Converters"
              xmlns:pcmd="clr-namespace:Playnite.Commands"
+             xmlns:common="clr-namespace:CommonPlugin"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=local:GogOssLibrarySettingsViewModel}" d:DesignWidth="600" d:DesignHeight="578" x:Name="GogOssSettingsUC" Loaded="GogOssSettingsUC_Loaded">
     <UserControl.Resources>
@@ -162,7 +163,7 @@
                             IsChecked="{Binding Settings.UnattendedInstall}" Margin="0,0,0,10" />
                         <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}" Grid.Column="0"
                             Grid.Row="6" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                        <local:NumericInput Grid.Row="6" Grid.Column="1" Margin="0,0,0,5" MinValue="0" x:Name="MaxWorkersNI" Value="{Binding Settings.MaxWorkers}" HorizontalAlignment="Left"/>
+                        <common:NumericInput Grid.Row="6" Grid.Column="1" Margin="0,0,0,5" MinValue="0" x:Name="MaxWorkersNI" Value="{Binding Settings.MaxWorkers}" HorizontalAlignment="Left"/>
                         <TextBlock Grid.Column="0" Grid.Row="10"
                             Text="{DynamicResource LOCGogOssAfterDownloadComplete}" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"  />
                         <ComboBox Grid.Column="1" Grid.Row="10" x:Name="AfterDownloadCompleteCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.DoActionAfterDownloadComplete}" SelectedValuePath="Key"  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,0,5" HorizontalAlignment="Left"/>

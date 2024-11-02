@@ -1,4 +1,6 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -403,7 +405,7 @@ namespace GogOssLibraryNS
                                             real_file_path = fileName,
                                             timestamp = lastWriteTimeTs,
                                             last_modified = lastWriteTime.UtcDateTime.ToString("o", CultureInfo.InvariantCulture),
-                                            name = $"{cloudSaveFolder.name}/{Helpers.GetRelativePath(cloudSaveFolder.location, fileName)}"
+                                            name = $"{cloudSaveFolder.name}/{RelativePath.Get(cloudSaveFolder.location, fileName)}"
                                         };
                                         localFiles.Add(newCloudFile);
                                     }
@@ -444,7 +446,8 @@ namespace GogOssLibraryNS
                                         if (!errorDisplayed)
                                         {
                                             gameSettings.LastCloudSavesDownloadAttempt = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
-                                            Helpers.SaveJsonSettingsToFile(gameSettings, game.GameId, "GamesSettings");
+                                            var commonHelpers = GogOssLibrary.Instance.commonHelpers;
+                                            commonHelpers.SaveJsonSettingsToFile(gameSettings, "GamesSettings", game.GameId, true);
                                         }
                                     }
                                     break;

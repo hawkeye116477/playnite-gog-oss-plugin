@@ -1,4 +1,6 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using Playnite.SDK;
 using System;
@@ -74,7 +76,7 @@ namespace GogOssLibraryNS
             if (dDrive.IsReady)
             {
                 availableFreeSpace = dDrive.AvailableFreeSpace;
-                SpaceTB.Text = Helpers.FormatSize(availableFreeSpace);
+                SpaceTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
             }
             UpdateAfterInstallingSize();
         }
@@ -86,7 +88,7 @@ namespace GogOssLibraryNS
             {
                 afterInstallSizeNumber = 0;
             }
-            AfterInstallingTB.Text = Helpers.FormatSize(afterInstallSizeNumber);
+            AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
         public async Task StartTask(DownloadAction downloadAction)
@@ -104,7 +106,7 @@ namespace GogOssLibraryNS
             }
 
             var redistInstallPath = Gogdl.DependenciesInstallationPath;
-            if (!Helpers.IsDirectoryWritable(installPath))
+            if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.GogOssPermissionError))
             {
                 return;
             }
@@ -193,8 +195,8 @@ namespace GogOssLibraryNS
                 installSizeNumber += installData.installSizeNumber;
             }
             UpdateAfterInstallingSize();
-            DownloadSizeTB.Text = Helpers.FormatSize(downloadSizeNumber);
-            InstallSizeTB.Text = Helpers.FormatSize(installSizeNumber);
+            DownloadSizeTB.Text = CommonHelpers.FormatSize(downloadSizeNumber);
+            InstallSizeTB.Text = CommonHelpers.FormatSize(installSizeNumber);
         }
 
         private async void GogOssGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
@@ -220,7 +222,7 @@ namespace GogOssLibraryNS
             {
                 Directory.CreateDirectory(cacheInfoPath);
             }
-            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             var downloadItemsAlreadyAdded = new List<string>();
             downloadSizeNumber = 0;

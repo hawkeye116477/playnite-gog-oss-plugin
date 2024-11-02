@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
 using Playnite.SDK;
 using System;
@@ -49,7 +50,7 @@ namespace GogOssLibraryNS
             {
                 installPath = installPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
             }
-            if (!Helpers.IsDirectoryWritable(installPath))
+            if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.GogOssPermissionError))
             {
                 return;
             }
@@ -136,7 +137,7 @@ namespace GogOssLibraryNS
 
         private async void GogOssDownloadPropertiesUC_Loaded(object sender, RoutedEventArgs e)
         {
-            MaxWorkersNI.MaxValue = Helpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
             var wantedItem = SelectedDownload;
             if (wantedItem.downloadProperties != null)
             {
@@ -335,7 +336,7 @@ namespace GogOssLibraryNS
             if (dDrive.IsReady)
             {
                 long availableFreeSpace = dDrive.AvailableFreeSpace;
-                SpaceTB.Text = Helpers.FormatSize(availableFreeSpace);
+                SpaceTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
                 UpdateAfterInstallingSize(availableFreeSpace, installSizeNumber);
             }
         }
@@ -347,14 +348,14 @@ namespace GogOssLibraryNS
             {
                 afterInstallSizeNumber = 0;
             }
-            AfterInstallingTB.Text = Helpers.FormatSize(afterInstallSizeNumber);
+            AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
         private async Task UpdateSizeInfo()
         {
             var gameSize = await Gogdl.CalculateGameSize(SelectedDownload.gameID, gameInfo);
-            DownloadSizeTB.Text = Helpers.FormatSize(gameSize.download_size);
-            InstallSizeTB.Text = Helpers.FormatSize(gameSize.disk_size);
+            DownloadSizeTB.Text = CommonHelpers.FormatSize(gameSize.download_size);
+            InstallSizeTB.Text = CommonHelpers.FormatSize(gameSize.disk_size);
             UpdateSpaceInfo(SelectedDownload.downloadProperties.installPath, gameSize.disk_size);
         }
 

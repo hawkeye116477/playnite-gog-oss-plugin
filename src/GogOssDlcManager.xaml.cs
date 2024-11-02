@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
 using Playnite.SDK.Models;
 using System;
@@ -159,12 +160,12 @@ namespace GogOssLibraryNS
                 InstallBtn.IsEnabled = true;
             }
             var dlcsSize = await CalculateDlcsSize();
-            var downloadSize = Helpers.FormatSize(dlcsSize.download_size);
+            var downloadSize = CommonHelpers.FormatSize(dlcsSize.download_size);
             DownloadSizeTB.Text = downloadSize;
-            var installSize = Helpers.FormatSize(dlcsSize.disk_size);
+            var installSize = CommonHelpers.FormatSize(dlcsSize.disk_size);
             InstallSizeTB.Text = installSize;
             double afterInstallSizeNumber = (double)(availableFreeSpace - dlcsSize.disk_size);
-            AfterInstallingTB.Text = Helpers.FormatSize(afterInstallSizeNumber);
+            AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
         private async void UninstallBtn_Click(object sender, RoutedEventArgs e)
@@ -292,8 +293,8 @@ namespace GogOssLibraryNS
                     if (dDrive.IsReady)
                     {
                         availableFreeSpace = dDrive.AvailableFreeSpace;
-                        SpaceTB.Text = Helpers.FormatSize(availableFreeSpace);
-                        AfterInstallingTB.Text = Helpers.FormatSize(availableFreeSpace);
+                        SpaceTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
+                        AfterInstallingTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
                     }
                 }
                 var settings = GogOssLibrary.GetSettings();
