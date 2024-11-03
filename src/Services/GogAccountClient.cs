@@ -9,7 +9,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using static GogOssLibraryNS.Models.TokenResponse;
 
 namespace GogOssLibraryNS.Services
 {
@@ -91,11 +90,11 @@ namespace GogOssLibraryNS.Services
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
-                        var responseJson = Serialization.FromJson<TokenResponsePart>(responseContent);
+                        var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                         DateTimeOffset now = DateTime.UtcNow;
                         responseJson.loginTime = now.ToUnixTimeSeconds();
                         var tokenResponse = new TokenResponse();
-                        tokenResponse.client_id = new Dictionary<string, TokenResponsePart>();
+                        tokenResponse.client_id = new Dictionary<string, TokenResponse.TokenResponsePart>();
                         tokenResponse.client_id.Add(clientId, responseJson);
                         var strConf = Serialization.ToJson(tokenResponse.client_id, false);
                         FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
@@ -138,11 +137,11 @@ namespace GogOssLibraryNS.Services
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var responseJson = Serialization.FromJson<TokenResponsePart>(responseContent);
+                var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                 DateTimeOffset now = DateTime.UtcNow;
                 responseJson.loginTime = now.ToUnixTimeSeconds();
                 var tokenResponse = new TokenResponse();
-                tokenResponse.client_id = new Dictionary<string, TokenResponsePart>();
+                tokenResponse.client_id = new Dictionary<string, TokenResponse.TokenResponsePart>();
                 tokenResponse.client_id.Add(clientId, responseJson);
                 var strConf = Serialization.ToJson(tokenResponse.client_id, false);
                 FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
@@ -206,13 +205,13 @@ namespace GogOssLibraryNS.Services
             return accountInfo;
         }
 
-        public TokenResponsePart LoadTokens()
+        public TokenResponse.TokenResponsePart LoadTokens()
         {
             if (File.Exists(GogOss.TokensPath))
             {
                 try
                 {
-                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponsePart>>(File.ReadAllText(GogOss.TokensPath));
+                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponse.TokenResponsePart>>(File.ReadAllText(GogOss.TokensPath));
                     var firstKey = jsonResponse.First().Value;
                     return firstKey;
                 }

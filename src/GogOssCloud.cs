@@ -1,6 +1,5 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
-using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -16,8 +15,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static GogOssLibraryNS.Models.GogRemoteConfig;
-using static GogOssLibraryNS.Models.TokenResponse;
 
 namespace GogOssLibraryNS
 {
@@ -77,11 +74,11 @@ namespace GogOssLibraryNS
             return remoteConfig;
         }
 
-        internal List<CloudLocation> CalculateGameSavesPath(Game game, bool skipRefreshingMetadata = true)
+        internal List<GogRemoteConfig.CloudLocation> CalculateGameSavesPath(Game game, bool skipRefreshingMetadata = true)
         {
             var logger = LogManager.GetLogger();
             var cloudConfig = GetCloudConfig(game, skipRefreshingMetadata);
-            var calculatedPaths = new List<CloudLocation>();
+            var calculatedPaths = new List<GogRemoteConfig.CloudLocation>();
             var cloudLocations = cloudConfig.content.Windows.cloudStorage.locations;
             if (cloudLocations.Count > 0)
             {
@@ -118,7 +115,7 @@ namespace GogOssLibraryNS
             else
             {
                 var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
-                var cloudLocation = new CloudLocation
+                var cloudLocation = new GogRemoteConfig.CloudLocation
                 {
                     name = "__default",
                     location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GOG.com", "Galaxy", "Applications", gameInfo.clientId, "Storage", "Shared", "Files")
@@ -288,7 +285,7 @@ namespace GogOssLibraryNS
             {
                 cloudSyncEnabled = true;
             }
-            var cloudSaveFolders = new List<CloudLocation>();
+            var cloudSaveFolders = new List<GogRemoteConfig.CloudLocation>();
             if (cloudSyncEnabled)
             {
                 var calculatedCloudSaveFolders = CalculateGameSavesPath(game, skipRefreshingMetadata);
@@ -296,7 +293,7 @@ namespace GogOssLibraryNS
                 {
                     if (!gameSettings.CloudSaveFolder.IsNullOrEmpty())
                     {
-                        var newCloudSaveFolder = new CloudLocation
+                        var newCloudSaveFolder = new GogRemoteConfig.CloudLocation
                         {
                             name = calculatedCloudSaveFolders[0].name,
                             location = gameSettings.CloudSaveFolder
@@ -310,7 +307,7 @@ namespace GogOssLibraryNS
                 }
                 else
                 {
-                    var newCloudSaveFolder = new CloudLocation
+                    var newCloudSaveFolder = new GogRemoteConfig.CloudLocation
                     {
                         name = calculatedCloudSaveFolders[0].name,
                         location = cloudSaveFolder
@@ -344,7 +341,7 @@ namespace GogOssLibraryNS
                             if (credentialsResponse.IsSuccessStatusCode)
                             {
                                 var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
-                                var credentialsResponseJson = Serialization.FromJson<TokenResponsePart>(credentialsResponseContent);
+                                var credentialsResponseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(credentialsResponseContent);
                                 httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + credentialsResponseJson.access_token);
                             }
                             else
