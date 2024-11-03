@@ -389,6 +389,10 @@ namespace GogOssLibraryNS
                             playniteAPI.Dialogs.ShowMessage(LOC.GogOssMigrationCompleted, LOC.GogOssMigrateGamesGog, MessageBoxButton.OK, MessageBoxImage.Information);
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG to GOG OSS.");
                         }
+                        if (migratedGames.Count == 0 && notImportedGames.Count == 0)
+                        {
+                            playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssMigrationNoGames);
+                        }
                     }
                     else
                     {
