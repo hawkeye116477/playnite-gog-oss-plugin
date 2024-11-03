@@ -25,8 +25,8 @@ namespace GogOssLibraryNS
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         public static GogOssLibrary Instance { get; set; }
-        public GogOssDownloadManagerView GogOssDownloadManagerView { get; set; }
-        private readonly SidebarItem downloadManagerSidebarItem;
+        private GogOssDownloadManagerView GogOssDownloadManagerView;
+        private SidebarItem downloadManagerSidebarItem;
         public Dictionary<string, Installed> installedAppList { get; set; }
         public bool installedAppListModified { get; set; } = false;
         public CommonHelpers commonHelpers { get; set; }
@@ -45,28 +45,28 @@ namespace GogOssLibraryNS
             SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
             LoadExtraLocalization();
             LoadMenuIcons();
-            downloadManagerSidebarItem = new SidebarItem
-            {
-                Title = ResourceProvider.GetString(LOC.GogOssPanel),
-                Icon = GogOss.Icon,
-                Type = SiderbarItemType.View,
-                Opened = () => GetGogOssDownloadManager(),
-                ProgressValue = 0,
-                ProgressMaximum = 100,
-            };
+            GogOssDownloadManagerView = new GogOssDownloadManagerView();
         }
 
         public static SidebarItem GetPanel()
         {
+            if (Instance.downloadManagerSidebarItem == null)
+            {
+                Instance.downloadManagerSidebarItem = new SidebarItem
+                {
+                    Title = ResourceProvider.GetString(LOC.GogOssPanel),
+                    Icon = GogOss.Icon,
+                    Type = SiderbarItemType.View,
+                    Opened = () => GetGogOssDownloadManager(),
+                    ProgressValue = 0,
+                    ProgressMaximum = 100,
+                };
+            }
             return Instance.downloadManagerSidebarItem;
         }
 
         public static GogOssDownloadManagerView GetGogOssDownloadManager()
         {
-            if (Instance.GogOssDownloadManagerView == null)
-            {
-                Instance.GogOssDownloadManagerView = new GogOssDownloadManagerView();
-            }
             return Instance.GogOssDownloadManagerView;
         }
 
