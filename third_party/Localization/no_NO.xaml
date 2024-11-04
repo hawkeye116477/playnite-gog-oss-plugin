@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Kjørbar fil</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Navn</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Installasjonsmappe</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Kunne ikke importere spill fra {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Kunne ikke laste ned metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Avinstallerer</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Gjør ingenting</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Installer</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Avinstaller</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Ikke vis igjen</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Forum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Butikkside</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Oppdateringer</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Velg fil …</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Velg mappe …</sys:String>

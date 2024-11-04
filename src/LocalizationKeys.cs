@@ -726,6 +726,10 @@ namespace System
         /// </summary>
         public const string GogOss3P_PlayniteGameInstallDirTitle = "LOCGogOss3P_PlayniteGameInstallDirTitle";
         /// <summary>
+        /// Failed to import games from {0}.
+        /// </summary>
+        public const string GogOss3P_PlayniteLibraryImportError = "LOCGogOss3P_PlayniteLibraryImportError";
+        /// <summary>
         /// Failed to download metadata: {0}
         /// </summary>
         public const string GogOss3P_PlayniteMetadataDownloadError = "LOCGogOss3P_PlayniteMetadataDownloadError";
@@ -769,6 +773,14 @@ namespace System
         /// Don't Show Again
         /// </summary>
         public const string GogOss3P_PlayniteDontShowAgainTitle = "LOCGogOss3P_PlayniteDontShowAgainTitle";
+        /// <summary>
+        /// Forum
+        /// </summary>
+        public const string GogOss3P_PlayniteCommonLinksForum = "LOCGogOss3P_PlayniteCommonLinksForum";
+        /// <summary>
+        /// Store Page
+        /// </summary>
+        public const string GogOss3P_PlayniteCommonLinksStorePage = "LOCGogOss3P_PlayniteCommonLinksStorePage";
         /// <summary>
         /// Updates
         /// </summary>

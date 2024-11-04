@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">실행파일</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">이름</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">설치 경로</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">{0}(으)로부터 게임 불러오기 실패.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">메타 데이터 다운로드 실패 : {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">설치 제거 중</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">아무것도 하지않음</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">설치</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">설치 제거</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">다시 표시 안함</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">포럼</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">상점 페이지</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">업데이트</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">파일 선택...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">폴더 선택...</sys:String>

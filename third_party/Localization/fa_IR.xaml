@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">قابل اجرا</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">نام</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">محل نصب</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">واردات بازی از {0} انجام نشد.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">بارگیری ابرداده انجام نشد: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">در حال حذف نصب</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">کاری نکن</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">نصب</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">حذف نصب</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">دوباره نمایش نده</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">انجمن</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">صفحه فروشگاه</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">به روز رسانیها</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">انتخاب فایل…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">انتخاب پوشه…</sys:String>

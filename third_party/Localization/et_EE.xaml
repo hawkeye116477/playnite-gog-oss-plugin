@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Täitmisprogramm</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nimi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Paigalduse asukoht</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Ei saanud importida mänge kohast {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Metaandmete allalaadimine ebaõnnestus: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Desinstallimine</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ära tee midagi</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Paigalda</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Desinstalli</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Ära enam näita</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Foorum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Poeleht</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Värskendused</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Vali fail…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Vali kaust…</sys:String>

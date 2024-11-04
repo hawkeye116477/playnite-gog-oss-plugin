@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Виконуваний файл</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Назва</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Тека встановлення</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Не вдалося імпортувати ігри з {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Не вдалося завантажити метадані: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Видалення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Нічого не робити</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Встановити</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Видалити</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Не показувати знову</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Форум</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Сторінка в крамниці</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Оновлення</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Обрати файл...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Обрати теку...</sys:String>

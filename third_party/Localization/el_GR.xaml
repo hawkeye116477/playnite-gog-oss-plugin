@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Εκτελέσιμο</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Ονομα</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Κατάλογος εγκατάστασης</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Αποτυχία εισαγωγής παιχνιδιών από {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Αποτυχία λήψης metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Απεγκατάσταση</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">καμία ενέργεια</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Εγκατάσταση</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Απεγκατάσταση</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Να μην εμφανιστεί ξανά</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Φόρουμ</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Σελίδα Καταστήματος</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Ενημερώσεις</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Επιλογή αρχείου</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Επιλογή φακέλου</sys:String>

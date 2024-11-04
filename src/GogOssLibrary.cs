@@ -414,7 +414,7 @@ namespace GogOssLibraryNS
             {
                 PlayniteApi.Notifications.Add(new NotificationMessage(
                     ImportErrorMessageId,
-                    string.Format(PlayniteApi.Resources.GetString("LOCLibraryImportError"), Name) +
+                    string.Format(PlayniteApi.Resources.GetString(LOC.GogOss3P_PlayniteLibraryImportError), Name) +
                     System.Environment.NewLine + importError.Message,
                     NotificationType.Error,
                     () => OpenSettingsView()));

@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">可执行文件</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">名称</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">安装目录</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">从 {0} 导入游戏失败。</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">下载资料数据失败：{0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">正在卸载</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">什么也不做</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">安装</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">卸载</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">不再显示</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">论坛</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">商店页面</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">更新</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">选择文件…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">选择文件夹…</sys:String>

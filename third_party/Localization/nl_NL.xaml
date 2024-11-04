@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Uitvoerbaar bestand</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Naam</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Installatie Map</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Kan geen spellen importeren van {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Downloaden van metadata mislukt: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Aan het deinstalleren</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Doe niets</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Installeer</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Deïnstalleer</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Niet Opnieuw Weergeven</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Forum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Winkel pagina</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Updates</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Selecteer bestand...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Selecteer map...</sys:String>

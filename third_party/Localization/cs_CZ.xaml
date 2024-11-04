@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Spustitelný soubor</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Jméno</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Instalační Adresář</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Nepodařilo se importovat hry z {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Selhalo stahování metadat: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Probíhá odinstalace</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Nedělat nic</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Instalovat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Odinstalovat</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Příště Nezobrazovat</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Fórum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Stránka v obchodě</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Aktualizace</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Vybrat soubor...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Vybrat adresář...</sys:String>

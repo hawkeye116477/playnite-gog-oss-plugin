@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Programinis failas</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Pavadinimas</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Žaidimo direktorija</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Importuoti žaidimus iš {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Nepavyko atsisiųsti metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Išdiegti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Nieko nedaryti</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Įrašyti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Ištrinti</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Daugiau neberodyti</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Forumas</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Parduotuvės tinklalapis</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Atnaujinimai</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Pasirinkite failą...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Pasirinkite aplanką...</sys:String>

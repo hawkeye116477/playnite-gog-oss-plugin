@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">実行ファイル</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">タイトル</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">インストールフォルダ</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">{0} からゲームをインポートできませんでした。</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">メタデータをダウンロードできませんでした: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">アンインストール中</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">何もしない</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">インストール</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">アンインストール</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">次回から表示しない</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">フォーラム</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">ストアページ</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">更新</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">ファイルを選択</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">フォルダを選択…</sys:String>

@@ -44,3 +44,6 @@ LOCOptionOnlyManually
 LOCSettingsClearCacheTitle
 LOCSettingsPlaytimeImportModeNever
 LOCProgressMetadata
+LOCLibraryImportError
+LOCCommonLinksForum
+LOCCommonLinksStorePage

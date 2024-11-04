@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Uygulama</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">İsim</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Kurulum Klasörü</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">{0} konumundan oyun içe aktarılamadı.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Üst veriler indirilemedi: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Kaldırılıyor</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Hiçbir şey yapma</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Kur</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Kurulumu Kaldır</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Bir Daha Gösterme</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Forum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Mağaza Sayfası</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Güncellemeler</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Dosya seç…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Klasör seç…</sys:String>

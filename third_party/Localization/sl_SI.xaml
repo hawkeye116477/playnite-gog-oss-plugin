@@ -29,6 +29,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing"></sys:String>
@@ -40,6 +41,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip"></sys:String>

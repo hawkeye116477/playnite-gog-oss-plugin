@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Executable</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nom</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Carpeta d'instal·lació</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">No s’han pogut importar els jocs de {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">No s'ha pogut descarregar les metadades: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Desinstal·lant</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">No fer res</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Instal·lar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Desinstal·lar</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">No mostrar de nou</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Fòrum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Pàgina de la botiga</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Actualitzacions</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Seleccionar fitxer...</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Seleccionar carpeta...</sys:String>

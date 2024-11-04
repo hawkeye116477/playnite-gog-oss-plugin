@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Program</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Név</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Telepítési hely</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Nem sikerült a {0} játékok importálása.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Hiba a metaadatok letöltésekor: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Eltávolítás</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Ne tegyen semmit</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Telepítés</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Eltávolítás</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Ne mutasd többször</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Fórum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Áruházbeli oldala</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Frissítések</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Fájl kiválasztása…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Mappa kiválasztása…</sys:String>

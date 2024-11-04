@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Executabil</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nume</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Directorul de instalare</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Nu s-a putut importa jocuri de la {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Nu s-a putut descărca metadata: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Se dezinstalează</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Repaus</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Instalaţi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Dezinstalați</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Nu mai afișa</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Forum</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Pagina magazinului</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip"></sys:String>

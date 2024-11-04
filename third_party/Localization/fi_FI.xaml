@@ -32,6 +32,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteExecutableTitle">Suoritettava ohjelma</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameNameTitle">Nimi</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallDirTitle">Asennushakemisto</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteLibraryImportError">Pelejä ei voitu tuoda sijainnista {0}.</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteMetadataDownloadError">Tietojen lataaminen epäonnistui: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstalling">Poistetaan</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDoNothing">Älä tee mitään</sys:String>
@@ -43,6 +44,8 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallGame">Asenna</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteUninstallGame">Poista asennus</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDontShowAgainTitle">Älä näytä uudelleen</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksForum">Keskustelupalsta</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteCommonLinksStorePage">Kaupan sivu</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteExtensionsUpdates">Päivitykset</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectFileTooltip">Valitse tiedosto…</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteSelectDirectoryTooltip">Valitse kansio...</sys:String>
