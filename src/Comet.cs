@@ -120,7 +120,7 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.GogOssCometNotInstalled));
+                throw new Exception(ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Comet"));
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))

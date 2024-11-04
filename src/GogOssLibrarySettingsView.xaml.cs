@@ -116,8 +116,8 @@ namespace GogOssLibraryNS
             else
             {
                 troubleshootingInformation.CometVersion = "Not%20installed";
-                CometVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssCometNotInstalled);
-                CometBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssCometNotInstalled);
+                CometVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Comet");
+                CometBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Comet");
                 CheckForCometUpdatesBtn.IsEnabled = false;
                 OpenCometBinaryBtn.IsEnabled = false;
             }
@@ -134,8 +134,8 @@ namespace GogOssLibraryNS
             else
             {
                 troubleshootingInformation.GogdlVersion = "Not%20installed";
-                GogdlVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled);
-                GogdlBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssGogdlNotInstalled);
+                GogdlVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl");
+                GogdlBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl");
                 CheckForGogdlUpdatesBtn.IsEnabled = false;
                 OpenGogdlBinaryBtn.IsEnabled = false;
             }

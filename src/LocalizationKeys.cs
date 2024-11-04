@@ -10,10 +10,6 @@ namespace System
         /// </summary>
         public const string GogOssCometCustomPath = "LOCGogOssCometCustomPath";
         /// <summary>
-        /// Comet is not installed.
-        /// </summary>
-        public const string GogOssCometNotInstalled = "LOCGogOssCometNotInstalled";
-        /// <summary>
         /// Comet version
         /// </summary>
         public const string GogOssCometVersion = "LOCGogOssCometVersion";
@@ -34,10 +30,6 @@ namespace System
         /// </summary>
         public const string GogOssGogdlBinary = "LOCGogOssGogdlBinary";
         /// <summary>
-        /// Gogdl is not installed.
-        /// </summary>
-        public const string GogOssGogdlNotInstalled = "LOCGogOssGogdlNotInstalled";
-        /// <summary>
         /// Use vertical covers
         /// </summary>
         public const string GogOssUseVerticalCovers = "LOCGogOssUseVerticalCovers";
@@ -54,22 +46,6 @@ namespace System
         /// </summary>
         public const string GogOssGameNotInstallable = "LOCGogOssGameNotInstallable";
         /// <summary>
-        /// The download will start soon. You can see its status by accessing GOG OSS Panel via Menu => View or sidebar.
-        /// </summary>
-        public const string GogOssDownloadManagerWhatsUp = "LOCGogOssDownloadManagerWhatsUp";
-        /// <summary>
-        /// GOG OSS Panel
-        /// </summary>
-        public const string GogOssPanel = "LOCGogOssPanel";
-        /// <summary>
-        /// {0} is already in the download list. You can see status of the download by accessing GOG OSS Panel via Menu => View or sidebar.
-        /// </summary>
-        public const string GogOssDownloadAlreadyExists = "LOCGogOssDownloadAlreadyExists";
-        /// <summary>
-        /// Following games are already in the download list: {0}. You can see status of the download by accessing GOG OSS Panel via Menu => View or sidebar.
-        /// </summary>
-        public const string GogOssDownloadAlreadyExistsOther = "LOCGogOssDownloadAlreadyExistsOther";
-        /// <summary>
         /// Enable Comet support
         /// </summary>
         public const string GogOssEnableCometSupport = "LOCGogOssEnableCometSupport";
@@ -81,22 +57,6 @@ namespace System
         /// Check for Comet and Gogdl updates
         /// </summary>
         public const string GogOssCometUpdatePolicy = "LOCGogOssCometUpdatePolicy";
-        /// <summary>
-        /// Updates for games from GOG are being downloaded.
-        /// </summary>
-        public const string GogOssGamesUpdatesUnderway = "LOCGogOssGamesUpdatesUnderway";
-        /// <summary>
-        /// Migrate all games from GOG plugin
-        /// </summary>
-        public const string GogOssMigrateGamesGog = "LOCGogOssMigrateGamesGog";
-        /// <summary>
-        /// Migrating all games from GOG plugin...
-        /// </summary>
-        public const string GogOssMigratingGamesGog = "LOCGogOssMigratingGamesGog";
-        /// <summary>
-        /// All games will be removed from GOG plugin and moved to GOG OSS. Are you sure you want to do this?
-        /// </summary>
-        public const string GogOssMigrationConfirm = "LOCGogOssMigrationConfirm";
         /// <summary>
         /// Games Installation Path
         /// </summary>
@@ -613,6 +573,42 @@ namespace System
         /// Games
         /// </summary>
         public const string GogOssGames = "LOCGogOssGames";
+        /// <summary>
+        /// {AppName} is not installed.
+        /// </summary>
+        public const string GogOssLauncherNotInstalled = "LOCGogOssLauncherNotInstalled";
+        /// <summary>
+        /// GOG OSS Panel
+        /// </summary>
+        public const string GogOssPanel = "LOCGogOssPanel";
+        /// <summary>
+        /// The download will start soon. You can see its status by accessing GOG OSS Panel via Menu => View or sidebar.
+        /// </summary>
+        public const string GogOssDownloadManagerWhatsUp = "LOCGogOssDownloadManagerWhatsUp";
+        /// <summary>
+        /// {0} is already in the download list. You can see status of the download by accessing GOG OSS Panel via Menu => View or sidebar.
+        /// </summary>
+        public const string GogOssDownloadAlreadyExists = "LOCGogOssDownloadAlreadyExists";
+        /// <summary>
+        /// Following games are already in the download list: {0}. You can see status of the download by accessing GOG OSS Panel via Menu => View or sidebar.
+        /// </summary>
+        public const string GogOssDownloadAlreadyExistsOther = "LOCGogOssDownloadAlreadyExistsOther";
+        /// <summary>
+        /// Migrate all games from GOG plugin
+        /// </summary>
+        public const string GogOssMigrateGamesGog = "LOCGogOssMigrateGamesGog";
+        /// <summary>
+        /// Migrating all games from GOG plugin...
+        /// </summary>
+        public const string GogOssMigratingGamesGog = "LOCGogOssMigratingGamesGog";
+        /// <summary>
+        /// All games will be removed from GOG plugin and moved to GOG OSS. Are you sure you want to do this?
+        /// </summary>
+        public const string GogOssMigrationConfirm = "LOCGogOssMigrationConfirm";
+        /// <summary>
+        /// Updates for games from GOG are being downloaded.
+        /// </summary>
+        public const string GogOssGamesUpdatesUnderway = "LOCGogOssGamesUpdatesUnderway";
         /// <summary>
         /// Filter Active
         /// </summary>

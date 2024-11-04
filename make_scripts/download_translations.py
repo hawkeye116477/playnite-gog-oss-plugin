@@ -52,37 +52,37 @@ with tempfile.TemporaryDirectory() as tmpdirname:
             "sys": xmlns_sys,
             "x":  xmlns_x}
     # Copy only needed localizations and rename
-    legendary_loc_keys = {}
-    with open(pj(script_path, "config", "legendaryLocKeys.txt"),
-          "r", encoding="utf-8") as legendary_loc_keys_content:
-        for line in legendary_loc_keys_content:
+    common_loc_keys = {}
+    with open(pj(script_path, "config", "commonLocKeys.txt"),
+          "r", encoding="utf-8") as common_loc_keys_content:
+        for line in common_loc_keys_content:
             if line := line.strip():
-                legendary_loc_keys[line] = ""
+                common_loc_keys[line] = ""
 
-    legendary_loc_path = pj(tmpdirname, "src", "Localization")
-    for filename in os.listdir(legendary_loc_path):
-        path = os.path.join(legendary_loc_path, filename)
+    common_loc_path = pj(tmpdirname, "src", "Localization")
+    for filename in os.listdir(common_loc_path):
+        path = os.path.join(common_loc_path, filename)
         if os.path.isdir(path):
             continue
         if any(x in filename for x in ["legendary", "gog-oss"]):
             if "gog-oss" in filename:
                 shutil.copy(path, pj(src_path, "Localization"))
             continue
-        legendary_loc = ET.parse(pj(legendary_loc_path, filename))
+        common_loc = ET.parse(pj(common_loc_path, filename))
 
         xml_root = ET.Element("ResourceDictionary", nsmap=NSMAP)
         xml_doc = ET.ElementTree(xml_root)
 
-        for child in legendary_loc.getroot():
+        for child in common_loc.getroot():
             key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in legendary_loc_keys:
+            if key in common_loc_keys:
                 key_text = child.text
                 if not key_text:
                     key_text = ""
                 key = key.replace("Legendary", "GogOss")
                 new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-                new_key.set(ET.QName(xmlns_x, "Key"), key)
-                new_key.text = key_text.replace("Legendary", "GOG OSS")
+                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("Epic", "Gog"))
+                new_key.text = key_text.replace("Legendary", "GOG OSS").replace("{PluginShortName}", "GOG OSS").replace("{OriginalPluginShortName}", "GOG").replace("{SourceName}", "GOG")
                 xml_root.append(new_key)
  
         ET.indent(xml_doc, level=0)
