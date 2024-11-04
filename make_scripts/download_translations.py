@@ -64,7 +64,7 @@ with tempfile.TemporaryDirectory() as tmpdirname:
         path = os.path.join(common_loc_path, filename)
         if os.path.isdir(path):
             continue
-        if any(x in filename for x in ["legendary", "gog-oss"]):
+        if any(x in filename for x in ["legendary", "gog-oss", "nile"]):
             if "gog-oss" in filename:
                 shutil.copy(path, pj(src_path, "Localization"))
             continue
