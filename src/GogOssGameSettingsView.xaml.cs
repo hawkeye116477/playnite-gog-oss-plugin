@@ -136,6 +136,7 @@ namespace GogOssLibraryNS
             }
             AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
             AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
+            EnableCometSupportChk.IsChecked = globalSettings.EnableCometSupport;
             gameSettings = LoadGameSettings(GameID);
             if (gameSettings.EnableCometSupport != null)
             {
@@ -157,6 +158,7 @@ namespace GogOssLibraryNS
             {
                 AutoSyncSavesChk.IsChecked = gameSettings.AutoSyncSaves;
             }
+
             if (!gameSettings.CloudSaveFolder.IsNullOrEmpty())
             {
                 SelectedSavePathTxt.Text = gameSettings.CloudSaveFolder;
