@@ -1,5 +1,12 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.0.3
+    RequiredApiVersion: 6.4.0
+    ReleaseDate: 2024-11-06
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.0.3/GogOssLibrary_1_0_3.pext
+    Changelog:
+      - Fixed problems with migration of games from GOG plugin
+      - Fixed loading single game settings for enabling Comet
   - Version: 1.0.2
     RequiredApiVersion: 6.4.0
     ReleaseDate: 2024-11-02
