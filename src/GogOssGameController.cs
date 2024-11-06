@@ -426,10 +426,6 @@ namespace GogOssLibraryNS
                     {
                         var providedArgs = Helpers.SplitArguments(task[0].Arguments);
                         playArgs.AddRange(providedArgs);
-                        if (workingDir.IsNullOrEmpty())
-                        {
-                            workingDir = Path.GetDirectoryName(gameExeFullPath);
-                        }
                     }
                     if (gameSettings.StartupArguments?.Any() == true)
                     {
@@ -440,13 +436,21 @@ namespace GogOssLibraryNS
                         gameExe = gameSettings.OverrideExe;
                         gameExeFullPath = gameExe;
                     }
+                    if (workingDir.IsNullOrEmpty())
+                    {
+                        workingDir = Game.InstallDirectory;
+                    }
                     var cmd = Cli.Wrap(gameExeFullPath)
                                  .WithArguments(playArgs)
                                  .AddCommandToLog()
                                  .WithValidation(CommandResultValidation.None);
-                    if (!workingDir.IsNullOrEmpty())
+                    if (Directory.Exists(workingDir))
                     {
                         cmd = cmd.WithWorkingDirectory(workingDir);
+                    }
+                    else
+                    {
+                        logger.Error($"Working directory {workingDir} doesn't exists.");
                     }
                     await foreach (var cmdEvent in cmd.ListenAsync())
                     {
