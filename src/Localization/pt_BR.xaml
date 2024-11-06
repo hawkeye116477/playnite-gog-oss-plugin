@@ -129,4 +129,13 @@
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} foi desinstalado com sucesso.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Os seguintes jogos foram desinstalados com êxito: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Jogos</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
+  <sys:String x:Key="LOCGogOssPanel"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther"></sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog"></sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog"></sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm"></sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
 </ResourceDictionary>

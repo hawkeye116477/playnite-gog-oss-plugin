@@ -11,11 +11,11 @@
   <sys:String x:Key="LOCGogOssUnattendedInstall">Abilita la modalità d'installazione automatica</sys:String>
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Non sarà necessario scegliere nulla nella finestra d'installazione e l'installazione inizierà automaticamente dopo aver scaricato le informazioni richieste.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Numero massimo di processi di lavoro</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Dopo il completamento del download</sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown">Il sistema verrà spento a breve...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown">Il sistema verrà riavviato a breve...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown">Il sistema verrà ibernato presto...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown">Il sistema verrà sospeso a breve...</sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Spazio disponibile:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Dopo l'installazione:</sys:String>
   <sys:String x:Key="LOCGogOssDownloaded">Scaricato</sys:String>
@@ -101,7 +101,7 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizza</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Download</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Upload</sys:String>
-  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
+  <sys:String x:Key="LOCGogOssForceAction">Forza azione</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">La funzionalità di salvataggio cloud è sperimentale. Si consiglia di eseguire il backup del gioco nel caso in cui qualcosa vada storto. Sei sicuro di voler continuare?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizza il tempo di gioco nel cloud</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Upload del tempo di gioco di {0} nel cloud...</sys:String>
@@ -129,4 +129,13 @@
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} è stato disinstallato con successo.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">I seguenti giochi sono stati disinstallati con successo: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Giochi</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} non è installato.</sys:String>
+  <sys:String x:Key="LOCGogOssPanel">Pannello GOG OSS</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">Il download inizierà a breve. Puoi vederne lo stato accedendo al pannello GOG OSS tramite Menu =&gt; Visualizza o dalla barra laterale.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} è già nella lista dei download. È possibile visualizzare lo stato del download accedendo al pannello GOG OSS tramite Menu =&gt; Visualizza o dalla barra laterale.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">I seguenti giochi sono già nella lista dei download: {0}. Puoi vedere lo stato del download accedendo al pannello GOG OSS tramite Menu =&gt; Visualizza o dalla barra laterale.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog">Migra tutti i giochi dal plugin GOG</sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog">Migrazione di tutti i giochi dal plugin GOG...</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm">Tutti i giochi saranno rimossi dal plugin GOG e spostati in GOG OSS. Sei sicuro di volerlo fare?</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Gli aggiornamenti dei giochi di GOG sono in download.</sys:String>
 </ResourceDictionary>
