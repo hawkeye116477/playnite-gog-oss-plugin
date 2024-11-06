@@ -129,4 +129,13 @@
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} başarıyla kaldırıldı.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Aşağıdaki oyunlar başarıyla kaldırıldı: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Oyunlar</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} kurulu değil.</sys:String>
+  <sys:String x:Key="LOCGogOssPanel">GOG OSS Paneli</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">İndirme yakında başlayacak. Menü =&gt; Görünüm veya kenar çubuğundan GOG OSS Panel üstünden durumunu görebilirsiniz.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} zaten indirme listesinde. Menü =&gt; Görünüm veya kenar çubuğundan GOG OSS Panel üstünden indirmenin durumunu görebilirsiniz.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Şu oyunlar zaten indirme listesinde bulunuyor: {0}. Menü =&gt; Görünüm veya kenar çubuğundan GOG OSS Panele erişerek indirme durumunu görebilirsiniz.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog">Tüm oyunları GOG eklentisinden taşıyın</sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog">Tüm oyunları GOG eklentisinden taşıyınıyor...</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm">Tüm oyunlar GOG eklentisinden kaldırılacak ve GOG OSS üstüne taşınacak. Bunu yapmak istediğinden emin misin?</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">GOG oyunlarına yönelik güncellemeler indiriliyor.</sys:String>
 </ResourceDictionary>

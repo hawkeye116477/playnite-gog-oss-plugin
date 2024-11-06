@@ -129,4 +129,13 @@
   <sys:String x:Key="LOCGogOssUninstallSuccess">Program {0} został pomyślnie odinstalowany.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Następujące gry zostały pomyślnie odinstalowane: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Gry</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherNotInstalled">Program {AppName} nie jest zainstalowany.</sys:String>
+  <sys:String x:Key="LOCGogOssPanel">Panel GOG OSS</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">Pobieranie rozpocznie się już wkrótce. Możesz zobaczyć jego stan, uzyskując dostęp do panelu GOG OSS za pośrednictwem Menu =&gt; Widok lub paska bocznego.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} jest już na liście pobierania. Możesz zobaczyć jego stan, uzyskując dostęp do panelu GOG OSS za pośrednictwem Menu =&gt; Widok lub paska bocznego.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Następujące gry są już na liście pobierania: {0}. Możesz zobaczyć stan pobierania, uzyskując dostęp do panelu GOG OSS za pośrednictwem Menu =&gt; Widok lub paska bocznego.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog">Migruj wszystkie gry z wtyczki GOG</sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog">Migrowanie wszystkich gier z wtyczki GOG...</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm">Wszystkie gry zostaną usunięte z wtyczki GOG i przeniesione do GOG OSS. Czy na pewno chcesz to zrobić?</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Trwa pobieranie aktualizacji dla gier z GOG.</sys:String>
 </ResourceDictionary>

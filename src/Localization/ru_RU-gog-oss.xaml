@@ -1,26 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <sys:String x:Key="LOCGogOssCometCustomPath">Путь к Comet</sys:String>
-  <sys:String x:Key="LOCGogOssCometNotInstalled">Comet не установлена.</sys:String>
   <sys:String x:Key="LOCGogOssCometVersion">Версия Comet</sys:String>
   <sys:String x:Key="LOCGogOssCometBinary">Бинарная Comet</sys:String>
   <sys:String x:Key="LOCGogOssGogdlCustomPath">Путь к Gogdl</sys:String>
   <sys:String x:Key="LOCGogOssGogdlVersion">Версия Gogdl</sys:String>
   <sys:String x:Key="LOCGogOssGogdlBinary">Бинарная Gogdl</sys:String>
-  <sys:String x:Key="LOCGogOssGogdlNotInstalled">Gogdl не установлена.</sys:String>
   <sys:String x:Key="LOCGogOssUseVerticalCovers">Используйте вертикальные обложки</sys:String>
   <sys:String x:Key="LOCGogOssLanguage">Язык</sys:String>
   <sys:String x:Key="LOCGogOssBetaChannel">Бета канал</sys:String>
   <sys:String x:Key="LOCGogOssGameNotInstallable">{0} не может быть установлен. Проверьте скачиваемое содержимое на {1}.</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">Скачивание скоро начнется. Вы можете увидеть его статус, зайдя в Панель GOG OSS через Меню =&gt; Вид или Боковую панель.</sys:String>
-  <sys:String x:Key="LOCGogOssPanel">Панель GOG OSS</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} Уже находится в списке загрузок. Вы можете увидеть статус загрузки, зайдя в Панель GOG OSS через Меню =&gt; Вид или Боковую панель.</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Следующие игры уже находятся в списке загрузок: {0}. Вы можете увидеть статус загрузки, зайдя в Панель GOG OSS через Меню =&gt; Вид или Боковую панель.</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupport">Включить поддержку кометы</sys:String>
   <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">Это необходимо для достижений, таблиц лидеров и многопользовательского режима, но может вызвать проблемы с работой некоторых игр.</sys:String>
   <sys:String x:Key="LOCGogOssCometUpdatePolicy">Проверьте обновления Comet и Gogdl</sys:String>
-  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Обновления для игр из GOG загружаются.</sys:String>
-  <sys:String x:Key="LOCGogOssMigrateGamesGog">Перенести все игры из плагина GOG</sys:String>
-  <sys:String x:Key="LOCGogOssMigratingGamesGog">Перенос всех игр из плагина GOG...</sys:String>
-  <sys:String x:Key="LOCGogOssMigrationConfirm">Все игры будут удалены из плагина GOG и перенесены в GOG OSS. Вы уверены, что хотите продолжить?</sys:String>
 </ResourceDictionary>
