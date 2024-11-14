@@ -373,7 +373,7 @@ namespace GogOssLibraryNS
                                 DiskSpeedTB.Text = diskSpeed + "/s";
                             }
                             var errorMessage = stdErr.Text;
-                            if (errorMessage.Contains("finished") || errorMessage.Contains("Finished") || errorMessage.Contains("already up to date"))
+                            if (errorMessage.Contains("Progress: 100"))
                             {
                                 successDisplayed = true;
                             }
@@ -405,11 +405,11 @@ namespace GogOssLibraryNS
                                     if (errorMessage.Contains("multiprocessing.queues.Queue"))
                                     {
                                         var installDirSize = FileSystem.GetDirectorySize(taskData.fullInstallPath, false);
-                                        if (installDirSize == taskData.installSizeNumber)
+                                        if (installDirSize == taskData.installSizeNumber && downloadProperties.downloadAction != DownloadAction.Repair)
                                         {
                                             taskData.downloadedNumber = taskData.downloadSizeNumber;
-                                            errorDisplayed = false;
                                         }
+                                        errorDisplayed = false;
                                     }
                                 }
                             }
