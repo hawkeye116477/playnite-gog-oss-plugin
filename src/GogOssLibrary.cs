@@ -927,8 +927,8 @@ namespace GogOssLibraryNS
                             var installData = new List<DownloadManagerData.Download>();
                             foreach (var game in installedGogOssGames)
                             {
-                                var installProperties = new DownloadProperties { downloadAction = DownloadAction.Repair };
-                                installData.Add(new DownloadManagerData.Download { gameID = game.GameId, name = game.Name, downloadProperties = installProperties });
+                                var installProperties = new DownloadProperties { downloadAction = DownloadAction.Repair, installPath = game.InstallDirectory };
+                                installData.Add(new DownloadManagerData.Download { gameID = game.GameId, name = game.Name, downloadProperties = installProperties, fullInstallPath = installProperties.installPath });
                             }
                             GogOssInstallController.LaunchInstaller(installData);
                         }

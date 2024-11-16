@@ -106,10 +106,6 @@ namespace GogOssLibraryNS
             }
 
             var redistInstallPath = Gogdl.DependenciesInstallationPath;
-            if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.GogOssPermissionError))
-            {
-                return;
-            }
             InstallerWindow.Close();
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
             var downloadTasks = new List<DownloadManagerData.Download>();
@@ -120,16 +116,25 @@ namespace GogOssLibraryNS
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameId);
                 if (wantedItem == null)
                 {
-                    if (downloadAction == DownloadAction.Repair)
+                    if (installData.downloadProperties.installPath.IsNullOrEmpty())
                     {
-                        var installedInfo = GogOss.GetInstalledInfo(installData.gameID);
-                        installPath = installedInfo.install_path;
-                        installData.fullInstallPath = installPath;
+                        if (installData.downloadItemType == DownloadItemType.Dependency)
+                        {
+                            installData.downloadProperties.installPath = redistInstallPath;
+                        }
+                        else
+                        {
+                            installData.downloadProperties.installPath = installPath;
+                        }
                     }
-                    var downloadProperties = GetDownloadProperties(installData, downloadAction, installPath);
+                    if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.GogOssPermissionError))
+                    {
+                        continue;
+                    }
+                    var downloadProperties = GetDownloadProperties(installData, downloadAction);
                     if (installData.downloadItemType == DownloadItemType.Dependency)
                     {
-                        downloadProperties = GetDownloadProperties(installData, downloadAction, redistInstallPath);
+                        downloadProperties = GetDownloadProperties(installData, downloadAction);
                     }
                     installData.downloadProperties = downloadProperties;
                     downloadTasks.Add(installData);
@@ -168,7 +173,7 @@ namespace GogOssLibraryNS
             await StartTask(DownloadAction.Repair);
         }
 
-        public DownloadProperties GetDownloadProperties(DownloadManagerData.Download installData, DownloadAction downloadAction, string installPath = "")
+        public DownloadProperties GetDownloadProperties(DownloadManagerData.Download installData, DownloadAction downloadAction)
         {
             var settings = GogOssLibrary.GetSettings();
             int maxWorkers = settings.MaxWorkers;
@@ -177,10 +182,6 @@ namespace GogOssLibraryNS
                 maxWorkers = int.Parse(MaxWorkersNI.Value);
             }
             installData.downloadProperties.downloadAction = downloadAction;
-            if (installPath != "")
-            {
-                installData.downloadProperties.installPath = installPath;
-            }
             installData.downloadProperties.maxWorkers = maxWorkers;
             return installData.downloadProperties;
         }
