@@ -244,5 +244,20 @@ namespace GogOssLibraryNS
                 Directory.Delete(cacheDir, true);
             }
         }
+
+        public static bool DefaultPlaytimeSyncEnabled
+        {
+            get
+            {
+                var playniteAPI = API.Instance;
+                var playTimeSyncEnabled = false;
+                if (playniteAPI.ApplicationSettings.PlaytimeImportMode != PlaytimeImportMode.Never)
+                {
+                    playTimeSyncEnabled = true;
+                }
+                return playTimeSyncEnabled;
+            }
+        }
+
     }
 }

@@ -27,7 +27,7 @@ namespace GogOssLibraryNS
         public bool AutoUpdateGames { get; set; } = false;
         public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
         public long NextCometUpdateTime { get; set; } = 0;
-        public bool SyncPlaytime { get; set; } = false;
+        public bool SyncPlaytime { get; set; } = GogOss.DefaultPlaytimeSyncEnabled;
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
         public long NextClearingTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
