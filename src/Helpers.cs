@@ -1,7 +1,4 @@
-﻿using ByteSizeLib;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using System;
+﻿using System;
 
 namespace GogOssLibraryNS
 {
