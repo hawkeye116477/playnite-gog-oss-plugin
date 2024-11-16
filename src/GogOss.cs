@@ -250,12 +250,12 @@ namespace GogOssLibraryNS
             get
             {
                 var playniteAPI = API.Instance;
-                var playTimeSyncEnabled = false;
+                var playtimeSyncEnabled = false;
                 if (playniteAPI.ApplicationSettings.PlaytimeImportMode != PlaytimeImportMode.Never)
                 {
-                    playTimeSyncEnabled = true;
+                    playtimeSyncEnabled = true;
                 }
-                return playTimeSyncEnabled;
+                return playtimeSyncEnabled;
             }
         }
 
