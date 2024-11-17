@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -602,11 +603,19 @@ namespace GogOssLibraryNS
                 if (installedInfo.build_id != newGameInfo.buildId)
                 {
                     var updateSize = await Gogdl.CalculateGameSize(gameId, installedInfo);
+                    DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
+                    var newVersionName = $"{newGameInfo.versionName} — ";
+                    if (newGameInfo.versionName.IsNullOrEmpty())
+                    {
+                        newVersionName = "";
+                    }
+                    newVersionName = $"{newVersionName}{newGameInfo.builds.items.FirstOrDefault(i => i.build_id == newGameInfo.buildId).date_published.ToLocalTime().ToString("d", formatInfo)}";
                     var updateInfo = new UpdateInfo
                     {
                         Install_path = installedInfo.install_path,
                         Version = newGameInfo.versionName,
                         Title = installedInfo.title,
+                        Title_for_updater = $"{installedInfo.title} {newVersionName}",
                         Download_size = updateSize.download_size,
                         Disk_size = updateSize.disk_size,
                         Build_id = newGameInfo.buildId,

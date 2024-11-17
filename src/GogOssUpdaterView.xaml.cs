@@ -82,10 +82,6 @@ namespace GogOssLibraryNS
 
         private void GogOssUpdaterUC_Loaded(object sender, RoutedEventArgs e)
         {
-            foreach (var gameUpdate in UpdatesList)
-            {
-                gameUpdate.Value.Title_for_updater = $"{gameUpdate.Value.Title.RemoveTrademarks()} {gameUpdate.Value.Version}";
-            }
             UpdatesLB.ItemsSource = UpdatesList;
             UpdatesLB.Visibility = Visibility.Visible;
             UpdatesLB.SelectAll();
