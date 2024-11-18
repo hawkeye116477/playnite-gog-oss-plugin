@@ -20,7 +20,7 @@
     <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled"
         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsGeneralLabel}">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <CheckBox DockPanel.Dock="Top" Name="GOGImportInstalledChk"
                   Margin="0,0,0,15"
@@ -89,7 +89,7 @@
             </ScrollViewer>
         </TabItem>
         <TabItem Header="{DynamicResource LOCGogOssDownloadSettings}">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <CheckBox Grid.Column="0" Grid.Row="0"
                             Content="{DynamicResource LOCGogOssDisplayDownloadTaskFinishedNotifications}"
@@ -138,7 +138,7 @@
             </ScrollViewer>
         </TabItem>
         <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -189,7 +189,7 @@
             </ScrollViewer>
         </TabItem>
         <TabItem Header="{DynamicResource LOCGogOssTroubleshootingInformation}">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <Grid>
                         <Grid.ColumnDefinitions>
