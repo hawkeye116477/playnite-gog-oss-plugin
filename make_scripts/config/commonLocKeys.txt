@@ -137,3 +137,4 @@ LOCLegendaryGamesUpdatesUnderway
 LOCLegendaryMigrateGamesEpic
 LOCLegendaryMigratingGamesEpic
 LOCLegendaryMigrationConfirm
+LOCLegendaryAutoRemoveCompletedDownloads

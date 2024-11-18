@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">You won't have to choose anything in the installer window and the installation will start automatically after downloading the required information.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Maximum number of worker processes</sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete">Action after download is complete</sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads">Automatically remove completed downloads from list</sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown">System will be turned off soon...</sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown">System will be restarted soon...</sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown">System will be hibernated soon...</sys:String>

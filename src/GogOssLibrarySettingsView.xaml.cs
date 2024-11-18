@@ -101,6 +101,7 @@ namespace GogOssLibraryNS
                 { ClearCacheTime.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteSettingsPlaytimeImportModeNever) }
             };
             AutoClearCacheCBo.ItemsSource = autoClearOptions;
+            AutoRemoveCompletedDownloadsCBo.ItemsSource = autoClearOptions;
 
             troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)

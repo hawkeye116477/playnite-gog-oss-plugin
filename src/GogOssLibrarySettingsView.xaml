@@ -108,6 +108,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}" Grid.Column="0"
                             Grid.Row="0" Margin="0,0,15,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
@@ -115,6 +116,8 @@
                     <TextBlock Grid.Column="0" Grid.Row="1"
                             Text="{DynamicResource LOCGogOssAfterDownloadComplete}" Margin="0,0,15,5" VerticalAlignment="Center" HorizontalAlignment="Left"  />
                     <ComboBox Grid.Column="1" Grid.Row="1" x:Name="AfterDownloadCompleteCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.DoActionAfterDownloadComplete}" SelectedValuePath="Key"  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="{DynamicResource LOCGogOssAutoRemoveCompletedDownloads}" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                    <ComboBox Grid.Row="2" Grid.Column="1" x:Name="AutoRemoveCompletedDownloadsCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.AutoRemoveCompletedDownloads}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="10,0,0,5" HorizontalAlignment="Left" />
                 </Grid>
             </StackPanel>
         </TabItem>

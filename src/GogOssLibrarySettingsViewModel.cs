@@ -28,8 +28,10 @@ namespace GogOssLibraryNS
         public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
         public long NextCometUpdateTime { get; set; } = 0;
         public bool SyncPlaytime { get; set; } = GogOss.DefaultPlaytimeSyncEnabled;
+        public ClearCacheTime AutoRemoveCompletedDownloads { get; set; } = ClearCacheTime.Never;
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
         public long NextClearingTime { get; set; } = 0;
+        public long NextRemovingCompletedDownloadsTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
     }
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
@@ -60,6 +62,17 @@ namespace GogOssLibraryNS
                 else
                 {
                     Settings.NextClearingTime = 0;
+                }
+            }
+            if (EditingClone.AutoRemoveCompletedDownloads != Settings.AutoRemoveCompletedDownloads)
+            {
+                if (Settings.AutoRemoveCompletedDownloads != ClearCacheTime.Never)
+                {
+                    Settings.NextRemovingCompletedDownloadsTime = GogOssLibrary.GetNextClearingTime(Settings.AutoRemoveCompletedDownloads);
+                }
+                else
+                {
+                    Settings.NextRemovingCompletedDownloadsTime = 0;
                 }
             }
             if (EditingClone.GamesUpdatePolicy != Settings.GamesUpdatePolicy)
