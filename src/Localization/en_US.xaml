@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Download Size:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Install Size:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">Are you sure you want to uninstall {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings">Download Settings</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings">Downloads</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications">Display desktop notifications about finished tasks</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">Display download speed in bits per second</sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs">Download all DLCs</sys:String>

@@ -86,7 +86,39 @@
                 </StackPanel>
             </StackPanel>
         </TabItem>
-        <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}" Margin="-2,0">
+        <TabItem Header="{DynamicResource LOCGogOssDownloadSettings}">
+            <StackPanel Margin="20">
+                <CheckBox Grid.Column="0" Grid.Row="0"
+                            Content="{DynamicResource LOCGogOssDisplayDownloadTaskFinishedNotifications}"
+                            IsChecked="{Binding Settings.DisplayDownloadTaskFinishedNotifications}" Margin="0,0,0,10" />
+                <CheckBox Grid.Column="0" Grid.Row="1"
+                            Content="{DynamicResource LOCGogOssDisplayDownloadSpeedInBits}"
+                            IsChecked="{Binding Settings.DisplayDownloadSpeedInBits}" Margin="0,0,0,10" />
+                <CheckBox Grid.Column="0" Grid.Row="2"
+                            Content="{DynamicResource LOCGogOssDownloadAllDlcs}"
+                            IsChecked="{Binding Settings.DownloadAllDlcs}" Margin="0,0,0,10" />
+                <CheckBox Grid.Column="0" Grid.Row="5"
+                            Content="{DynamicResource LOCGogOssUnattendedInstall}" ToolTip="{DynamicResource LOCGogOssUnattendedInstallToolTip}"
+                            IsChecked="{Binding Settings.UnattendedInstall}" Margin="0,0,0,10" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="Left" Width="Auto" />
+                        <ColumnDefinition x:Name="Right" Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}" Grid.Column="0"
+                            Grid.Row="0" Margin="0,0,15,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    <common:NumericInput Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" MinValue="0" x:Name="MaxWorkersNI" Value="{Binding Settings.MaxWorkers}" HorizontalAlignment="Left"/>
+                    <TextBlock Grid.Column="0" Grid.Row="1"
+                            Text="{DynamicResource LOCGogOssAfterDownloadComplete}" Margin="0,0,15,5" VerticalAlignment="Center" HorizontalAlignment="Left"  />
+                    <ComboBox Grid.Column="1" Grid.Row="1" x:Name="AfterDownloadCompleteCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.DoActionAfterDownloadComplete}" SelectedValuePath="Key"  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,0,5" HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}">
             <StackPanel Margin="20">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -128,51 +160,9 @@
                             Grid.Row="2" Grid.Column="2" VerticalAlignment="Center"/>
                 </Grid>
                 <StackPanel Margin="0,10,0,0">
-                    <TextBlock Text="{DynamicResource LOCGogOssDownloadSettings}" FontSize="18"
-                        Margin="0,0,0,2" />
-                    <Separator Margin="0,0,0,10" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="Left" Width="Auto" />
-                            <ColumnDefinition x:Name="Right" Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <CheckBox Grid.Column="0" Grid.Row="0"
-                            Content="{DynamicResource LOCGogOssDisplayDownloadTaskFinishedNotifications}"
-                            IsChecked="{Binding Settings.DisplayDownloadTaskFinishedNotifications}" Margin="0,0,0,10" />
-                        <CheckBox Grid.Column="0" Grid.Row="1"
-                            Content="{DynamicResource LOCGogOssDisplayDownloadSpeedInBits}"
-                            IsChecked="{Binding Settings.DisplayDownloadSpeedInBits}" Margin="0,0,0,10" />
-                        <CheckBox Grid.Column="0" Grid.Row="2"
-                            Content="{DynamicResource LOCGogOssDownloadAllDlcs}"
-                            IsChecked="{Binding Settings.DownloadAllDlcs}" Margin="0,0,0,10" />
-                        <CheckBox Grid.Column="0" Grid.Row="5"
-                            Content="{DynamicResource LOCGogOssUnattendedInstall}" ToolTip="{DynamicResource LOCGogOssUnattendedInstallToolTip}"
-                            IsChecked="{Binding Settings.UnattendedInstall}" Margin="0,0,0,10" />
-                        <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}" Grid.Column="0"
-                            Grid.Row="6" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                        <common:NumericInput Grid.Row="6" Grid.Column="1" Margin="0,0,0,5" MinValue="0" x:Name="MaxWorkersNI" Value="{Binding Settings.MaxWorkers}" HorizontalAlignment="Left"/>
-                        <TextBlock Grid.Column="0" Grid.Row="10"
-                            Text="{DynamicResource LOCGogOssAfterDownloadComplete}" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"  />
-                        <ComboBox Grid.Column="1" Grid.Row="10" x:Name="AfterDownloadCompleteCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.DoActionAfterDownloadComplete}" SelectedValuePath="Key"  VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,0,5" HorizontalAlignment="Left"/>
-                    </Grid>
-                </StackPanel>
-                <StackPanel Margin="0,10,0,0">
                     <TextBlock Text="{DynamicResource LOCGogOssCache}" FontSize="18"
                         Margin="0,0,0,2" />
-                    <Separator Margin="0,0,0,10" />
+                    <Separator Margin="0,0,0,5" />
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
