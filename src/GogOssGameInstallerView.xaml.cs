@@ -581,7 +581,12 @@ namespace GogOssLibraryNS
                             versionNameFirstPart = "";
                         }
                         var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
-                        gameVersions.Add(build.build_id, versionName);
+                        var buildId = build.legacy_build_id;
+                        if (buildId.IsNullOrEmpty())
+                        {
+                            buildId = build.build_id;
+                        }
+                        gameVersions.Add(buildId, versionName);
                     }
                 }
                 GameVersionCBo.ItemsSource = gameVersions;

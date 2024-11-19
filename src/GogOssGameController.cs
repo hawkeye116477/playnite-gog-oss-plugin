@@ -605,7 +605,19 @@ namespace GogOssLibraryNS
             var newGameInfo = await Gogdl.GetGameInfo(oldGameData, false, true, forceRefreshCache);
             if (newGameInfo.buildId != null)
             {
-                if (installedInfo.build_id != newGameInfo.buildId)
+                bool updateAvailable = false;
+                if (installedInfo.build_id == newGameInfo.buildId)
+                {
+                    if (installedInfo.build_id != newGameInfo.builds.items[0].legacy_build_id)
+                    {
+                        updateAvailable = true;
+                    }
+                }
+                else
+                {
+                    updateAvailable = true;
+                }
+                if (updateAvailable)
                 {
                     var updateSize = await Gogdl.CalculateGameSize(gameId, installedInfo);
                     DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;

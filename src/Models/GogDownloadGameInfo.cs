@@ -8,12 +8,12 @@ namespace GogOssLibraryNS.Models
         public bool errorDisplayed = false;
         public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
         public List<Dlc> dlcs { get; set; } = new List<Dlc>();
-        public string buildId { get; set; }
+        public string buildId { get; set; } = "";
         public List<string> languages { get; set; } = new List<string>();
         public string folder_name { get; set; } = "";
         public List<string> dependencies { get; set; } = new List<string>();
         public string versionEtag { get; set; }
-        public string versionName { get; set; }
+        public string versionName { get; set; } = "";
         public List<string> available_branches { get; set; } = new List<string>();
         public Builds builds { get; set; } = new Builds();
         public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
@@ -42,13 +42,14 @@ namespace GogOssLibraryNS.Models
 
         public class Item
         {
-            public string build_id { get; set; }
-            public string product_id { get; set; }
-            public string os { get; set; }
+            public string legacy_build_id { get; set; } = "";
+            public string build_id { get; set; } = "";
+            public string product_id { get; set; } = "";
+            public string os { get; set; } = "";
             public string branch { get; set; }
-            public string version_name { get; set; }
+            public string version_name { get; set; } = "";
             public string[] tags { get; set; }
-            public bool _public { get; set; }
+            public bool _public { get; set; } = false;
             public DateTime date_published { get; set; }
             public int generation { get; set; }
             public string link { get; set; }
