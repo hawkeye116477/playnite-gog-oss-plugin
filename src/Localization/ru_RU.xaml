@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Размер загрузки:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Размер установки:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">Вы уверены, что хотите удалить {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings">Настройки загрузки</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings"></sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications">Отображать уведомления на рабочем столе о завершенных задачах</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">Отображать скорость загрузки в битах в секунду</sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs">Скачать все DLC</sys:String>
@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Вам не нужно ничего выбирать в окне установщика. Установка начнется автоматически после загрузки информации.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Максимальное количество рабочих процессов</sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete">Действие после завершения загрузки</sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads"></sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown">Система скоро выключится...</sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown">Система скоро перезагрузится...</sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown">Система скоро перейдет в режим гибернации...</sys:String>

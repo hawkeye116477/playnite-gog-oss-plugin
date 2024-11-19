@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Tamanho do Download:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Tamanho da Instalação:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">Tem certeza que deseja desinstalar {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings">Configurações de Download</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings"></sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications">Notificar na área de trabalho sobre tarefas finalizadas</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">Exibir a velocidade de download em bits por segundo</sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs">Baixar todos os DLCs</sys:String>
@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Você não terá que escolher nada na janela do instalador e a instalação começará automaticamente após o download das informações necessárias.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Número máximo de processos</sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete">Quando o download terminar</sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads"></sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown">O sistema será desligado em breve...</sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown">O sistema será reiniciado em breve...</sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown">O sistema hibernará em breve...</sys:String>

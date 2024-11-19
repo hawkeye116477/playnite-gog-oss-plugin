@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">İndirme Boyutu:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Kurulum Boyutu:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">{0} kaldırılacak, bundan emin misiniz?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings">İndirme Ayarları</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings">İndirilenler</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications">Tamamlanan görevlerle ilgili masaüstü bildirimlerini görüntüle</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">İndirme hızını saniyedeki bit cinsinden göster</sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs">Tüm DLC içeriğini indir</sys:String>
@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Kurulum penceresinde herhangi bir şey seçmeniz gerekiyor ve gerekli bilgiler indirildikten sonra kurulum otomatik olarak başlayacaktır.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">En fazla çalışan işlem sayısı</sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete">İndirme tamamlandıktan sonraki eylem</sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads">Tamamlanan indirmeleri otomatik olarak listeden kaldır</sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown">Sistem yakında kapatılacak...</sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown">Sistem yakında yeniden başlatılacak...</sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown">Sistem yakında hazırda bekletme moduna geçecek...</sys:String>

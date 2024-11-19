@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Tamaño de descarga:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Tamaño de instalación:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">¿Estás seguro que deseas desinstalar {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings">Ajustes de descarga</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings"></sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications"></sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">Mostrar velocidad de descarga en bits por segundo</sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs"></sys:String>
@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip"></sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Número máximo de procesos de trabajo</sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads"></sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
