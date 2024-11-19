@@ -603,17 +603,26 @@ namespace GogOssLibraryNS
                 name = gameTitle
             };
             var newGameInfo = await Gogdl.GetGameInfo(oldGameData, false, true, forceRefreshCache);
-            if (newGameInfo.buildId != null)
+
+            if (newGameInfo.builds.items.Count > 0)
             {
                 bool updateAvailable = false;
-                if (installedInfo.build_id == newGameInfo.buildId)
+                var newBuild = newGameInfo.builds.items[0];
+                if (!newBuild.legacy_build_id.IsNullOrEmpty())
                 {
-                    if (installedInfo.build_id != newGameInfo.builds.items[0].legacy_build_id)
+                    if (installedInfo.build_id != newBuild.legacy_build_id)
                     {
                         updateAvailable = true;
+                        if (!newBuild.build_id.IsNullOrEmpty())
+                        {
+                            if (installedInfo.build_id == newBuild.build_id)
+                            {
+                                updateAvailable = false;
+                            }
+                        }
                     }
                 }
-                else
+                else if (installedInfo.build_id != newBuild.build_id)
                 {
                     updateAvailable = true;
                 }
@@ -626,7 +635,7 @@ namespace GogOssLibraryNS
                     {
                         newVersionName = "";
                     }
-                    newVersionName = $"{newVersionName}{newGameInfo.builds.items.FirstOrDefault(i => i.version_name == newGameInfo.versionName).date_published.ToLocalTime().ToString("d", formatInfo)}";
+                    newVersionName = $"{newVersionName}{newBuild.date_published.ToLocalTime().ToString("d", formatInfo)}";
                     var updateInfo = new UpdateInfo
                     {
                         Install_path = installedInfo.install_path,
