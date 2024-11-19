@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Atsisiuntimo dydis:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Įdiegties dydis:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">Ar tikrai norite išdiegti {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings">Siuntimosi Nustatymai</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings"></sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications"></sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits"></sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs"></sys:String>
@@ -12,6 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip"></sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers"></sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads"></sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
