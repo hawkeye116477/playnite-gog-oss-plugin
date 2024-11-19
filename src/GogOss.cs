@@ -65,6 +65,11 @@ namespace GogOssLibraryNS
                         "/nodesktopshortcut",
                         "/nodesktopshorctut", // Yes, they made a typo
                     };
+                    var supportPath = Path.Combine(installedGameInfo.install_path, "gog-support");
+                    if (Directory.Exists(supportPath))
+                    {
+                        args.Add($"/supportDir={supportPath}");
+                    }
                     if (!langInEnglish.IsNullOrEmpty())
                     {
                         args.AddRange(new[] {
