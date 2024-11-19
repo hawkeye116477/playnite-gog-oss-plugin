@@ -300,8 +300,15 @@ namespace GogOssLibraryNS
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
                 if (wantedItem != null)
                 {
-                    downloadItemsAlreadyAdded.Add(installData.name);
-                    MultiInstallData.Remove(installData);
+                    if (wantedItem.status == DownloadStatus.Completed && !installedAppList.ContainsKey(installData.gameID))
+                    {
+                        downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                    }
+                    else
+                    {
+                        downloadItemsAlreadyAdded.Add(installData.name);
+                        MultiInstallData.Remove(installData);
+                    }
                 }
             }
 
