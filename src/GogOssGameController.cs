@@ -626,7 +626,7 @@ namespace GogOssLibraryNS
                     {
                         newVersionName = "";
                     }
-                    newVersionName = $"{newVersionName}{newGameInfo.builds.items.FirstOrDefault(i => i.build_id == newGameInfo.buildId).date_published.ToLocalTime().ToString("d", formatInfo)}";
+                    newVersionName = $"{newVersionName}{newGameInfo.builds.items.FirstOrDefault(i => i.version_name == newGameInfo.versionName).date_published.ToLocalTime().ToString("d", formatInfo)}";
                     var updateInfo = new UpdateInfo
                     {
                         Install_path = installedInfo.install_path,
