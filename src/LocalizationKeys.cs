@@ -74,7 +74,7 @@ namespace System
         /// </summary>
         public const string GogOssUninstallGameConfirm = "LOCGogOssUninstallGameConfirm";
         /// <summary>
-        /// Download Settings
+        /// Downloads
         /// </summary>
         public const string GogOssDownloadSettings = "LOCGogOssDownloadSettings";
         /// <summary>
@@ -105,6 +105,10 @@ namespace System
         /// Action after download is complete
         /// </summary>
         public const string GogOssAfterDownloadComplete = "LOCGogOssAfterDownloadComplete";
+        /// <summary>
+        /// Automatically remove completed downloads from list
+        /// </summary>
+        public const string GogOssAutoRemoveCompletedDownloads = "LOCGogOssAutoRemoveCompletedDownloads";
         /// <summary>
         /// System will be turned off soon...
         /// </summary>
