@@ -120,7 +120,6 @@ namespace GogOssLibraryNS
                                 {
                                     "/VERYSILENT",
                                     $"/ProductId={game.GameId}",
-                                    "/galaxyclient",
                                     "/KEEPSAVES"
                                 };
                                 await Cli.Wrap(uninstaller)
