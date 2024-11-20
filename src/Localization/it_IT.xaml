@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Controllo aggiornamenti...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} è stato disinstallato con successo.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">I seguenti giochi sono stati disinstallati con successo: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">Impossibile disinstallare i seguenti giochi: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Giochi</sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} non è installato.</sys:String>
   <sys:String x:Key="LOCGogOssPanel">Pannello GOG OSS</sys:String>

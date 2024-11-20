@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Güncellemeler kontrol ediliyor...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} başarıyla kaldırıldı.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Aşağıdaki oyunlar başarıyla kaldırıldı: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">Aşağıdaki oyunlar kaldırılamıyor: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Oyunlar</sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} kurulu değil.</sys:String>
   <sys:String x:Key="LOCGogOssPanel">GOG OSS Paneli</sys:String>

@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Procurando atualizações...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} foi desinstalado com sucesso.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Os seguintes jogos foram desinstalados com êxito: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">Não é possível desinstalar seguintes jogos: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Jogos</sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
   <sys:String x:Key="LOCGogOssPanel"></sys:String>

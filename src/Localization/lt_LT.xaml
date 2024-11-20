@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates"></sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess"></sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther"></sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther"></sys:String>
   <sys:String x:Key="LOCGogOssGames"></sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
   <sys:String x:Key="LOCGogOssPanel"></sys:String>
