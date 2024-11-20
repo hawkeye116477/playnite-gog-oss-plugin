@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">Filtre Etkin</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">Filtreler</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">Oyun kurulamıyor: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">Oyun kaldırılamıyor: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">Devre dışı</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">Sürüm</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Kurulu Boyut</sys:String>

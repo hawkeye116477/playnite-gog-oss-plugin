@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">गाळणी सक्षम</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">गाळण्या</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">गेम स्थापित करता आला नाही: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">गेम विस्थापित करता आला नाही: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">अक्षम</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">आवृत्ती</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">स्थापनेचा आकार</sys:String>

@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">סינון פעיל</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">מסננים</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">לא ניתן להתקין את המשחק: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">לא ניתן להסיר את המשחק: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">כבוי</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">גירסה</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">גודל ההתקנה</sys:String>

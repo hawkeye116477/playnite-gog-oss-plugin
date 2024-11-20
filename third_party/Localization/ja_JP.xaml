@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">フィルター有効</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">フィルター</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">ゲームをインストールできません: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">ゲームをアンインストールできません: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">無効</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">バージョン</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">インストールサイズ</sys:String>

@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">Filtr Aktivován</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">Filtry</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">Nelze nainstalovat hru: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">Nelze odinstalovat hru: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">Zakázáno</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">Verze</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Velikost instalace</sys:String>

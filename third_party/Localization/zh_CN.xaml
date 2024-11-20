@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">筛选器激活</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">筛选</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">无法安装游戏：{0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">无法卸载游戏：{0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">已停用</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">版本</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">占用空间</sys:String>

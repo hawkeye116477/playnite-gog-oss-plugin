@@ -47,3 +47,4 @@ LOCProgressMetadata
 LOCLibraryImportError
 LOCCommonLinksForum
 LOCCommonLinksStorePage
+LOCGameUninstallError

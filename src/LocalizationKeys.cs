@@ -574,6 +574,10 @@ namespace System
         /// </summary>
         public const string GogOssUninstallSuccessOther = "LOCGogOssUninstallSuccessOther";
         /// <summary>
+        /// Cannot uninstall following games: {0}.
+        /// </summary>
+        public const string GogOssUninstallErrorOther = "LOCGogOssUninstallErrorOther";
+        /// <summary>
         /// Games
         /// </summary>
         public const string GogOssGames = "LOCGogOssGames";
@@ -625,6 +629,10 @@ namespace System
         /// Cannot install game: {0}
         /// </summary>
         public const string GogOss3P_PlayniteGameInstallError = "LOCGogOss3P_PlayniteGameInstallError";
+        /// <summary>
+        /// Cannot un-install game: {0}
+        /// </summary>
+        public const string GogOss3P_PlayniteGameUninstallError = "LOCGogOss3P_PlayniteGameUninstallError";
         /// <summary>
         /// Disabled
         /// </summary>

@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Checking for updates...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} has been successfully uninstalled.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Following games have been successfully uninstalled: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">Cannot uninstall following games: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Games</sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} is not installed.</sys:String>
   <sys:String x:Key="LOCGogOssPanel">GOG OSS Panel</sys:String>

@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">필터 적용 중</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">필터</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">게임을 설치할 수 없습니다: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">게임을 삭제할 수 없습니다: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">비활성화</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">버전</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">설치 용량</sys:String>

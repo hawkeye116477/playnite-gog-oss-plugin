@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">Filtret aktivt</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">Filter</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError">Kan inte installera spel: {0}</sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError">Kan inte avinstallera spel: {0}</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteDisabledTitle">AV</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel">Version</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteInstallSizeLabel">Installerad storlek</sys:String>

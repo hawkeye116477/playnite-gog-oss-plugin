@@ -87,6 +87,7 @@ namespace GogOssLibraryNS
 
     public class GogOssUninstallController : UninstallController
     {
+        private static ILogger logger = LogManager.GetLogger();
         public GogOssUninstallController(Game game) : base(game)
         {
             Name = "Uninstall";
@@ -99,6 +100,7 @@ namespace GogOssLibraryNS
             var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(gamesCombined), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
+                var notUninstalledGames = new List<Game>();
                 var uninstalledGames = new List<Game>();
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)}... ", false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
@@ -126,9 +128,20 @@ namespace GogOssLibraryNS
                                          .AddCommandToLog()
                                          .ExecuteAsync();
                             }
-                            if (Directory.Exists(game.InstallDirectory))
+                            try
                             {
-                                Directory.Delete(game.InstallDirectory, true);
+                                if (Directory.Exists(game.InstallDirectory))
+                                {
+                                    Directory.Delete(game.InstallDirectory, true);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                notUninstalledGames.Add(game);
+                                logger.Error(ex.Message);
+                                counter += 1;
+                                a.CurrentProgressValue = counter;
+                                continue;
                             }
                             var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", game.GameId);
                             if (File.Exists(manifestFile))
@@ -173,6 +186,19 @@ namespace GogOssLibraryNS
                     {
                         string uninstalledGamesCombined = string.Join(", ", uninstalledGames.Select(item => item.Name));
                         playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssUninstallSuccessOther).Format(uninstalledGamesCombined));
+                    }
+                }
+
+                if (notUninstalledGames.Count > 0)
+                {
+                    if (notUninstalledGames.Count == 1)
+                    {
+                        playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameUninstallError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)), notUninstalledGames[0].Name);
+                    }
+                    else
+                    {
+                        string notUninstalledGamesCombined = string.Join(", ", notUninstalledGames.Select(item => item.Name));
+                        playniteAPI.Dialogs.ShowMessage($"{ResourceProvider.GetString(LOC.GogOssUninstallErrorOther).Format(notUninstalledGamesCombined)} {ResourceProvider.GetString(LOC.GogOssCheckLog)}");
                     }
                 }
             }

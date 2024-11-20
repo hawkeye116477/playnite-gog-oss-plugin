@@ -7,6 +7,7 @@
   <sys:String x:Key="LOCGogOss3P_PlayniteFilterActiveLabel">පෙරහන ක්‍රියාත්මකයි</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteFilters">පෙරහන්</sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteGameInstallError"></sys:String>
+  <sys:String x:Key="LOCGogOss3P_PlayniteGameUninstallError"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteVersionLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteAddedLabel"></sys:String>
   <sys:String x:Key="LOCGogOss3P_PlayniteOKLabel">හරි</sys:String>
