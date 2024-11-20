@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Sprawdzanie aktualizacji...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">Program {0} został pomyślnie odinstalowany.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Następujące gry zostały pomyślnie odinstalowane: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">Nie można odinstalować następujących gier: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Gry</sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled">Program {AppName} nie jest zainstalowany.</sys:String>
   <sys:String x:Key="LOCGogOssPanel">Panel GOG OSS</sys:String>

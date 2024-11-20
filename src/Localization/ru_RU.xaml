@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Проверка обновлений...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} была успешно удалена.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Следующие игры были успешно удалены: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">Не удается удалить следующие игры: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Игры</sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
   <sys:String x:Key="LOCGogOssPanel"></sys:String>

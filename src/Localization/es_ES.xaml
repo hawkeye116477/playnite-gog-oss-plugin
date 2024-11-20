@@ -129,6 +129,7 @@
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Buscando actualizaciones...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} se ha desinstalado correctamente.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccessOther"></sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther"></sys:String>
   <sys:String x:Key="LOCGogOssGames"></sys:String>
   <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
   <sys:String x:Key="LOCGogOssPanel"></sys:String>
