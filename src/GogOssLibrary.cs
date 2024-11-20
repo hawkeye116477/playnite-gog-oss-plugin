@@ -265,11 +265,19 @@ namespace GogOssLibraryNS
                 {
                     game.version = program.DisplayVersion;
                 }
+
+                var infoManifest = GogOss.GetGogGameInfo(gameId, game.install_path);
+                if (!infoManifest.rootGameId.IsNullOrEmpty())
+                {
+                    if (infoManifest.rootGameId != gameId)
+                    {
+                        continue; // That's DLC
+                    }
+                }
                 if (!GetPlayTasks(gameId, game.install_path).HasItems())
                 {
                     continue; // Empty play task = DLC
                 }
-                var infoManifest = GogOss.GetGogGameInfo(gameId, game.install_path);
                 if (infoManifest.buildId != null)
                 {
                     game.build_id = infoManifest.buildId;
