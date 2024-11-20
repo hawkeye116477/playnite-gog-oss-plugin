@@ -32,68 +32,24 @@ namespace GogOssLibraryNS
             return installedInfo;
         }
 
-        public static async Task LaunchIsi(Installed installedGameInfo, string gameId)
-        {
-            var isiInstallPath = Path.Combine(Gogdl.DependenciesInstallationPath, "__redist", "ISI");
-            if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
-            {
-                var metaManifest = Gogdl.GetGameMetaManifest(gameId);
-                var shortLang = installedGameInfo.language.Split('-')[0];
-                var langInEnglish = "";
-                if (!shortLang.IsNullOrEmpty())
-                {
-                    langInEnglish = new CultureInfo(shortLang).EnglishName;
-                }
-                else
-                {
-                    langInEnglish = "English";
-                }
-                foreach (var product in metaManifest.products)
-                {
-                    if (product.productId != gameId && !installedGameInfo.installed_DLCs.Contains(product.productId))
-                    {
-                        continue;
-                    }
-                    var args = new List<string>
-                    {
-                        "/VERYSILENT",
-                        $"/DIR={installedGameInfo.install_path}",
-                        $"/ProductId={product.productId}",
-                        $"/buildId={installedGameInfo.build_id}",
-                        $"/versionName={installedGameInfo.version}",
-                        "/nodesktopshortcut",
-                        "/nodesktopshorctut", // Yes, they made a typo
-                    };
-                    var supportPath = Path.Combine(installedGameInfo.install_path, "gog-support");
-                    if (Directory.Exists(supportPath))
-                    {
-                        args.Add($"/supportDir={supportPath}");
-                    }
-                    if (!langInEnglish.IsNullOrEmpty())
-                    {
-                        args.AddRange(new[] {
-                                    $"/Language={langInEnglish}",
-                                    $"/LANG={langInEnglish}",
-                                    $"/lang-code={installedGameInfo.language}" });
-                    }
-                    var isiExe = Path.Combine(isiInstallPath, "scriptinterpreter.exe");
-                    if (File.Exists(isiExe))
-                    {
-                        await Cli.Wrap(isiExe)
-                                 .WithArguments(args)
-                                 .WithWorkingDirectory(isiInstallPath)
-                                 .AddCommandToLog()
-                                 .ExecuteAsync();
-                    }
-                }
-
-            }
-        }
-
         public static async Task CompleteInstallation(string gameId)
         {
             var installedInfo = GetInstalledInfo(gameId);
             var metaManifest = Gogdl.GetGameMetaManifest(gameId);
+            var shortLang = installedInfo.language.Split('-')[0];
+            var langInEnglish = "";
+            if (!shortLang.IsNullOrEmpty())
+            {
+                langInEnglish = new CultureInfo(shortLang).EnglishName;
+            }
+            else
+            {
+                langInEnglish = "English";
+            }
+            if (installedInfo.language.IsNullOrEmpty())
+            {
+                installedInfo.language = "en-US";
+            }
             if (metaManifest.version == 1)
             {
                 if (metaManifest.product.support_commands.Count > 0)
@@ -112,26 +68,12 @@ namespace GogOssLibraryNS
                                 $"/ProductId={gameId}",
                                 $"/buildId={metaManifest.product.timestamp}",
                                 $"/versionName={installedInfo.version}",
+                                $"/Language={langInEnglish}",
+                                $"/LANG={langInEnglish}",
+                                $"/lang-code={installedInfo.language}",
                                 "/nodesktopshortcut",
                                 "/nodesktopshorctut", // Yes, they made a typo
                             };
-                            var shortLang = installedInfo.language.Split('-')[0];
-                            var langInEnglish = "";
-                            if (!shortLang.IsNullOrEmpty())
-                            {
-                                langInEnglish = new CultureInfo(shortLang).EnglishName;
-                            }
-                            else
-                            {
-                                langInEnglish = "English";
-                            }
-                            if (!langInEnglish.IsNullOrEmpty())
-                            {
-                                supportArgs.AddRange(new[] {
-                                            $"/Language={langInEnglish}",
-                                            $"/LANG={langInEnglish}",
-                                            $"/lang-code={installedInfo.language}" });
-                            }
                             if (File.Exists(supportExe))
                             {
                                 await Cli.Wrap(supportExe)
@@ -146,7 +88,44 @@ namespace GogOssLibraryNS
             }
             else if (metaManifest.scriptInterpreter)
             {
-                await LaunchIsi(installedInfo, gameId);
+                var isiInstallPath = Path.Combine(Gogdl.DependenciesInstallationPath, "__redist", "ISI");
+                if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
+                {
+                    foreach (var product in metaManifest.products)
+                    {
+                        if (product.productId != gameId && !installedInfo.installed_DLCs.Contains(product.productId))
+                        {
+                            continue;
+                        }
+                        var args = new List<string>
+                        {
+                            "/VERYSILENT",
+                            $"/DIR={installedInfo.install_path}",
+                            $"/ProductId={product.productId}",
+                            $"/buildId={installedInfo.build_id}",
+                            $"/versionName={installedInfo.version}",
+                            $"/Language={langInEnglish}",
+                            $"/LANG={langInEnglish}",
+                            $"/lang-code={installedInfo.language}",
+                            "/nodesktopshortcut",
+                            "/nodesktopshorctut", // Yes, they made a typo
+                        };
+                        var supportPath = Path.Combine(installedInfo.install_path, "gog-support");
+                        if (Directory.Exists(supportPath))
+                        {
+                            args.Add($"/supportDir={supportPath}");
+                        }
+                        var isiExe = Path.Combine(isiInstallPath, "scriptinterpreter.exe");
+                        if (File.Exists(isiExe))
+                        {
+                            await Cli.Wrap(isiExe)
+                                     .WithArguments(args)
+                                     .WithWorkingDirectory(isiInstallPath)
+                                     .AddCommandToLog()
+                                     .ExecuteAsync();
+                        }
+                    }
+                }
             }
             else
             {
@@ -162,26 +141,12 @@ namespace GogOssLibraryNS
                         $"/ProductId={gameId}",
                         $"/buildId={installedInfo.build_id}",
                         $"/versionName={installedInfo.version}",
+                        $"/Language={langInEnglish}",
+                        $"/LANG={langInEnglish}",
+                        $"/lang-code={installedInfo.language}",
                         "/nodesktopshortcut",
                         "/nodesktopshorctut", // Yes, they made a typo
-                   };
-                    var shortLang = installedInfo.language.Split('-')[0];
-                    var langInEnglish = "";
-                    if (!shortLang.IsNullOrEmpty())
-                    {
-                        langInEnglish = new CultureInfo(shortLang).EnglishName;
-                    }
-                    else
-                    {
-                        langInEnglish = "English";
-                    }
-                    if (!langInEnglish.IsNullOrEmpty())
-                    {
-                        tempArgs.AddRange(new[] {
-                                            $"/Language={langInEnglish}",
-                                            $"/LANG={langInEnglish}",
-                                            $"/lang-code={installedInfo.language}" });
-                    }
+                    };
                     if (File.Exists(tempExe))
                     {
                         await Cli.Wrap(tempExe)
