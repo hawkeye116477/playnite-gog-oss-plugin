@@ -153,6 +153,7 @@ namespace GogOssLibraryNS
                             game.IsInstalled = false;
                             game.InstallDirectory = "";
                             game.Version = "";
+                            game.GameActions = null;
                             playniteAPI.Database.Games.Update(game);
                             uninstalledGames.Add(game);
                             counter += 1;
