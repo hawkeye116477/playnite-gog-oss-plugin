@@ -20,5 +20,6 @@ namespace GogOssLibraryNS.Models
         public List<string> ExtraContent { get; set; } = new List<string>();
         public string Os { get; set; } = "windows";
         public List<string> Depends { get; set; } = new List<string>();
+        public string BetaChannel { get; set; } = "";
     }
 }

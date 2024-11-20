@@ -626,7 +626,16 @@ namespace GogOssLibraryNS
             if (newGameInfo.builds.items.Count > 0)
             {
                 bool updateAvailable = false;
-                var newBuild = newGameInfo.builds.items[0];
+                var newBuild = newGameInfo.builds.items.FirstOrDefault(i => i.branch == null);
+                var oldBuildBranch = newGameInfo.builds.items.FirstOrDefault(i => i.build_id == installedInfo.build_id)?.branch;
+                if (oldBuildBranch.IsNullOrEmpty())
+                {
+                    oldBuildBranch = newGameInfo.builds.items.FirstOrDefault(i => i.legacy_build_id == installedInfo.build_id)?.branch;
+                }
+                if (!oldBuildBranch.IsNullOrEmpty())
+                {
+                    newBuild = newGameInfo.builds.items[0];
+                }
                 if (!newBuild.legacy_build_id.IsNullOrEmpty())
                 {
                     if (installedInfo.build_id != newBuild.legacy_build_id)
@@ -668,6 +677,10 @@ namespace GogOssLibraryNS
                         ExtraContent = installedInfo.installed_DLCs,
                         Depends = newGameInfo.dependencies,
                     };
+                    if (!newBuild.branch.IsNullOrEmpty())
+                    {
+                        updateInfo.BetaChannel = newBuild.branch;
+                    }
                     gamesToUpdate.Add(gameId, updateInfo);
                 }
             }
@@ -738,6 +751,10 @@ namespace GogOssLibraryNS
                             downloadProperties.extraContent = gameToUpdate.Value.ExtraContent;
                             downloadProperties.os = gameToUpdate.Value.Os;
                             downloadProperties.installPath = gameToUpdate.Value.Install_path;
+                            if (!gameToUpdate.Value.BetaChannel.IsNullOrEmpty())
+                            {
+                                downloadProperties.betaChannel = gameToUpdate.Value.BetaChannel;
+                            }
                             var updateTask = new DownloadManagerData.Download
                             {
                                 gameID = gameToUpdate.Key,
