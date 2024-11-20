@@ -23,6 +23,7 @@ using System.Collections.Specialized;
 using System.Text;
 using CommonPlugin.Enums;
 using CommonPlugin;
+using Playnite.SDK.Models;
 
 namespace GogOssLibraryNS
 {
@@ -464,13 +465,15 @@ namespace GogOssLibraryNS
                                             dependencies.Add(depend);
                                         }
                                     }
-                                    Playnite.SDK.Models.Game game = new Playnite.SDK.Models.Game();
+                                    Game game = new Game();
                                     {
                                         game = playniteAPI.Database.Games.FirstOrDefault(item => item.PluginId == GogOssLibrary.Instance.Id
                                                                                                  && item.GameId == gameID);
                                         game.InstallDirectory = installedGameInfo.install_path;
                                         game.Version = installedGameInfo.version;
                                         game.IsInstalled = true;
+                                        ObservableCollection<GameAction> gameActions = new ObservableCollection<GameAction>(GogOssLibrary.GetOtherTasks(game.GameId, game.InstallDirectory));
+                                        game.GameActions = gameActions;
                                         playniteAPI.Database.Games.Update(game);
                                     }
                                     installedAppList.Add(gameID, installedGameInfo);
