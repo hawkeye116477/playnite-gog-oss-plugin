@@ -465,30 +465,20 @@ namespace GogOssLibraryNS
                     {
                         workingDir = Game.InstallDirectory;
                     }
+
                     var cmd = Cli.Wrap(gameExeFullPath)
-                                 .WithArguments(playArgs)
-                                 .AddCommandToLog()
-                                 .WithValidation(CommandResultValidation.None);
-                    if (Directory.Exists(workingDir))
-                    {
-                        cmd = cmd.WithWorkingDirectory(workingDir);
-                    }
-                    else
+                                 .WithArguments(playArgs);
+
+                    if (!Directory.Exists(workingDir))
                     {
                         logger.Error($"Working directory {workingDir} doesn't exists.");
+                        workingDir = Game.InstallDirectory;
                     }
-                    await foreach (var cmdEvent in cmd.ListenAsync())
-                    {
-                        switch (cmdEvent)
-                        {
-                            case StartedCommandEvent started:
-                                InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = started.ProcessId });
-                                var monitor = new MonitorProcessTree(started.ProcessId);
-                                StartTracking(() => monitor.IsProcessTreeRunning());
-                                await AfterGameStarting();
-                                break;
-                        }
-                    }
+                    var gameProcess = ProcessStarter.StartProcess(gameExeFullPath, cmd.Arguments, workingDir);
+                    InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = gameProcess.Id });
+                    var monitor = new MonitorProcessTree(gameProcess.Id);
+                    StartTracking(() => monitor.IsProcessTreeRunning());
+                    await AfterGameStarting();
                 }
                 else
                 {
