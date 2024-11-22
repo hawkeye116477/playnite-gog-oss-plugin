@@ -160,6 +160,27 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+            var folderName = Path.GetFileName(installedInfo.install_path);
+            var startMenuFolderName = $"{folderName} [GOG.com]";
+            var startMenuDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "Programs", startMenuFolderName);
+            var startMenuShortcut = Path.Combine(startMenuDir, $"{folderName}.lnk");
+            if (File.Exists(startMenuShortcut))
+            {
+                File.Delete(startMenuShortcut);
+            }
+            var tasks = GogOssLibrary.GetPlayTasks(gameId, installedInfo.install_path);
+            var gameExe = tasks[0].Path;
+            using var shortcut = new WindowsShortcutFactory.WindowsShortcut
+            {
+                Path = gameExe,
+                WorkingDirectory = installedInfo.install_path
+            };
+            startMenuDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", startMenuFolderName);
+            if (!Directory.Exists(startMenuDir))
+            {
+                Directory.CreateDirectory(startMenuDir);
+            }
+            shortcut.Save(Path.Combine(startMenuDir, $"{folderName}.lnk"));
         }
 
         public static GogGameActionInfo GetGogGameInfoFromFile(string manifestFilePath)
