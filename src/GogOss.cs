@@ -71,6 +71,7 @@ namespace GogOssLibraryNS
                                 $"/Language={langInEnglish}",
                                 $"/LANG={langInEnglish}",
                                 $"/lang-code={installedInfo.language}",
+                                "/galaxyclient",
                                 "/nodesktopshortcut",
                                 "/nodesktopshorctut", // Yes, they made a typo
                             };
@@ -107,6 +108,7 @@ namespace GogOssLibraryNS
                             $"/Language={langInEnglish}",
                             $"/LANG={langInEnglish}",
                             $"/lang-code={installedInfo.language}",
+                            "/galaxyclient",
                             "/nodesktopshortcut",
                             "/nodesktopshorctut", // Yes, they made a typo
                         };
@@ -144,6 +146,7 @@ namespace GogOssLibraryNS
                         $"/Language={langInEnglish}",
                         $"/LANG={langInEnglish}",
                         $"/lang-code={installedInfo.language}",
+                        "/galaxyclient",
                         "/nodesktopshortcut",
                         "/nodesktopshorctut", // Yes, they made a typo
                     };
