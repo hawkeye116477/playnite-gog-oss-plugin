@@ -257,9 +257,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Compile Include="..\third_party\playnite-common-plugin\src\SplitOutsideQuotesExtensions.cs">
+      <Link>Shared\SplitOutsideQuotesExtensions.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CliWrapCommandExtensions.cs" />
     <Compile Include="Comet.cs" />
     <Compile Include="Enums\UpdatePolicy.cs" />
     <Compile Include="GogOss.cs" />

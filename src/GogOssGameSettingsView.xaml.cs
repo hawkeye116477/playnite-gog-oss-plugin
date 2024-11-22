@@ -1,4 +1,5 @@
-﻿using CommonPlugin.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using Playnite.Common;
@@ -66,7 +67,7 @@ namespace GogOssLibraryNS
             }
             if (StartupArgumentsTxt.Text != "")
             {
-                newGameSettings.StartupArguments = StartupArgumentsTxt.Text.Split().ToList();
+                newGameSettings.StartupArguments = StartupArgumentsTxt.Text.SplitOutsideQuotes(' ').ToList();
             }
             if (SelectedAlternativeExeTxt.Text != "")
             {
