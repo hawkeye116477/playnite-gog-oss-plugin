@@ -112,6 +112,12 @@ namespace GogOssLibraryNS
             var downloadItemsAlreadyAdded = new List<string>();
             foreach (var installData in MultiInstallData)
             {
+                manifest = await Gogdl.GetGameInfo(installData);
+                installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
+                if (installData.downloadItemType == DownloadItemType.Dependency)
+                {
+                    installData.fullInstallPath = Path.Combine(redistInstallPath, "__redist", installData.gameID);
+                }
                 var gameId = installData.gameID;
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameId);
                 if (wantedItem == null)
@@ -236,7 +242,6 @@ namespace GogOssLibraryNS
                 gameID = "gog-redist",
                 name = "GOG Common Redistributables",
                 downloadItemType = DownloadItemType.Dependency,
-                fullInstallPath = Gogdl.DependenciesInstallationPath
             };
             var requiredDepends = Gogdl.GetRequiredDepends();
             redistTask.depends = new List<string>
@@ -290,11 +295,6 @@ namespace GogOssLibraryNS
                     }
                 }
                 var gameSize = await Gogdl.CalculateGameSize(installData);
-                installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
-                if (installData.downloadItemType == DownloadItemType.Dependency)
-                {
-                    installData.fullInstallPath = Path.Combine(redistInstallPath, "__redist", installData.gameID);
-                }
                 installData.downloadSizeNumber = gameSize.download_size;
                 installData.installSizeNumber = gameSize.disk_size;
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);

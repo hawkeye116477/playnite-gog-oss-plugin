@@ -303,11 +303,6 @@ namespace GogOssLibraryNS
                             {
                                 DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssVerifying);
                             }
-                            var fullInstallPathMatch = Regex.Match(stdErr.Text, @"Install path: (\S+)");
-                            if (fullInstallPathMatch.Length >= 2)
-                            {
-                                wantedItem.fullInstallPath = fullInstallPathMatch.Groups[1].Value;
-                            }
                             var progressMatch = Regex.Match(stdErr.Text, @"Progress: (\d+\.\d+)");
                             if (progressMatch.Length >= 2)
                             {
