@@ -409,8 +409,15 @@ namespace GogOssLibraryNS
                 {
                     manifest = Serialization.FromJson<GogDownloadRedistManifest>(result.StandardOutput);
                     var depots = manifest.depots;
-                    redistManifest = depots.First(d => d.dependencyId == gameId);
-                    redistManifest.build_id = manifest.build_id;
+                    redistManifest = depots.FirstOrDefault(d => d.dependencyId == gameId);
+                    if (redistManifest != null)
+                    {
+                        redistManifest.build_id = manifest.build_id;
+                    }
+                    else
+                    {
+                        redistManifest = new GogDownloadRedistManifest.Depot();
+                    }
                 }
             }
             return redistManifest;
