@@ -1053,7 +1053,7 @@ namespace GogOssLibraryNS
                 {
                     if (!Gogdl.IsInstalled)
                     {
-                        PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl"));
+                        Gogdl.ShowNotInstalledError();
                         return;
                     }
 

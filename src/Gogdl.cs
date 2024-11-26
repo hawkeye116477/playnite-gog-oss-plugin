@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace GogOssLibraryNS
 {
@@ -174,7 +175,8 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl"));
+                ShowNotInstalledError();
+                return newVersionInfoContent;
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))
@@ -550,6 +552,21 @@ namespace GogOssLibraryNS
                 }
             }
             return size;
+        }
+
+        public static void ShowNotInstalledError()
+        {
+            var playniteAPI = API.Instance;
+            var options = new List<MessageBoxOption>
+            {
+                new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame)),
+                new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel)),
+            };
+            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl"), "GOG OSS library integration", MessageBoxImage.Information, options);
+            if (result == options[0])
+            {
+                Playnite.Commands.GlobalCommands.NavigateUrl("https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Troubleshooting#gogdl-or-comet-is-not-installed");
+            }
         }
     }
 }

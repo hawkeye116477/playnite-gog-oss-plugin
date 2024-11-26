@@ -2,6 +2,7 @@
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
@@ -436,8 +437,14 @@ namespace GogOssLibraryNS
                 GamesBrd.Visibility = Visibility.Visible;
             }
 
-            if (games.Count <= 0)
+            var clientApi = new GogAccountClient();
+            var userLoggedIn = await clientApi.GetIsUserLoggedIn();
+            if (games.Count <= 0 || !userLoggedIn)
             {
+                if (!userLoggedIn)
+                {
+                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                }
                 InstallerWindow.Close();
                 return;
             }
