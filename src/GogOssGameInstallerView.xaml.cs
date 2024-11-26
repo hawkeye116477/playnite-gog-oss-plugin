@@ -112,12 +112,6 @@ namespace GogOssLibraryNS
             var downloadItemsAlreadyAdded = new List<string>();
             foreach (var installData in MultiInstallData)
             {
-                manifest = await Gogdl.GetGameInfo(installData);
-                installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
-                if (installData.downloadItemType == DownloadItemType.Dependency)
-                {
-                    installData.fullInstallPath = Path.Combine(redistInstallPath, "__redist", installData.gameID);
-                }
                 var gameId = installData.gameID;
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameId);
                 if (wantedItem == null)
@@ -132,6 +126,15 @@ namespace GogOssLibraryNS
                         {
                             installData.downloadProperties.installPath = installPath;
                         }
+                    }
+                    if (installData.downloadItemType == DownloadItemType.Dependency)
+                    {
+                        installData.fullInstallPath = Path.Combine(redistInstallPath, "__redist");
+                    }
+                    else
+                    {
+                        manifest = await Gogdl.GetGameInfo(installData);
+                        installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
                     }
                     if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.GogOssPermissionError))
                     {
