@@ -49,7 +49,7 @@
   <sys:String x:Key="LOCGogOssDownloadCanceled">Anulowane</sys:String>
   <sys:String x:Key="LOCGogOssDownloadCompleted">Ukończone</sys:String>
   <sys:String x:Key="LOCGogOssRemoveEntry">Usuń wpis</sys:String>
-  <sys:String x:Key="LOCGogOssRemoveEntryConfirm">Czy na pewno chcesz usunąć {0} z listy?</sys:String>
+  <sys:String x:Key="LOCGogOssRemoveEntryConfirm">Czy na pewno chcesz usunąć {0} z listy?</sys:String>
   <sys:String x:Key="LOCGogOssMoveEntryTop">Przenieś wpis na górę</sys:String>
   <sys:String x:Key="LOCGogOssMoveEntryUp">Przenieś wpis w górę</sys:String>
   <sys:String x:Key="LOCGogOssMoveEntryDown">Przenieś wpis w dół</sys:String>
