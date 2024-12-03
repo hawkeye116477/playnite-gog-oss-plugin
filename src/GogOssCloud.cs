@@ -376,6 +376,7 @@ namespace GogOssLibraryNS
                                     if (cloudFile.hash == "aadd86936a80ee8a369579c3926f1b3c")
                                     {
                                         cloudFiles.Remove(cloudFile);
+                                        continue;
                                     }
                                     var wantedItem = cloudSaveFolders.FirstOrDefault(s => cloudFile.name.Contains(s.name));
                                     if (wantedItem != null)
