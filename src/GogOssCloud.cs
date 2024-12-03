@@ -391,7 +391,7 @@ namespace GogOssLibraryNS
                                 {
                                     Directory.CreateDirectory(cloudSaveFolder.location);
                                 }
-                                foreach (var fileName in Directory.GetFiles(cloudSaveFolder.location))
+                                foreach (var fileName in Directory.GetFiles(cloudSaveFolder.location, "*", SearchOption.AllDirectories))
                                 {
                                     if (File.Exists(fileName))
                                     {
@@ -402,7 +402,7 @@ namespace GogOssLibraryNS
                                             real_file_path = fileName,
                                             timestamp = lastWriteTimeTs,
                                             last_modified = lastWriteTime.UtcDateTime.ToString("o", CultureInfo.InvariantCulture),
-                                            name = $"{cloudSaveFolder.name}/{RelativePath.Get(cloudSaveFolder.location, fileName)}"
+                                            name = $"{cloudSaveFolder.name}/{RelativePath.Get(cloudSaveFolder.location, fileName).Replace(Path.DirectorySeparatorChar.ToString(), @"/")}"
                                         };
                                         localFiles.Add(newCloudFile);
                                     }
