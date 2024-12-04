@@ -154,6 +154,7 @@ namespace GogOssLibraryNS
                     return;
                 }
             }
+            logger.Debug($"Uploading {localFile.real_file_path} ({localFile.name}) file... .");
             httpClient.DefaultRequestHeaders.Remove("Accept");
             httpClient.DefaultRequestHeaders.Remove("Etag");
             httpClient.DefaultRequestHeaders.Remove("X-Object-Meta-LocalLastModified");
@@ -229,6 +230,7 @@ namespace GogOssLibraryNS
                     }
                 }
 
+                logger.Debug($"Downloading {cloudFile.name} ({cloudFile.real_file_path}) file... .");
                 var downloadStream = await downloadResponse.Content.ReadAsStreamAsync();
                 var neededDirectory = Path.GetDirectoryName(cloudFile.real_file_path);
                 if (!Directory.Exists(neededDirectory))
