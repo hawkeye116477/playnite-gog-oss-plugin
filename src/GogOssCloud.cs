@@ -143,14 +143,14 @@ namespace GogOssLibraryNS
             var fileExistsInCloud = cloudFiles.FirstOrDefault(f => f.name == localFile.name);
             if (fileExistsInCloud != null)
             {
-                if (force != true && fileExistsInCloud.timestamp > localFile.timestamp)
-                {
-                    logger.Warn($"Skipping upload, cuz '{localFile.name}' file in the cloud is newer.");
-                    return;
-                }
                 if (fileExistsInCloud.hash == hash)
                 {
                     logger.Warn($"Skipping upload, cuz identical '{localFile.name}' file is already in the cloud.");
+                    return;
+                }
+                if (force != true && fileExistsInCloud.timestamp > localFile.timestamp)
+                {
+                    logger.Warn($"Skipping upload, cuz '{localFile.name}' file in the cloud is newer.");
                     return;
                 }
             }
@@ -189,17 +189,13 @@ namespace GogOssLibraryNS
             }
         }
 
-        internal async Task<bool> DownloadGameSaves(long lastCloudSavesDownloadAttempt, CloudFile cloudFile, List<CloudFile> localFiles, HttpClient httpClient, string urlPart, bool force, int attempts = 3)
+        internal async Task<bool> DownloadGameSaves(CloudFile cloudFile, List<CloudFile> localFiles, HttpClient httpClient, string urlPart, bool force, int attempts = 3)
         {
             bool errorDisplayed = false;
             var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
             if (fileExistsLocally != null && force != true)
             {
                 var cloudTimeStamp = cloudFile.timestamp;
-                if (lastCloudSavesDownloadAttempt > cloudTimeStamp)
-                {
-                    cloudTimeStamp = lastCloudSavesDownloadAttempt;
-                }
                 if (fileExistsLocally.timestamp > cloudTimeStamp)
                 {
                     logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' local file is newer.");
@@ -256,7 +252,7 @@ namespace GogOssLibraryNS
                     attempts -= 1;
                     logger.Debug($"Retrying download of '{cloudFile.real_file_path}' file. Attempts left: {attempts}");
                     await Task.Delay(2000);
-                    await DownloadGameSaves(lastCloudSavesDownloadAttempt, cloudFile, localFiles, httpClient, urlPart, force, attempts);
+                    await DownloadGameSaves(cloudFile, localFiles, httpClient, urlPart, force, attempts);
                 }
                 else
                 {
@@ -435,7 +431,7 @@ namespace GogOssLibraryNS
                                         var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.GameId);
                                         foreach (var cloudFile in cloudFiles)
                                         {
-                                            var result = await DownloadGameSaves(gameSettings.LastCloudSavesDownloadAttempt, cloudFile, localFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
+                                            var result = await DownloadGameSaves(cloudFile, localFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
                                             if (result)
                                             {
                                                 errorDisplayed = true;
