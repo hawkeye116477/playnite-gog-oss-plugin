@@ -357,6 +357,19 @@ namespace GogOssLibraryNS
                 }
             }
 
+            var notCompletedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status != DownloadStatus.Completed);
+            foreach (var notCompletedDownload in notCompletedDownloads)
+            {
+                var notCompletedDownloadManifest = await Gogdl.GetGameInfo(notCompletedDownload);
+                if (notCompletedDownloadManifest.dependencies.Count > 0)
+                {
+                    foreach (var depend in notCompletedDownloadManifest.dependencies)
+                    {
+                        redistTask.depends.AddMissing(depend);
+                    }
+                }
+            }
+
             var downloadedDepends = Gogdl.GetDownloadedDepends();
             bool requiredDependsDownloaded = true;
             if (redistTask.depends.Count > 0 && requiredDepends.Count > 0)
