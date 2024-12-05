@@ -1,5 +1,12 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.1.5
+    RequiredApiVersion: 6.4.0
+    ReleaseDate: 2024-12-05
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.1.5/GogOssLibrary_1_1_5.pext
+    Changelog:
+      - Solved cloud problems
+      - Fixed installing redistributables (dependencies)
   - Version: 1.1.4
     RequiredApiVersion: 6.4.0
     ReleaseDate: 2024-11-26
