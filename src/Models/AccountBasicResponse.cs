@@ -13,7 +13,7 @@ namespace GogOssLibraryNS.Models
         public string avatar;
         public int cacheExpires;
         public string clientId;
-        public bool isLoggedIn;
+        public bool isLoggedIn = false;
         public string userId;
         public string username;
     }

@@ -35,6 +35,22 @@ namespace GogOssLibraryNS.Services
             return account?.isLoggedIn ?? false;
         }
 
+        private static AccountBasicResponse GetAccountInfo(IWebView webView)
+        {
+            webView.NavigateAndWait(@"https://menu.gog.com/v1/account/basic");
+            var stringInfo = webView.GetPageText();
+            var accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
+            return accountInfo;
+        }
+
+        public bool GetIsUserLoggedInBrowser() => GetIsUserLoggedInBrowser(webView);
+
+        private bool GetIsUserLoggedInBrowser(IWebView webView)
+        {
+            var account = GetAccountInfo(webView);
+            return account?.isLoggedIn ?? false;
+        }
+  
         public async Task Login()
         {
             var loggedIn = false;
@@ -144,7 +160,11 @@ namespace GogOssLibraryNS.Services
                 tokenResponse.client_id = new Dictionary<string, TokenResponse.TokenResponsePart>();
                 tokenResponse.client_id.Add(clientId, responseJson);
                 var strConf = Serialization.ToJson(tokenResponse.client_id, false);
-                FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
+                var tokenFullPath = Path.GetDirectoryName(GogOss.TokensPath);
+                if (!Directory.Exists(tokenFullPath))
+                {
+                    FileSystem.CreateDirectory(tokenFullPath);
+                }
                 File.WriteAllText(GogOss.TokensPath, strConf);
                 return true;
             }
@@ -163,11 +183,10 @@ namespace GogOssLibraryNS.Services
                 return new AccountBasicResponse();
             }
 
-            var tokenLastUpdateTime = File.GetLastWriteTime(GogOss.TokensPath);
+            var tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.TokensPath);
             var tokenExpirySeconds = tokens.expires_in;
             DateTime tokenExpiryTime = tokenLastUpdateTime.AddSeconds(tokenExpirySeconds);
-
-            if (DateTime.Now > tokenExpiryTime)
+            if (DateTime.UtcNow > tokenExpiryTime)
             {
                 var renewSuccess = await RenewTokens(tokens.refresh_token);
                 if (renewSuccess)
@@ -271,8 +290,12 @@ namespace GogOssLibraryNS.Services
             webView.NavigateAndWait(string.Format(baseUrl, 1));
             var gamesList = webView.GetPageText();
 
-            var libraryData = Serialization.FromJson<GetOwnedGamesResult>(gamesList);
-            if (libraryData == null)
+            var libraryData = new GetOwnedGamesResult();
+            if (!gamesList.IsNullOrWhiteSpace() && Serialization.TryFromJson(gamesList, out GetOwnedGamesResult newLibraryData))
+            {
+                libraryData = newLibraryData;
+            }
+            else
             {
                 logger.Error("GOG library content is empty.");
                 return null;

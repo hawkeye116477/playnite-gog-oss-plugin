@@ -218,22 +218,25 @@ namespace GogOssLibraryNS
             {
                 LoginBtn.IsEnabled = false;
                 AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGLoginChecking);
-                var clientApi = new GogAccountClient();
-                var userLoggedIn = await clientApi.GetIsUserLoggedIn();
-                if (userLoggedIn)
+                using (var view = playniteAPI.WebViews.CreateOffscreenView())
                 {
-                    var accountInfo = await clientApi.GetAccountInfo();
-                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOssSignedInAs).Format(accountInfo.username);
-                    LoginBtn.Content = ResourceProvider.GetString(LOC.GogOssSignOut);
-                    LoginBtn.IsChecked = true;
+                    var clientApi = new GogAccountClient(view);
+                    var userLoggedIn = clientApi.GetIsUserLoggedInBrowser();
+                    if (userLoggedIn)
+                    {
+                        var accountInfo = await clientApi.GetAccountInfo();
+                        AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOssSignedInAs).Format(accountInfo.username);
+                        LoginBtn.Content = ResourceProvider.GetString(LOC.GogOssSignOut);
+                        LoginBtn.IsChecked = true;
+                    }
+                    else
+                    {
+                        AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedIn);
+                        LoginBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_GOGAuthenticateLabel);
+                        LoginBtn.IsChecked = false;
+                    }
+                    LoginBtn.IsEnabled = true;
                 }
-                else
-                {
-                    AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedIn);
-                    LoginBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_GOGAuthenticateLabel);
-                    LoginBtn.IsChecked = false;
-                }
-                LoginBtn.IsEnabled = true;
             }
             else
             {

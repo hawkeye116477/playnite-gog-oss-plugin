@@ -295,7 +295,7 @@ namespace GogOssLibraryNS
             using (var view = PlayniteApi.WebViews.CreateOffscreenView())
             {
                 var api = new GogAccountClient(view);
-                if (!await api.GetIsUserLoggedIn())
+                if (!api.GetIsUserLoggedInBrowser())
                 {
                     throw new Exception("User is not logged in to GOG account.");
                 }
