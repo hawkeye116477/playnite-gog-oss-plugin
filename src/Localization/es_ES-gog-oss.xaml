@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <sys:String x:Key="LOCGogOssCometCustomPath"></sys:String>
-  <sys:String x:Key="LOCGogOssCometVersion"></sys:String>
-  <sys:String x:Key="LOCGogOssCometBinary"></sys:String>
-  <sys:String x:Key="LOCGogOssGogdlCustomPath"></sys:String>
-  <sys:String x:Key="LOCGogOssGogdlVersion"></sys:String>
-  <sys:String x:Key="LOCGogOssGogdlBinary"></sys:String>
-  <sys:String x:Key="LOCGogOssUseVerticalCovers"></sys:String>
-  <sys:String x:Key="LOCGogOssLanguage"></sys:String>
-  <sys:String x:Key="LOCGogOssBetaChannel"></sys:String>
-  <sys:String x:Key="LOCGogOssGameNotInstallable"></sys:String>
-  <sys:String x:Key="LOCGogOssEnableCometSupport"></sys:String>
-  <sys:String x:Key="LOCGogOssEnableCometSupportToolTip"></sys:String>
-  <sys:String x:Key="LOCGogOssCometUpdatePolicy"></sys:String>
+  <sys:String x:Key="LOCGogOssCometCustomPath">Ruta de Comet</sys:String>
+  <sys:String x:Key="LOCGogOssCometVersion">Versión de Comet</sys:String>
+  <sys:String x:Key="LOCGogOssCometBinary">Binario de Comet</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlCustomPath">Ruta de Gogdl</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlVersion">Versión de Gogdl</sys:String>
+  <sys:String x:Key="LOCGogOssGogdlBinary">Binario de Gogdl</sys:String>
+  <sys:String x:Key="LOCGogOssUseVerticalCovers">Usar cubiertas verticales</sys:String>
+  <sys:String x:Key="LOCGogOssLanguage">Idioma</sys:String>
+  <sys:String x:Key="LOCGogOssBetaChannel">Canal beta</sys:String>
+  <sys:String x:Key="LOCGogOssGameNotInstallable">{0} no parece ser instalable. Comprueba el contenido descargable en {1}.</sys:String>
+  <sys:String x:Key="LOCGogOssEnableCometSupport">Habilitar soporte de Comet</sys:String>
+  <sys:String x:Key="LOCGogOssEnableCometSupportToolTip">Es necesario para logros, tablas de clasificación y modo multijugador, pero puede causar problemas con el funcionamiento de algunos juegos.</sys:String>
+  <sys:String x:Key="LOCGogOssCometUpdatePolicy">Buscar actualizaciones de Comet y Gogdl</sys:String>
 </ResourceDictionary>
