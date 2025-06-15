@@ -4,25 +4,27 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Tamaño de descarga:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Tamaño de instalación:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">¿Estás seguro que deseas desinstalar {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings"></sys:String>
-  <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings">Descargas</sys:String>
+  <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications">Mostrar notificaciones de escritorio sobre tareas terminadas</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">Mostrar velocidad de descarga en bits por segundo</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAllDlcs"></sys:String>
-  <sys:String x:Key="LOCGogOssUnattendedInstall"></sys:String>
-  <sys:String x:Key="LOCGogOssUnattendedInstallToolTip"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAllDlcs">Descargar todos los DLCs</sys:String>
+  <sys:String x:Key="LOCGogOssUnattendedInstall">Activar el modo de instalación desatendida</sys:String>
+  <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Perfecto, aquí tienes la traducción ajustada:
+
+No tendrás que elegir nada en la ventana del instalador y la instalación empezará automáticamente después de descargar la información necesaria.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Número máximo de procesos de trabajo</sys:String>
-  <sys:String x:Key="LOCGogOssAfterDownloadComplete"></sys:String>
-  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemShutdownCountdown"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemRestartCountdown"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemHibernateCountdown"></sys:String>
-  <sys:String x:Key="LOCGogOssSystemSuspendCountdown"></sys:String>
+  <sys:String x:Key="LOCGogOssAfterDownloadComplete">Acción después de completar la descarga</sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads">Eliminar automáticamente las descargas completadas de la lista</sys:String>
+  <sys:String x:Key="LOCGogOssSystemShutdownCountdown">El sistema se apagará pronto...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemRestartCountdown">El sistema se reiniciará pronto...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemHibernateCountdown">El sistema entrará en hibernación pronto...</sys:String>
+  <sys:String x:Key="LOCGogOssSystemSuspendCountdown">El sistema se suspenderá pronto...</sys:String>
   <sys:String x:Key="LOCGogOssSpaceAvailable">Espacio disponible:</sys:String>
   <sys:String x:Key="LOCGogOssAfterInstalling">Después de instalar:</sys:String>
-  <sys:String x:Key="LOCGogOssDownloaded"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloaded">Descargado</sys:String>
   <sys:String x:Key="LOCGogOssETA">Estimado:</sys:String>
   <sys:String x:Key="LOCGogOssDownloadSpeed">Velocidad de descarga:</sys:String>
-  <sys:String x:Key="LOCGogOssDiskSpeed"></sys:String>
+  <sys:String x:Key="LOCGogOssDiskSpeed">Uso del disco:</sys:String>
   <sys:String x:Key="LOCGogOssElapsed">Transcurrido:</sys:String>
   <sys:String x:Key="LOCGogOssVerifying">Verificando...</sys:String>
   <sys:String x:Key="LOCGogOssDownloadingUpdate">Descargando actualización...</sys:String>
@@ -33,8 +35,8 @@
   <sys:String x:Key="LOCGogOssResumeDownload">Reanudar</sys:String>
   <sys:String x:Key="LOCGogOssDownloadPaused">Pausado</sys:String>
   <sys:String x:Key="LOCGogOssInstallationFinished">Instalación terminada. Diviértete.</sys:String>
-  <sys:String x:Key="LOCGogOssUpdateFinished"></sys:String>
-  <sys:String x:Key="LOCGogOssRepairFinished"></sys:String>
+  <sys:String x:Key="LOCGogOssUpdateFinished">Actualización terminada. Diviértete.</sys:String>
+  <sys:String x:Key="LOCGogOssRepairFinished">Reparación terminada. Diviértete.</sys:String>
   <sys:String x:Key="LOCGogOssSyncGameSaves">Sincronizar partidas guardadas en la nube</sys:String>
   <sys:String x:Key="LOCGogOssSyncing">Sincronizando {0} partidas guardadas en la nube...</sys:String>
   <sys:String x:Key="LOCGogOssImportInstalledGame">Importar juego instalado</sys:String>
@@ -42,7 +44,7 @@
   <sys:String x:Key="LOCGogOssImportFinished">Importación terminada. Diviértete.</sys:String>
   <sys:String x:Key="LOCGogOssDownloadManager">Gestor de descargas</sys:String>
   <sys:String x:Key="LOCGogOssDownloadStatus">Estado</sys:String>
-  <sys:String x:Key="LOCGogOssProgress"></sys:String>
+  <sys:String x:Key="LOCGogOssProgress">Progreso</sys:String>
   <sys:String x:Key="LOCGogOssDownloadCompletedColumn">Completado</sys:String>
   <sys:String x:Key="LOCGogOssDownloadQueued">En cola</sys:String>
   <sys:String x:Key="LOCGogOssDownloadRunning">En ejecución</sys:String>
@@ -102,7 +104,7 @@
   <sys:String x:Key="LOCGogOssSync">Sincronizar</sys:String>
   <sys:String x:Key="LOCGogOssDownload">Descargar</sys:String>
   <sys:String x:Key="LOCGogOssUpload">Subir</sys:String>
-  <sys:String x:Key="LOCGogOssForceAction"></sys:String>
+  <sys:String x:Key="LOCGogOssForceAction">Forzar acción</sys:String>
   <sys:String x:Key="LOCGogOssCloudSaveConfirm">La función de guardado en la nube es experimental. Se recomienda hacer una copia de seguridad de los juegos guardados en caso de que algo vaya mal. ¿Estás seguro de que quieres continuar?</sys:String>
   <sys:String x:Key="LOCGogOssSyncPlaytime">Sincronizar tiempo de juego a la nube</sys:String>
   <sys:String x:Key="LOCGogOssUploadingPlaytime">Subiendo {0} tiempo de juego a la nube...</sys:String>
@@ -120,7 +122,7 @@
   <sys:String x:Key="LOCGogOssAutoUpdate">Actualizar automáticamente los juegos</sys:String>
   <sys:String x:Key="LOCGogOssGamesUpdatePolicy">Buscar actualizaciones de juegos</sys:String>
   <sys:String x:Key="LOCGogOssCheckUpdatesEveryPlayniteStartup">En cada inicio de Playnite</sys:String>
-  <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings"></sys:String>
+  <sys:String x:Key="LOCGogOssRemoveGameLaunchSettings">Eliminar la configuración de lanzamiento</sys:String>
   <sys:String x:Key="LOCGogOssSignedInAs">Sesión iniciada como {0}</sys:String>
   <sys:String x:Key="LOCGogOssSignOutConfirm">¿Estás seguro de que quieres cerrar sesión?</sys:String>
   <sys:String x:Key="LOCGogOssPermissionError">El usuario no tiene acceso de escritura a la ruta especificada. Cambie los permisos o ejecute Playnite como administrador.</sys:String>
@@ -128,16 +130,16 @@
   <sys:String x:Key="LOCGogOssNotEnoughSpace">No hay suficiente espacio libre en disco.</sys:String>
   <sys:String x:Key="LOCGogOssCheckingForUpdates">Buscando actualizaciones...</sys:String>
   <sys:String x:Key="LOCGogOssUninstallSuccess">{0} se ha desinstalado correctamente.</sys:String>
-  <sys:String x:Key="LOCGogOssUninstallSuccessOther"></sys:String>
-  <sys:String x:Key="LOCGogOssUninstallErrorOther"></sys:String>
-  <sys:String x:Key="LOCGogOssGames"></sys:String>
-  <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
-  <sys:String x:Key="LOCGogOssPanel"></sys:String>
-  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp"></sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExists"></sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther"></sys:String>
-  <sys:String x:Key="LOCGogOssMigrateGamesGog"></sys:String>
-  <sys:String x:Key="LOCGogOssMigratingGamesGog"></sys:String>
-  <sys:String x:Key="LOCGogOssMigrationConfirm"></sys:String>
-  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
+  <sys:String x:Key="LOCGogOssUninstallSuccessOther">Los siguientes juegos se han desinstalado correctamente: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssUninstallErrorOther">No se puede desinstalar los siguientes juegos: {0}.</sys:String>
+  <sys:String x:Key="LOCGogOssGames">Juegos</sys:String>
+  <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} no está instalado.</sys:String>
+  <sys:String x:Key="LOCGogOssPanel">Panel GOG OSS</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">La descarga comenzará pronto. Puedes ver su estado accediendo al Panel GOG OSS a través del Menú =&gt; Vista o barra lateral.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} ya está en la lista de descarga. Puede ver el estado de la descarga accediendo al Panel GOG OSS a través del Menú =&gt; Vista o barra lateral.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Los siguientes juegos ya están en la lista de descargas: {0}. Puede ver el estado de la descarga accediendo al Panel GOG OSS a través del Menú =&gt; Vista o barra lateral.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog">Migrar todos los juegos del complemento GOG</sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog">Migrando todos los juegos desde el complemento GOG...</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm">Todos los juegos serán eliminados del complemento GOG y movidos a GOG OSS. ¿Estás seguro de que quieres hacer esto?</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Se están descargando actualizaciones para los juegos de GOG.</sys:String>
 </ResourceDictionary>

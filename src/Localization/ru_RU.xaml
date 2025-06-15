@@ -4,7 +4,7 @@
   <sys:String x:Key="LOCGogOssDownloadSize">Размер загрузки:</sys:String>
   <sys:String x:Key="LOCGogOssInstallSize">Размер установки:</sys:String>
   <sys:String x:Key="LOCGogOssUninstallGameConfirm">Вы уверены, что хотите удалить {0}?</sys:String>
-  <sys:String x:Key="LOCGogOssDownloadSettings"></sys:String>
+  <sys:String x:Key="LOCGogOssDownloadSettings">Загрузки</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadTaskFinishedNotifications">Отображать уведомления на рабочем столе о завершенных задачах</sys:String>
   <sys:String x:Key="LOCGogOssDisplayDownloadSpeedInBits">Отображать скорость загрузки в битах в секунду</sys:String>
   <sys:String x:Key="LOCGogOssDownloadAllDlcs">Скачать все DLC</sys:String>
@@ -12,7 +12,7 @@
   <sys:String x:Key="LOCGogOssUnattendedInstallToolTip">Вам не нужно ничего выбирать в окне установщика. Установка начнется автоматически после загрузки информации.</sys:String>
   <sys:String x:Key="LOCGogOssMaxWorkers">Максимальное количество рабочих процессов</sys:String>
   <sys:String x:Key="LOCGogOssAfterDownloadComplete">Действие после завершения загрузки</sys:String>
-  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads"></sys:String>
+  <sys:String x:Key="LOCGogOssAutoRemoveCompletedDownloads">Автоматически удалять завершенные загрузки из списка</sys:String>
   <sys:String x:Key="LOCGogOssSystemShutdownCountdown">Система скоро выключится...</sys:String>
   <sys:String x:Key="LOCGogOssSystemRestartCountdown">Система скоро перезагрузится...</sys:String>
   <sys:String x:Key="LOCGogOssSystemHibernateCountdown">Система скоро перейдет в режим гибернации...</sys:String>
@@ -131,13 +131,13 @@
   <sys:String x:Key="LOCGogOssUninstallSuccessOther">Следующие игры были успешно удалены: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssUninstallErrorOther">Не удается удалить следующие игры: {0}.</sys:String>
   <sys:String x:Key="LOCGogOssGames">Игры</sys:String>
-  <sys:String x:Key="LOCGogOssLauncherNotInstalled"></sys:String>
-  <sys:String x:Key="LOCGogOssPanel"></sys:String>
-  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp"></sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExists"></sys:String>
-  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther"></sys:String>
-  <sys:String x:Key="LOCGogOssMigrateGamesGog"></sys:String>
-  <sys:String x:Key="LOCGogOssMigratingGamesGog"></sys:String>
-  <sys:String x:Key="LOCGogOssMigrationConfirm"></sys:String>
-  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway"></sys:String>
+  <sys:String x:Key="LOCGogOssLauncherNotInstalled">{AppName} не установлен.</sys:String>
+  <sys:String x:Key="LOCGogOssPanel">Панель GOG OSS</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadManagerWhatsUp">Загрузка начнется в ближайшее время. Вы можете увидеть его статус, обратившись к панели GOG OSS через Меню =&gt; Вид или боковую панель.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExists">{0} уже находится в списке загрузок. Вы можете увидеть состояние загрузки через меню GOG OSS через меню =&gt; Просмотр или боковую панель.</sys:String>
+  <sys:String x:Key="LOCGogOssDownloadAlreadyExistsOther">Следующие игры уже находятся в списке загрузок: {0}. Состояние загрузки отображается в панели GOG OSS через меню =&gt; Просмотр или боковую панель.</sys:String>
+  <sys:String x:Key="LOCGogOssMigrateGamesGog">Перенести все игры из GOG плагина</sys:String>
+  <sys:String x:Key="LOCGogOssMigratingGamesGog">Перенос всех игр с плагина GOG...</sys:String>
+  <sys:String x:Key="LOCGogOssMigrationConfirm">Все игры будут удалены из GOG плагина и перемещены в GOG OSS. Вы уверены, что хотите это сделать?</sys:String>
+  <sys:String x:Key="LOCGogOssGamesUpdatesUnderway">Обновления игр от GOG загружаются.</sys:String>
 </ResourceDictionary>
