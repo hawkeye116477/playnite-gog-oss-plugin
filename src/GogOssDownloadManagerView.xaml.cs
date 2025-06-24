@@ -43,7 +43,6 @@ namespace GogOssLibraryNS
         public GogOssDownloadManagerView()
         {
             InitializeComponent();
-            SetControlTextBlockStyle();
 
             SelectAllBtn.ToolTip = GetToolTipWithKey(LOC.GogOssSelectAllEntries, "Ctrl+A");
             RemoveDownloadBtn.ToolTip = GetToolTipWithKey(LOC.GogOssRemoveEntry, "Delete");
@@ -726,21 +725,6 @@ namespace GogOssLibraryNS
             {
                 downloadsView.Filter = null;
                 FilterDownloadBtn.Content = "\uef29";
-            }
-        }
-
-        private void SetControlTextBlockStyle()
-        {
-            var baseStyleName = "BaseTextBlockStyle";
-            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
-            {
-                baseStyleName = "TextBlockBaseStyle";
-            }
-
-            if (ResourceProvider.GetResource(baseStyleName) is Style baseStyle && baseStyle.TargetType == typeof(TextBlock))
-            {
-                var implicitStyle = new Style(typeof(TextBlock), baseStyle);
-                Resources.Add(typeof(TextBlock), implicitStyle);
             }
         }
 

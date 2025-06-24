@@ -12,6 +12,12 @@
         <sys:Boolean x:Key="True">True</sys:Boolean>
         <sys:Boolean x:Key="False">False</sys:Boolean>
         <FontFamily x:Key="FontIcoFont">/Fonts/icofont.ttf#icofont</FontFamily>
+        <Style TargetType="Separator" BasedOn="{StaticResource HawkeyeSeparatorStyle}" />
+        <Style TargetType="Border" BasedOn="{StaticResource HawkeyeBorderStyle}" />
+        <Style TargetType="ListBox" BasedOn="{StaticResource HawkeyeListBoxStyle}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource HawkeyeTextBlockStyle}" />
+        <Style TargetType="Button" BasedOn="{StaticResource HawkeyeButtonStyle}" />
+        <Style TargetType="Expander" BasedOn="{StaticResource HawkeyeExpanderStyle}" />
     </UserControl.Resources>
     <DockPanel Margin="10">
         <Grid DockPanel.Dock="Bottom" Margin="0,5,0,0">
@@ -24,7 +30,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Background="{DynamicResource PanelSeparatorBrush}" Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+            <Separator Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5" Grid.Row="1" Grid.Column="0">
                 <TextBlock Text="{DynamicResource LOCGogOssDownloadSize}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <TextBlock x:Name="DownloadSizeTB" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
@@ -57,7 +63,7 @@
                 <Button x:Name="CancelBtn" Content="{DynamicResource LOCGogOss3P_PlayniteCancelLabel}" ContentStringFormat="&#xec4f; {0}"
                     FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CancelBtn_Click" />
             </StackPanel>
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Background="{DynamicResource PanelSeparatorBrush}" Margin="0,5"/>
+            <Separator Margin="0,5"/>
             <DockPanel Margin="0,0,0,5" Name="FolderDP">
                 <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteGameInstallDirTitle}" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
                 <Button DockPanel.Dock="Right" Padding="5" Margin="5 0 0 0" Content="&#xec5b;"
@@ -79,7 +85,7 @@
                                    Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 <ComboBox Grid.Row="2" Grid.Column="1" Name="BetaChannelCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="BetaChannelCBo_SelectionChanged"/>
             </StackPanel>
-            <Border BorderThickness="2" Style="{DynamicResource HighlightBorder}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="GamesBrd" Visibility="Collapsed" Margin="0,0,0,5">
+            <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="GamesBrd" Visibility="Collapsed" Margin="0,0,0,5">
                 <Expander Header="{DynamicResource LOCGogOssGames}" Margin="2,2,5,2" HorizontalAlignment="Left" IsExpanded="True">
                     <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                         <ItemsControl BorderThickness="0" Name="GamesLB" Margin="5,0,5,5">
@@ -95,11 +101,11 @@
                     </StackPanel>
                 </Expander>
             </Border>
-            <Border BorderThickness="2" Style="{DynamicResource HighlightBorder}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="ExtraContentBrd" Visibility="Collapsed" Margin="0,0,0,5">
+            <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Name="ExtraContentBrd" Visibility="Collapsed" Margin="0,0,0,5">
                 <Expander Header="{DynamicResource LOCGogOssExtraContent}" Margin="2,2,5,2" HorizontalAlignment="Left">
                     <StackPanel Orientation="Vertical" Margin="0,10,0,0">
                         <CheckBox Margin="7,0,0,5" Content="{DynamicResource LOCGogOssCheckAllContent}" x:Name="AllOrNothingChk" Visibility="Collapsed" Checked="AllOrNothingChk_Checked" Unchecked="AllOrNothingChk_Unchecked" />
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Background="{DynamicResource PanelSeparatorBrush}" Margin="7,0,0,5" />
+                        <Separator Margin="7,0,0,5" />
                         <ListBox BorderThickness="0" Name="ExtraContentLB" SelectionMode="Multiple" Margin="5,0,5,5" SelectionChanged="ExtraContentLB_SelectionChanged">
                             <ListBox.Resources>
                                 <Style TargetType="ListBoxItem">
@@ -117,7 +123,7 @@
                     </StackPanel>
                 </Expander>
             </Border>
-            <Border BorderThickness="2" Style="{DynamicResource HighlightBorder}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,5,0,0">
+            <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,5,0,0">
                 <Expander Header="{DynamicResource LOCGogOssAdvancedOptions}" Margin="2,2,5,2" HorizontalAlignment="Left" >
                     <Grid Margin="5">
                         <Grid.ColumnDefinitions>

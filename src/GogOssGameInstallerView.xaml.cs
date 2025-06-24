@@ -34,23 +34,6 @@ namespace GogOssLibraryNS
         public GogOssGameInstallerView()
         {
             InitializeComponent();
-            SetControlStyles();
-        }
-
-        private void SetControlStyles()
-        {
-            var baseStyleName = "BaseTextBlockStyle";
-            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
-            {
-                baseStyleName = "TextBlockBaseStyle";
-                Resources.Add(typeof(Button), new Style(typeof(Button), null));
-            }
-
-            if (ResourceProvider.GetResource(baseStyleName) is Style baseStyle && baseStyle.TargetType == typeof(TextBlock))
-            {
-                var implicitStyle = new Style(typeof(TextBlock), baseStyle);
-                Resources.Add(typeof(TextBlock), implicitStyle);
-            }
         }
 
         public Window InstallerWindow => Window.GetWindow(this);
@@ -212,6 +195,7 @@ namespace GogOssLibraryNS
 
         private async void GogOssGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            CommonHelpers.SetControlBackground(this);
             if (MultiInstallData.First().downloadProperties.downloadAction == DownloadAction.Repair)
             {
                 FolderDP.Visibility = Visibility.Collapsed;

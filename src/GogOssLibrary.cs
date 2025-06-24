@@ -44,7 +44,7 @@ namespace GogOssLibraryNS
             commonHelpers = new CommonHelpers(Instance);
             SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
             LoadExtraLocalization();
-            LoadMenuIcons();
+            commonHelpers.LoadNeededResources();
             GogOssDownloadManagerView = new GogOssDownloadManagerView();
         }
 
@@ -542,21 +542,10 @@ namespace GogOssLibraryNS
                                     }
                                     else
                                     {
-                                        Window window = null;
-                                        if (PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Desktop)
+                                        Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
                                         {
-                                            window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
-                                            {
-                                                ShowMaximizeButton = false,
-                                            });
-                                        }
-                                        else
-                                        {
-                                            window = new Window
-                                            {
-                                                Background = System.Windows.Media.Brushes.DodgerBlue
-                                            };
-                                        }
+                                            ShowMaximizeButton = false,
+                                        });
                                         window.DataContext = successUpdates;
                                         window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
                                         window.Content = new GogOssUpdaterView();
@@ -715,16 +704,6 @@ namespace GogOssLibraryNS
                 downloadManager.SaveData();
             }
             return true;
-        }
-
-        public void LoadMenuIcons()
-        {
-            var dictionaries = Application.Current.Resources.MergedDictionaries;
-            ResourceDictionary iconsDict = new ResourceDictionary
-            {
-                Source = new Uri("/GogOssLibrary;component/Shared/Resources/Icons.xaml", UriKind.RelativeOrAbsolute)
-            };
-            dictionaries.Add(iconsDict);
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)

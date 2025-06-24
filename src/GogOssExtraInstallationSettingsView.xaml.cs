@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Models;
+﻿using CommonPlugin;
+using GogOssLibraryNS.Models;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ namespace GogOssLibraryNS
         public GogOssExtraInstallationSettingsView()
         {
             InitializeComponent();
-            SetControlStyles();
         }
 
         private DownloadManagerData.Download ChosenGame
@@ -27,33 +27,14 @@ namespace GogOssLibraryNS
             set { }
         }
 
-        private void Dispatcher_ShutdownStarted(object sender, EventArgs e)
-        {
-
-        }
-
         public GogDownloadGameInfo manifest;
         private IPlayniteAPI playniteAPI = API.Instance;
         private bool uncheckedByUser = true;
         private bool checkedByUser = true;
 
-        private void SetControlStyles()
-        {
-            var baseStyleName = "BaseTextBlockStyle";
-            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
-            {
-                baseStyleName = "TextBlockBaseStyle";
-                Resources.Add(typeof(Button), new Style(typeof(Button), null));
-            }
-
-            if (ResourceProvider.GetResource(baseStyleName) is Style baseStyle && baseStyle.TargetType == typeof(TextBlock))
-            {
-                var implicitStyle = new Style(typeof(TextBlock), baseStyle);
-                Resources.Add(typeof(TextBlock), implicitStyle);
-            }
-        }
         private async void GogOssExtraInstallationSettingsUC_Loaded(object sender, RoutedEventArgs e)
         {
+            CommonHelpers.SetControlBackground(this);
             manifest = await Gogdl.GetGameInfo(ChosenGame);
             var betaChannels = new Dictionary<string, string>();
             if (manifest.available_branches.Count > 1)

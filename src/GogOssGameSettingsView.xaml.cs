@@ -129,6 +129,7 @@ namespace GogOssLibraryNS
 
         private void GameSettingsViewUC_Loaded(object sender, RoutedEventArgs e)
         {
+            CommonHelpers.SetControlBackground(this);
             var globalSettings = GogOssLibrary.GetSettings();
             EnableCometSupportChk.IsEnabled = Comet.IsInstalled;
             if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)

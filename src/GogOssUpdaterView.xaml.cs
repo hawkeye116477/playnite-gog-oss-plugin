@@ -1,7 +1,6 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
-using Playnite.SDK;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -14,13 +13,11 @@ namespace GogOssLibraryNS
     /// </summary>
     public partial class GogOssUpdaterView : UserControl
     {
-        private IPlayniteAPI playniteAPI = API.Instance;
         public Dictionary<string, UpdateInfo> UpdatesList => (Dictionary<string, UpdateInfo>)DataContext;
 
         public GogOssUpdaterView()
         {
             InitializeComponent();
-            SetControlStyles();
         }
 
         private void UpdatesLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -37,22 +34,6 @@ namespace GogOssLibraryNS
             DownloadSizeTB.Text = downloadSize;
             var installSize = CommonHelpers.FormatSize(initialInstallSizeNumber);
             InstallSizeTB.Text = installSize;
-        }
-
-        private void SetControlStyles()
-        {
-            var baseStyleName = "BaseTextBlockStyle";
-            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
-            {
-                baseStyleName = "TextBlockBaseStyle";
-                Resources.Add(typeof(Button), new Style(typeof(Button), null));
-            }
-
-            if (ResourceProvider.GetResource(baseStyleName) is Style baseStyle && baseStyle.TargetType == typeof(TextBlock))
-            {
-                var implicitStyle = new Style(typeof(TextBlock), baseStyle);
-                Resources.Add(typeof(TextBlock), implicitStyle);
-            }
         }
 
         private void SelectAllBtn_Click(object sender, RoutedEventArgs e)
@@ -100,6 +81,7 @@ namespace GogOssLibraryNS
 
         private void GogOssUpdaterUC_Loaded(object sender, RoutedEventArgs e)
         {
+            CommonHelpers.SetControlBackground(this);
             UpdatesLB.ItemsSource = UpdatesList;
             UpdatesLB.Visibility = Visibility.Visible;
             UpdatesLB.SelectAll();
