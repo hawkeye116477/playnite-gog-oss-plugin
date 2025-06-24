@@ -228,6 +228,11 @@ namespace GogOssLibraryNS
                 if (downloadProperties.downloadAction == DownloadAction.Install)
                 {
                     installCommand.Add("download");
+                    var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", taskData.gameID);
+                    if (File.Exists(manifestFile))
+                    {
+                        File.Delete(manifestFile);
+                    }
                 }
                 if (downloadProperties.downloadAction == DownloadAction.Repair)
                 {
