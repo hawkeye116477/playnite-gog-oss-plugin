@@ -6,6 +6,7 @@ using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -41,10 +42,20 @@ namespace GogOssLibraryNS
         {
             get
             {
-                var launcherPath = "";
+                string[] cometExes = { "comet-x86_64-pc-windows-msvc.exe", "comet.exe" };
+                string envPath = Environment.GetEnvironmentVariable("PATH")
+                                            .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                            .SelectMany(pathEntry => cometExes.Select(nileExe => Path.Combine(pathEntry.Trim(), nileExe)))
+                                            .FirstOrDefault(File.Exists);
+
                 var heroicCometBinary = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                                            @"Programs\heroic\resources\app.asar.unpacked\build\bin\x64\win32\comet.exe");
-                if(File.Exists(heroicCometBinary))
+                var launcherPath = "";
+                if (string.IsNullOrWhiteSpace(envPath) == false)
+                {
+                    launcherPath = envPath;
+                }
+                else if (File.Exists(heroicCometBinary))
                 {
                     launcherPath = heroicCometBinary;
                 }
