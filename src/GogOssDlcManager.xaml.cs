@@ -1,6 +1,7 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
+using Playnite.SDK;
 using Playnite.SDK.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GogOssLibraryNS
 {
@@ -252,6 +254,11 @@ namespace GogOssLibraryNS
 
         private async void GogOssDlcManagerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var playniteAPI = API.Instance;
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                CloseWindowTab.Visibility = Visibility.Visible;
+            }
             CommonHelpers.SetControlBackground(this);
             BottomADGrd.Visibility = Visibility.Collapsed;
             TopADSP.Visibility = Visibility.Collapsed;
@@ -335,6 +342,18 @@ namespace GogOssLibraryNS
                 AvailableDlcsActionSP.Visibility = Visibility.Collapsed;
                 BottomADGrd.Visibility = Visibility.Collapsed;
                 AvailableDlcsAOBrd.Visibility = Visibility.Collapsed;
+            }
+
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl tabControl)
+            {
+                if (tabControl.SelectedItem == CloseWindowTab)
+                {
+                    Window.GetWindow(this).Close();
+                }
             }
 
         }
