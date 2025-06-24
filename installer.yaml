@@ -1,5 +1,15 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.1.9
+    RequiredApiVersion: 6.12.0
+    ReleaseDate: 2025-06-24
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.1.9/GogOssLibrary_1_1_9.pext
+    Changelog:
+      - Added experimental displaying of Download Manager at full screen mode
+      - Added detecting comet binary at PATH environment variable
+      - Fixed full screen styling
+      - Fixed full screen mode anomaly during cloud operations
+      - If GOG manifest is present, then now should be removed before installing game
   - Version: 1.1.8
     RequiredApiVersion: 6.4.0
     ReleaseDate: 2025-06-15
