@@ -312,6 +312,7 @@ namespace GogOssLibraryNS
                     };
                     cloudSaveFolders.Add(newCloudSaveFolder);
                 }
+                
                 var playniteAPI = API.Instance;
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssSyncing).Format(game.Name), false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
@@ -379,7 +380,7 @@ namespace GogOssLibraryNS
                                     var wantedItem = cloudSaveFolders.FirstOrDefault(s => cloudFile.name.Contains(s.name));
                                     if (wantedItem != null)
                                     {
-                                        cloudFile.real_file_path = Path.GetFullPath(cloudFile.name.Replace(wantedItem.name, wantedItem.location));
+                                        cloudFile.real_file_path = CommonHelpers.NormalizePath(cloudFile.name.ReplaceFirst($"{wantedItem.name}", wantedItem.location));
                                     }
                                 }
                             }
@@ -400,7 +401,7 @@ namespace GogOssLibraryNS
                                         {
                                             real_file_path = fileName,
                                             timestamp = lastWriteTimeTs,
-                                            last_modified = lastWriteTime.UtcDateTime.ToString("o", CultureInfo.InvariantCulture),
+                                            last_modified = lastWriteTime.ToString("yyyy-MM-ddTHH:mm:sszzz"),
                                             name = $"{cloudSaveFolder.name}/{RelativePath.Get(cloudSaveFolder.location, fileName).Replace(Path.DirectorySeparatorChar.ToString(), @"/")}"
                                         };
                                         localFiles.Add(newCloudFile);
