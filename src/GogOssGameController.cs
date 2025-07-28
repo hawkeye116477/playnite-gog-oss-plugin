@@ -51,10 +51,18 @@ namespace GogOssLibraryNS
                 return;
             }
             var playniteAPI = API.Instance;
-            Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+            Window window = null;
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Desktop)
             {
-                ShowMaximizeButton = false,
-            });
+                window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                {
+                    ShowMaximizeButton = false,
+                });
+            }
+            else
+            {
+                window = new Window();
+            }
             window.DataContext = installData;
             window.Content = new GogOssGameInstallerView();
             window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
