@@ -525,7 +525,7 @@ namespace GogOssLibraryNS
                     if (nextGamesUpdateTime != 0)
                     {
                         DateTimeOffset now = DateTime.UtcNow;
-                        if (now.ToUnixTimeSeconds() >= nextGamesUpdateTime)
+                        if (now.ToUnixTimeSeconds() >= nextGamesUpdateTime && Gogdl.IsInstalled)
                         {
                             globalSettings.NextGamesUpdateTime = GetNextUpdateCheckTime(globalSettings.GamesUpdatePolicy);
                             SavePluginSettings(globalSettings);
@@ -742,6 +742,11 @@ namespace GogOssLibraryNS
                             Icon = "UpdateDbIcon",
                             Action = (args) =>
                             {
+                                if (!Gogdl.IsInstalled)
+                                {
+                                    Gogdl.ShowNotInstalledError();
+                                    return;
+                                }
                                 GogOssUpdateController gogOssUpdateController = new GogOssUpdateController();
                                 var gamesToUpdate = new Dictionary<string, UpdateInfo>();
                                 GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssCheckingForUpdates), false) { IsIndeterminate = true };
@@ -818,11 +823,14 @@ namespace GogOssLibraryNS
                                         }
 
                                         game.Name = installedInfo.title;
-                                        var downloadGameInfo = await Gogdl.GetGameInfo(game.GameId, installedInfo);
-                                        installedInfo.version = downloadGameInfo.versionName;
+                                        if (Gogdl.IsInstalled)
+                                        {
+                                            var downloadGameInfo = await Gogdl.GetGameInfo(game.GameId, installedInfo);
+                                            installedInfo.version = downloadGameInfo.versionName;
+                                            game.Version = downloadGameInfo.versionName;
+                                        }
                                         var dlcs = GogOss.GetInstalledDlcs(game.GameId, path);
                                         installedInfo.installed_DLCs = dlcs;
-                                        game.Version = downloadGameInfo.versionName;
                                         game.IsInstalled = true;
                                         var installedAppList = GetInstalledAppList();
                                         installedAppList.Add(game.GameId, installedInfo);
@@ -1046,7 +1054,6 @@ namespace GogOssLibraryNS
                         Gogdl.ShowNotInstalledError();
                         return;
                     }
-
                     var gamesUpdates = new Dictionary<string, UpdateInfo>();
                     GogOssUpdateController GogOssUpdateController = new GogOssUpdateController();
                     GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssCheckingForUpdates), false) { IsIndeterminate = true };

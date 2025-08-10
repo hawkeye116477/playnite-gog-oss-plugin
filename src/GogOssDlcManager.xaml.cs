@@ -265,8 +265,13 @@ namespace GogOssLibraryNS
             LoadingATB.Visibility = Visibility.Visible;
             LoadingITB.Visibility = Visibility.Visible;
             var installedGameInfo = GogOss.GetInstalledInfo(GameId);
-            var gameInfo = await Gogdl.GetGameInfo(GameId, installedGameInfo);
-            var ownedDlcs = gameInfo.dlcs;
+ 
+            var ownedDlcs = new List<GogDownloadGameInfo.Dlc>();
+            if (Gogdl.IsInstalled)
+            {
+                var gameInfo = await Gogdl.GetGameInfo(GameId, installedGameInfo);
+                ownedDlcs = gameInfo.dlcs;
+            }
             if (ownedDlcs.Count > 0)
             {
                 var installedDlcsIds = installedGameInfo.installed_DLCs;
