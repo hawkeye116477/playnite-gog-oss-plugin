@@ -21,7 +21,7 @@
     </UserControl.Resources>
     <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled"
         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" SelectionChanged="TabControl_SelectionChanged">
-        <TabItem Header="{DynamicResource LOCGogOssAvailableDlcs}">
+        <TabItem Header="{common:Localize Key={x:Static sys:LOC.CommonAvailableDlcs}}">
             <DockPanel Margin="10,5,0,5">
                 <Grid DockPanel.Dock="Bottom" Margin="0,5,0,0" x:Name="BottomADGrd">
                     <Grid.ColumnDefinitions>
@@ -35,20 +35,20 @@
                     </Grid.RowDefinitions>
                     <Separator Margin="0,5,0,0" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5" Grid.Row="1" Grid.Column="0">
-                        <TextBlock Text="{DynamicResource LOCGogOssDownloadSize}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonDownloadSize}}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <TextBlock x:Name="DownloadSizeTB" Text="0 B" VerticalAlignment="Top" Margin="5,0,5,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" Grid.Row="2" Grid.Column="0">
-                        <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOssInstallSize}" Margin="0,0,0,0" />
+                        <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static sys:LOC.CommonInstallSize}}" Margin="0,0,0,0" />
                         <TextBlock x:Name="InstallSizeTB" Text="0 B" VerticalAlignment="Top" Margin="5,0,5,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5" Grid.Row="1" Grid.Column="1">
-                        <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOssSpaceAvailable}" Margin="0,0,0,0" />
+                        <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static sys:LOC.CommonSpaceAvailable}}" Margin="0,0,0,0" />
                         <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
                     Margin="5,0,5,0" Name="SpaceTB" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"  Grid.Row="2" Grid.Column="1">
-                        <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOssAfterInstalling}" Margin="0,0,0,0" />
+                        <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static sys:LOC.CommonAfterInstalling}}" Margin="0,0,0,0" />
                         <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
                     Margin="5,0,5,0" Name="AfterInstallingTB" />
                     </StackPanel>
@@ -56,7 +56,7 @@
                 <StackPanel x:Name="TopADSP" DockPanel.Dock="Top">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" DockPanel.Dock="Top" Name="AvailableDlcsActionSP">
                         <Button x:Name="InstallBtn" Content="{DynamicResource LOCGogOss3P_PlayniteInstallGame}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xef07; {0}" Click="InstallBtn_Click" Margin="0,0,5,0" IsEnabled="False" />
-                        <Button x:Name="SelectAllAvDlcsBtn" Content="{DynamicResource LOCGogOssCheckAllContent}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xeed9; {0}" Margin="0,0,5,0" Click="SelectAllAvDlcsBtn_Click"  />
+                        <Button x:Name="SelectAllAvDlcsBtn" Content="{common:Localize Key={x:Static sys:LOC.CommonCheckAllContent}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xeed9; {0}" Margin="0,0,5,0" Click="SelectAllAvDlcsBtn_Click"  />
                     </StackPanel>
                     <Separator Margin="0,5,0,0" />
                     <ListBox BorderThickness="0" Name="AvailableDlcsLB" SelectionMode="Multiple" Margin="0,5" SelectionChanged="AvailableDlcsLB_SelectionChanged">
@@ -73,7 +73,7 @@
                         </ListBox.Resources>
                     </ListBox>
                     <Border BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Bottom"  Margin="0,5,0,0" x:Name="AvailableDlcsAOBrd">
-                        <Expander Header="{DynamicResource LOCGogOssAdvancedOptions}" Margin="2,2,5,2" HorizontalAlignment="Left" >
+                        <Expander Header="{common:Localize Key={x:Static sys:LOC.CommonAdvancedOptions}}" Margin="2,2,5,2" HorizontalAlignment="Left" >
                             <Grid Margin="5">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -85,7 +85,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}"
+                                <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonMaxWorkers}}"
                                            Grid.Row="2" Grid.Column="0" Margin="0,0,0,5" 
                                            VerticalAlignment="Center" HorizontalAlignment="Left" />
                                 <common:NumericInput Grid.Row="2" Grid.Column="1" Margin="15,0,0,5" MinValue="0" MaxValue="16" x:Name="MaxWorkersNI"/>
@@ -93,16 +93,16 @@
                         </Expander>
                     </Border>
                 </StackPanel>
-                <TextBlock Text="{DynamicResource LOCGogOssNoAvailableDlcs}" Margin="0,5,0,0" Visibility="Collapsed" Name="NoAvailableDlcsTB"/>
+                <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonNoAvailableDlcs}}" Margin="0,5,0,0" Visibility="Collapsed" Name="NoAvailableDlcsTB"/>
                 <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}" Margin="0,5,0,0"  Visibility="Collapsed" Name="LoadingATB" />
             </DockPanel>
         </TabItem>
-        <TabItem Header="{DynamicResource LOCGogOssInstalledDlcs}" Name="InstalledDlcsTbI">
+        <TabItem Header="{common:Localize Key={x:Static sys:LOC.CommonInstalledDlcs}}" Name="InstalledDlcsTbI">
             <StackPanel Margin="10,5,0,5">
                 <StackPanel Name="InstalledDlcsSP">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0">
                         <Button x:Name="UninstallBtn" Content="{DynamicResource LOCGogOss3P_PlayniteUninstallGame}" ContentStringFormat="&#xedec; {0}" FontFamily="{DynamicResource FontIcoFont}" Click="UninstallBtn_Click" IsEnabled="False" Margin="0,0,5,0" />
-                        <Button x:Name="SelectAllInDlcsBtn" Content="{DynamicResource LOCGogOssCheckAllContent}" FontFamily="{DynamicResource FontIcoFont}" 
+                        <Button x:Name="SelectAllInDlcsBtn" Content="{common:Localize Key={x:Static sys:LOC.CommonCheckAllContent}}" FontFamily="{DynamicResource FontIcoFont}" 
                                 ContentStringFormat="&#xeed9; {0}" Margin="0,0,5,0" Click="SelectAllInDlcsBtn_Click_1" />
                     </StackPanel>
                     <Separator Margin="0,5,0,0" />
@@ -120,7 +120,7 @@
                         </ListBox.Resources>
                     </ListBox>
                 </StackPanel>
-                <TextBlock Text="{DynamicResource LOCGogOssNoInstalledDlcs}" Margin="0,5,0,0" Visibility="Collapsed" Name="NoInstalledDlcsTB"/>
+                <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonNoInstalledDlcs}}" Margin="0,5,0,0" Visibility="Collapsed" Name="NoInstalledDlcsTB"/>
                 <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}" Margin="0,5,0,0"  Visibility="Collapsed" Name="LoadingITB" />
             </StackPanel>
         </TabItem>

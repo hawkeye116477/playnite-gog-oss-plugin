@@ -44,14 +44,14 @@ namespace GogOssLibraryNS
         {
             InitializeComponent();
 
-            SelectAllBtn.ToolTip = GetToolTipWithKey(LOC.GogOssSelectAllEntries, "Ctrl+A");
-            RemoveDownloadBtn.ToolTip = GetToolTipWithKey(LOC.GogOssRemoveEntry, "Delete");
-            MoveTopBtn.ToolTip = GetToolTipWithKey(LOC.GogOssMoveEntryTop, "Alt+Home");
-            MoveUpBtn.ToolTip = GetToolTipWithKey(LOC.GogOssMoveEntryUp, "Alt+Up");
-            MoveDownBtn.ToolTip = GetToolTipWithKey(LOC.GogOssMoveEntryDown, "Alt+Down");
-            MoveBottomBtn.ToolTip = GetToolTipWithKey(LOC.GogOssMoveEntryBottom, "Alt+End");
-            DownloadPropertiesBtn.ToolTip = GetToolTipWithKey(LOC.GogOssEditSelectedDownloadProperties, "Ctrl+P");
-            OpenDownloadDirectoryBtn.ToolTip = GetToolTipWithKey(LOC.GogOssOpenDownloadDirectory, "Ctrl+O");
+            SelectAllBtn.ToolTip = GetToolTipWithKey(LOC.CommonSelectAllEntries, "Ctrl+A");
+            RemoveDownloadBtn.ToolTip = GetToolTipWithKey(LOC.CommonRemoveEntry, "Delete");
+            MoveTopBtn.ToolTip = GetToolTipWithKey(LOC.CommonMoveEntryTop, "Alt+Home");
+            MoveUpBtn.ToolTip = GetToolTipWithKey(LOC.CommonMoveEntryUp, "Alt+Up");
+            MoveDownBtn.ToolTip = GetToolTipWithKey(LOC.CommonMoveEntryDown, "Alt+Down");
+            MoveBottomBtn.ToolTip = GetToolTipWithKey(LOC.CommonMoveEntryBottom, "Alt+End");
+            DownloadPropertiesBtn.ToolTip = GetToolTipWithKey(LOC.CommonEditSelectedDownloadProperties, "Ctrl+P");
+            OpenDownloadDirectoryBtn.ToolTip = GetToolTipWithKey(LOC.CommonOpenDownloadDirectory, "Ctrl+O");
             LoadSavedData();
             foreach (DownloadManagerData.Download download in downloadManagerData.downloads)
             {
@@ -179,7 +179,7 @@ namespace GogOssLibraryNS
             var messagesSettings = GogOssMessagesSettings.LoadSettings();
             if (!messagesSettings.DontShowDownloadManagerWhatsUpMsg)
             {
-                var result = MessageCheckBoxDialog.ShowMessage("", ResourceProvider.GetString(LOC.GogOssDownloadManagerWhatsUp), ResourceProvider.GetString(LOC.GogOss3P_PlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
+                var result = MessageCheckBoxDialog.ShowMessage("", LocalizationManager.Instance.GetString(LOC.CommonDownloadManagerWhatsUp), LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
                 if (result.CheckboxChecked)
                 {
                     messagesSettings.DontShowDownloadManagerWhatsUpMsg = true;
@@ -312,18 +312,18 @@ namespace GogOssLibraryNS
                         case StandardErrorCommandEvent stdErr:
                             if (stdErr.Text.Contains("Verification") || stdErr.Text.Contains("Verifying"))
                             {
-                                DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssVerifying);
+                                DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
                             }
                             var progressMatch = Regex.Match(stdErr.Text, @"Progress: (\d+\.\d+)");
                             if (progressMatch.Length >= 2)
                             {
                                 if (downloadProperties.downloadAction != DownloadAction.Update)
                                 {
-                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
+                                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
                                 }
                                 else
                                 {
-                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssDownloadingUpdate);
+                                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
                                 }
                                 double progress = CommonHelpers.ToDouble(progressMatch.Groups[1].Value);
                                 wantedItem.progress = progress;
@@ -354,13 +354,13 @@ namespace GogOssLibraryNS
                                     switch (downloadProperties.downloadAction)
                                     {
                                         case DownloadAction.Install:
-                                            DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingInstallation);
+                                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation);
                                             break;
                                         case DownloadAction.Update:
-                                            DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingUpdate);
+                                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonFinishingUpdate);
                                             break;
                                         case DownloadAction.Repair:
-                                            DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOssFinishingRepair);
+                                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonFinishingRepair);
                                             break;
                                         default:
                                             break;
@@ -426,19 +426,19 @@ namespace GogOssLibraryNS
                             {
                                 if (loginErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                                 }
                                 else if (permissionErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssPermissionError)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), LocalizationManager.Instance.GetString(LOC.CommonPermissionError)));
                                 }
                                 else if (diskSpaceErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssNotEnoughSpace)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), LocalizationManager.Instance.GetString(LOC.CommonNotEnoughSpace)));
                                 }
                                 else
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), ResourceProvider.GetString(LOC.GogOssCheckLog)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), LocalizationManager.Instance.GetString(LOC.CommonCheckLog)));
                                 }
                                 wantedItem.status = DownloadStatus.Paused;
                             }
@@ -522,14 +522,14 @@ namespace GogOssLibraryNS
                                 wantedItem.completedTime = now.ToUnixTimeSeconds();
                                 if (settings.DisplayDownloadTaskFinishedNotifications)
                                 {
-                                    var notificationMessage = LOC.GogOssInstallationFinished;
+                                    var notificationMessage = LOC.CommonInstallationFinished;
                                     switch (downloadProperties.downloadAction)
                                     {
                                         case DownloadAction.Repair:
-                                            notificationMessage = LOC.GogOssRepairFinished;
+                                            notificationMessage = LOC.CommonRepairFinished;
                                             break;
                                         case DownloadAction.Update:
-                                            notificationMessage = LOC.GogOssUpdateFinished;
+                                            notificationMessage = LOC.CommonUpdateFinished;
                                             break;
                                         default:
                                             break;
@@ -662,13 +662,13 @@ namespace GogOssLibraryNS
                 if (DownloadsDG.SelectedItems.Count == 1)
                 {
                     var selectedRow = (DownloadManagerData.Download)DownloadsDG.SelectedItem;
-                    messageText = string.Format(ResourceProvider.GetString(LOC.GogOssRemoveEntryConfirm), selectedRow.name);
+                    messageText = LocalizationManager.Instance.GetString(LOC.CommonRemoveEntryConfirm, new Dictionary<string, IFluentType> { ["entryName"] = (FluentString)selectedRow.name });
                 }
                 else
                 {
-                    messageText = ResourceProvider.GetString(LOC.GogOssRemoveSelectedEntriesConfirm);
+                    messageText = LocalizationManager.Instance.GetString(LOC.CommonRemoveSelectedEntriesConfirm);
                 }
-                var result = playniteAPI.Dialogs.ShowMessage(messageText, ResourceProvider.GetString(LOC.GogOssRemoveEntry), MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = playniteAPI.Dialogs.ShowMessage(messageText, LocalizationManager.Instance.GetString(LOC.CommonRemoveEntry), MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
                     foreach (var selectedRow in DownloadsDG.SelectedItems.Cast<DownloadManagerData.Download>().ToList())
@@ -683,7 +683,7 @@ namespace GogOssLibraryNS
         {
             if (DownloadsDG.Items.Count > 0)
             {
-                var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssRemoveCompletedDownloadsConfirm), ResourceProvider.GetString(LOC.GogOssRemoveCompletedDownloads), MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonRemoveCompletedDownloadsConfirm), LocalizationManager.Instance.GetString(LOC.CommonRemoveCompletedDownloads), MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
                     foreach (var row in DownloadsDG.Items.Cast<DownloadManagerData.Download>().ToList())
@@ -726,7 +726,7 @@ namespace GogOssLibraryNS
             if (checkedStatus.Count > 0)
             {
                 downloadsView.Filter = item => checkedStatus.Contains((item as DownloadManagerData.Download).status);
-                FilterDownloadBtn.Content = "\uef29 " + ResourceProvider.GetString(LOC.GogOss3P_PlayniteFilterActiveLabel);
+                FilterDownloadBtn.Content = "\uef29 " + LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteFilterActiveLabel);
             }
             else
             {
@@ -744,7 +744,7 @@ namespace GogOssLibraryNS
                     ShowMaximizeButton = false,
                 });
                 var selectedItem = DownloadsDG.SelectedItems[0] as DownloadManagerData.Download;
-                window.Title = selectedItem.name + " — " + ResourceProvider.GetString(LOC.GogOssDownloadProperties);
+                window.Title = selectedItem.name + " — " + LocalizationManager.Instance.GetString(LOC.CommonDownloadProperties);
                 window.DataContext = selectedItem;
                 window.Content = new GogOssDownloadPropertiesView();
                 window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
@@ -810,7 +810,7 @@ namespace GogOssLibraryNS
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage($"{selectedItem.fullInstallPath}\n{ResourceProvider.GetString(LOC.GogOssPathNotExistsError)}");
+                playniteAPI.Dialogs.ShowErrorMessage($"{selectedItem.fullInstallPath}\n{LocalizationManager.Instance.GetString(LOC.CommonPathNotExistsError)}");
             }
         }
 

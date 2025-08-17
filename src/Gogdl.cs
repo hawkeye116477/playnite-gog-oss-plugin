@@ -347,15 +347,15 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)), downloadData.name);
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteLoginRequired)), downloadData.name);
                         }
                         else if (result.StandardError.Contains("Game doesn't support content system api"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOssGameNotInstallable).Format(downloadData.name, "https://gog.com/account "));
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOssGameNotInstallable, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)downloadData.name, ["url"] = (FluentString)"https://gog.com/account " }));
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)), downloadData.name);
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(LocalizationManager.Instance.GetString(LOC.CommonCheckLog)), downloadData.name);
                         }
                     }
                     manifest.errorDisplayed = true;
@@ -399,11 +399,11 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)));
+                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(LocalizationManager.Instance.GetString(LOC.CommonCheckLog)));
                         }
                     }
                 }
@@ -559,10 +559,10 @@ namespace GogOssLibraryNS
             var playniteAPI = API.Instance;
             var options = new List<MessageBoxOption>
             {
-                new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame)),
-                new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel)),
+                new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteInstallGame)),
+                new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOKLabel)),
             };
-            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl"), "GOG OSS library integration", MessageBoxImage.Information, options);
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled), "GOG OSS library integration", MessageBoxImage.Information, options);
             if (result == options[0])
             {
                 Playnite.Commands.GlobalCommands.NavigateUrl("https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Troubleshooting#gogdl-or-comet-is-not-installed");

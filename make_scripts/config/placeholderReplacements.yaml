@@ -1,0 +1,103 @@
+LOCGogOssUninstallGameConfirm:
+  first: gameTitle
+
+LOCGogOssVerifyingLargeFile:
+  first: fileName
+  second: progress
+
+LOCGogOssSyncing:
+  first: gameTitle
+
+LOCGogOssSyncError:
+  first: gameTitle
+
+LOCGogOssImportingGame:
+  first: gameTitle
+
+LOCGogOssGameImportFailure:
+  first: reason
+
+LOCGogOssRemoveEntryConfirm:
+  first: entryName
+
+LOCGogOssNewVersionAvailable:
+  first: appName
+  second: appVersion
+
+LOCGogOssUploadingPlaytime:
+  first: gameTitle
+
+LOCGogOssUploadPlaytimeError:
+  first: gameTitle
+
+LOCGogOssMoveConfirm:
+  first: appName
+  second: path
+
+LOCGogOssMovingGame:
+  first: appName
+  second: path
+
+LOCGogOssMoveGameSuccess:
+  first: appName
+  second: path
+
+LOCGogOssMoveGameError:
+  first: appName
+  second: path
+
+LOCGogOssSignedInAs:
+  first: userName
+
+LOCGogOssUninstallSuccess:
+  first: appName
+
+LOCGogOssUninstallSuccessOther:
+  first: appName
+
+LOCGogOssUninstallErrorOther:
+  first: appName
+
+LOCGogOssDownloadAlreadyExists:
+  first: appName
+
+LOCGogOssDownloadAlreadyExistsOther:
+  first: appName
+
+LOCGogOssMemoryError:
+  first: currentMemory
+  second: requiredMemory
+LOCGogOssNoLinkedAccount:
+  first: companyAccount
+LOCGogOssAllActivatedUbisoft:
+  first: companyAccount
+LOCGogOssContinueActivation:
+  first: companyAccount
+LOCGogOssGamesActivateSuccess:
+  first: companyAccount
+LOCGogOssGamesActivateFailure:
+  first: companyAccount
+  second: reason
+LOCGogOssImportThirdPartyLauncherGames:
+  first: thirdPartyLauncherName
+LOCGogOssThirdPartyLauncherImportWarn:
+  first: thirdPartyLauncherName
+LOCGogOssRequiredInstallViaThirdPartyLauncherError:
+  first: thirdPartyLauncherName
+  second: gameTitle
+LOCGogOssRequiredInstallViaThirdPartyLauncherErrorOther:
+  first: thirdPartyLauncherName
+  second: gameTitle
+LOCGogOssInstallPrerequisites:
+  first: prerequisiteName
+LOCGogOssRequiredInstallOfThirdPartyLauncher:
+  first: thirdPartyLauncherName
+  second: gameTitle
+LOCGogOssRequiredInstallOfThirdPartyLauncherOther:
+  first: thirdPartyLauncherName
+  second: gameTitle
+LOCGogOssInstallingPrerequisites:
+  first: prerequisiteName
+LOCGogOssGameNotInstallable:
+  first: gameTitle
+  second: url

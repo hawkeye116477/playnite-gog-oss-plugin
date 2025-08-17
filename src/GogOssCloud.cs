@@ -39,7 +39,7 @@ namespace GogOssLibraryNS
             }
             if (!File.Exists(cacheCloudFile))
             {
-                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOss3P_PlayniteProgressMetadata), false);
+                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteProgressMetadata), false);
                 var playniteAPI = API.Instance;
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
@@ -314,7 +314,7 @@ namespace GogOssLibraryNS
                 }
                 
                 var playniteAPI = API.Instance;
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssSyncing).Format(game.Name), false);
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonSyncing, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)game.Name }), false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
                     a.IsIndeterminate = true;

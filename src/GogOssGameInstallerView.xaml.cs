@@ -120,7 +120,7 @@ namespace GogOssLibraryNS
                         manifest = await Gogdl.GetGameInfo(installData);
                         installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
                     }
-                    if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.GogOssPermissionError))
+                    if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.CommonPermissionError))
                     {
                         continue;
                     }
@@ -137,12 +137,12 @@ namespace GogOssLibraryNS
             {
                 if (downloadItemsAlreadyAdded.Count == 1)
                 {
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExists), downloadItemsAlreadyAdded[0]), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAdded[0] }), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
                     string downloadItemsAlreadyAddedComnined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExistsOther, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAddedComnined }), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             if (downloadTasks.Count > 0)
@@ -314,7 +314,7 @@ namespace GogOssLibraryNS
                         {
                             if (branch == null)
                             {
-                                betaChannels.Add("disabled", ResourceProvider.GetString(LOC.GogOss3P_PlayniteDisabledTitle));
+                                betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDisabledTitle));
                             }
                             else
                             {
@@ -421,12 +421,12 @@ namespace GogOssLibraryNS
             {
                 if (downloadItemsAlreadyAdded.Count == 1)
                 {
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExists), downloadItemsAlreadyAdded[0]), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAdded[0] }), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
                     string downloadItemsAlreadyAddedComnined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
-                    playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExistsOther), downloadItemsAlreadyAddedComnined), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExistsOther, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAddedComnined }), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 
@@ -443,7 +443,7 @@ namespace GogOssLibraryNS
             {
                 if (!userLoggedIn)
                 {
-                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                 }
                 InstallerWindow.Close();
                 return;

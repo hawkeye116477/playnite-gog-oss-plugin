@@ -42,7 +42,7 @@ namespace GogOssLibraryNS
 
         private void ChooseCometBtn_Click(object sender, RoutedEventArgs e)
         {
-            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
+            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
             if (file != "")
             {
                 SelectedCometPathTxt.Text = file;
@@ -59,46 +59,46 @@ namespace GogOssLibraryNS
 
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
             {
-                { DownloadCompleteAction.Nothing, ResourceProvider.GetString(LOC.GogOss3P_PlayniteDoNothing) },
-                { DownloadCompleteAction.ShutDown, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem) },
-                { DownloadCompleteAction.Reboot, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem) },
-                { DownloadCompleteAction.Hibernate, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem) },
-                { DownloadCompleteAction.Sleep, ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem) },
+                { DownloadCompleteAction.Nothing, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDoNothing) },
+                { DownloadCompleteAction.ShutDown, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem) },
+                { DownloadCompleteAction.Reboot, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem) },
+                { DownloadCompleteAction.Hibernate, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem) },
+                { DownloadCompleteAction.Sleep, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem) },
             };
             AfterDownloadCompleteCBo.ItemsSource = downloadCompleteActions;
 
             var updatePolicyOptions = new Dictionary<UpdatePolicy, string>
             {
-                { UpdatePolicy.PlayniteLaunch, ResourceProvider.GetString(LOC.GogOssCheckUpdatesEveryPlayniteStartup) },
-                { UpdatePolicy.Day, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
-                { UpdatePolicy.Week, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
-                { UpdatePolicy.Month, ResourceProvider.GetString(LOC.GogOssOnceAMonth) },
-                { UpdatePolicy.ThreeMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery3Months) },
-                { UpdatePolicy.SixMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery6Months) },
-                { UpdatePolicy.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnlyManually) }
+                { UpdatePolicy.PlayniteLaunch, LocalizationManager.Instance.GetString(LOC.CommonCheckUpdatesEveryPlayniteStartup) },
+                { UpdatePolicy.Day, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
+                { UpdatePolicy.Week, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
+                { UpdatePolicy.Month, LocalizationManager.Instance.GetString(LOC.CommonOnceAMonth) },
+                { UpdatePolicy.ThreeMonths, LocalizationManager.Instance.GetString(LOC.CommonOnceEvery3Months) },
+                { UpdatePolicy.SixMonths, LocalizationManager.Instance.GetString(LOC.CommonOnceEvery6Months) },
+                { UpdatePolicy.Never, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnlyManually) }
             };
             GamesUpdatesCBo.ItemsSource = updatePolicyOptions;
 
             var launcherUpdatePolicyOptions = new Dictionary<UpdatePolicy, string>
             {
-                { UpdatePolicy.PlayniteLaunch, ResourceProvider.GetString(LOC.GogOssCheckUpdatesEveryPlayniteStartup) },
-                { UpdatePolicy.Day, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
-                { UpdatePolicy.Week, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
-                { UpdatePolicy.Month, ResourceProvider.GetString(LOC.GogOssOnceAMonth) },
-                { UpdatePolicy.ThreeMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery3Months) },
-                { UpdatePolicy.SixMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery6Months) },
-                { UpdatePolicy.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnlyManually) }
+                { UpdatePolicy.PlayniteLaunch, LocalizationManager.Instance.GetString(LOC.CommonCheckUpdatesEveryPlayniteStartup) },
+                { UpdatePolicy.Day, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
+                { UpdatePolicy.Week, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
+                { UpdatePolicy.Month, LocalizationManager.Instance.GetString(LOC.CommonOnceAMonth) },
+                { UpdatePolicy.ThreeMonths, LocalizationManager.Instance.GetString(LOC.CommonOnceEvery3Months) },
+                { UpdatePolicy.SixMonths, LocalizationManager.Instance.GetString(LOC.CommonOnceEvery6Months) },
+                { UpdatePolicy.Never, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnlyManually) }
             };
             LauncherUpdatesCBo.ItemsSource = launcherUpdatePolicyOptions;
 
             var autoClearOptions = new Dictionary<ClearCacheTime, string>
             {
-                { ClearCacheTime.Day, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
-                { ClearCacheTime.Week, ResourceProvider.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
-                { ClearCacheTime.Month, ResourceProvider.GetString(LOC.GogOssOnceAMonth) },
-                { ClearCacheTime.ThreeMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery3Months) },
-                { ClearCacheTime.SixMonths, ResourceProvider.GetString(LOC.GogOssOnceEvery6Months) },
-                { ClearCacheTime.Never, ResourceProvider.GetString(LOC.GogOss3P_PlayniteSettingsPlaytimeImportModeNever) }
+                { ClearCacheTime.Day, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnceADay) },
+                { ClearCacheTime.Week, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOptionOnceAWeek) },
+                { ClearCacheTime.Month, LocalizationManager.Instance.GetString(LOC.CommonOnceAMonth) },
+                { ClearCacheTime.ThreeMonths, LocalizationManager.Instance.GetString(LOC.CommonOnceEvery3Months) },
+                { ClearCacheTime.SixMonths, LocalizationManager.Instance.GetString(LOC.CommonOnceEvery6Months) },
+                { ClearCacheTime.Never, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteSettingsPlaytimeImportModeNever) }
             };
             AutoClearCacheCBo.ItemsSource = autoClearOptions;
             AutoRemoveCompletedDownloadsCBo.ItemsSource = autoClearOptions;
@@ -117,8 +117,8 @@ namespace GogOssLibraryNS
             else
             {
                 troubleshootingInformation.CometVersion = "Not%20installed";
-                CometVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Comet");
-                CometBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Comet");
+                CometVersionTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled).Replace("{AppName}", "Comet");
+                CometBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled).Replace("{AppName}", "Comet");
                 CheckForCometUpdatesBtn.IsEnabled = false;
                 OpenCometBinaryBtn.IsEnabled = false;
             }
@@ -135,8 +135,8 @@ namespace GogOssLibraryNS
             else
             {
                 troubleshootingInformation.GogdlVersion = "Not%20installed";
-                GogdlVersionTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl");
-                GogdlBinaryTxt.Text = ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Gogdl");
+                GogdlVersionTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled).Replace("{AppName}", "Gogdl");
+                GogdlBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled).Replace("{AppName}", "Gogdl");
                 CheckForGogdlUpdatesBtn.IsEnabled = false;
                 OpenGogdlBinaryBtn.IsEnabled = false;
             }
@@ -163,10 +163,10 @@ namespace GogOssLibraryNS
                 {
                     var options = new List<MessageBoxOption>
                     {
-                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOssViewChangelog)),
-                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel)),
+                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog)),
+                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOKLabel)),
                     };
-                    var result = playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssNewVersionAvailable), "Comet", newVersion), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                    var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Comet", ["appVersion"] = (FluentString)newVersion }), LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
                     if (result == options[0])
                     {
                         var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
@@ -175,12 +175,12 @@ namespace GogOssLibraryNS
                 }
                 else
                 {
-                    playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable));
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
                 }
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), "Comet");
+                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), "Comet");
             }
         }
 
@@ -198,7 +198,7 @@ namespace GogOssLibraryNS
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssPathNotExistsError);
+                playniteAPI.Dialogs.ShowErrorMessage(LOC.CommonPathNotExistsError);
             }
         }
 
@@ -217,7 +217,7 @@ namespace GogOssLibraryNS
             if (GogOssLibrary.GetSettings().ConnectAccount)
             {
                 LoginBtn.IsEnabled = false;
-                AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGLoginChecking);
+                AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.GogOss3P_GOGLoginChecking);
                 using (var view = playniteAPI.WebViews.CreateOffscreenView())
                 {
                     var clientApi = new GogAccountClient(view);
@@ -225,14 +225,14 @@ namespace GogOssLibraryNS
                     if (userLoggedIn)
                     {
                         var accountInfo = await clientApi.GetAccountInfo();
-                        AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOssSignedInAs).Format(accountInfo.username);
-                        LoginBtn.Content = ResourceProvider.GetString(LOC.GogOssSignOut);
+                        AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSignedInAs, new Dictionary<string, IFluentType> { ["userName"] = (FluentString)accountInfo.username });
+                        LoginBtn.Content = LocalizationManager.Instance.GetString(LOC.CommonSignOut);
                         LoginBtn.IsChecked = true;
                     }
                     else
                     {
-                        AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedIn);
-                        LoginBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_GOGAuthenticateLabel);
+                        AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.GogOss3P_GOGNotLoggedIn);
+                        LoginBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_GOGAuthenticateLabel);
                         LoginBtn.IsChecked = false;
                     }
                     LoginBtn.IsEnabled = true;
@@ -240,7 +240,7 @@ namespace GogOssLibraryNS
             }
             else
             {
-                AuthStatusTB.Text = ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedIn);
+                AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.GogOss3P_GOGNotLoggedIn);
                 LoginBtn.IsEnabled = true;
             }
         }
@@ -262,14 +262,14 @@ namespace GogOssLibraryNS
                 }
                 catch (Exception ex) when (!Debugger.IsAttached)
                 {
-                    playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
+                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
                     logger.Error(ex, "Failed to authenticate user.");
                 }
                 UpdateAuthStatus();
             }
             else
             {
-                var answer = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssSignOutConfirm), LOC.GogOssSignOut, MessageBoxButton.YesNo);
+                var answer = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonSignOutConfirm), LOC.CommonSignOut, MessageBoxButton.YesNo);
                 if (answer == MessageBoxResult.Yes)
                 {
                     view.DeleteDomainCookies(".gog.com");
@@ -298,10 +298,10 @@ namespace GogOssLibraryNS
                 {
                     var options = new List<MessageBoxOption>
                     {
-                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOssViewChangelog)),
-                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel)),
+                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog)),
+                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteOKLabel)),
                     };
-                    var result = playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssNewVersionAvailable), "Gogdl", newVersion), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                    var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Gogdl", ["appVersion"] = (FluentString)newVersion }), LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
                     if (result == options[0])
                     {
                         var changelogURL = $"https://github.com/Heroic-Games-Launcher/heroic-gogdl/releases/tag/v{newVersion}";
@@ -310,12 +310,12 @@ namespace GogOssLibraryNS
                 }
                 else
                 {
-                    playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable));
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
                 }
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), "Gogdl");
+                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), "Gogdl");
             }
         }
 
@@ -340,7 +340,7 @@ namespace GogOssLibraryNS
 
         private void ClearCacheBtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssClearCacheConfirm), ResourceProvider.GetString(LOC.GogOss3P_PlayniteSettingsClearCacheTitle), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonClearCacheConfirm), LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteSettingsClearCacheTitle), MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 GogOss.ClearCache();
@@ -351,18 +351,18 @@ namespace GogOssLibraryNS
         {
             if (SyncGameSavesChk.IsChecked == true)
             {
-                playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssSyncGameSavesWarn), "", MessageBoxButton.OK, MessageBoxImage.Warning);
+                playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonSyncGameSavesWarn), "", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void MigrateGogBtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssMigrationConfirm), ResourceProvider.GetString(LOC.GogOssMigrateGamesGog), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationConfirm), LocalizationManager.Instance.GetString(LOC.CommonMigrateGamesGog), MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
             {
                 return;
             }
-            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssMigratingGamesGog), false) { IsIndeterminate = false };
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonMigratingGamesGog), false) { IsIndeterminate = false };
             playniteAPI.Dialogs.ActivateGlobalProgress((a) =>
             {
                 using (playniteAPI.Database.BufferedUpdate())
@@ -390,19 +390,19 @@ namespace GogOssLibraryNS
                         a.CurrentProgressValue = gamesToMigrate.Count() + 1;
                         if (migratedGames.Count > 0)
                         {
-                            playniteAPI.Dialogs.ShowMessage(LOC.GogOssMigrationCompleted, LOC.GogOssMigrateGamesGog, MessageBoxButton.OK, MessageBoxImage.Information);
+                            playniteAPI.Dialogs.ShowMessage(LOC.CommonMigrationCompleted, LOC.CommonMigrateGamesGog, MessageBoxButton.OK, MessageBoxImage.Information);
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG to GOG OSS.");
                         }
                         if (migratedGames.Count == 0 && notImportedGames.Count == 0)
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssMigrationNoGames);
+                            playniteAPI.Dialogs.ShowErrorMessage(LOC.CommonMigrationNoGames);
                         }
                     }
                     else
                     {
                         a.ProgressMaxValue = 1;
                         a.CurrentProgressValue = 1;
-                        playniteAPI.Dialogs.ShowErrorMessage(LOC.GogOssMigrationNoGames);
+                        playniteAPI.Dialogs.ShowErrorMessage(LOC.CommonMigrationNoGames);
                     }
                 }
             }, globalProgressOptions);
@@ -410,7 +410,7 @@ namespace GogOssLibraryNS
 
         private void ChooseGogdlBtn_Click(object sender, RoutedEventArgs e)
         {
-            var file = playniteAPI.Dialogs.SelectFile($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
+            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteExecutableTitle)}|*.exe");
             if (file != "")
             {
                 SelectedGogdlPathTxt.Text = file;

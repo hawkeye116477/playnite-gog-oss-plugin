@@ -69,10 +69,10 @@ namespace GogOssLibraryNS
             window.SizeToContent = SizeToContent.WidthAndHeight;
             window.MinWidth = 600;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            var title = ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame);
+            var title = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteInstallGame);
             if (installData[0].downloadProperties.downloadAction == DownloadAction.Repair)
             {
-                title = ResourceProvider.GetString(LOC.GogOssRepair);
+                title = LocalizationManager.Instance.GetString(LOC.CommonRepair);
             }
             if (installData.Count == 1)
             {
@@ -95,12 +95,12 @@ namespace GogOssLibraryNS
         {
             var playniteAPI = API.Instance;
             string gamesCombined = string.Join(", ", games.Select(item => item.Name));
-            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), ResourceProvider.GetString(LOC.GogOssUninstallGameConfirm).Format(gamesCombined), LOC.GogOssRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUninstallGame), LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)gamesCombined }), LOC.CommonRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
                 var notUninstalledGames = new List<Game>();
                 var uninstalledGames = new List<Game>();
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)}... ", false);
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUninstalling)}... ", false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
                     a.IsIndeterminate = false;
@@ -110,7 +110,7 @@ namespace GogOssLibraryNS
                         var counter = 0;
                         foreach (var game in games)
                         {
-                            a.Text = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)} {game.Name}... ";
+                            a.Text = $"{LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUninstalling)} {game.Name}... ";
                             var uninstaller = Path.Combine(game.InstallDirectory, "unins000.exe");
                             if (File.Exists(uninstaller))
                             {
@@ -177,12 +177,12 @@ namespace GogOssLibraryNS
                 {
                     if (uninstalledGames.Count == 1)
                     {
-                        playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssUninstallSuccess).Format(uninstalledGames[0].Name));
+                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonUninstallSuccess, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)uninstalledGames[0].Name }));
                     }
                     else
                     {
                         string uninstalledGamesCombined = string.Join(", ", uninstalledGames.Select(item => item.Name));
-                        playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssUninstallSuccessOther).Format(uninstalledGamesCombined));
+                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonUninstallSuccessOther, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)uninstalledGamesCombined }));
                     }
                 }
 
@@ -190,12 +190,12 @@ namespace GogOssLibraryNS
                 {
                     if (notUninstalledGames.Count == 1)
                     {
-                        playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameUninstallError).Format(ResourceProvider.GetString(LOC.GogOssCheckLog)), notUninstalledGames[0].Name);
+                        playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameUninstallError).Format(LocalizationManager.Instance.GetString(LOC.CommonCheckLog)), notUninstalledGames[0].Name);
                     }
                     else
                     {
                         string notUninstalledGamesCombined = string.Join(", ", notUninstalledGames.Select(item => item.Name));
-                        playniteAPI.Dialogs.ShowMessage($"{ResourceProvider.GetString(LOC.GogOssUninstallErrorOther).Format(notUninstalledGamesCombined)} {ResourceProvider.GetString(LOC.GogOssCheckLog)}");
+                        playniteAPI.Dialogs.ShowMessage($"{LocalizationManager.Instance.GetString(LOC.CommonUninstallErrorOther, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)notUninstalledGamesCombined })} {LocalizationManager.Instance.GetString(LOC.CommonCheckLog)}");
                     }
                 }
             }
@@ -259,7 +259,7 @@ namespace GogOssLibraryNS
                 if (installedInfo.is_fully_installed == false)
                 {
                     var playniteAPI = API.Instance;
-                    GlobalProgressOptions installProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssFinishingInstallation), false);
+                    GlobalProgressOptions installProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false);
                     playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                     {
                         await GogOss.CompleteInstallation(Game.GameId);
@@ -366,7 +366,7 @@ namespace GogOssLibraryNS
                 }
                 if (playtimeSyncEnabled)
                 {
-                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOssUploadingPlaytime).Format(Game.Name), false);
+                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonUploadingPlaytime, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }), false);
                     playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                     {
                         a.IsIndeterminate = true;
@@ -395,14 +395,14 @@ namespace GogOssLibraryNS
                                     var result = await httpClient.PostAsync(uri, content);
                                     if (!result.IsSuccessStatusCode)
                                     {
-                                        playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOssUploadPlaytimeError).Format(Game.Name));
+                                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonUploadPlaytimeError, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }));
                                         logger.Error($"An error occured during uploading playtime to the cloud. Status code: {result.StatusCode}.");
                                     }
                                 }
                             }
                             else
                             {
-                                playniteAPI.Dialogs.ShowErrorMessage(playniteAPI.Resources.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
+                                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
                                 logger.Error($"Can't upload playtime, because user is not authenticated.");
                             }
                         }
@@ -699,7 +699,7 @@ namespace GogOssLibraryNS
                     if (silently)
                     {
                         var playniteApi = API.Instance;
-                        playniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdates", ResourceProvider.GetString(LOC.GogOssGamesUpdatesUnderway), NotificationType.Info));
+                        playniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdates", LocalizationManager.Instance.GetString(LOC.CommonGamesUpdatesUnderway), NotificationType.Info));
                     }
                     GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
                     foreach (var gameToUpdate in gamesToUpdate)
@@ -719,7 +719,7 @@ namespace GogOssLibraryNS
                         {
                             if (!silently)
                             {
-                                playniteAPI.Dialogs.ShowMessage(string.Format(ResourceProvider.GetString(LOC.GogOssDownloadAlreadyExists), wantedItem.name), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                                playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)wantedItem.name }), "", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
                         else
@@ -764,7 +764,7 @@ namespace GogOssLibraryNS
             }
             else if (!silently)
             {
-                playniteAPI.Dialogs.ShowMessage(ResourceProvider.GetString(LOC.GogOssNoUpdatesAvailable), gameTitle);
+                playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable), gameTitle);
             }
         }
 

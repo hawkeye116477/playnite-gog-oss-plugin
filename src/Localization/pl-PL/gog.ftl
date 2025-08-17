@@ -1,0 +1,13 @@
+gog-oss-comet-custom-path = Ścieżka Comet
+gog-oss-comet-version = Wersja Comet
+gog-oss-comet-binary = Plik binarny Comet
+gog-oss-gogdl-custom-path = Ścieżka Gogdl
+gog-oss-gogdl-version = Wersja Gogdl
+gog-oss-gogdl-binary = Plik binarny Gogdl
+gog-oss-use-vertical-covers = Używaj okładek pionowych
+gog-oss-language = Język
+gog-oss-beta-channel = Kanał beta
+gog-oss-game-not-installable = Wydaje się, że { $gameTitle } nie jest możliwy do zainstalowania. Sprawdź zawartość do pobrania na { $url }.
+gog-oss-enable-comet-support = Włącz obsługę Comet
+gog-oss-enable-comet-support-tool-tip = Jest to wymagane dla osiągnięć, tablic wyników i trybu wieloosobowego, ale może powodować problemy z działaniem niektórych gier.
+gog-oss-comet-update-policy = Sprawdzaj aktualizacje Comet i Gogdl

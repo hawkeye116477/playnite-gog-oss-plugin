@@ -37,21 +37,21 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5" Grid.Row="1" Grid.Column="0">
-                <TextBlock Text="{DynamicResource LOCGogOssDownloadSize}" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonDownloadSize}}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <TextBlock x:Name="DownloadSizeTB" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
                     VerticalAlignment="Top" Margin="5,0,5,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" Grid.Row="2" Grid.Column="0">
-                <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOssInstallSize}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static sys:LOC.CommonInstallSize}}" Margin="0,0,0,0" />
                 <TextBlock x:Name="InstallSizeTB" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}" VerticalAlignment="Top" Margin="5,0,5,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,0,5" Grid.Row="1" Grid.Column="1">
-                <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOssSpaceAvailable}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static sys:LOC.CommonSpaceAvailable}}" Margin="0,0,0,0" />
                 <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
                     Margin="5,0,5,0" Name="SpaceTB" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Name="AfterInstallingSP" Margin="10,0,0,0">
-                <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOssAfterInstalling}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static sys:LOC.CommonAfterInstalling}}" Margin="0,0,0,0" />
                 <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
                     Margin="5,0,5,0" Name="AfterInstallingTB" />
             </StackPanel>
@@ -67,11 +67,11 @@
                             <TextBox Name="SelectedGamePathTxt" VerticalAlignment="Center" Margin="0" />
                         </DockPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{DynamicResource LOCGogOssTask}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,10,0"></TextBlock>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{common:Localize Key={x:Static sys:LOC.CommonTask}}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,10,0"></TextBlock>
                             <ComboBox Grid.Row="1" Grid.Column="1" x:Name="TaskCBo" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="Auto" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Name="LanguageSP" Visibility="Collapsed" Margin="0,0,0,5">
-                            <TextBlock Text="{DynamicResource LOCGogOssLanguage}"
+                            <TextBlock Text="{common:Localize Key={x:Static sys:LOC.GogOssLanguage}}"
                                    Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             <ComboBox Name="GameLanguageCBo" DisplayMemberPath="Value" SelectedValuePath="Key" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameLanguageCBo_SelectionChanged"/>
                         </StackPanel>
@@ -81,16 +81,16 @@
                             <ComboBox Grid.Row="1" Grid.Column="1" Name="GameVersionCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameVersionCBo_SelectionChanged"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Name="BetaChannelSP" Visibility="Collapsed" Margin="0,0,0,5">
-                            <TextBlock Text="{DynamicResource LOCGogOssBetaChannel}" Grid.Row="2" Grid.Column="0" 
+                            <TextBlock Text="{common:Localize Key={x:Static sys:LOC.GogOssBetaChannel}}" Grid.Row="2" Grid.Column="0" 
                                    Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             <ComboBox Grid.Row="2" Grid.Column="1" Name="BetaChannelCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="BetaChannelCBo_SelectionChanged"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{DynamicResource LOCGogOssExtraContent}" Visibility="Collapsed" Name="ExtraContentTbI">
+            <TabItem Header="{common:Localize Key={x:Static sys:LOC.CommonExtraContent}}" Visibility="Collapsed" Name="ExtraContentTbI">
                 <StackPanel Margin="10,5">
-                    <CheckBox Margin="2,0,0,5" Content="{DynamicResource LOCGogOssCheckAllContent}" x:Name="AllOrNothingChk" Checked="AllOrNothingChk_Checked" Unchecked="AllOrNothingChk_Unchecked" Visibility="Collapsed" IsEnabled="False" />
+                    <CheckBox Margin="2,0,0,5" Content="{common:Localize Key={x:Static sys:LOC.CommonCheckAllContent}}" x:Name="AllOrNothingChk" Checked="AllOrNothingChk_Checked" Unchecked="AllOrNothingChk_Unchecked" Visibility="Collapsed" IsEnabled="False" />
                     <Separator Margin="2,0,0,5" />
                     <ListBox BorderThickness="0" Name="ExtraContentLB" SelectionMode="Multiple" Margin="0,0,0,5" SelectionChanged="ExtraContentLB_SelectionChanged">
                         <ListBox.Resources>
@@ -113,7 +113,7 @@
                         <Separator Margin="0,5,0,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="{DynamicResource LOCGogOssMaxWorkers}" Grid.Column="0"
+                        <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonMaxWorkers}}" Grid.Column="0"
                                Grid.Row="3" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <common:NumericInput Grid.Row="3" Grid.Column="1" Margin="10,0,0,5" MinValue="0" x:Name="MaxWorkersNI"/>
                     </StackPanel>

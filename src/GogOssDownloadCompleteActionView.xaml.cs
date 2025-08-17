@@ -29,20 +29,20 @@ namespace GogOssLibraryNS
             switch (downloadCompleteAction)
             {
                 case DownloadCompleteAction.ShutDown:
-                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem);
-                    CountdownTB.Text = ResourceProvider.GetString(LOC.GogOssSystemShutdownCountdown);
+                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem);
+                    CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemShutdownCountdown);
                     break;
                 case DownloadCompleteAction.Reboot:
-                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem);
-                    CountdownTB.Text = ResourceProvider.GetString(LOC.GogOssSystemRestartCountdown);
+                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem);
+                    CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemRestartCountdown);
                     break;
                 case DownloadCompleteAction.Hibernate:
-                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem);
-                    CountdownTB.Text = ResourceProvider.GetString(LOC.GogOssSystemHibernateCountdown);
+                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem);
+                    CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemHibernateCountdown);
                     break;
                 case DownloadCompleteAction.Sleep:
-                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem);
-                    CountdownTB.Text = ResourceProvider.GetString(LOC.GogOssSystemSuspendCountdown);
+                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem);
+                    CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemSuspendCountdown);
                     break;
             }
             CountdownPB.Maximum = time;

@@ -131,7 +131,7 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(ResourceProvider.GetString(LOC.GogOssLauncherNotInstalled).Replace("{AppName}", "Comet"));
+                throw new Exception(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled).Replace("{AppName}", "Comet"));
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))

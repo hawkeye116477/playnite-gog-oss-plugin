@@ -13,19 +13,19 @@ namespace GogOssLibraryNS.Converters
             switch (value)
             {
                 case DownloadStatus.Queued:
-                    value = ResourceProvider.GetString(LOC.GogOssDownloadQueued);
+                    value = LocalizationManager.Instance.GetString(LOC.CommonDownloadQueued);
                     break;
                 case DownloadStatus.Running:
-                    value = ResourceProvider.GetString(LOC.GogOssDownloadRunning);
+                    value = LocalizationManager.Instance.GetString(LOC.CommonDownloadRunning);
                     break;
                 case DownloadStatus.Canceled:
-                    value = ResourceProvider.GetString(LOC.GogOssDownloadCanceled);
+                    value = LocalizationManager.Instance.GetString(LOC.CommonDownloadCanceled);
                     break;
                 case DownloadStatus.Paused:
-                    value = ResourceProvider.GetString(LOC.GogOssDownloadPaused);
+                    value = LocalizationManager.Instance.GetString(LOC.CommonDownloadPaused);
                     break;
                 case DownloadStatus.Completed:
-                    value = ResourceProvider.GetString(LOC.GogOssDownloadCompleted);
+                    value = LocalizationManager.Instance.GetString(LOC.CommonDownloadCompleted);
                     break;
             }
             return value;
