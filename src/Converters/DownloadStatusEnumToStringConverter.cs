@@ -1,4 +1,5 @@
-﻿using CommonPlugin.Enums;
+﻿using CommonPlugin;
+using CommonPlugin.Enums;
 using Playnite.SDK;
 using System;
 using System.Globalization;

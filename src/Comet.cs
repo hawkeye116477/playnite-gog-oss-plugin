@@ -1,10 +1,13 @@
 ﻿using CliWrap;
 using CliWrap.Buffered;
+using CommonPlugin;
 using GogOssLibraryNS.Models;
+using Linguini.Shared.Types.Bundle;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -131,7 +134,7 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled).Replace("{AppName}", "Comet"));
+                throw new Exception(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)" Comet" }));
             }
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
             if (!Directory.Exists(cacheVersionPath))

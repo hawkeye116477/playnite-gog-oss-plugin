@@ -158,7 +158,7 @@ for root, _, files in os.walk(src_path):
                     cleaned_key = get_new_key(full_key.replace("LOC", "LOC."))
 
                     # Construct the new format with full x:Static syntax
-                    new_value = f"{{common:Localize Key={{x:Static sys:{cleaned_key}}}}}"
+                    new_value = f"{{common:Localize Key={{x:Static system:{cleaned_key}}}}}"
                     
                     return new_value
 
@@ -283,7 +283,7 @@ for root, _, files in os.walk(src_path):
                 elif match.group('simple_key'):
                     old_key = match.group('simple_key')
                     
-                    if 'LOC.{plugin_prefix}3P' in old_key:
+                    if f'LOC.{plugin_prefix}3P' in old_key:
                         return match.group(0)
 
                     new_key = get_new_key(old_key)
@@ -292,7 +292,7 @@ for root, _, files in os.walk(src_path):
                 elif match.group('standalone_key'):
                     old_key = match.group('standalone_key')
 
-                    if 'LOC.{plugin_prefix}3P' in old_key:
+                    if f'LOC.{plugin_prefix}3P' in old_key:
                         return match.group(0)
 
                     new_key = get_new_key(old_key)

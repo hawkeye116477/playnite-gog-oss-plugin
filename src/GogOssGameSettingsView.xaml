@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GogOssLibraryNS" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:common="clr-namespace:CommonPlugin" xmlns:system="clr-namespace:System"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Name="GameSettingsViewUC" Loaded="GameSettingsViewUC_Loaded">
     <UserControl.Resources>
@@ -41,14 +42,14 @@
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <CheckBox Grid.Column="0" Grid.Row="0"
-                            Content="{common:Localize Key={x:Static sys:LOC.GogOssEnableCometSupport}}" Margin="0,0,0,10" x:Name="EnableCometSupportChk" IsEnabled="False" />
+                            Content="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupport}}" Margin="0,0,0,10" x:Name="EnableCometSupportChk" IsEnabled="False" />
                         <CheckBox Grid.Column="0" Grid.Row="1"
-                            Content="{common:Localize Key={x:Static sys:LOC.CommonDisableGameUpdateChecking}}" Margin="0,0,0,10" x:Name="DisableGameUpdateCheckingChk" />
-                        <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonStartupArguments}}" Grid.Column="0"
+                            Content="{common:Localize Key={x:Static system:LOC.CommonDisableGameUpdateChecking}}" Margin="0,0,0,10" x:Name="DisableGameUpdateCheckingChk" />
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonStartupArguments}}" Grid.Column="0"
                             Grid.Row="2" Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <TextBox x:Name="StartupArgumentsTxt"
                             Grid.Column="1" Grid.Row="2" Margin="0,0,0,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
-                        <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonAlternativeExe}}" Grid.Column="0" Grid.Row="4"
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonAlternativeExe}}" Grid.Column="0" Grid.Row="4"
                                Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                         </TextBlock>
                         <TextBox x:Name="SelectedAlternativeExeTxt" 
@@ -59,11 +60,11 @@
                     </Grid>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{common:Localize Key={x:Static sys:LOC.CommonCloud}}">
+            <TabItem Header="{common:Localize Key={x:Static system:LOC.CommonCloud}}">
                 <StackPanel Margin="10">
-                    <CheckBox Name="AutoSyncPlaytimeChk" Content="{common:Localize Key={x:Static sys:LOC.CommonSyncPlaytime}}" Margin="0,0,0,10"></CheckBox>
+                    <CheckBox Name="AutoSyncPlaytimeChk" Content="{common:Localize Key={x:Static system:LOC.CommonSyncPlaytime}}" Margin="0,0,0,10"></CheckBox>
                     <StackPanel x:Name="CloudSavesSP">
-                        <CheckBox Name="AutoSyncSavesChk" Content="{common:Localize Key={x:Static sys:LOC.CommonAutoSyncSaves}}" Margin="0,0,0,10"></CheckBox>
+                        <CheckBox Name="AutoSyncSavesChk" Content="{common:Localize Key={x:Static system:LOC.CommonAutoSyncSaves}}" Margin="0,0,0,10"></CheckBox>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -78,7 +79,7 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonSavePath}}" Grid.Column="0" Grid.Row="1" 
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonSavePath}}" Grid.Column="0" Grid.Row="1" 
                                Margin="0,0,10,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             <TextBox x:Name="SelectedSavePathTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                             <Button Name="ChooseSavePathBtn"
@@ -86,17 +87,17 @@
                                 ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectDirectoryTooltip}" VerticalAlignment="Center" Click="ChooseSavePathBtn_Click"/>
                             <Button Name="CalculatePathBtn" Margin="5,0,0,5" Grid.Row="1" Grid.Column="3" 
                                 VerticalAlignment="Center" HorizontalAlignment="Left" 
-                                Content="&#xef85;" ToolTip="{common:Localize Key={x:Static sys:LOC.CommonCalculatePath}}" FontFamily="{DynamicResource FontIcoFont}" Click="CalculatePathBtn_Click"/>
+                                Content="&#xef85;" ToolTip="{common:Localize Key={x:Static system:LOC.CommonCalculatePath}}" FontFamily="{DynamicResource FontIcoFont}" Click="CalculatePathBtn_Click"/>
                         </Grid>
-                        <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonManualSyncSaves}}" FontSize="15" Margin="0,10,10,2" VerticalAlignment="Center"/>
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonManualSyncSaves}}" FontSize="15" Margin="0,10,10,2" VerticalAlignment="Center"/>
                         <Separator Margin="0,0,0,10" />
                         <StackPanel Orientation="Horizontal">
                             <ComboBox x:Name="ManualSyncSavesCBo" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="0,0,0,0" HorizontalAlignment="Left"/>
-                            <CheckBox x:Name="ForceCloudActionChk" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{common:Localize Key={x:Static sys:LOC.CommonForceAction}}" Margin="15,0,0,0"></CheckBox>
-                            <Button x:Name="SyncSavesBtn" Content="{common:Localize Key={x:Static sys:LOC.CommonSync}}" HorizontalAlignment="Left" Margin="15,0,0,0" Click="SyncSavesBtn_Click"></Button>
+                            <CheckBox x:Name="ForceCloudActionChk" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="{common:Localize Key={x:Static system:LOC.CommonForceAction}}" Margin="15,0,0,0"></CheckBox>
+                            <Button x:Name="SyncSavesBtn" Content="{common:Localize Key={x:Static system:LOC.CommonSync}}" HorizontalAlignment="Left" Margin="15,0,0,0" Click="SyncSavesBtn_Click"></Button>
                         </StackPanel>
                     </StackPanel>
-                    <TextBlock Text="{common:Localize Key={x:Static sys:LOC.CommonCloudSavesNotSupported}}" Name="CloudSavesNotSupportedTB" Visibility="Collapsed" Margin="0,5,0,0"></TextBlock>
+                    <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonCloudSavesNotSupported}}" Name="CloudSavesNotSupportedTB" Visibility="Collapsed" Margin="0,5,0,0"></TextBlock>
                 </StackPanel>
             </TabItem>
         </TabControl>

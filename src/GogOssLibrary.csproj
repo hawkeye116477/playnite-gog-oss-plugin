@@ -29,7 +29,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>8.0</LangVersion>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
@@ -176,6 +175,12 @@
     </Compile>
     <Compile Include="..\third_party\playnite-common-plugin\src\CommonHelpers.cs">
       <Link>Shared\CommonHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\third_party\playnite-common-plugin\src\LocalizationManager.cs">
+      <Link>Shared\LocalizationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\third_party\playnite-common-plugin\src\LocalizeExtension.cs">
+      <Link>Shared\LocalizeExtension.cs</Link>
     </Compile>
     <Page Include="..\third_party\playnite-common-plugin\src\MessageCheckBoxDialog.xaml">
       <Link>Shared\MessageCheckBoxDialog.xaml</Link>
@@ -329,13 +334,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Localization\*.xaml">
+    <None Include="Localization\*\*.ftl">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\third_party\Localization\*.xaml">
-      <Link>Localization\third_party\%(Filename)%(Extension)</Link>
+    <None Include="..\third_party\Localization\*\*.xaml">
+      <Link>Localization\%(RecursiveDir)\%(Filename)%(Extension)</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -392,6 +397,12 @@
     </PackageReference>
     <PackageReference Include="ByteSize">
       <Version>2.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="IndexRange">
+      <Version>1.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Linguini.Bundle">
+      <Version>0.3.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
       <Version>8.0.0</Version>

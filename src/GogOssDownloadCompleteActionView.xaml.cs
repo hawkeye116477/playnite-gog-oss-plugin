@@ -29,19 +29,19 @@ namespace GogOssLibraryNS
             switch (downloadCompleteAction)
             {
                 case DownloadCompleteAction.ShutDown:
-                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem);
+                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuShutdownSystem);
                     CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemShutdownCountdown);
                     break;
                 case DownloadCompleteAction.Reboot:
-                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem);
+                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuRestartSystem);
                     CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemRestartCountdown);
                     break;
                 case DownloadCompleteAction.Hibernate:
-                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem);
+                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuHibernateSystem);
                     CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemHibernateCountdown);
                     break;
                 case DownloadCompleteAction.Sleep:
-                    ActionBtn.Content = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem);
+                    ActionBtn.Content = ResourceProvider.GetString(LOC.GogOss3P_PlayniteMenuSuspendSystem);
                     CountdownTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSystemSuspendCountdown);
                     break;
             }

@@ -4,8 +4,8 @@ api_token_env: CROWDIN_TOKEN
 
 files: [
   {
-    "source": "/src/Localization/en_US-gog-oss.xaml",
-    "translation": "/src/Localization/%locale_with_underscore%-gog-oss.xaml",
+    "source": "/src/Localization/en-US/gog-oss.ftl",
+    "translation": "/src/Localization/%locale%/gog-oss.ftl",
     "escape_quotes": 3,
     "escape_special_characters": 0,
   }

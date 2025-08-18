@@ -64,7 +64,7 @@ namespace CommonPlugin
             }
             if (messageBoxText?.StartsWith("LOC", StringComparison.Ordinal) == true)
             {
-                MessageText = ResourceProvider.GetString(messageBoxText);
+                MessageText = LocalizationManager.Instance.GetString(messageBoxText);
             }
             else
             {
@@ -72,7 +72,7 @@ namespace CommonPlugin
             }
             if (checkBoxText?.StartsWith("LOC", StringComparison.Ordinal) == true)
             {
-                CheckBoxText = ResourceProvider.GetString(checkBoxText);
+                CheckBoxText = LocalizationManager.Instance.GetString(checkBoxText);
             }
             else
             {
@@ -105,7 +105,6 @@ namespace CommonPlugin
         {
             MessageDialogSettings messageDialogSettings = new MessageDialogSettings();
             var playniteAPI = API.Instance;
-
             Window window = null;
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen && playniteAPI.ApplicationInfo.ApplicationVersion.Minor < 36)
             {

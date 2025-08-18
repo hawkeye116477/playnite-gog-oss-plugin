@@ -2,6 +2,7 @@
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
+using Linguini.Shared.Types.Bundle;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -39,7 +40,7 @@ namespace GogOssLibraryNS
             }
             if (!File.Exists(cacheCloudFile))
             {
-                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteProgressMetadata), false);
+                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOss3P_PlayniteProgressMetadata), false);
                 var playniteAPI = API.Instance;
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {

@@ -148,9 +148,9 @@ namespace GogOssLibraryNS
             }
             var downloadActionOptions = new Dictionary<DownloadAction, string>
             {
-                { DownloadAction.Install, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteInstallGame) },
+                { DownloadAction.Install, ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame) },
                 { DownloadAction.Repair, LocalizationManager.Instance.GetString(LOC.CommonRepair) },
-                { DownloadAction.Update, LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteUpdaterInstallUpdate) }
+                { DownloadAction.Update, ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterInstallUpdate) }
             };
             TaskCBo.ItemsSource = downloadActionOptions;
             var manifest = await Gogdl.GetGameInfo(wantedItem);
@@ -161,7 +161,7 @@ namespace GogOssLibraryNS
                 {
                     if (branch == null)
                     {
-                        betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDisabledTitle));
+                        betaChannels.Add("disabled", ResourceProvider.GetString(LOC.GogOss3P_PlayniteDisabledTitle));
                     }
                     else
                     {

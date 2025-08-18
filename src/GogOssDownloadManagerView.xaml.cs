@@ -24,6 +24,7 @@ using System.Text;
 using CommonPlugin.Enums;
 using CommonPlugin;
 using Playnite.SDK.Models;
+using Linguini.Shared.Types.Bundle;
 
 namespace GogOssLibraryNS
 {
@@ -96,7 +97,7 @@ namespace GogOssLibraryNS
 
         public string GetToolTipWithKey(string description, string shortcut)
         {
-            return $"{ResourceProvider.GetString(description)} [{shortcut}]";
+            return $"{LocalizationManager.Instance.GetString(description)} [{shortcut}]";
         }
 
         public DownloadManagerData LoadSavedData()
@@ -179,7 +180,7 @@ namespace GogOssLibraryNS
             var messagesSettings = GogOssMessagesSettings.LoadSettings();
             if (!messagesSettings.DontShowDownloadManagerWhatsUpMsg)
             {
-                var result = MessageCheckBoxDialog.ShowMessage("", LocalizationManager.Instance.GetString(LOC.CommonDownloadManagerWhatsUp), LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
+                var result = MessageCheckBoxDialog.ShowMessage("", LocalizationManager.Instance.GetString(LOC.CommonDownloadManagerWhatsUp), ResourceProvider.GetString(LOC.GogOss3P_PlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
                 if (result.CheckboxChecked)
                 {
                     messagesSettings.DontShowDownloadManagerWhatsUpMsg = true;
@@ -319,7 +320,7 @@ namespace GogOssLibraryNS
                             {
                                 if (downloadProperties.downloadAction != DownloadAction.Update)
                                 {
-                                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
+                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
                                 }
                                 else
                                 {
@@ -426,7 +427,7 @@ namespace GogOssLibraryNS
                             {
                                 if (loginErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
                                 }
                                 else if (permissionErrorDisplayed)
                                 {
@@ -726,7 +727,7 @@ namespace GogOssLibraryNS
             if (checkedStatus.Count > 0)
             {
                 downloadsView.Filter = item => checkedStatus.Contains((item as DownloadManagerData.Download).status);
-                FilterDownloadBtn.Content = "\uef29 " + LocalizationManager.Instance.GetString(LOC.GogOss3P_PlayniteFilterActiveLabel);
+                FilterDownloadBtn.Content = "\uef29 " + ResourceProvider.GetString(LOC.GogOss3P_PlayniteFilterActiveLabel);
             }
             else
             {

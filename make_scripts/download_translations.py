@@ -51,41 +51,15 @@ with tempfile.TemporaryDirectory() as tmpdirname:
     NSMAP = {None: xmlns,
             "sys": xmlns_sys,
             "x":  xmlns_x}
-    # Copy only needed localizations and rename
-    common_loc_keys = {}
-    with open(pj(script_path, "config", "commonLocKeys.txt"),
-          "r", encoding="utf-8") as common_loc_keys_content:
-        for line in common_loc_keys_content:
-            if line := line.strip():
-                common_loc_keys[line] = ""
-
-    common_loc_path = pj(tmpdirname, "src", "Localization")
-    for filename in os.listdir(common_loc_path):
-        path = os.path.join(common_loc_path, filename)
+    # Copy localizations
+    shared_loc_path = pj(tmpdirname, "src", "Localization")
+    for filename in os.listdir(shared_loc_path):
+        path = os.path.join(shared_loc_path, filename)
         if os.path.isdir(path):
             continue
-        if any(x in filename for x in ["legendary", "gog-oss", "nile"]):
-            if "gog-oss" in filename:
-                shutil.copy(path, pj(src_path, "Localization"))
-            continue
-        common_loc = ET.parse(pj(common_loc_path, filename))
-
-        xml_root = ET.Element("ResourceDictionary", nsmap=NSMAP)
-        xml_doc = ET.ElementTree(xml_root)
-
-        for child in common_loc.getroot():
-            key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in common_loc_keys:
-                key_text = child.text
-                if not key_text:
-                    key_text = ""
-                key = key.replace("Legendary", "GogOss")
-                new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("Epic", "Gog"))
-                new_key.text = key_text.replace("Legendary", "GOG OSS").replace("{PluginShortName}", "GOG OSS").replace("{OriginalPluginShortName}", "GOG").replace("{SourceName}", "GOG")
-                xml_root.append(new_key)
- 
-        ET.indent(xml_doc, level=0)
-  
-        with open(pj(src_path, "Localization", filename), "w", encoding="utf-8") as i18n_file:
-            i18n_file.write(ET.tostring(xml_doc, encoding="utf-8", xml_declaration=True, pretty_print=True).decode())
+        if "gog-oss" in filename:
+            shutil.copy(path, pj(src_path, "Localization", os.path.dirname(path)))
+        elif "common" in filename:
+            shutil.copy(path, pj(src_path, "Localization", os.path.dirname(path)))
+        else:
+            print("")
