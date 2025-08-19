@@ -57,6 +57,7 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
 
     new_filename = filename
     if filename not in ["LocSource.xaml", "LocalizationKeys.cs", "locstatus.json"]:
+        loc_sub_dir = filename.replace("_", "-").replace(".xaml", "")
         if filename == "en_US.xaml":
             new_filename = "LocSource.xaml"
         playnite_loc = ET.parse(pj(main_path, "..", "PlayniteExtensions",

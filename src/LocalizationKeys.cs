@@ -254,6 +254,74 @@ namespace System
         /// </summary>
         public const string GogOss3P_GOGSettingsUseVerticalCovers = "LOCGogOss3P_GOGSettingsUseVerticalCovers";
         /// <summary>
+        /// Sync game saves to the cloud
+        /// </summary>
+        public const string CommonSyncGameSaves = "common-sync-game-saves";
+        /// <summary>
+        /// Syncing {$gameTitle} game saves to the cloud...
+        /// </summary>
+        public const string CommonSyncing = "common-syncing";
+        /// <summary>
+        /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong.
+        /// </summary>
+        public const string CommonSyncGameSavesWarn = "common-sync-game-saves-warn";
+        /// <summary>
+        /// Cloud saves
+        /// </summary>
+        public const string CommonCloudSaves = "common-cloud-saves";
+        /// <summary>
+        /// Save path
+        /// </summary>
+        public const string CommonSavePath = "common-save-path";
+        /// <summary>
+        /// Cloud
+        /// </summary>
+        public const string CommonCloud = "common-cloud";
+        /// <summary>
+        /// Sync saves to the cloud
+        /// </summary>
+        public const string CommonAutoSyncSaves = "common-auto-sync-saves";
+        /// <summary>
+        /// Calculate path
+        /// </summary>
+        public const string CommonCalculatePath = "common-calculate-path";
+        /// <summary>
+        /// This game doesn't support cloud saves.
+        /// </summary>
+        public const string CommonCloudSavesNotSupported = "common-cloud-saves-not-supported";
+        /// <summary>
+        /// Sync
+        /// </summary>
+        public const string CommonSync = "common-sync";
+        /// <summary>
+        /// Download
+        /// </summary>
+        public const string CommonDownload = "common-download";
+        /// <summary>
+        /// Upload
+        /// </summary>
+        public const string CommonUpload = "common-upload";
+        /// <summary>
+        /// Force action
+        /// </summary>
+        public const string CommonForceAction = "common-force-action";
+        /// <summary>
+        /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong. Are you sure you want to continue?
+        /// </summary>
+        public const string CommonCloudSaveConfirm = "common-cloud-save-confirm";
+        /// <summary>
+        /// Sync playtime to the cloud
+        /// </summary>
+        public const string CommonSyncPlaytime = "common-sync-playtime";
+        /// <summary>
+        /// Uploading {$gameTitle} game playtime to the cloud...
+        /// </summary>
+        public const string CommonUploadingPlaytime = "common-uploading-playtime";
+        /// <summary>
+        /// An error occurred while uploading {$gameTitle} game playtime to the cloud.
+        /// </summary>
+        public const string CommonUploadPlaytimeError = "common-upload-playtime-error";
+        /// <summary>
         /// Launcher Path
         /// </summary>
         public const string CommonLauncherCustomPath = "common-launcher-custom-path";
@@ -418,14 +486,6 @@ namespace System
         /// </summary>
         public const string CommonRepairFinished = "common-repair-finished";
         /// <summary>
-        /// Sync game saves to the cloud
-        /// </summary>
-        public const string CommonSyncGameSaves = "common-sync-game-saves";
-        /// <summary>
-        /// Syncing {$gameTitle} game saves to the cloud...
-        /// </summary>
-        public const string CommonSyncing = "common-syncing";
-        /// <summary>
         /// An error occurred while syncing {$gameTitle} game saves to the cloud.
         /// </summary>
         public const string CommonSyncError = "common-sync-error";
@@ -566,10 +626,6 @@ namespace System
         /// </summary>
         public const string CommonCheckLog = "common-check-log";
         /// <summary>
-        /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong.
-        /// </summary>
-        public const string CommonSyncGameSavesWarn = "common-sync-game-saves-warn";
-        /// <summary>
         /// Edit entry properties
         /// </summary>
         public const string CommonEditSelectedDownloadProperties = "common-edit-selected-download-properties";
@@ -666,10 +722,6 @@ namespace System
         /// </summary>
         public const string CommonAlternativeExe = "common-alternative-exe";
         /// <summary>
-        /// Cloud saves
-        /// </summary>
-        public const string CommonCloudSaves = "common-cloud-saves";
-        /// <summary>
         /// Check all DLCs
         /// </summary>
         public const string CommonCheckAllDlcs = "common-check-all-dlcs";
@@ -678,61 +730,9 @@ namespace System
         /// </summary>
         public const string CommonCheckAllContent = "common-check-all-content";
         /// <summary>
-        /// Save path
-        /// </summary>
-        public const string CommonSavePath = "common-save-path";
-        /// <summary>
-        /// Cloud
-        /// </summary>
-        public const string CommonCloud = "common-cloud";
-        /// <summary>
-        /// Sync saves to the cloud
-        /// </summary>
-        public const string CommonAutoSyncSaves = "common-auto-sync-saves";
-        /// <summary>
-        /// Calculate path
-        /// </summary>
-        public const string CommonCalculatePath = "common-calculate-path";
-        /// <summary>
-        /// This game doesn't support cloud saves.
-        /// </summary>
-        public const string CommonCloudSavesNotSupported = "common-cloud-saves-not-supported";
-        /// <summary>
         /// Manual sync saves
         /// </summary>
         public const string CommonManualSyncSaves = "common-manual-sync-saves";
-        /// <summary>
-        /// Sync
-        /// </summary>
-        public const string CommonSync = "common-sync";
-        /// <summary>
-        /// Download
-        /// </summary>
-        public const string CommonDownload = "common-download";
-        /// <summary>
-        /// Upload
-        /// </summary>
-        public const string CommonUpload = "common-upload";
-        /// <summary>
-        /// Force action
-        /// </summary>
-        public const string CommonForceAction = "common-force-action";
-        /// <summary>
-        /// Cloud saves feature is experimental. It's recommended to backup game saves in case something goes wrong. Are you sure you want to continue?
-        /// </summary>
-        public const string CommonCloudSaveConfirm = "common-cloud-save-confirm";
-        /// <summary>
-        /// Sync playtime to the cloud
-        /// </summary>
-        public const string CommonSyncPlaytime = "common-sync-playtime";
-        /// <summary>
-        /// Uploading {$gameTitle} game playtime to the cloud...
-        /// </summary>
-        public const string CommonUploadingPlaytime = "common-uploading-playtime";
-        /// <summary>
-        /// An error occurred while uploading {$gameTitle} game playtime to the cloud.
-        /// </summary>
-        public const string CommonUploadPlaytimeError = "common-upload-playtime-error";
         /// <summary>
         /// Move
         /// </summary>
