@@ -15,3 +15,4 @@ common-cloud-save-confirm = A função de salvamento na nuvem é experimental. �
 common-sync-playtime = Sincronizar tempo de jogo com a nuvem
 common-uploading-playtime = Enviando { $gameTitle } tempo(s) de jogo para a nuvem...
 common-upload-playtime-error = Ocorreu um erro ao enviar { $gameTitle } tempo(s) de jogo para a nuvem.
+common-manual-sync-saves = Sincronização manual de jogos salvos

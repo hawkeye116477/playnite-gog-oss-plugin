@@ -15,3 +15,4 @@ common-cloud-save-confirm = Функция облачных сохранений
 common-sync-playtime = Синхронизируйте время игры с облаком
 common-uploading-playtime = Загрузка { $gameTitle } игрового времени в облако...
 common-upload-playtime-error = Произошла ошибка при загрузке { $gameTitle } игрового времени в облако.
+common-manual-sync-saves = Ручная синхронизация сохраняет

@@ -14,3 +14,4 @@ common-cloud-save-confirm = Die Cloud-Speicherstände-Funktion ist experimentell
 common-sync-playtime = Synchronisiere Spielzeit mit der Cloud
 common-uploading-playtime = Lade { $gameTitle } Spielzeit in die Cloud hoch...
 common-upload-playtime-error = Beim Hochladen von { $gameTitle } Spielzeit in die Cloud ist ein Fehler aufgetreten.
+common-manual-sync-saves = Manuelle Synchronisierung der Speicherstände

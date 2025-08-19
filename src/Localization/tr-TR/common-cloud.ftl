@@ -15,3 +15,4 @@ common-cloud-save-confirm = Bulut kaydetme özelliği deneyseldir. Bir şeylerin
 common-sync-playtime = Oynatma süresini bulutla eşitle
 common-uploading-playtime = { $gameTitle } oyun oynama süresi buluta yükleniyor...
 common-upload-playtime-error = { $gameTitle } oyun oynama süresi buluta yüklenirken bir hata oluştu.
+common-manual-sync-saves = El ile eşitlenen kayıtlar

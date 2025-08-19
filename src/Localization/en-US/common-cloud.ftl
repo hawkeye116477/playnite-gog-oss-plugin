@@ -15,3 +15,4 @@ common-cloud-save-confirm = Cloud saves feature is experimental. It's recommende
 common-sync-playtime = Sync playtime to the cloud
 common-uploading-playtime = Uploading { $gameTitle } game playtime to the cloud...
 common-upload-playtime-error = An error occurred while uploading { $gameTitle } game playtime to the cloud.
+common-manual-sync-saves = Manual sync saves

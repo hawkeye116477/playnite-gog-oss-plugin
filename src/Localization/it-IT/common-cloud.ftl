@@ -15,3 +15,4 @@ common-cloud-save-confirm = La funzionalità di salvataggio cloud è sperimental
 common-sync-playtime = Sincronizza il tempo di gioco nel cloud
 common-uploading-playtime = Upload del tempo di gioco di { $gameTitle } nel cloud...
 common-upload-playtime-error = Si è verificato un errore durante il caricamento del tempo di gioco di { $gameTitle } sul cloud.
+common-manual-sync-saves = Sincronizza salvataggi manualmente
