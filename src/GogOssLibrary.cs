@@ -843,6 +843,7 @@ namespace GogOssLibraryNS
                                         var installedAppList = GetInstalledAppList();
                                         installedAppList.Add(game.GameId, installedInfo);
                                         Instance.installedAppListModified = true;
+                                        PlayniteApi.Database.Games.Update(game);
                                         PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonImportFinished));
                                     }, importProgressOptions);
                                 }
