@@ -60,6 +60,6 @@ with tempfile.TemporaryDirectory() as tmpdirname:
         if "gog-oss" in filename:
             shutil.copy(path, pj(src_path, "Localization", os.path.dirname(path)))
         elif "common" in filename:
-            shutil.copy(path, pj(src_path, "Localization", os.path.dirname(path)))
+            shutil.copy(path, pj(src_path, "third_party", "CommonLocalization", os.path.dirname(path)))
         else:
             print("")

@@ -254,6 +254,58 @@ namespace System
         /// </summary>
         public const string GogOss3P_GOGSettingsUseVerticalCovers = "LOCGogOss3P_GOGSettingsUseVerticalCovers";
         /// <summary>
+        /// Comet Path
+        /// </summary>
+        public const string GogOssCometCustomPath = "gog-oss-comet-custom-path";
+        /// <summary>
+        /// Comet version
+        /// </summary>
+        public const string GogOssCometVersion = "gog-oss-comet-version";
+        /// <summary>
+        /// Comet binary
+        /// </summary>
+        public const string GogOssCometBinary = "gog-oss-comet-binary";
+        /// <summary>
+        /// Gogdl Path
+        /// </summary>
+        public const string GogOssGogdlCustomPath = "gog-oss-gogdl-custom-path";
+        /// <summary>
+        /// Gogdl version
+        /// </summary>
+        public const string GogOssGogdlVersion = "gog-oss-gogdl-version";
+        /// <summary>
+        /// Gogdl binary
+        /// </summary>
+        public const string GogOssGogdlBinary = "gog-oss-gogdl-binary";
+        /// <summary>
+        /// Use vertical covers
+        /// </summary>
+        public const string GogOssUseVerticalCovers = "gog-oss-use-vertical-covers";
+        /// <summary>
+        /// Language
+        /// </summary>
+        public const string GogOssLanguage = "gog-oss-language";
+        /// <summary>
+        /// Beta channel
+        /// </summary>
+        public const string GogOssBetaChannel = "gog-oss-beta-channel";
+        /// <summary>
+        /// {$gameTitle} doesn't appear to be installable. Check downloadable content at {$url}.
+        /// </summary>
+        public const string GogOssGameNotInstallable = "gog-oss-game-not-installable";
+        /// <summary>
+        /// Enable Comet support
+        /// </summary>
+        public const string GogOssEnableCometSupport = "gog-oss-enable-comet-support";
+        /// <summary>
+        /// It's required for achievements, leaderboards and multiplayer mode, but may cause problems with operation of some games.
+        /// </summary>
+        public const string GogOssEnableCometSupportToolTip = "gog-oss-enable-comet-support-tool-tip";
+        /// <summary>
+        /// Check for Comet and Gogdl updates
+        /// </summary>
+        public const string GogOssCometUpdatePolicy = "gog-oss-comet-update-policy";
+        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";
@@ -354,6 +406,10 @@ namespace System
         /// </summary>
         public const string CommonNoAvailableDlcs = "common-no-available-dlcs";
         /// <summary>
+        /// Are you sure you want to uninstall selected DLCs?
+        /// </summary>
+        public const string CommonUninstallSelectedDlcs = "common-uninstall-selected-dlcs";
+        /// <summary>
         /// Launcher Path
         /// </summary>
         public const string CommonLauncherCustomPath = "common-launcher-custom-path";
@@ -429,14 +485,6 @@ namespace System
         /// System will be suspended soon...
         /// </summary>
         public const string CommonSystemSuspendCountdown = "common-system-suspend-countdown";
-        /// <summary>
-        /// Disable
-        /// </summary>
-        public const string CommonDisable = "common-disable";
-        /// <summary>
-        /// Enable
-        /// </summary>
-        public const string CommonEnable = "common-enable";
         /// <summary>
         /// Space Available:
         /// </summary>
@@ -529,10 +577,6 @@ namespace System
         /// Import finished. Have fun.
         /// </summary>
         public const string CommonImportFinished = "common-import-finished";
-        /// <summary>
-        /// Failed to import game. Reason: {$reason}.
-        /// </summary>
-        public const string CommonGameImportFailure = "common-game-import-failure";
         /// <summary>
         /// Download Manager
         /// </summary>
@@ -730,10 +774,6 @@ namespace System
         /// </summary>
         public const string CommonStartupArguments = "common-startup-arguments";
         /// <summary>
-        /// Language (code in RFC 1766 format)
-        /// </summary>
-        public const string CommonLanguageCode = "common-language-code";
-        /// <summary>
         /// Modify launch settings
         /// </summary>
         public const string CommonLauncherSettings = "common-launcher-settings";
@@ -741,10 +781,6 @@ namespace System
         /// Alternative executable file
         /// </summary>
         public const string CommonAlternativeExe = "common-alternative-exe";
-        /// <summary>
-        /// Check all DLCs
-        /// </summary>
-        public const string CommonCheckAllDlcs = "common-check-all-dlcs";
         /// <summary>
         /// Check all
         /// </summary>
@@ -770,10 +806,6 @@ namespace System
         /// </summary>
         public const string CommonMoveGameError = "common-move-game-error";
         /// <summary>
-        /// Are you sure you want to uninstall selected DLCs?
-        /// </summary>
-        public const string CommonUninstallSelectedDlcs = "common-uninstall-selected-dlcs";
-        /// <summary>
         /// Automatically update games
         /// </summary>
         public const string CommonAutoUpdate = "common-auto-update";
@@ -789,10 +821,6 @@ namespace System
         /// Remove launch settings
         /// </summary>
         public const string CommonRemoveGameLaunchSettings = "common-remove-game-launch-settings";
-        /// <summary>
-        /// Additional services
-        /// </summary>
-        public const string CommonAdditionalServices = "common-additional-services";
         /// <summary>
         /// Signed in as {$userName}
         /// </summary>
@@ -874,57 +902,5 @@ namespace System
         /// Only one instance of {$pluginShortName} may install/import/move applications at a time. Do you want to pause download manager tasks to continue?
         /// </summary>
         public const string CommonInstanceNotice = "common-instance-notice";
-        /// <summary>
-        /// Comet Path
-        /// </summary>
-        public const string GogOssCometCustomPath = "gog-oss-comet-custom-path";
-        /// <summary>
-        /// Comet version
-        /// </summary>
-        public const string GogOssCometVersion = "gog-oss-comet-version";
-        /// <summary>
-        /// Comet binary
-        /// </summary>
-        public const string GogOssCometBinary = "gog-oss-comet-binary";
-        /// <summary>
-        /// Gogdl Path
-        /// </summary>
-        public const string GogOssGogdlCustomPath = "gog-oss-gogdl-custom-path";
-        /// <summary>
-        /// Gogdl version
-        /// </summary>
-        public const string GogOssGogdlVersion = "gog-oss-gogdl-version";
-        /// <summary>
-        /// Gogdl binary
-        /// </summary>
-        public const string GogOssGogdlBinary = "gog-oss-gogdl-binary";
-        /// <summary>
-        /// Use vertical covers
-        /// </summary>
-        public const string GogOssUseVerticalCovers = "gog-oss-use-vertical-covers";
-        /// <summary>
-        /// Language
-        /// </summary>
-        public const string GogOssLanguage = "gog-oss-language";
-        /// <summary>
-        /// Beta channel
-        /// </summary>
-        public const string GogOssBetaChannel = "gog-oss-beta-channel";
-        /// <summary>
-        /// {$gameTitle} doesn't appear to be installable. Check downloadable content at {$url}.
-        /// </summary>
-        public const string GogOssGameNotInstallable = "gog-oss-game-not-installable";
-        /// <summary>
-        /// Enable Comet support
-        /// </summary>
-        public const string GogOssEnableCometSupport = "gog-oss-enable-comet-support";
-        /// <summary>
-        /// It's required for achievements, leaderboards and multiplayer mode, but may cause problems with operation of some games.
-        /// </summary>
-        public const string GogOssEnableCometSupportToolTip = "gog-oss-enable-comet-support-tool-tip";
-        /// <summary>
-        /// Check for Comet and Gogdl updates
-        /// </summary>
-        public const string GogOssCometUpdatePolicy = "gog-oss-comet-update-policy";
     }
 }

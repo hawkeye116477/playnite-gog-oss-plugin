@@ -469,7 +469,8 @@ namespace GogOssLibraryNS
             {
                 return;
             }
-            var enXaml = Path.Combine(extraLocDir, "en-US", "third_party.xaml");
+            var thirdPartyFileName = "third-party.xaml";
+            var enXaml = Path.Combine(extraLocDir, "en-US", thirdPartyFileName);
             if (!File.Exists(enXaml))
             {
                 return;
@@ -478,7 +479,7 @@ namespace GogOssLibraryNS
             loadString(enXaml);
             if (currentLanguage != "en_US")
             {
-                var langXaml = Path.Combine(extraLocDir, currentLanguage.Replace("_", "-"), "third_party.xaml");
+                var langXaml = Path.Combine(extraLocDir, currentLanguage.Replace("_", "-"), thirdPartyFileName);
                 if (File.Exists(langXaml))
                 {
                     loadString(langXaml);
