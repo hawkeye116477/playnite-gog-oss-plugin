@@ -1,9 +1,3 @@
-gog-oss-comet-custom-path = Percorso di Comet
-gog-oss-comet-version = Versione di Comet
-gog-oss-comet-binary = Eseguibile di Comet
-gog-oss-gogdl-custom-path = Percorso di Gogdl
-gog-oss-gogdl-version = Versione di Gogdl
-gog-oss-gogdl-binary = Eseguibile di Gogdl
 gog-oss-use-vertical-covers = Usa copertine verticali
 gog-oss-language = Lingua
 gog-oss-beta-channel = Canale beta
