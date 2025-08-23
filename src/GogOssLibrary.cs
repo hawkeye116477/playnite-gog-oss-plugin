@@ -439,52 +439,6 @@ namespace GogOssLibraryNS
         public void LoadExtraLocalization()
         {
             var currentLanguage = PlayniteApi.ApplicationSettings.Language;
-            var dictionaries = Application.Current.Resources.MergedDictionaries;
-
-            void loadString(string xamlPath)
-            {
-                ResourceDictionary res = null;
-                try
-                {
-                    res = Xaml.FromFile<ResourceDictionary>(xamlPath);
-                    res.Source = new Uri(xamlPath, UriKind.Absolute);
-                    foreach (var key in res.Keys)
-                    {
-                        if (res[key] is string locString && locString.IsNullOrEmpty())
-                        {
-                            res.Remove(key);
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.Error(e, $"Failed to parse localization file {xamlPath}");
-                    return;
-                }
-                dictionaries.Add(res);
-            }
-
-            var extraLocDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Localization");
-            if (!Directory.Exists(extraLocDir))
-            {
-                return;
-            }
-            var thirdPartyFileName = "third-party.xaml";
-            var enXaml = Path.Combine(extraLocDir, "en-US", thirdPartyFileName);
-            if (!File.Exists(enXaml))
-            {
-                return;
-            }
-
-            loadString(enXaml);
-            if (currentLanguage != "en_US")
-            {
-                var langXaml = Path.Combine(extraLocDir, currentLanguage.Replace("_", "-"), thirdPartyFileName);
-                if (File.Exists(langXaml))
-                {
-                    loadString(langXaml);
-                }
-            }
             LocalizationManager.Instance.SetLanguage(currentLanguage);
             var commonFluentArgs = new Dictionary<string, IFluentType>
             {
