@@ -5,3 +5,13 @@ Version: _version_
 Module: GogOssLibrary.dll
 Type: GameLibrary
 Icon: Resources\gogicon.png
+Links:
+  - Name: Source code
+    Url: https://github.com/hawkeye116477/playnite-gog-oss-plugin
+  - Name: Help
+    Url: https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki
+  - Name: Forum
+    Url: https://github.com/hawkeye116477/playnite-gog-oss-plugin/discussions
+  - Name: Translate
+    Url: https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Translating-plugin
+  
