@@ -70,7 +70,7 @@ namespace GogOssLibraryNS
             window.SizeToContent = SizeToContent.WidthAndHeight;
             window.MinWidth = 600;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            var title = ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame);
+            var title = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame);
             if (installData[0].downloadProperties.downloadAction == DownloadAction.Repair)
             {
                 title = LocalizationManager.Instance.GetString(LOC.CommonRepair);
@@ -96,12 +96,12 @@ namespace GogOssLibraryNS
         {
             var playniteAPI = API.Instance;
             string gamesCombined = string.Join(", ", games.Select(item => item.Name));
-            var result = MessageCheckBoxDialog.ShowMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame), LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)gamesCombined }), LOC.CommonRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame), LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)gamesCombined }), LOC.CommonRemoveGameLaunchSettings, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
                 var notUninstalledGames = new List<Game>();
                 var uninstalledGames = new List<Game>();
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)}... ", false);
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
                     a.IsIndeterminate = false;
@@ -111,7 +111,7 @@ namespace GogOssLibraryNS
                         var counter = 0;
                         foreach (var game in games)
                         {
-                            a.Text = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstalling)} {game.Name}... ";
+                            a.Text = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)} {game.Name}... ";
                             var uninstaller = Path.Combine(game.InstallDirectory, "unins000.exe");
                             if (File.Exists(uninstaller))
                             {
@@ -190,7 +190,7 @@ namespace GogOssLibraryNS
                     if (notUninstalledGames.Count == 1)
                     {
                         notUninstalledGamesCombined = string.Join(", ", notUninstalledGames.Select(item => item.Name));
-                        playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameUninstallError).Format(LocalizationManager.Instance.GetString(LOC.CommonCheckLog)), notUninstalledGamesCombined);
+                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameUninstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog) }), notUninstalledGamesCombined);
                     }
                     else
                     {
@@ -226,7 +226,7 @@ namespace GogOssLibraryNS
 
         public GogOssPlayController(Game game) : base(game)
         {
-            Name = string.Format(ResourceProvider.GetString(LOC.GogOss3P_GOGStartUsingClient), "Comet");
+            Name = LocalizationManager.Instance.GetString(LOC.ThirdPartyGogStartUsingClient, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)"Comet" });
             gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
         }
 
@@ -402,7 +402,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_GOGNotLoggedInError), "");
+                                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyGogNotLoggedInError), "");
                                 logger.Error($"Can't upload playtime, because user is not authenticated.");
                             }
                         }

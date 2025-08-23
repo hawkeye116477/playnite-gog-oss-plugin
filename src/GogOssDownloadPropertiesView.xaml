@@ -22,8 +22,8 @@
 
     <DockPanel Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal" x:Name="TopSP" Margin="0,10,10,0" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="{DynamicResource LOCGogOss3P_PlayniteSaveLabel}" ContentStringFormat="&#xee00; {0}" FontFamily="{DynamicResource FontIcoFont}" Click="SaveBtn_Click" Margin="0,0,7,0" Name="SaveBtn" />
-            <Button Content="{DynamicResource LOCGogOss3P_PlayniteCancelLabel}" ContentStringFormat="&#xec4f; {0}"
+            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSaveLabel}}" ContentStringFormat="&#xee00; {0}" FontFamily="{DynamicResource FontIcoFont}" Click="SaveBtn_Click" Margin="0,0,7,0" Name="SaveBtn" />
+            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
                     FontFamily="{DynamicResource FontIcoFont}" Name="CancelBtn" Click="CancelBtn_Click" />
         </StackPanel>
         <Grid DockPanel.Dock="Bottom" Margin="10,5" x:Name="SizeGrd" Visibility="Collapsed">
@@ -38,32 +38,32 @@
             </Grid.RowDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5" Grid.Row="1" Grid.Column="0">
                 <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonDownloadSize}}" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                <TextBlock x:Name="DownloadSizeTB" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
+                <TextBlock x:Name="DownloadSizeTB" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
                     VerticalAlignment="Top" Margin="5,0,5,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" Grid.Row="2" Grid.Column="0">
                 <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.CommonInstallSize}}" Margin="0,0,0,0" />
-                <TextBlock x:Name="InstallSizeTB" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}" VerticalAlignment="Top" Margin="5,0,5,0" />
+                <TextBlock x:Name="InstallSizeTB" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}" VerticalAlignment="Top" Margin="5,0,5,0" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,0,5" Grid.Row="1" Grid.Column="1">
                 <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.CommonSpaceAvailable}}" Margin="0,0,0,0" />
-                <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
                     Margin="5,0,5,0" Name="SpaceTB" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="2" Grid.Column="1" Name="AfterInstallingSP" Margin="10,0,0,0">
                 <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.CommonAfterInstalling}}" Margin="0,0,0,0" />
-                <TextBlock VerticalAlignment="Top" Text="{DynamicResource LOCGogOss3P_PlayniteLoadingLabel}"
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
                     Margin="5,0,5,0" Name="AfterInstallingTB" />
             </StackPanel>
         </Grid>
         <TabControl>
-            <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsGeneralLabel}">
+            <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsGeneralLabel}}">
                 <StackPanel Margin="10,5">
                     <StackPanel>
                         <DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5">
-                            <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteGameInstallDirTitle}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteGameInstallDirTitle}}" VerticalAlignment="Center" Margin="0,0,10,0" />
                             <Button DockPanel.Dock="Right" Padding="5" Margin="5 0 0 0" Content="&#xec5b;"
-                                Name="ChooseGamePathBtn" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectDirectoryTooltip}" Click="ChooseGamePathBtn_Click" />
+                                Name="ChooseGamePathBtn" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" Click="ChooseGamePathBtn_Click" />
                             <TextBox Name="SelectedGamePathTxt" VerticalAlignment="Center" Margin="0" />
                         </DockPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
@@ -76,7 +76,7 @@
                             <ComboBox Name="GameLanguageCBo" DisplayMemberPath="Value" SelectedValuePath="Key" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameLanguageCBo_SelectionChanged"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Name="VersionSP" Visibility="Collapsed" Margin="0,0,0,5">
-                            <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteVersionLabel}" Grid.Row="1" Grid.Column="0" 
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteVersionLabel}}" Grid.Row="1" Grid.Column="0" 
                                    Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             <ComboBox Grid.Row="1" Grid.Column="1" Name="GameVersionCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameVersionCBo_SelectionChanged"/>
                         </StackPanel>
@@ -107,7 +107,7 @@
                     </ListBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}">
+            <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsAdvancedLabel}}">
                 <StackPanel Orientation="Vertical" Margin="10,5">
                     <StackPanel>
                         <Separator Margin="0,5,0,0" />

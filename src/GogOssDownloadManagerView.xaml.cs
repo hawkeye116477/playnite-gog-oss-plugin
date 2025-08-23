@@ -180,7 +180,7 @@ namespace GogOssLibraryNS
             var messagesSettings = GogOssMessagesSettings.LoadSettings();
             if (!messagesSettings.DontShowDownloadManagerWhatsUpMsg)
             {
-                var result = MessageCheckBoxDialog.ShowMessage("", LocalizationManager.Instance.GetString(LOC.CommonDownloadManagerWhatsUp), ResourceProvider.GetString(LOC.GogOss3P_PlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
+                var result = MessageCheckBoxDialog.ShowMessage("", LocalizationManager.Instance.GetString(LOC.CommonDownloadManagerWhatsUp), LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDontShowAgainTitle), MessageBoxButton.OK, MessageBoxImage.Information);
                 if (result.CheckboxChecked)
                 {
                     messagesSettings.DontShowDownloadManagerWhatsUpMsg = true;
@@ -320,7 +320,7 @@ namespace GogOssLibraryNS
                             {
                                 if (downloadProperties.downloadAction != DownloadAction.Update)
                                 {
-                                    DescriptionTB.Text = ResourceProvider.GetString(LOC.GogOss3P_PlayniteDownloadingLabel);
+                                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadingLabel);
                                 }
                                 else
                                 {
@@ -427,19 +427,19 @@ namespace GogOssLibraryNS
                             {
                                 if (loginErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
                                 }
                                 else if (permissionErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), LocalizationManager.Instance.GetString(LOC.CommonPermissionError)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonPermissionError) }));
                                 }
                                 else if (diskSpaceErrorDisplayed)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), LocalizationManager.Instance.GetString(LOC.CommonNotEnoughSpace)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonNotEnoughSpace) }));
                                 }
                                 else
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(string.Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteGameInstallError), LocalizationManager.Instance.GetString(LOC.CommonCheckLog)));
+                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog) }));
                                 }
                                 wantedItem.status = DownloadStatus.Paused;
                             }
@@ -727,7 +727,7 @@ namespace GogOssLibraryNS
             if (checkedStatus.Count > 0)
             {
                 downloadsView.Filter = item => checkedStatus.Contains((item as DownloadManagerData.Download).status);
-                FilterDownloadBtn.Content = "\uef29 " + ResourceProvider.GetString(LOC.GogOss3P_PlayniteFilterActiveLabel);
+                FilterDownloadBtn.Content = "\uef29 " + LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteFilterActiveLabel);
             }
             else
             {

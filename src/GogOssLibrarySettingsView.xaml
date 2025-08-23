@@ -26,17 +26,17 @@
 
     <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled"
         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-        <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsGeneralLabel}">
+        <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsGeneralLabel}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <CheckBox DockPanel.Dock="Top" Name="GOGImportInstalledChk"
                   Margin="0,0,0,15"
                   IsChecked="{Binding Settings.ImportInstalledGames}"
-                  Content="{DynamicResource LOCGogOss3P_GOGSettingsImportInstalledLabel}"/>
+                  Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogSettingsImportInstalledLabel}}"/>
 
                     <CheckBox DockPanel.Dock="Top" Name="GOGConnectAccountChk"
                   IsChecked="{Binding Settings.ConnectAccount}"
-                  Content="{DynamicResource LOCGogOss3P_GOGSettingsConnectAccount}" Checked="GOGConnectAccountChk_Checked"/>
+                  Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogSettingsConnectAccount}}" Checked="GOGConnectAccountChk_Checked"/>
 
                     <StackPanel DockPanel.Dock="Top" Margin="40,5,5,0"
                    IsEnabled="{Binding IsChecked, ElementName=GOGConnectAccountChk}">
@@ -44,11 +44,11 @@
                         <CheckBox DockPanel.Dock="Top" Name="GOGImportUninstalledChk"
                       IsChecked="{Binding Settings.ImportUninstalledGames}"
                       Margin="0,10,0,0"
-                      Content="{DynamicResource LOCGogOss3P_GOGSettingsImportUninstalledLabel}"/>
+                      Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogSettingsImportUninstalledLabel}}"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,10">
-                            <ToggleButton HorizontalAlignment="Left" Name="LoginBtn" Content="{DynamicResource LOCGogOss3P_GOGAuthenticateLabel}" IsEnabled="False" Click="LoginBtn_Click" IsChecked="False"/>
-                            <TextBlock VerticalAlignment="Center" Margin="10,5,5,5" Name="AuthStatusTB" Text="{DynamicResource LOCGogOss3P_GOGLoginChecking}"/>
+                            <ToggleButton HorizontalAlignment="Left" Name="LoginBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogAuthenticateLabel}}" IsEnabled="False" Click="LoginBtn_Click" IsChecked="False"/>
+                            <TextBlock VerticalAlignment="Center" Margin="10,5,5,5" Name="AuthStatusTB" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyGogLoginChecking}}"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -60,13 +60,13 @@
                   Content="{common:Localize Key={x:Static system:LOC.GogOssUseVerticalCovers}}" Margin="0,10,0,0"/>
 
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource LOCGogOss3P_GOGMetadataLanguageLabel}" Margin="0,0,10,0"/>
+                        <TextBlock VerticalAlignment="Center" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyGogMetadataLanguageLabel}}" Margin="0,0,10,0"/>
                         <ComboBox x:Name="LanguageSelection" DisplayMemberPath="Value" SelectedValuePath="Key"
                                   SelectedValue="{Binding Settings.Locale}" ItemsSource="{Binding Path=Languages}"
                                   IsEditable="false" MinWidth="150"/>
                     </StackPanel>
                     <StackPanel Margin="0,15,0,0">
-                        <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteExtensionsUpdates}" FontSize="18"
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteExtensionsUpdates}}" FontSize="18"
                         Margin="0,0,0,2" />
                         <Separator Margin="0,0,0,10" />
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -116,7 +116,7 @@
                         </TextBlock>
                         <Button DockPanel.Dock="Right" Margin="5,0,0,0"
                             Name="ChooseGamePathBtn" Click="ChooseGamePathBtn_Click" Content="&#xec5b;" 
-                            FontFamily="{DynamicResource FontIcoFont}" ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectDirectoryTooltip}"
+                            FontFamily="{DynamicResource FontIcoFont}" ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}"
                             Grid.Row="2" Grid.Column="2" VerticalAlignment="Center"/>
                         <TextBox Name="SelectedGamePathTxt"
                         Text="{Binding Settings.GamesInstallationPath, UpdateSourceTrigger=PropertyChanged}"
@@ -144,7 +144,7 @@
                 </StackPanel>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="{DynamicResource LOCGogOss3P_PlayniteSettingsAdvancedLabel}">
+        <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsAdvancedLabel}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
                     <Grid>
@@ -157,22 +157,22 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssCometCustomPath}}" Grid.Column="0" Grid.Row="0"
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherCustomPath},Args='launcherName=Comet'}" Grid.Column="0" Grid.Row="0"
                                Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                         </TextBlock>
                         <TextBox Text="{Binding Settings.SelectedCometPath, UpdateSourceTrigger=PropertyChanged}" x:Name="SelectedCometPathTxt" 
                              Grid.Row="0" Grid.Column="1" Margin="10,0,0,5" VerticalAlignment="Center"/>
                         <Button Name="ChooseCometBtn"
                             Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Click="ChooseCometBtn_Click" Grid.Row="0" Grid.Column="2"
-                            ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center"/>
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssGogdlCustomPath}}" Grid.Column="0" Grid.Row="1"
+                            ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectFileTooltip}}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherCustomPath},Args='launcherName=Gogdl'}" Grid.Column="0" Grid.Row="1"
                                Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                         </TextBlock>
                         <TextBox Text="{Binding Settings.SelectedGogdlPath, UpdateSourceTrigger=PropertyChanged}" x:Name="SelectedGogdlPathTxt" 
                              Grid.Row="1" Grid.Column="1" Margin="10,0,0,5" VerticalAlignment="Center"/>
                         <Button Name="ChooseGogdlBtn"
                             Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Grid.Row="1" Grid.Column="2"
-                            ToolTip="{DynamicResource LOCGogOss3P_PlayniteSelectFileTooltip}" VerticalAlignment="Center" Click="ChooseGogdlBtn_Click"/>
+                            ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectFileTooltip}}" VerticalAlignment="Center" Click="ChooseGogdlBtn_Click"/>
                     </Grid>
                     <StackPanel Margin="0,10,0,0">
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonCache}}" FontSize="18"
@@ -226,36 +226,36 @@
                                Margin="0,0,10,5" VerticalAlignment="Center" />
                         <TextBox x:Name="PluginVersionTxt" Grid.Column="1" Grid.Row="1" Margin="0,0,0,5" 
                              VerticalAlignment="Center" IsReadOnly="True" HorizontalAlignment="Left"/>
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssCometVersion}}" Grid.Column="0" Grid.Row="2"
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherVersion},Args='launcherName=Comet'}" Grid.Column="0" Grid.Row="2"
                                Margin="0,0,10,5" VerticalAlignment="Center" />
                         <TextBox x:Name="CometVersionTxt" Grid.Column="1" Grid.Row="2" Margin="0,0,0,5" VerticalAlignment="Center" 
                              IsReadOnly="True" HorizontalAlignment="Left"/>
                         <Button x:Name="CheckForCometUpdatesBtn" Grid.Column="2" Grid.Row="2" Margin="10,0,0,5" VerticalAlignment="Center"
-                            Content="{DynamicResource LOCGogOss3P_PlayniteCheckForUpdates}" Click="CheckForCometUpdatesBtn_Click" />
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssGogdlVersion}}" Grid.Column="0" Grid.Row="3"
+                            Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCheckForUpdates}}" Click="CheckForCometUpdatesBtn_Click" />
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherVersion},Args='launcherName=Gogdl'}" Grid.Column="0" Grid.Row="3"
                                Margin="0,0,10,5" VerticalAlignment="Center" />
                         <TextBox x:Name="GogdlVersionTxt" Grid.Column="1" Grid.Row="3" Margin="0,0,0,5" VerticalAlignment="Center" 
                              IsReadOnly="True" HorizontalAlignment="Left"/>
                         <Button x:Name="CheckForGogdlUpdatesBtn" Grid.Column="2" Grid.Row="3" Margin="10,0,0,5" VerticalAlignment="Center"
-                            Content="{DynamicResource LOCGogOss3P_PlayniteCheckForUpdates}" Click="CheckForGogdlUpdatesBtn_Click" />
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssCometBinary}}" Grid.Column="0" Grid.Row="4"
+                            Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCheckForUpdates}}" Click="CheckForGogdlUpdatesBtn_Click" />
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherBinary},Args='launcherName=Comet'}" Grid.Column="0" Grid.Row="4"
                                Margin="0,0,10,5" VerticalAlignment="Center"/>
                         <TextBox x:Name="CometBinaryTxt" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="4" Margin="0,0,0,5"/>
-                        <Button x:Name="OpenCometBinaryBtn" Margin="10,0,0,5" Content="{DynamicResource LOCGogOss3P_PlayniteOpen}" 
+                        <Button x:Name="OpenCometBinaryBtn" Margin="10,0,0,5" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOpen}}" 
                                 VerticalAlignment="Center" Click="OpenCometBinaryBtn_Click" Grid.Column="2" Grid.Row="4" />
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssGogdlBinary}}" Grid.Column="0" Grid.Row="5"
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherBinary},Args='launcherName=Gogdl'}" Grid.Column="0" Grid.Row="5"
                                Margin="0,0,10,5" VerticalAlignment="Center"/>
                         <TextBox x:Name="GogdlBinaryTxt" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="5" Margin="0,0,0,5"/>
-                        <Button x:Name="OpenGogdlBinaryBtn" Margin="10,0,0,5" Content="{DynamicResource LOCGogOss3P_PlayniteOpen}" 
+                        <Button x:Name="OpenGogdlBinaryBtn" Margin="10,0,0,5" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOpen}}" 
                                 VerticalAlignment="Center" Grid.Column="2" Grid.Row="5" Click="OpenGogdlBinaryBtn_Click" />
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonGamesInstallationPath}}" Grid.Row="6" Grid.Column="0"
                                Margin="0,0,10,5" VerticalAlignment="Center"/>
                         <TextBox x:Name="GamesInstallationPathTxt" Margin="0,0,0,5" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="6" />
-                        <Button x:Name="OpenGamesInstallationPathBtn" Margin="10,0,0,5" Content="{DynamicResource LOCGogOss3P_PlayniteOpen}" 
+                        <Button x:Name="OpenGamesInstallationPathBtn" Margin="10,0,0,5" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOpen}}" 
                                 VerticalAlignment="Center" Click="OpenGamesInstallationPathBtn_Click" Grid.Column="2" Grid.Row="6" />
                         <TextBlock VerticalAlignment="Center" Grid.Column="0" Grid.Row="7" Margin="0,0,10,5" Text="{common:Localize Key={x:Static system:LOC.CommonLogFilesPath}}"/>
                         <TextBox x:Name="LogFilesPathTxt" Margin="0,0,0,5" VerticalAlignment="Center" IsReadOnly="True" Grid.Column="1" Grid.Row="7" />
-                        <Button x:Name="OpenLogFilesPathBtn" Margin="10,0,0,5" Content="{DynamicResource LOCGogOss3P_PlayniteOpen}" 
+                        <Button x:Name="OpenLogFilesPathBtn" Margin="10,0,0,5" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOpen}}" 
                                 VerticalAlignment="Center" Grid.Column="2"  Grid.Row="7" Click="OpenLogFilesPathBtn_Click" />
                         <Button Margin="0,10,5,5" Grid.Column="0" Grid.Row="8" Name="CopyRawDataBtn" Click="CopyRawDataBtn_Click" 
                             Grid.ColumnSpan="2" HorizontalAlignment="Left" Content="{common:Localize Key={x:Static system:LOC.CommonCopyRawDataToClipboard}}"/>
@@ -264,7 +264,7 @@
                         NavigateUri="https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/troubleshooting"
                         Command="{x:Static pcmd:GlobalCommands.NavigateUrlCommand}"
                         CommandParameter="{Binding NavigateUri, RelativeSource={RelativeSource Self}}">
-                        <Run Text="{DynamicResource LOCGogOss3P_GOGTroubleShootingIssues}" />
+                        <Run Text="{common:Localize Key={x:Static system:LOC.ThirdPartyGogTroubleShootingIssues}}" />
                     </Hyperlink>
                         </TextBlock>
                         <TextBlock VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Grid.Column="0" Grid.Row="10" Margin="0,10,0,0">

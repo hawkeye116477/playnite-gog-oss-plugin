@@ -40,7 +40,7 @@ namespace GogOssLibraryNS
             }
             if (!File.Exists(cacheCloudFile))
             {
-                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(ResourceProvider.GetString(LOC.GogOss3P_PlayniteProgressMetadata), false);
+                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteProgressMetadata), false);
                 var playniteAPI = API.Instance;
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {

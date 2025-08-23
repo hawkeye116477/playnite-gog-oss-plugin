@@ -423,7 +423,7 @@ namespace GogOssLibraryNS
             {
                 PlayniteApi.Notifications.Add(new NotificationMessage(
                     ImportErrorMessageId,
-                    string.Format(PlayniteApi.Resources.GetString(LOC.GogOss3P_PlayniteLibraryImportError), Name) +
+                    LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLibraryImportError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)Name }) +
                     System.Environment.NewLine + importError.Message,
                     NotificationType.Error,
                     () => OpenSettingsView()));
@@ -551,7 +551,7 @@ namespace GogOssLibraryNS
                                             });
                                         }
                                         window.DataContext = successUpdates;
-                                        window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
+                                        window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
                                         window.Content = new GogOssUpdaterView();
                                         window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
                                         window.SizeToContent = SizeToContent.WidthAndHeight;
@@ -563,7 +563,7 @@ namespace GogOssLibraryNS
                                 else
                                 {
                                     PlayniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdateCheckFail",
-                                                                                          $"{Name} {Environment.NewLine}{PlayniteApi.Resources.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage)}",
+                                                                                          $"{Name} {Environment.NewLine}{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage)}",
                                                                                           NotificationType.Error));
                                 }
                             }
@@ -592,9 +592,9 @@ namespace GogOssLibraryNS
                                         var options = new List<MessageBoxOption>
                                     {
                                         new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog), true),
-                                        new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel), false, true),
+                                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel), false, true),
                                     };
-                                        var result = PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Comet", ["appVersion"] = (FluentString)newVersion.ToString() }), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                                        var result = PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Comet", ["appVersion"] = (FluentString)newVersion.ToString() }), LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
                                         if (result == options[0])
                                         {
                                             var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
@@ -615,9 +615,9 @@ namespace GogOssLibraryNS
                                         var options = new List<MessageBoxOption>
                                         {
                                             new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog), true),
-                                            new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel), false, true),
+                                            new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel), false, true),
                                         };
-                                        var result = PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Gogdl", ["appVersion"] = (FluentString)newVersion.ToString() }), ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
+                                        var result = PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Gogdl", ["appVersion"] = (FluentString)newVersion.ToString() }), LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
                                         if (result == options[0])
                                         {
                                             var changelogURL = $"https://github.com/Heroic-Games-Launcher/heroic-gogdl/releases/tag/v{newVersion}";
@@ -747,7 +747,7 @@ namespace GogOssLibraryNS
                         };
                         yield return new GameMenuItem
                         {
-                            Description = ResourceProvider.GetString(LOC.GogOss3P_PlayniteCheckForUpdates),
+                            Description = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteCheckForUpdates),
                             Icon = "UpdateDbIcon",
                             Action = (args) =>
                             {
@@ -773,7 +773,7 @@ namespace GogOssLibraryNS
                                             ShowMaximizeButton = false,
                                         });
                                         window.DataContext = successUpdates;
-                                        window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
+                                        window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
                                         window.Content = new GogOssUpdaterView();
                                         window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
                                         window.SizeToContent = SizeToContent.WidthAndHeight;
@@ -783,7 +783,7 @@ namespace GogOssLibraryNS
                                     }
                                     else
                                     {
-                                        PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage), game.Name);
+                                        PlayniteApi.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage), game.Name);
                                     }
                                 }
                                 else
@@ -950,7 +950,7 @@ namespace GogOssLibraryNS
                         }
                         yield return new GameMenuItem
                         {
-                            Description = ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame),
+                            Description = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame),
                             Icon = "InstallIcon",
                             Action = (args) =>
                             {
@@ -981,7 +981,7 @@ namespace GogOssLibraryNS
                     {
                         yield return new GameMenuItem
                         {
-                            Description = ResourceProvider.GetString(LOC.GogOss3P_PlayniteUninstallGame),
+                            Description = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame),
                             Icon = "UninstallIcon",
                             Action = (args) =>
                             {
@@ -1081,7 +1081,7 @@ namespace GogOssLibraryNS
                                 ShowMaximizeButton = false,
                             });
                             window.DataContext = successUpdates;
-                            window.Title = $"{ResourceProvider.GetString(LOC.GogOss3P_PlayniteExtensionsUpdates)}";
+                            window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
                             window.Content = new GogOssUpdaterView();
                             window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
                             window.SizeToContent = SizeToContent.WidthAndHeight;
@@ -1091,7 +1091,7 @@ namespace GogOssLibraryNS
                         }
                         else
                         {
-                            PlayniteApi.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteUpdateCheckFailMessage));
+                            PlayniteApi.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage));
                         }
                     }
                     else

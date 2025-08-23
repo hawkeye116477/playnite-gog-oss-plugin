@@ -6,278 +6,6 @@ namespace System
     public static class LOC
     {
         /// <summary>
-        /// Filter Active
-        /// </summary>
-        public const string GogOss3P_PlayniteFilterActiveLabel = "LOCGogOss3P_PlayniteFilterActiveLabel";
-        /// <summary>
-        /// Filters
-        /// </summary>
-        public const string GogOss3P_PlayniteFilters = "LOCGogOss3P_PlayniteFilters";
-        /// <summary>
-        /// Cannot install game: {0}
-        /// </summary>
-        public const string GogOss3P_PlayniteGameInstallError = "LOCGogOss3P_PlayniteGameInstallError";
-        /// <summary>
-        /// Cannot un-install game: {0}
-        /// </summary>
-        public const string GogOss3P_PlayniteGameUninstallError = "LOCGogOss3P_PlayniteGameUninstallError";
-        /// <summary>
-        /// Disabled
-        /// </summary>
-        public const string GogOss3P_PlayniteDisabledTitle = "LOCGogOss3P_PlayniteDisabledTitle";
-        /// <summary>
-        /// Version
-        /// </summary>
-        public const string GogOss3P_PlayniteVersionLabel = "LOCGogOss3P_PlayniteVersionLabel";
-        /// <summary>
-        /// Install Size
-        /// </summary>
-        public const string GogOss3P_PlayniteInstallSizeLabel = "LOCGogOss3P_PlayniteInstallSizeLabel";
-        /// <summary>
-        /// Added
-        /// </summary>
-        public const string GogOss3P_PlayniteAddedLabel = "LOCGogOss3P_PlayniteAddedLabel";
-        /// <summary>
-        /// OK
-        /// </summary>
-        public const string GogOss3P_PlayniteOKLabel = "LOCGogOss3P_PlayniteOKLabel";
-        /// <summary>
-        /// Save
-        /// </summary>
-        public const string GogOss3P_PlayniteSaveLabel = "LOCGogOss3P_PlayniteSaveLabel";
-        /// <summary>
-        /// Cancel
-        /// </summary>
-        public const string GogOss3P_PlayniteCancelLabel = "LOCGogOss3P_PlayniteCancelLabel";
-        /// <summary>
-        /// Yes
-        /// </summary>
-        public const string GogOss3P_PlayniteYesLabel = "LOCGogOss3P_PlayniteYesLabel";
-        /// <summary>
-        /// No
-        /// </summary>
-        public const string GogOss3P_PlayniteNoLabel = "LOCGogOss3P_PlayniteNoLabel";
-        /// <summary>
-        /// Downloading…
-        /// </summary>
-        public const string GogOss3P_PlayniteDownloadingLabel = "LOCGogOss3P_PlayniteDownloadingLabel";
-        /// <summary>
-        /// Loading…
-        /// </summary>
-        public const string GogOss3P_PlayniteLoadingLabel = "LOCGogOss3P_PlayniteLoadingLabel";
-        /// <summary>
-        /// Downloading metadata…
-        /// </summary>
-        public const string GogOss3P_PlayniteProgressMetadata = "LOCGogOss3P_PlayniteProgressMetadata";
-        /// <summary>
-        /// Restart System
-        /// </summary>
-        public const string GogOss3P_PlayniteMenuRestartSystem = "LOCGogOss3P_PlayniteMenuRestartSystem";
-        /// <summary>
-        /// Turn Off System
-        /// </summary>
-        public const string GogOss3P_PlayniteMenuShutdownSystem = "LOCGogOss3P_PlayniteMenuShutdownSystem";
-        /// <summary>
-        /// Suspend System
-        /// </summary>
-        public const string GogOss3P_PlayniteMenuSuspendSystem = "LOCGogOss3P_PlayniteMenuSuspendSystem";
-        /// <summary>
-        /// Hibernate System
-        /// </summary>
-        public const string GogOss3P_PlayniteMenuHibernateSystem = "LOCGogOss3P_PlayniteMenuHibernateSystem";
-        /// <summary>
-        /// Settings
-        /// </summary>
-        public const string GogOss3P_PlayniteSettingsLabel = "LOCGogOss3P_PlayniteSettingsLabel";
-        /// <summary>
-        /// General
-        /// </summary>
-        public const string GogOss3P_PlayniteSettingsGeneralLabel = "LOCGogOss3P_PlayniteSettingsGeneralLabel";
-        /// <summary>
-        /// Advanced
-        /// </summary>
-        public const string GogOss3P_PlayniteSettingsAdvancedLabel = "LOCGogOss3P_PlayniteSettingsAdvancedLabel";
-        /// <summary>
-        /// Clear Cache?
-        /// </summary>
-        public const string GogOss3P_PlayniteSettingsClearCacheTitle = "LOCGogOss3P_PlayniteSettingsClearCacheTitle";
-        /// <summary>
-        /// Never
-        /// </summary>
-        public const string GogOss3P_PlayniteSettingsPlaytimeImportModeNever = "LOCGogOss3P_PlayniteSettingsPlaytimeImportModeNever";
-        /// <summary>
-        /// Authentification required
-        /// </summary>
-        public const string GogOss3P_PlayniteLoginRequired = "LOCGogOss3P_PlayniteLoginRequired";
-        /// <summary>
-        /// Executable
-        /// </summary>
-        public const string GogOss3P_PlayniteExecutableTitle = "LOCGogOss3P_PlayniteExecutableTitle";
-        /// <summary>
-        /// Name
-        /// </summary>
-        public const string GogOss3P_PlayniteGameNameTitle = "LOCGogOss3P_PlayniteGameNameTitle";
-        /// <summary>
-        /// Installation Folder
-        /// </summary>
-        public const string GogOss3P_PlayniteGameInstallDirTitle = "LOCGogOss3P_PlayniteGameInstallDirTitle";
-        /// <summary>
-        /// Failed to import games from {0}.
-        /// </summary>
-        public const string GogOss3P_PlayniteLibraryImportError = "LOCGogOss3P_PlayniteLibraryImportError";
-        /// <summary>
-        /// Failed to download metadata: {0}
-        /// </summary>
-        public const string GogOss3P_PlayniteMetadataDownloadError = "LOCGogOss3P_PlayniteMetadataDownloadError";
-        /// <summary>
-        /// Uninstalling
-        /// </summary>
-        public const string GogOss3P_PlayniteUninstalling = "LOCGogOss3P_PlayniteUninstalling";
-        /// <summary>
-        /// Do nothing
-        /// </summary>
-        public const string GogOss3P_PlayniteDoNothing = "LOCGogOss3P_PlayniteDoNothing";
-        /// <summary>
-        /// Close
-        /// </summary>
-        public const string GogOss3P_PlayniteClose = "LOCGogOss3P_PlayniteClose";
-        /// <summary>
-        /// Update Available
-        /// </summary>
-        public const string GogOss3P_PlayniteUpdaterWindowTitle = "LOCGogOss3P_PlayniteUpdaterWindowTitle";
-        /// <summary>
-        /// Download and Install Update
-        /// </summary>
-        public const string GogOss3P_PlayniteUpdaterInstallUpdate = "LOCGogOss3P_PlayniteUpdaterInstallUpdate";
-        /// <summary>
-        /// Check for Updates
-        /// </summary>
-        public const string GogOss3P_PlayniteCheckForUpdates = "LOCGogOss3P_PlayniteCheckForUpdates";
-        /// <summary>
-        /// Failed to check for new version.
-        /// </summary>
-        public const string GogOss3P_PlayniteUpdateCheckFailMessage = "LOCGogOss3P_PlayniteUpdateCheckFailMessage";
-        /// <summary>
-        /// Install
-        /// </summary>
-        public const string GogOss3P_PlayniteInstallGame = "LOCGogOss3P_PlayniteInstallGame";
-        /// <summary>
-        /// Uninstall
-        /// </summary>
-        public const string GogOss3P_PlayniteUninstallGame = "LOCGogOss3P_PlayniteUninstallGame";
-        /// <summary>
-        /// Don't Show Again
-        /// </summary>
-        public const string GogOss3P_PlayniteDontShowAgainTitle = "LOCGogOss3P_PlayniteDontShowAgainTitle";
-        /// <summary>
-        /// Forum
-        /// </summary>
-        public const string GogOss3P_PlayniteCommonLinksForum = "LOCGogOss3P_PlayniteCommonLinksForum";
-        /// <summary>
-        /// Store Page
-        /// </summary>
-        public const string GogOss3P_PlayniteCommonLinksStorePage = "LOCGogOss3P_PlayniteCommonLinksStorePage";
-        /// <summary>
-        /// Updates
-        /// </summary>
-        public const string GogOss3P_PlayniteExtensionsUpdates = "LOCGogOss3P_PlayniteExtensionsUpdates";
-        /// <summary>
-        /// Select file…
-        /// </summary>
-        public const string GogOss3P_PlayniteSelectFileTooltip = "LOCGogOss3P_PlayniteSelectFileTooltip";
-        /// <summary>
-        /// Select folder…
-        /// </summary>
-        public const string GogOss3P_PlayniteSelectDirectoryTooltip = "LOCGogOss3P_PlayniteSelectDirectoryTooltip";
-        /// <summary>
-        /// Only manually
-        /// </summary>
-        public const string GogOss3P_PlayniteOptionOnlyManually = "LOCGogOss3P_PlayniteOptionOnlyManually";
-        /// <summary>
-        /// Once a day
-        /// </summary>
-        public const string GogOss3P_PlayniteOptionOnceADay = "LOCGogOss3P_PlayniteOptionOnceADay";
-        /// <summary>
-        /// Once a week
-        /// </summary>
-        public const string GogOss3P_PlayniteOptionOnceAWeek = "LOCGogOss3P_PlayniteOptionOnceAWeek";
-        /// <summary>
-        /// Open
-        /// </summary>
-        public const string GogOss3P_PlayniteOpen = "LOCGogOss3P_PlayniteOpen";
-        /// <summary>
-        /// Import installed games
-        /// </summary>
-        public const string GogOss3P_GOGSettingsImportInstalledLabel = "LOCGogOss3P_GOGSettingsImportInstalledLabel";
-        /// <summary>
-        /// Import not installed games
-        /// </summary>
-        public const string GogOss3P_GOGSettingsImportUninstalledLabel = "LOCGogOss3P_GOGSettingsImportUninstalledLabel";
-        /// <summary>
-        /// Connect account
-        /// </summary>
-        public const string GogOss3P_GOGSettingsConnectAccount = "LOCGogOss3P_GOGSettingsConnectAccount";
-        /// <summary>
-        /// Checking authentication status…
-        /// </summary>
-        public const string GogOss3P_GOGLoginChecking = "LOCGogOss3P_GOGLoginChecking";
-        /// <summary>
-        /// User is authenticated
-        /// </summary>
-        public const string GogOss3P_GOGLoggedIn = "LOCGogOss3P_GOGLoggedIn";
-        /// <summary>
-        /// Requires authentication
-        /// </summary>
-        public const string GogOss3P_GOGNotLoggedIn = "LOCGogOss3P_GOGNotLoggedIn";
-        /// <summary>
-        /// Failed to authenticate user.
-        /// </summary>
-        public const string GogOss3P_GOGNotLoggedInError = "LOCGogOss3P_GOGNotLoggedInError";
-        /// <summary>
-        /// Authenticate
-        /// </summary>
-        public const string GogOss3P_GOGAuthenticateLabel = "LOCGogOss3P_GOGAuthenticateLabel";
-        /// <summary>
-        /// Troubleshooting issues
-        /// </summary>
-        public const string GogOss3P_GOGTroubleShootingIssues = "LOCGogOss3P_GOGTroubleShootingIssues";
-        /// <summary>
-        /// Start using {0} client
-        /// </summary>
-        public const string GogOss3P_GOGStartUsingClient = "LOCGogOss3P_GOGStartUsingClient";
-        /// <summary>
-        /// Metadata language:
-        /// </summary>
-        public const string GogOss3P_GOGMetadataLanguageLabel = "LOCGogOss3P_GOGMetadataLanguageLabel";
-        /// <summary>
-        /// Use vertical covers
-        /// </summary>
-        public const string GogOss3P_GOGSettingsUseVerticalCovers = "LOCGogOss3P_GOGSettingsUseVerticalCovers";
-        /// <summary>
-        /// Comet Path
-        /// </summary>
-        public const string GogOssCometCustomPath = "gog-oss-comet-custom-path";
-        /// <summary>
-        /// Comet version
-        /// </summary>
-        public const string GogOssCometVersion = "gog-oss-comet-version";
-        /// <summary>
-        /// Comet binary
-        /// </summary>
-        public const string GogOssCometBinary = "gog-oss-comet-binary";
-        /// <summary>
-        /// Gogdl Path
-        /// </summary>
-        public const string GogOssGogdlCustomPath = "gog-oss-gogdl-custom-path";
-        /// <summary>
-        /// Gogdl version
-        /// </summary>
-        public const string GogOssGogdlVersion = "gog-oss-gogdl-version";
-        /// <summary>
-        /// Gogdl binary
-        /// </summary>
-        public const string GogOssGogdlBinary = "gog-oss-gogdl-binary";
-        /// <summary>
         /// Use vertical covers
         /// </summary>
         public const string GogOssUseVerticalCovers = "gog-oss-use-vertical-covers";
@@ -410,7 +138,7 @@ namespace System
         /// </summary>
         public const string CommonUninstallSelectedDlcs = "common-uninstall-selected-dlcs";
         /// <summary>
-        /// Launcher Path
+        /// {$launcherName} Path
         /// </summary>
         public const string CommonLauncherCustomPath = "common-launcher-custom-path";
         /// <summary>
@@ -734,11 +462,11 @@ namespace System
         /// </summary>
         public const string CommonPluginVersion = "common-plugin-version";
         /// <summary>
-        /// Launcher version
+        /// {$launcherName} version
         /// </summary>
         public const string CommonLauncherVersion = "common-launcher-version";
         /// <summary>
-        /// Launcher binary
+        /// {$launcherName} binary
         /// </summary>
         public const string CommonLauncherBinary = "common-launcher-binary";
         /// <summary>
@@ -861,7 +589,7 @@ namespace System
         /// </summary>
         public const string CommonGames = "common-games";
         /// <summary>
-        /// Check for launcher updates
+        /// Check for {$launcherName} updates
         /// </summary>
         public const string CommonLauncherUpdatePolicy = "common-launcher-update-policy";
         /// <summary>
@@ -902,5 +630,253 @@ namespace System
         /// Only one instance of {$pluginShortName} may install/import/move applications at a time. Do you want to pause download manager tasks to continue?
         /// </summary>
         public const string CommonInstanceNotice = "common-instance-notice";
+        /// <summary>
+        /// Filter Active
+        /// </summary>
+        public const string ThirdPartyPlayniteFilterActiveLabel = "third-party-playnite-filter-active-label";
+        /// <summary>
+        /// Filters
+        /// </summary>
+        public const string ThirdPartyPlayniteFilters = "third-party-playnite-filters";
+        /// <summary>
+        /// Cannot install game: {$var0}
+        /// </summary>
+        public const string ThirdPartyPlayniteGameInstallError = "third-party-playnite-game-install-error";
+        /// <summary>
+        /// Cannot un-install game: {$var0}
+        /// </summary>
+        public const string ThirdPartyPlayniteGameUninstallError = "third-party-playnite-game-uninstall-error";
+        /// <summary>
+        /// Disabled
+        /// </summary>
+        public const string ThirdPartyPlayniteDisabledTitle = "third-party-playnite-disabled-title";
+        /// <summary>
+        /// Version
+        /// </summary>
+        public const string ThirdPartyPlayniteVersionLabel = "third-party-playnite-version-label";
+        /// <summary>
+        /// Install Size
+        /// </summary>
+        public const string ThirdPartyPlayniteInstallSizeLabel = "third-party-playnite-install-size-label";
+        /// <summary>
+        /// Added
+        /// </summary>
+        public const string ThirdPartyPlayniteAddedLabel = "third-party-playnite-added-label";
+        /// <summary>
+        /// OK
+        /// </summary>
+        public const string ThirdPartyPlayniteOkLabel = "third-party-playnite-ok-label";
+        /// <summary>
+        /// Save
+        /// </summary>
+        public const string ThirdPartyPlayniteSaveLabel = "third-party-playnite-save-label";
+        /// <summary>
+        /// Cancel
+        /// </summary>
+        public const string ThirdPartyPlayniteCancelLabel = "third-party-playnite-cancel-label";
+        /// <summary>
+        /// Yes
+        /// </summary>
+        public const string ThirdPartyPlayniteYesLabel = "third-party-playnite-yes-label";
+        /// <summary>
+        /// No
+        /// </summary>
+        public const string ThirdPartyPlayniteNoLabel = "third-party-playnite-no-label";
+        /// <summary>
+        /// Downloading…
+        /// </summary>
+        public const string ThirdPartyPlayniteDownloadingLabel = "third-party-playnite-downloading-label";
+        /// <summary>
+        /// Loading…
+        /// </summary>
+        public const string ThirdPartyPlayniteLoadingLabel = "third-party-playnite-loading-label";
+        /// <summary>
+        /// Downloading metadata…
+        /// </summary>
+        public const string ThirdPartyPlayniteProgressMetadata = "third-party-playnite-progress-metadata";
+        /// <summary>
+        /// Restart System
+        /// </summary>
+        public const string ThirdPartyPlayniteMenuRestartSystem = "third-party-playnite-menu-restart-system";
+        /// <summary>
+        /// Turn Off System
+        /// </summary>
+        public const string ThirdPartyPlayniteMenuShutdownSystem = "third-party-playnite-menu-shutdown-system";
+        /// <summary>
+        /// Suspend System
+        /// </summary>
+        public const string ThirdPartyPlayniteMenuSuspendSystem = "third-party-playnite-menu-suspend-system";
+        /// <summary>
+        /// Hibernate System
+        /// </summary>
+        public const string ThirdPartyPlayniteMenuHibernateSystem = "third-party-playnite-menu-hibernate-system";
+        /// <summary>
+        /// Settings
+        /// </summary>
+        public const string ThirdPartyPlayniteSettingsLabel = "third-party-playnite-settings-label";
+        /// <summary>
+        /// General
+        /// </summary>
+        public const string ThirdPartyPlayniteSettingsGeneralLabel = "third-party-playnite-settings-general-label";
+        /// <summary>
+        /// Advanced
+        /// </summary>
+        public const string ThirdPartyPlayniteSettingsAdvancedLabel = "third-party-playnite-settings-advanced-label";
+        /// <summary>
+        /// Clear Cache?
+        /// </summary>
+        public const string ThirdPartyPlayniteSettingsClearCacheTitle = "third-party-playnite-settings-clear-cache-title";
+        /// <summary>
+        /// Never
+        /// </summary>
+        public const string ThirdPartyPlayniteSettingsPlaytimeImportModeNever = "third-party-playnite-settings-playtime-import-mode-never";
+        /// <summary>
+        /// Authentification required
+        /// </summary>
+        public const string ThirdPartyPlayniteLoginRequired = "third-party-playnite-login-required";
+        /// <summary>
+        /// Executable
+        /// </summary>
+        public const string ThirdPartyPlayniteExecutableTitle = "third-party-playnite-executable-title";
+        /// <summary>
+        /// Name
+        /// </summary>
+        public const string ThirdPartyPlayniteGameNameTitle = "third-party-playnite-game-name-title";
+        /// <summary>
+        /// Installation Folder
+        /// </summary>
+        public const string ThirdPartyPlayniteGameInstallDirTitle = "third-party-playnite-game-install-dir-title";
+        /// <summary>
+        /// Failed to import games from {$var0}.
+        /// </summary>
+        public const string ThirdPartyPlayniteLibraryImportError = "third-party-playnite-library-import-error";
+        /// <summary>
+        /// Failed to download metadata: {$var0}
+        /// </summary>
+        public const string ThirdPartyPlayniteMetadataDownloadError = "third-party-playnite-metadata-download-error";
+        /// <summary>
+        /// Uninstalling
+        /// </summary>
+        public const string ThirdPartyPlayniteUninstalling = "third-party-playnite-uninstalling";
+        /// <summary>
+        /// Do nothing
+        /// </summary>
+        public const string ThirdPartyPlayniteDoNothing = "third-party-playnite-do-nothing";
+        /// <summary>
+        /// Close
+        /// </summary>
+        public const string ThirdPartyPlayniteClose = "third-party-playnite-close";
+        /// <summary>
+        /// Update Available
+        /// </summary>
+        public const string ThirdPartyPlayniteUpdaterWindowTitle = "third-party-playnite-updater-window-title";
+        /// <summary>
+        /// Download and Install Update
+        /// </summary>
+        public const string ThirdPartyPlayniteUpdaterInstallUpdate = "third-party-playnite-updater-install-update";
+        /// <summary>
+        /// Check for Updates
+        /// </summary>
+        public const string ThirdPartyPlayniteCheckForUpdates = "third-party-playnite-check-for-updates";
+        /// <summary>
+        /// Failed to check for new version.
+        /// </summary>
+        public const string ThirdPartyPlayniteUpdateCheckFailMessage = "third-party-playnite-update-check-fail-message";
+        /// <summary>
+        /// Install
+        /// </summary>
+        public const string ThirdPartyPlayniteInstallGame = "third-party-playnite-install-game";
+        /// <summary>
+        /// Uninstall
+        /// </summary>
+        public const string ThirdPartyPlayniteUninstallGame = "third-party-playnite-uninstall-game";
+        /// <summary>
+        /// Don't Show Again
+        /// </summary>
+        public const string ThirdPartyPlayniteDontShowAgainTitle = "third-party-playnite-dont-show-again-title";
+        /// <summary>
+        /// Forum
+        /// </summary>
+        public const string ThirdPartyPlayniteCommonLinksForum = "third-party-playnite-common-links-forum";
+        /// <summary>
+        /// Store Page
+        /// </summary>
+        public const string ThirdPartyPlayniteCommonLinksStorePage = "third-party-playnite-common-links-store-page";
+        /// <summary>
+        /// Updates
+        /// </summary>
+        public const string ThirdPartyPlayniteExtensionsUpdates = "third-party-playnite-extensions-updates";
+        /// <summary>
+        /// Select file…
+        /// </summary>
+        public const string ThirdPartyPlayniteSelectFileTooltip = "third-party-playnite-select-file-tooltip";
+        /// <summary>
+        /// Select folder…
+        /// </summary>
+        public const string ThirdPartyPlayniteSelectDirectoryTooltip = "third-party-playnite-select-directory-tooltip";
+        /// <summary>
+        /// Only manually
+        /// </summary>
+        public const string ThirdPartyPlayniteOptionOnlyManually = "third-party-playnite-option-only-manually";
+        /// <summary>
+        /// Once a day
+        /// </summary>
+        public const string ThirdPartyPlayniteOptionOnceADay = "third-party-playnite-option-once-a-day";
+        /// <summary>
+        /// Once a week
+        /// </summary>
+        public const string ThirdPartyPlayniteOptionOnceAWeek = "third-party-playnite-option-once-a-week";
+        /// <summary>
+        /// Open
+        /// </summary>
+        public const string ThirdPartyPlayniteOpen = "third-party-playnite-open";
+        /// <summary>
+        /// Import installed games
+        /// </summary>
+        public const string ThirdPartyGogSettingsImportInstalledLabel = "third-party-gog-settings-import-installed-label";
+        /// <summary>
+        /// Import not installed games
+        /// </summary>
+        public const string ThirdPartyGogSettingsImportUninstalledLabel = "third-party-gog-settings-import-uninstalled-label";
+        /// <summary>
+        /// Connect account
+        /// </summary>
+        public const string ThirdPartyGogSettingsConnectAccount = "third-party-gog-settings-connect-account";
+        /// <summary>
+        /// Checking authentication status…
+        /// </summary>
+        public const string ThirdPartyGogLoginChecking = "third-party-gog-login-checking";
+        /// <summary>
+        /// User is authenticated
+        /// </summary>
+        public const string ThirdPartyGogLoggedIn = "third-party-gog-logged-in";
+        /// <summary>
+        /// Requires authentication
+        /// </summary>
+        public const string ThirdPartyGogNotLoggedIn = "third-party-gog-not-logged-in";
+        /// <summary>
+        /// Failed to authenticate user.
+        /// </summary>
+        public const string ThirdPartyGogNotLoggedInError = "third-party-gog-not-logged-in-error";
+        /// <summary>
+        /// Authenticate
+        /// </summary>
+        public const string ThirdPartyGogAuthenticateLabel = "third-party-gog-authenticate-label";
+        /// <summary>
+        /// Troubleshooting issues
+        /// </summary>
+        public const string ThirdPartyGogTroubleShootingIssues = "third-party-gog-trouble-shooting-issues";
+        /// <summary>
+        /// Start using {$var0} client
+        /// </summary>
+        public const string ThirdPartyGogStartUsingClient = "third-party-gog-start-using-client";
+        /// <summary>
+        /// Metadata language:
+        /// </summary>
+        public const string ThirdPartyGogMetadataLanguageLabel = "third-party-gog-metadata-language-label";
+        /// <summary>
+        /// Use vertical covers
+        /// </summary>
+        public const string ThirdPartyGogSettingsUseVerticalCovers = "third-party-gog-settings-use-vertical-covers";
     }
 }

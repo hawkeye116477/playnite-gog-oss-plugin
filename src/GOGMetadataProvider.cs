@@ -41,12 +41,12 @@ namespace GogOssLibraryNS
 
             if (!string.IsNullOrEmpty(storeData.GameDetails.links.forum))
             {
-                storeData.Links.Add(new Link(resources.GetString(LOC.GogOss3P_PlayniteCommonLinksForum), storeData.GameDetails.links.forum));
+                storeData.Links.Add(new Link(resources.GetString(LOC.ThirdPartyPlayniteCommonLinksForum), storeData.GameDetails.links.forum));
             };
 
             if (!string.IsNullOrEmpty(storeData.GameDetails.links.product_card))
             {
-                storeData.Links.Add(new Link(resources.GetString(LOC.GogOss3P_PlayniteCommonLinksStorePage), storeData.GameDetails.links.product_card));
+                storeData.Links.Add(new Link(resources.GetString(LOC.ThirdPartyPlayniteCommonLinksStorePage), storeData.GameDetails.links.product_card));
             };
 
             storeData.Links.Add(new Link("PCGamingWiki", @"http://pcgamingwiki.com/w/index.php?search=" + storeData.GameDetails.title));

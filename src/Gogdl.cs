@@ -349,7 +349,7 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)), downloadData.name);
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMetadataDownloadError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }), downloadData.name);
                         }
                         else if (result.StandardError.Contains("Game doesn't support content system api"))
                         {
@@ -357,7 +357,7 @@ namespace GogOssLibraryNS
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(LocalizationManager.Instance.GetString(LOC.CommonCheckLog)), downloadData.name);
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMetadataDownloadError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog) }), downloadData.name);
                         }
                     }
                     manifest.errorDisplayed = true;
@@ -401,11 +401,11 @@ namespace GogOssLibraryNS
                             || result.StandardError.Contains("Login failed")
                             || result.StandardError.Contains("No saved credentials"))
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(ResourceProvider.GetString(LOC.GogOss3P_PlayniteLoginRequired)));
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMetadataDownloadError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(ResourceProvider.GetString(LOC.GogOss3P_PlayniteMetadataDownloadError).Format(LocalizationManager.Instance.GetString(LOC.CommonCheckLog)));
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMetadataDownloadError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog) }));
                         }
                     }
                 }
@@ -561,8 +561,8 @@ namespace GogOssLibraryNS
             var playniteAPI = API.Instance;
             var options = new List<MessageBoxOption>
             {
-                new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteInstallGame)),
-                new MessageBoxOption(ResourceProvider.GetString(LOC.GogOss3P_PlayniteOKLabel)),
+                new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame)),
+                new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel)),
             };
             var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Gogdl" }), "GOG OSS library integration", MessageBoxImage.Information, options);
             if (result == options[0])

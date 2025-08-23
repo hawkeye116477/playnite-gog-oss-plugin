@@ -43,7 +43,7 @@ namespace GogOssLibraryNS
                 {
                     if (branch == null)
                     {
-                        betaChannels.Add("disabled", ResourceProvider.GetString(LOC.GogOss3P_PlayniteDisabledTitle));
+                        betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
                     }
                     else
                     {

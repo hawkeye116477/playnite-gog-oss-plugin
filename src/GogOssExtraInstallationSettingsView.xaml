@@ -21,7 +21,7 @@
     </UserControl.Resources>
     <StackPanel Margin="10">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top">
-            <Button x:Name="CloseBtn" Content="{DynamicResource LOCGogOss3P_PlayniteClose}" ContentStringFormat="&#xec4f; {0}" FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CloseBtn_Click" />
+            <Button x:Name="CloseBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteClose}}" ContentStringFormat="&#xec4f; {0}" FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CloseBtn_Click" />
         </StackPanel>
         <Separator Margin="0,5"/>
         <StackPanel Orientation="Horizontal" Name="LanguageSP" Visibility="Collapsed" Margin="0,0,0,5">
@@ -30,7 +30,7 @@
             <ComboBox Name="GameLanguageCBo" DisplayMemberPath="Value" SelectedValuePath="Key"  HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Name="VersionSP" Visibility="Collapsed" Margin="0,0,0,5">
-            <TextBlock Text="{DynamicResource LOCGogOss3P_PlayniteVersionLabel}" Grid.Row="1" Grid.Column="0" 
+            <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteVersionLabel}}" Grid.Row="1" Grid.Column="0" 
                                    Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" />
             <ComboBox Grid.Row="1" Grid.Column="1" Name="GameVersionCBo" DisplayMemberPath="Value" SelectedValuePath="Key" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GameVersionCBo_SelectionChanged" />
         </StackPanel>
