@@ -537,7 +537,7 @@ namespace GogOssLibraryNS
                                     }
                                     var bitmap = new System.Drawing.Bitmap(GogOss.Icon);
                                     var iconHandle = bitmap.GetHicon();
-                                    Playnite.WindowsNotifyIconManager.Notify(System.Drawing.Icon.FromHandle(iconHandle), gameTitle, ResourceProvider.GetString(notificationMessage), null);
+                                    Playnite.WindowsNotifyIconManager.Notify(System.Drawing.Icon.FromHandle(iconHandle), gameTitle, LocalizationManager.Instance.GetString(notificationMessage), null);
                                     bitmap.Dispose();
                                 }
                             }
