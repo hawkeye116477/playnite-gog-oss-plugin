@@ -28,6 +28,9 @@ namespace GogOssLibraryNS.Converters
                 case DownloadStatus.Completed:
                     value = LocalizationManager.Instance.GetString(LOC.CommonDownloadCompleted);
                     break;
+                case DownloadStatus.Error:
+                    value = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadError);
+                    break;
             }
             return value;
         }

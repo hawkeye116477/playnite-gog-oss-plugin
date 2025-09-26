@@ -48,3 +48,4 @@ LOCLibraryImportError
 LOCCommonLinksForum
 LOCCommonLinksStorePage
 LOCGameUninstallError
+LOCDownloadError
