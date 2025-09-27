@@ -27,10 +27,11 @@ namespace GogOssLibraryNS
         public double downloadSizeNumber;
         public double installSizeNumber;
         public long availableFreeSpace;
-        private GogDownloadGameInfo manifest;
+        private GogGameMetaManifest manifest;
         public bool uncheckedByUser = true;
         private bool checkedByUser = true;
         public DownloadManagerData.Download singleGameInstallData;
+        public GogBuildsData builds;
 
         public GogOssGameInstallerView()
         {
@@ -78,6 +79,7 @@ namespace GogOssLibraryNS
 
         public async Task StartTask(DownloadAction downloadAction)
         {
+            var gogDownloadApi = new GogDownloadApi();
             var settings = GogOssLibrary.GetSettings();
             var installPath = SelectedGamePathTxt.Text;
             if (installPath == "")
@@ -118,8 +120,8 @@ namespace GogOssLibraryNS
                     }
                     else
                     {
-                        manifest = await Gogdl.GetGameInfo(installData);
-                        installData.fullInstallPath = Path.Combine(installPath, manifest.folder_name);
+                        manifest = await gogDownloadApi.GetGameMetaManifest(installData.gameID, installData.downloadProperties.buildId, installData.downloadProperties.betaChannel);
+                        installData.fullInstallPath = Path.Combine(installPath, manifest.installDirectory);
                     }
                     if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.CommonPermissionError))
                     {
@@ -215,7 +217,7 @@ namespace GogOssLibraryNS
             {
                 Directory.CreateDirectory(cacheInfoPath);
             }
-            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = GogOss.MaxMaxWorkers;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             var downloadItemsAlreadyAdded = new List<string>();
             downloadSizeNumber = 0;
@@ -239,10 +241,12 @@ namespace GogOssLibraryNS
 
             var installedAppList = GogOssLibrary.GetInstalledAppList();
 
+            var gogDownloadApi = new GogDownloadApi();
             foreach (var installData in MultiInstallData.ToList())
             {
-                manifest = await Gogdl.GetGameInfo(installData);
-                if (manifest.errorDisplayed)
+                builds = await gogDownloadApi.GetProductBuilds(installData.gameID);
+
+                if (builds.errorDisplayed)
                 {
                     gamesListShouldBeDisplayed = true;
                     MultiInstallData.Remove(installData);
@@ -259,6 +263,7 @@ namespace GogOssLibraryNS
                     installData.downloadProperties.language = installedGame.language;
                     installData.downloadProperties.extraContent = installedGame.installed_DLCs;
                 }
+                manifest = await gogDownloadApi.GetGameMetaManifest(installData.gameID);
                 if (manifest.dependencies.Count > 0)
                 {
                     installData.depends = manifest.dependencies;
@@ -277,7 +282,7 @@ namespace GogOssLibraryNS
                 {
                     foreach (var dlc in manifest.dlcs)
                     {
-                        installData.downloadProperties.extraContent.Add(dlc.id);
+                        installData.downloadProperties.extraContent.Add(dlc.Key);
                     }
                 }
                 var gameSize = await Gogdl.CalculateGameSize(installData);
@@ -301,14 +306,14 @@ namespace GogOssLibraryNS
             if (MultiInstallData.Count == 1)
             {
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == MultiInstallData[0].gameID);
-                manifest = await Gogdl.GetGameInfo(MultiInstallData[0]);
-                if (!manifest.errorDisplayed)
+                builds = await gogDownloadApi.GetProductBuilds(MultiInstallData[0].gameID);
+                if (!builds.errorDisplayed)
                 {
                     singleGameInstallData = MultiInstallData[0];
                     var betaChannels = new Dictionary<string, string>();
-                    if (manifest.available_branches.Count > 1)
+                    if (builds.available_branches.Count > 1)
                     {
-                        foreach (var branch in manifest.available_branches)
+                        foreach (var branch in builds.available_branches)
                         {
                             if (branch == null)
                             {
@@ -323,7 +328,7 @@ namespace GogOssLibraryNS
                         {
                             BetaChannelCBo.ItemsSource = betaChannels;
                             var selectedBetaChannel = "disabled";
-                            if (!singleGameInstallData.downloadProperties.betaChannel.IsNullOrEmpty() && manifest.available_branches.Contains(singleGameInstallData.downloadProperties.betaChannel))
+                            if (!singleGameInstallData.downloadProperties.betaChannel.IsNullOrEmpty() && builds.available_branches.Contains(singleGameInstallData.downloadProperties.betaChannel))
                             {
                                 selectedBetaChannel = singleGameInstallData.downloadProperties.betaChannel;
                             }
@@ -531,7 +536,10 @@ namespace GogOssLibraryNS
             KeyValuePair<string, string> selectedVersion = (KeyValuePair<string, string>)GameVersionCBo.SelectedItem;
             singleGameInstallData.downloadProperties.buildId = selectedVersion.Key;
             singleGameInstallData.downloadProperties.version = selectedVersion.Value.Split('—')[0].Trim();
-            manifest = await Gogdl.GetGameInfo(singleGameInstallData);
+
+
+            var gogDownloadApi = new GogDownloadApi();
+            manifest = await gogDownloadApi.GetGameMetaManifest(singleGameInstallData.gameID, singleGameInstallData.downloadProperties.buildId);
             var gameLanguages = RefreshLanguages(singleGameInstallData);
             if (gameLanguages.Count > 1)
             {
@@ -548,7 +556,7 @@ namespace GogOssLibraryNS
                 {
                     foreach (var selectedDlc in singleGameInstallData.downloadProperties.extraContent)
                     {
-                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
+                        var selectedDlcItem = manifest.dlcs[selectedDlc];
                         if (selectedDlcItem != null)
                         {
                             ExtraContentLB.SelectedItems.Add(selectedDlcItem);
@@ -573,16 +581,15 @@ namespace GogOssLibraryNS
         private async Task RefreshVersions()
         {
             VersionSP.Visibility = Visibility.Collapsed;
-            var builds = manifest.builds.items;
             var gameVersions = new Dictionary<string, string>();
-            if (builds.Count > 0)
+            if (builds.items.Count > 0)
             {
                 var chosenBranch = singleGameInstallData.downloadProperties.betaChannel;
                 if (chosenBranch == "disabled")
                 {
-                    chosenBranch = null;
+                    chosenBranch = "";
                 }
-                foreach (var build in builds)
+                foreach (var build in builds.items)
                 {
                     if (build.branch == chosenBranch)
                     {
@@ -689,6 +696,7 @@ namespace GogOssLibraryNS
 
         private async void GameExtraSettingsBtn_Click(object sender, RoutedEventArgs e)
         {
+            var gogDownloadApi = new GogDownloadApi();
             var selectedGame = ((Button)sender).DataContext as DownloadManagerData.Download;
             var playniteAPI = API.Instance;
             Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
@@ -706,7 +714,7 @@ namespace GogOssLibraryNS
             if (result == false)
             {
                 InstallBtn.IsEnabled = false;
-                manifest = await Gogdl.GetGameInfo(selectedGame);
+                manifest = await gogDownloadApi.GetGameMetaManifest(selectedGame.gameID, selectedGame.downloadProperties.buildId, selectedGame.downloadProperties.betaChannel);
                 var gameSize = await Gogdl.CalculateGameSize(selectedGame);
                 selectedGame.downloadSizeNumber = gameSize.download_size;
                 selectedGame.installSizeNumber = gameSize.disk_size;

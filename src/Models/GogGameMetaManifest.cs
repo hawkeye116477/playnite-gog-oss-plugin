@@ -24,6 +24,13 @@ namespace GogOssLibraryNS.Models
         public object[] HGLdlcs { get; set; }
         public List<string> dependencies { get; set; } = new List<string>();
         public ProductV1 product { get; set; } = new ProductV1();
+        public bool errorDisplayed { get; set; } = false;
+
+        public List<string> languages = new List<string>();
+        public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
+        public string versionName { get; set; } = "";
+
+        public Dictionary<string, Dlc> dlcs { get; set; } = new Dictionary<string, Dlc>();
 
         public class Offlinedepot
         {
@@ -76,6 +83,18 @@ namespace GogOssLibraryNS.Models
             public string gameID { get; set; }
             public string argument { get; set; }
             public List<string> systems { get; set; }
+        }
+
+        public class SizeType
+        {
+            public double download_size { get; set; } = 0;
+            public double disk_size { get; set; } = 0;
+        }
+
+        public class Dlc
+        {
+            public string title { get; set; }
+            public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
         }
 
     }

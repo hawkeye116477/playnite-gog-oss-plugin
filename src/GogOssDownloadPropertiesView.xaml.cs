@@ -138,7 +138,7 @@ namespace GogOssLibraryNS
         private async void GogOssDownloadPropertiesUC_Loaded(object sender, RoutedEventArgs e)
         {
             CommonHelpers.SetControlBackground(this);
-            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = GogOss.MaxMaxWorkers;
             var wantedItem = SelectedDownload;
             if (wantedItem.downloadProperties != null)
             {
