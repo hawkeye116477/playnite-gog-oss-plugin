@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
+using System;
+using System.IO;
 
 namespace GogOssLibraryNS
 {
@@ -36,6 +39,14 @@ namespace GogOssLibraryNS
                     parmChars[index] = '\n';
             }
             return new string(parmChars).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public static string DecompressZlib(Stream content)
+        {
+            using var zlibStream = new ZlibStream(content, CompressionMode.Decompress);
+            using var streamReader = new StreamReader(zlibStream);
+            var result = streamReader.ReadToEnd();
+            return result;
         }
     }
 }

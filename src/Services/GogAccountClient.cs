@@ -338,5 +338,32 @@ namespace GogOssLibraryNS.Services
             }
             return games;
         }
+
+        public async Task<List<int>> GetOwnedIds()
+        {
+            var ownedItems = new GogOwned();
+            var ownedList = ownedItems.owned;
+            if (await GetIsUserLoggedIn())
+            {
+                var tokens = LoadTokens();
+                GogDownloadApi.HttpClient.DefaultRequestHeaders.Clear();
+                GogDownloadApi.HttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+                GogDownloadApi.HttpClient.DefaultRequestHeaders.Add("User-Agent", GogDownloadApi.UserAgent);
+                var response = await GogDownloadApi.HttpClient.GetAsync(@"https://embed.gog.com/user/data/games");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (!string.IsNullOrWhiteSpace(content))
+                    {
+                        var responseJson = Serialization.FromJson<GogOwned>(content);
+                        if (responseJson.owned != null && responseJson.owned.Count > 0)
+                        {
+                            ownedList = responseJson.owned;
+                        }
+                    }
+                }
+            }
+            return ownedList;
+        }
     }
 }

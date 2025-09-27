@@ -250,5 +250,7 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static int MaxMaxWorkers = 40;
+
     }
 }
