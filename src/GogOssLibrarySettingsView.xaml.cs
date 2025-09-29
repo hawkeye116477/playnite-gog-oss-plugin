@@ -227,6 +227,10 @@ namespace GogOssLibraryNS
                     var userLoggedIn = clientApi.GetIsUserLoggedInBrowser();
                     if (userLoggedIn)
                     {
+                        userLoggedIn = await clientApi.GetIsUserLoggedIn();
+                    }
+                    if (userLoggedIn)
+                    {
                         var accountInfo = await clientApi.GetAccountInfo();
                         AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.CommonSignedInAs, new Dictionary<string, IFluentType> { ["userName"] = (FluentString)accountInfo.username });
                         LoginBtn.Content = LocalizationManager.Instance.GetString(LOC.CommonSignOut);
