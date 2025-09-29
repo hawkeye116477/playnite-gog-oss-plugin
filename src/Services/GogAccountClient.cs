@@ -39,7 +39,14 @@ namespace GogOssLibraryNS.Services
         {
             webView.NavigateAndWait(@"https://menu.gog.com/v1/account/basic");
             var stringInfo = webView.GetPageText();
-            var accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
+            var accountInfo = new AccountBasicResponse();
+            if (!stringInfo.IsNullOrWhiteSpace())
+            {                
+                if (Serialization.TryFromJson(stringInfo, out AccountBasicResponse newAccountInfo))
+                {
+                    accountInfo = newAccountInfo;
+                }
+            }
             return accountInfo;
         }
 
