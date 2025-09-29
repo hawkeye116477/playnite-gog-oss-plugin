@@ -82,22 +82,24 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
 
     if filename not in ["LocSource.xaml", "LocalizationKeys.cs", "locstatus.json"]:
         loc_sub_dir = filename.replace("_", "-").replace(".xaml", "")
-        gog_loc = ET.parse(pj(main_path, "..", "PlayniteExtensions",
-                            "source", "Libraries", "GOGLibrary", "Localization", filename))
-        for child in gog_loc.getroot():
-            key = child.get(ET.QName(xmlns_x, "Key"))
-            if key in gog_loc_keys:
-                key_text = child.text
-                if not key_text:
-                    key_text = ""
-                if key == "LOCSettingsGOGUseGalaxy":
-                    key_text = key_text.replace("GOG Galaxy", "GOG OSS")
-                    key = key.replace("Galaxy", "Comet")
-                new_key = ET.Element(ET.QName(xmlns_sys, "String"))
-                new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOCGOG", "LOCGogOss3P_GOG").replace("LOCSettingsGOG", "LOCGogOss3P_GOG"))
-                new_key.text = key_text
-                if key_text != "":
-                    xml_root.append(new_key)
+        gog_file_path = pj(main_path, "..", "PlayniteExtensions",
+                          "source", "Libraries", "GOGLibrary", "Localization", filename)
+        if os.path.isfile(gog_file_path):               
+            gog_loc = ET.parse(gog_file_path)
+            for child in gog_loc.getroot():
+                key = child.get(ET.QName(xmlns_x, "Key"))
+                if key in gog_loc_keys:
+                    key_text = child.text
+                    if not key_text:
+                        key_text = ""
+                    if key == "LOCSettingsGOGUseGalaxy":
+                        key_text = key_text.replace("GOG Galaxy", "GOG OSS")
+                        key = key.replace("Galaxy", "Comet")
+                    new_key = ET.Element(ET.QName(xmlns_sys, "String"))
+                    new_key.set(ET.QName(xmlns_x, "Key"), key.replace("LOCGOG", "LOCGogOss3P_GOG").replace("LOCSettingsGOG", "LOCGogOss3P_GOG"))
+                    new_key.text = key_text
+                    if key_text != "":
+                        xml_root.append(new_key)
 
         ET.indent(xml_doc, level=0)
         os.makedirs(pj(localization_path, loc_sub_dir))
