@@ -19,6 +19,7 @@ namespace GogOssLibraryNS.Services
         private readonly string clientId = "46899977096215655";
         private string clientSecret = "9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9";
         private readonly string tokenUrl = "https://auth.gog.com/token?";
+        private readonly HttpClient httpClient = new HttpClient();
 
         public GogAccountClient()
         {
@@ -35,29 +36,6 @@ namespace GogOssLibraryNS.Services
             return account?.isLoggedIn ?? false;
         }
 
-        private static AccountBasicResponse GetAccountInfo(IWebView webView)
-        {
-            webView.NavigateAndWait(@"https://menu.gog.com/v1/account/basic");
-            var stringInfo = webView.GetPageText();
-            var accountInfo = new AccountBasicResponse();
-            if (!stringInfo.IsNullOrWhiteSpace())
-            {                
-                if (Serialization.TryFromJson(stringInfo, out AccountBasicResponse newAccountInfo))
-                {
-                    accountInfo = newAccountInfo;
-                }
-            }
-            return accountInfo;
-        }
-
-        public bool GetIsUserLoggedInBrowser() => GetIsUserLoggedInBrowser(webView);
-
-        private bool GetIsUserLoggedInBrowser(IWebView webView)
-        {
-            var account = GetAccountInfo(webView);
-            return account?.isLoggedIn ?? false;
-        }
-  
         public async Task Login()
         {
             var loggedIn = false;
@@ -98,35 +76,34 @@ namespace GogOssLibraryNS.Services
             }
             else
             {
-                using (var httpClient = new HttpClient())
+                var urlParams = new Dictionary<string, string>
                 {
-                    var urlParams = new Dictionary<string, string>
+                    { "client_id", clientId },
+                    { "client_secret", clientSecret },
+                    { "grant_type", "authorization_code" },
+                    { "redirect_uri", "https://embed.gog.com/on_login_success?origin=client" },
+                    { "code", code }
+                };
+                var newTokenUrl = FormatUrl(urlParams, tokenUrl);
+                var response = await httpClient.GetAsync(newTokenUrl);
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
+                    DateTimeOffset now = DateTime.UtcNow;
+                    responseJson.loginTime = now.ToUnixTimeSeconds();
+                    var tokenResponse = new TokenResponse
                     {
-                        { "client_id", clientId },
-                        { "client_secret", clientSecret },
-                        { "grant_type", "authorization_code" },
-                        { "redirect_uri", "https://embed.gog.com/on_login_success?origin=client" },
-                        { "code", code }
+                        client_id = new Dictionary<string, TokenResponse.TokenResponsePart>()
                     };
-                    var newTokenUrl = FormatUrl(urlParams, tokenUrl);
-                    var response = await httpClient.GetAsync(newTokenUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseContent = await response.Content.ReadAsStringAsync();
-                        var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
-                        DateTimeOffset now = DateTime.UtcNow;
-                        responseJson.loginTime = now.ToUnixTimeSeconds();
-                        var tokenResponse = new TokenResponse();
-                        tokenResponse.client_id = new Dictionary<string, TokenResponse.TokenResponsePart>();
-                        tokenResponse.client_id.Add(clientId, responseJson);
-                        var strConf = Serialization.ToJson(tokenResponse.client_id, false);
-                        FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
-                        File.WriteAllText(GogOss.TokensPath, strConf);
-                    }
-                    else
-                    {
-                        logger.Error($"Failed to authenticate with GOG. Error: {response.ReasonPhrase}");
-                    }
+                    tokenResponse.client_id.Add(clientId, responseJson);
+                    var strConf = Serialization.ToJson(tokenResponse.client_id, false);
+                    FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
+                    File.WriteAllText(GogOss.TokensPath, strConf);
+                }
+                else
+                {
+                    logger.Error($"Failed to authenticate with GOG. Error: {response.ReasonPhrase}");
                 }
             }
         }
@@ -145,7 +122,6 @@ namespace GogOssLibraryNS.Services
 
         public async Task<bool> RenewTokens(string refreshToken)
         {
-            using var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Clear();
 
             var urlParams = new Dictionary<string, string>
@@ -163,8 +139,10 @@ namespace GogOssLibraryNS.Services
                 var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                 DateTimeOffset now = DateTime.UtcNow;
                 responseJson.loginTime = now.ToUnixTimeSeconds();
-                var tokenResponse = new TokenResponse();
-                tokenResponse.client_id = new Dictionary<string, TokenResponse.TokenResponsePart>();
+                var tokenResponse = new TokenResponse
+                {
+                    client_id = new Dictionary<string, TokenResponse.TokenResponsePart>()
+                };
                 tokenResponse.client_id.Add(clientId, responseJson);
                 var strConf = Serialization.ToJson(tokenResponse.client_id, false);
                 var tokenFullPath = Path.GetDirectoryName(GogOss.TokensPath);
@@ -184,10 +162,11 @@ namespace GogOssLibraryNS.Services
 
         public async Task<AccountBasicResponse> GetAccountInfo()
         {
+            var accountInfo = new AccountBasicResponse();
             var tokens = LoadTokens();
             if (tokens == null)
             {
-                return new AccountBasicResponse();
+                return accountInfo;
             }
 
             var tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.TokensPath);
@@ -200,34 +179,36 @@ namespace GogOssLibraryNS.Services
                 {
                     tokens = LoadTokens();
                 }
-            }
-
-            using var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
-            var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
-            if (!response.IsSuccessStatusCode)
-            {
-                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                {
-                    var renewSuccess = await RenewTokens(tokens.refresh_token);
-                    if (renewSuccess)
-                    {
-                        await GetAccountInfo();
-                    }
-                    else
-                    {
-                        logger.Debug("Can't get GOG account info");
-                        return new AccountBasicResponse();
-                    }
-                }
                 else
                 {
-                    logger.Debug("Can't get GOG account info");
-                    return new AccountBasicResponse();
+                    return accountInfo;
                 }
             }
-            var stringInfo = await response.Content.ReadAsStringAsync();
-            var accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
+            try
+            {
+                var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        var renewSuccess = await RenewTokens(tokens.refresh_token);
+                        if (renewSuccess)
+                        {
+                            return await GetAccountInfo();
+                        }
+                    }
+                }
+                var stringInfo = await response.Content.ReadAsStringAsync();
+                accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
+            }
+            catch (Exception ex)
+            {
+                logger.Debug("Can't get GOG account info");
+                logger.Debug(ex.Message);
+            }
             return accountInfo;
         }
 
@@ -250,95 +231,111 @@ namespace GogOssLibraryNS.Services
             return null;
         }
 
-        public List<LibraryGameResponse> GetOwnedGames(AccountBasicResponse account)
+        public async Task<List<LibraryGameResponse>> GetOwnedGames(AccountBasicResponse account)
         {
             var baseUrl = @"https://www.gog.com/u/{0}/games/stats?sort=recent_playtime&order=desc&page={1}";
             var stringLibContent = string.Empty;
             var games = new List<LibraryGameResponse>();
 
+            var tokens = LoadTokens();
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
             try
             {
                 var url = string.Format(baseUrl, account.username, 1);
-                webView.NavigateAndWait(url);
-                stringLibContent = webView.GetPageText();
-                var libraryData = Serialization.FromJson<PagedResponse<LibraryGameResponse>>(stringLibContent);
-                if (libraryData == null)
+                var response = await httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
                 {
-                    logger.Error("GOG library content is empty.");
-                    return null;
-                }
-
-                games.AddRange(libraryData._embedded.items);
-                if (libraryData.pages > 1)
-                {
-                    for (int i = 2; i <= libraryData.pages; i++)
+                    stringLibContent = await response.Content.ReadAsStringAsync();
+                    var libraryData = Serialization.FromJson<PagedResponse<LibraryGameResponse>>(stringLibContent);
+                    if (libraryData == null)
                     {
-                        webView.NavigateAndWait(string.Format(baseUrl, account.username, i));
-                        stringLibContent = webView.GetPageText();
-                        var pageData = Serialization.FromJson<PagedResponse<LibraryGameResponse>>(stringLibContent);
-                        games.AddRange(pageData._embedded.items);
+                        logger.Error("GOG library content is empty.");
+                        return null;
+                    }
+                    games.AddRange(libraryData._embedded.items);
+                    if (libraryData.pages > 1)
+                    {
+                        for (int i = 2; i <= libraryData.pages; i++)
+                        {
+                            response = await httpClient.GetAsync(url);
+                            if (response.IsSuccessStatusCode)
+                            {
+                                stringLibContent = await response.Content.ReadAsStringAsync();
+                                var pageData = Serialization.FromJson<PagedResponse<LibraryGameResponse>>(stringLibContent);
+                                games.AddRange(pageData._embedded.items);
+                            }
+                        }
                     }
                 }
-
                 return games;
             }
             catch (Exception e)
             {
                 logger.Error(e, $"Failed to library from new API for account {account.username}, falling back to legacy.");
                 logger.Debug(stringLibContent);
-                return GetOwnedGames();
+                return await GetOwnedGames();
             }
         }
 
-        public List<LibraryGameResponse> GetOwnedGames()
+        public async Task<List<LibraryGameResponse>> GetOwnedGames()
         {
             var games = new List<LibraryGameResponse>();
             var baseUrl = @"https://www.gog.com/account/getFilteredProducts?hiddenFlag=0&mediaType=1&page={0}&sortBy=title";
-            webView.NavigateAndWait(string.Format(baseUrl, 1));
-            var gamesList = webView.GetPageText();
 
-            var libraryData = new GetOwnedGamesResult();
-            if (!gamesList.IsNullOrWhiteSpace() && Serialization.TryFromJson(gamesList, out GetOwnedGamesResult newLibraryData))
-            {
-                libraryData = newLibraryData;
-            }
-            else
-            {
-                logger.Error("GOG library content is empty.");
-                return null;
-            }
+            var tokens = LoadTokens();
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
+            var response = await httpClient.GetAsync(string.Format(baseUrl, 1));
 
-            games.AddRange(libraryData.products.Select(a => new LibraryGameResponse()
+            if (response.IsSuccessStatusCode)
             {
-                game = new LibraryGameResponse.Game()
+                var gamesList = await response.Content.ReadAsStringAsync();
+                var libraryData = new GetOwnedGamesResult();
+                if (!gamesList.IsNullOrWhiteSpace() && Serialization.TryFromJson(gamesList, out GetOwnedGamesResult newLibraryData))
                 {
-                    id = a.id.ToString(),
-                    title = a.title,
-                    url = a.url,
-                    image = a.image
+                    libraryData = newLibraryData;
                 }
-            }));
-
-            if (libraryData.totalPages > 1)
-            {
-                for (int i = 2; i <= libraryData.totalPages; i++)
+                else
                 {
-                    webView.NavigateAndWait(string.Format(baseUrl, i));
-                    gamesList = webView.GetPageText();
-                    var pageData = libraryData = Serialization.FromJson<GetOwnedGamesResult>(gamesList);
-                    games.AddRange(pageData.products.Select(a => new LibraryGameResponse()
+                    logger.Error("GOG library content is empty.");
+                    return null;
+                }
+
+                games.AddRange(libraryData.products.Select(a => new LibraryGameResponse()
+                {
+                    game = new LibraryGameResponse.Game()
                     {
-                        game = new LibraryGameResponse.Game()
+                        id = a.id.ToString(),
+                        title = a.title,
+                        url = a.url,
+                        image = a.image
+                    }
+                }));
+
+                if (libraryData.totalPages > 1)
+                {
+                    for (int i = 2; i <= libraryData.totalPages; i++)
+                    {
+                        response = await httpClient.GetAsync(string.Format(baseUrl, i));
+                        if (response.IsSuccessStatusCode)
                         {
-                            id = a.id.ToString(),
-                            title = a.title,
-                            url = a.url,
-                            image = a.image
+                            gamesList = await response.Content.ReadAsStringAsync();
+                            var pageData = libraryData = Serialization.FromJson<GetOwnedGamesResult>(gamesList);
+                            games.AddRange(pageData.products.Select(a => new LibraryGameResponse()
+                            {
+                                game = new LibraryGameResponse.Game()
+                                {
+                                    id = a.id.ToString(),
+                                    title = a.title,
+                                    url = a.url,
+                                    image = a.image
+                                }
+                            }));
                         }
-                    }));
+                    }
                 }
             }
-
             return games;
         }
     }

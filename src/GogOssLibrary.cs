@@ -295,20 +295,20 @@ namespace GogOssLibraryNS
         {
             using (var view = PlayniteApi.WebViews.CreateOffscreenView())
             {
-                var api = new GogAccountClient(view);
-                if (!api.GetIsUserLoggedInBrowser())
+                var api = new GogAccountClient();
+                if (!await api.GetIsUserLoggedIn())
                 {
                     throw new Exception("User is not logged in to GOG account.");
                 }
 
-                var libGames = api.GetOwnedGames();
+                var libGames = await api.GetOwnedGames();
                 if (libGames == null)
                 {
                     throw new Exception("Failed to obtain library data.");
                 }
 
                 var accountInfo = await api.GetAccountInfo();
-                var libGamesStats = api.GetOwnedGames(accountInfo);
+                var libGamesStats = await api.GetOwnedGames(accountInfo);
                 if (libGamesStats != null)
                 {
                     foreach (LibraryGameResponse libGame in libGames)

@@ -223,12 +223,8 @@ namespace GogOssLibraryNS
                 AuthStatusTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyGogLoginChecking);
                 using (var view = playniteAPI.WebViews.CreateOffscreenView())
                 {
-                    var clientApi = new GogAccountClient(view);
-                    var userLoggedIn = clientApi.GetIsUserLoggedInBrowser();
-                    if (userLoggedIn)
-                    {
-                        userLoggedIn = await clientApi.GetIsUserLoggedIn();
-                    }
+                    var clientApi = new GogAccountClient();
+                    var userLoggedIn = await clientApi.GetIsUserLoggedIn();
                     if (userLoggedIn)
                     {
                         var accountInfo = await clientApi.GetAccountInfo();
