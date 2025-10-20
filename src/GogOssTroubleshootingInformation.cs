@@ -24,7 +24,6 @@ namespace GogOssLibraryNS
         public string CometVersion { get; set; } = "";
         public string GogdlVersion { get; set; } = "";
         public string CometBinary => Comet.ClientExecPath;
-        public string GogdlBinary => Gogdl.ClientInstallationPath;
-        public string GamesInstallationPath => Gogdl.GamesInstallationPath;
+        public string GamesInstallationPath => GogOss.GamesInstallationPath;
     }
 }

@@ -1,5 +1,7 @@
 ﻿using CommonPlugin;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
+using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using System;
@@ -17,10 +19,15 @@ namespace GogOssLibraryNS.Services
     {
         private IPlayniteAPI playniteAPI = API.Instance;
         private ILogger logger = LogManager.GetLogger();
-        public static readonly HttpClient HttpClient = new HttpClient();
+        public static readonly HttpClient Client = new HttpClient();
         public static string UserAgent => @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
 
-        public async Task<GogBuildsData> GetProductBuilds(string gameId, string platform = "windows")
+        public async Task<GogBuildsData> GetProductBuilds(DownloadManagerData.Download downloadInfo, bool forceRefreshCache = false)
+        {
+            return await GetProductBuilds(downloadInfo.gameID, downloadInfo.downloadProperties.os, forceRefreshCache);
+        }
+
+        public async Task<GogBuildsData> GetProductBuilds(string gameId, string platform = "windows", bool forceRefreshCache = false)
         {
             var cachePath = GogOssLibrary.Instance.GetCachePath("downloadbuildscache");
 
@@ -28,9 +35,10 @@ namespace GogOssLibraryNS.Services
             string content = null;
 
             var cacheInfoFile = Path.Combine(cachePath, $"{gameId}_builds.json");
+
             if (File.Exists(cacheInfoFile))
             {
-                if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7))
+                if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
                 {
                     File.Delete(cacheInfoFile);
                 }
@@ -60,10 +68,10 @@ namespace GogOssLibraryNS.Services
                     Directory.CreateDirectory(cachePath);
                 }
 
-                HttpClient.DefaultRequestHeaders.Clear();
-                HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+                Client.DefaultRequestHeaders.Clear();
+                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 var response =
-                    await HttpClient.GetAsync(
+                    await Client.GetAsync(
                         $"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
                 if (response.IsSuccessStatusCode)
                 {
@@ -100,8 +108,27 @@ namespace GogOssLibraryNS.Services
             return newBuildsInfoContent;
         }
 
+
+        public async Task<GogGameMetaManifest> GetGameMetaManifest(DownloadManagerData.Download downloadData, bool forceRefreshCache = false)
+        {
+            return await GetGameMetaManifest(downloadData.gameID, downloadData.downloadProperties.buildId, downloadData.downloadProperties.betaChannel, downloadData.downloadProperties.os, forceRefreshCache, downloadData.downloadItemType);
+        }
+
+        public async Task<GogGameMetaManifest> GetGameMetaManifest(string gameId, Installed installedInfo, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false, DownloadItemType downloadItemType = DownloadItemType.Game)
+        {
+            var downloadData = new DownloadManagerData.Download
+            {
+                gameID = gameId,
+                name = installedInfo.title,
+                downloadItemType = downloadItemType
+            };
+            downloadData.downloadProperties.buildId = installedInfo.build_id;
+            downloadData.downloadProperties.os = installedInfo.platform;
+            return await GetGameMetaManifest(downloadData);
+        }
+
         public async Task<GogGameMetaManifest> GetGameMetaManifest(
-            string gameId, string buildId = "", string branch = "", string platform = "windows")
+            string gameId, string buildId = "", string branch = "", string platform = "windows", bool forceRefreshCache = false, DownloadItemType downloadItemType = DownloadItemType.Game)
         {
             var manifest = new GogGameMetaManifest();
             var cacheInfoFileName = $"{gameId}.json";
@@ -115,7 +142,7 @@ namespace GogOssLibraryNS.Services
             bool correctJson = false;
             if (File.Exists(cacheInfoFile))
             {
-                if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7))
+                if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
                 {
                     File.Delete(cacheInfoFile);
                 }
@@ -140,24 +167,38 @@ namespace GogOssLibraryNS.Services
                 {
                     Directory.CreateDirectory(cachePath);
                 }
+                if (downloadItemType == DownloadItemType.Dependency)
+                {
+                    var redistManifest = await GetRedistInfo(gameId, "2", false, forceRefreshCache);
+                    manifest.executable = redistManifest.executable;
+                    manifest.buildId = redistManifest.build_id;
+                    manifest.size = new Dictionary<string, GogGameMetaManifest.SizeType>();
+                    manifest.readableName = redistManifest.readableName;
+                    var redistSizes = new GogGameMetaManifest.SizeType
+                    {
+                        disk_size = redistManifest.size,
+                        download_size = redistManifest.compressedSize
+                    };
+                    manifest.size.Add("*", redistSizes);
+                    manifest.executable = redistManifest.executable;
+                    return manifest;
+                }
 
                 var builds = await GetProductBuilds(gameId, platform);
                 if (builds.items.Count > 0)
                 {
-                    HttpClient.DefaultRequestHeaders.Clear();
-                    HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+                    Client.DefaultRequestHeaders.Clear();
+                    Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                     string chosenBranch = branch;
                     var chosenBuildId = buildId;
                     if (chosenBranch == "disabled")
                     {
                         chosenBranch = "";
                     }
-
-                    var selectedBuild =
-                        builds.items.FirstOrDefault(i => i.branch == chosenBranch && i.build_id == chosenBuildId);
+                    var selectedBuild = builds.items.FirstOrDefault(i => i.branch == chosenBranch && (string.IsNullOrEmpty(chosenBuildId) || i.build_id == chosenBuildId));
                     if (selectedBuild != null)
                     {
-                        var response = await HttpClient.GetAsync(selectedBuild.link);
+                        var response = await Client.GetAsync(selectedBuild.link);
                         Stream content = null;
                         if (response.IsSuccessStatusCode)
                         {
@@ -265,7 +306,7 @@ namespace GogOssLibraryNS.Services
         public async Task<List<string>> GetNeededDepotManifestHashes(DownloadManagerData.Download taskData)
         {
             List<string> depotHashes = new List<string>();
-            var metaManifest = await GetGameMetaManifest(taskData.gameID, taskData.downloadProperties.buildId, taskData.downloadProperties.betaChannel);
+            var metaManifest = await GetGameMetaManifest(taskData);
             foreach (var depot in metaManifest.depots)
             {
                 var chosenlanguage = taskData.downloadProperties.language;
@@ -340,10 +381,10 @@ namespace GogOssLibraryNS.Services
                     Directory.CreateDirectory(cachePath);
                 }
 
-                HttpClient.DefaultRequestHeaders.Clear();
-                HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+                Client.DefaultRequestHeaders.Clear();
+                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 var response =
-                    await HttpClient.GetAsync(
+                    await Client.GetAsync(
                         $"https://cdn.gog.com/content-system/v2/meta/{GetGalaxyPath(manifest)}");
                 Stream content;
                 if (response.IsSuccessStatusCode)
@@ -369,7 +410,7 @@ namespace GogOssLibraryNS.Services
         {
             List<string> urls = new List<string>();
             var url = "";
-            var metaManifest = await GetGameMetaManifest(taskData.gameID, taskData.downloadProperties.buildId, taskData.downloadProperties.betaChannel);
+            var metaManifest = await GetGameMetaManifest(taskData);
             if (metaManifest.version == 2)
             {
                 url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?generation=2&_version=2&path={path}";
@@ -383,10 +424,10 @@ namespace GogOssLibraryNS.Services
             if (await gogAccountClient.GetIsUserLoggedIn())
             {
                 var tokens = gogAccountClient.LoadTokens();
-                HttpClient.DefaultRequestHeaders.Clear();
-                HttpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-                HttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
-                var response = await HttpClient.GetAsync(url);
+                Client.DefaultRequestHeaders.Clear();
+                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+                Client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+                var response = await Client.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -419,6 +460,100 @@ namespace GogOssLibraryNS.Services
                 logger.Error($"Can't get secure links, cuz user is not authenticated.");
             }
             return urls;
+        }
+
+        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string dependId, string version = "2", bool skipRefreshing = false, bool forceRefreshCache = false)
+        {
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("metacache");
+            var cacheInfoFileName = $"redist_v{version}.json";
+            var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
+            var redistManifest = new GogDownloadRedistManifest.Depot();
+            var manifest = new GogDownloadRedistManifest();
+            var playniteAPI = API.Instance;
+            var logger = LogManager.GetLogger();
+            bool correctJson = false;
+            if (File.Exists(cacheInfoFile))
+            {
+                logger.Debug(cacheInfoFile);
+                if (!skipRefreshing)
+                {
+                    if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
+                    {
+                        File.Delete(cacheInfoFile);
+                    }
+                }
+            }
+            if (File.Exists(cacheInfoFile))
+            {
+                var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
+                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out manifest))
+                {
+                    if (manifest != null)
+                    {
+                        correctJson = true;
+                    }
+                }
+            }
+            if (!correctJson)
+            {
+                Client.DefaultRequestHeaders.Clear();
+                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+                var dependsURL = "https://content-system.gog.com/dependencies/repository?generation=2";
+                if (version == "1")
+                {
+                    dependsURL = "https://content-system.gog.com/redists/repository";
+                }
+                var response = await Client.GetAsync(dependsURL);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    if (!content.IsNullOrWhiteSpace())
+                    {
+                        var jsonResponse = Serialization.FromJson<Dictionary<string, string>>(content);
+                        var manifestUrl = jsonResponse["repository_manifest"];
+                        if (!manifestUrl.IsNullOrEmpty())
+                        {
+                            var manifestResponse = await Client.GetAsync(manifestUrl);
+                            Stream manifestContent = null;
+                            if (response.IsSuccessStatusCode)
+                            {
+                                manifestContent = await manifestResponse.Content.ReadAsStreamAsync();
+                            }
+                            else
+                            {
+                                logger.Error("An error occured while dowloading depends manifest");
+                            }
+                            if (!Directory.Exists(cacheInfoPath))
+                            {
+                                Directory.CreateDirectory(cacheInfoPath);
+                            }
+                            var manifestResult = Helpers.DecompressZlib(manifestContent);
+                            if (!manifestResult.IsNullOrWhiteSpace())
+                            {
+                                if (Serialization.TryFromJson(manifestResult, out manifest))
+                                {
+                                    if (manifest != null)
+                                    {
+                                        correctJson = true;
+                                    }
+                                }
+                                FileSystem.WriteStringToFileSafe(cacheInfoFile, manifestResult);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    logger.Error("An error occured while dowloading depends manifest");
+                }
+            }
+            if (correctJson)
+            {
+                var depots = manifest.depots;
+                redistManifest = depots.First(d => d.dependencyId == dependId);
+                redistManifest.build_id = manifest.build_id;
+            }
+            return redistManifest;
         }
     }
 }

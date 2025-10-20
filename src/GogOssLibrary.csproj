@@ -281,7 +281,6 @@
     <Compile Include="GogOssTroubleshootingInformation.cs" />
     <Compile Include="Converters\DownloadStatusEnumToStringConverter.cs" />
     <Compile Include="Enums\DownloadItemType.cs" />
-    <Compile Include="Gogdl.cs" />
     <Compile Include="GOGMetadataProvider.cs" />
     <Compile Include="GogOssUpdaterView.xaml.cs">
       <DependentUpon>GogOssUpdaterView.xaml</DependentUpon>

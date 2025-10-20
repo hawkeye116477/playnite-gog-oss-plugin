@@ -32,6 +32,10 @@ namespace GogOssLibraryNS.Models
 
         public Dictionary<string, Dlc> dlcs { get; set; } = new Dictionary<string, Dlc>();
 
+        public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
+
+        public string readableName { get; set; } = "";
+
         public class Offlinedepot
         {
             public int compressedSize { get; set; }

@@ -31,6 +31,7 @@ namespace GogOssLibraryNS
         public Dictionary<string, Installed> installedAppList { get; set; }
         public bool installedAppListModified { get; set; } = false;
         public CommonHelpers commonHelpers { get; set; }
+        public GogDownloadApi gogDownloadApi = new();
 
         public GogOssLibrary(IPlayniteAPI api) : base(
             "GOG OSS",
@@ -469,7 +470,7 @@ namespace GogOssLibraryNS
             var globalSettings = GetSettings();
             if (globalSettings != null)
             {
-                if (globalSettings.GamesUpdatePolicy != UpdatePolicy.Never && Gogdl.IsInstalled)
+                if (globalSettings.GamesUpdatePolicy != UpdatePolicy.Never)
                 {
                     var nextGamesUpdateTime = globalSettings.NextGamesUpdateTime;
                     if (nextGamesUpdateTime != 0)
@@ -524,7 +525,7 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
-                if (globalSettings.CometUpdatePolicy != UpdatePolicy.Never && (Comet.IsInstalled || Gogdl.IsInstalled))
+                if (globalSettings.CometUpdatePolicy != UpdatePolicy.Never && Comet.IsInstalled)
                 {
                     var nextCometUpdateTime = globalSettings.NextCometUpdateTime;
                     if (nextCometUpdateTime != 0)
@@ -552,29 +553,6 @@ namespace GogOssLibraryNS
                                         if (result == options[0])
                                         {
                                             var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
-                                            Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
-                                        }
-                                    }
-                                }
-                            }
-                            if (Gogdl.IsInstalled)
-                            {
-                                var gogdlVersionInfoContent = await Gogdl.GetVersionInfoContent();
-                                if (gogdlVersionInfoContent.Tag_name != null)
-                                {
-                                    var newVersion = new Version(gogdlVersionInfoContent.Tag_name.Replace("v", ""));
-                                    var oldVersion = new Version(await Gogdl.GetVersion());
-                                    if (oldVersion.CompareTo(newVersion) < 0)
-                                    {
-                                        var options = new List<MessageBoxOption>
-                                        {
-                                            new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog), true),
-                                            new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel), false, true),
-                                        };
-                                        var result = PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Gogdl", ["appVersion"] = (FluentString)newVersion.ToString() }), LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
-                                        if (result == options[0])
-                                        {
-                                            var changelogURL = $"https://github.com/Heroic-Games-Launcher/heroic-gogdl/releases/tag/v{newVersion}";
                                             Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
                                         }
                                     }
@@ -705,11 +683,6 @@ namespace GogOssLibraryNS
                             Icon = "UpdateDbIcon",
                             Action = (args) =>
                             {
-                                if (!Gogdl.IsInstalled)
-                                {
-                                    Gogdl.ShowNotInstalledError();
-                                    return;
-                                }
                                 GogOssUpdateController gogOssUpdateController = new GogOssUpdateController();
                                 var gamesToUpdate = new Dictionary<string, UpdateInfo>();
                                 GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates), false) { IsIndeterminate = true };
@@ -786,12 +759,9 @@ namespace GogOssLibraryNS
                                         }
 
                                         game.Name = installedInfo.title;
-                                        if (Gogdl.IsInstalled)
-                                        {
-                                            var downloadGameInfo = await Gogdl.GetGameInfo(game.GameId, installedInfo);
-                                            installedInfo.version = downloadGameInfo.versionName;
-                                            game.Version = downloadGameInfo.versionName;
-                                        }
+                                        var downloadGameInfo = await gogDownloadApi.GetGameMetaManifest(game.GameId, installedInfo);
+                                        installedInfo.version = downloadGameInfo.versionName;
+                                        game.Version = downloadGameInfo.versionName;
                                         var dlcs = GogOss.GetInstalledDlcs(game.GameId, path);
                                         installedInfo.installed_DLCs = dlcs;
                                         game.IsInstalled = true;
@@ -1013,11 +983,6 @@ namespace GogOssLibraryNS
                 Icon = "UpdateDbIcon",
                 Action = (args) =>
                 {
-                    if (!Gogdl.IsInstalled)
-                    {
-                        Gogdl.ShowNotInstalledError();
-                        return;
-                    }
                     var gamesUpdates = new Dictionary<string, UpdateInfo>();
                     GogOssUpdateController GogOssUpdateController = new GogOssUpdateController();
                     GlobalProgressOptions updateCheckProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates), false) { IsIndeterminate = true };

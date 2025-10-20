@@ -22,6 +22,7 @@ namespace GogOssLibraryNS
     public class GogOssCloud
     {
         private static ILogger logger = LogManager.GetLogger();
+        public GogDownloadApi gogDownloadApi = new GogDownloadApi();
 
         public GogRemoteConfig GetCloudConfig(Game game, bool skipRefreshingMetadata = true)
         {
@@ -328,7 +329,7 @@ namespace GogOssLibraryNS
                         {
                             using var httpClient = new HttpClient();
                             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
-                            var metaManifest = Gogdl.GetGameMetaManifest(game.GameId);
+                            var metaManifest = await gogDownloadApi.GetGameMetaManifest(game.GameId);
                             var urlParams = new Dictionary<string, string>
                             {
                                 { "client_id", metaManifest.clientId },

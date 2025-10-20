@@ -1,6 +1,7 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
 using Linguini.Shared.Types.Bundle;
 using Playnite.SDK;
 using Playnite.SDK.Models;
@@ -27,6 +28,7 @@ namespace GogOssLibraryNS
         public ObservableCollection<KeyValuePair<string, Game>> notInstalledDLCs;
         public long availableFreeSpace;
         public DownloadManagerData.Download downloadTask;
+        public GogDownloadApi gogDownloadApi = new();
 
         public GogOssDlcManager()
         {
@@ -62,8 +64,8 @@ namespace GogOssLibraryNS
                     version = installedGameInfo.version,
                     maxWorkers = maxWorkers,
                 };
-                var manifest = await Gogdl.GetGameInfo(downloadTask);
-                downloadTask.downloadProperties.installPath = Path.Combine(installedGameInfo.install_path.Replace(manifest.folder_name, ""));
+                var manifest = await gogDownloadApi.GetGameMetaManifest(downloadTask);
+                downloadTask.downloadProperties.installPath = Path.Combine(installedGameInfo.install_path.Replace(manifest.installDirectory, ""));
 
                 foreach (var selectedOption in AvailableDlcsLB.SelectedItems.Cast<KeyValuePair<string, Game>>())
                 {
@@ -98,7 +100,7 @@ namespace GogOssLibraryNS
         private async Task<GogDownloadGameInfo.SizeType> CalculateDlcsSize()
         {
             var installedGameInfo = GogOss.GetInstalledInfo(GameId);
-            var manifest = await Gogdl.GetGameInfo(GameId, installedGameInfo);
+            var manifest = await gogDownloadApi.GetGameMetaManifest(GameId, installedGameInfo);
             var size = new GogDownloadGameInfo.SizeType
             {
                 download_size = 0,
@@ -112,19 +114,19 @@ namespace GogOssLibraryNS
             var selectedDlcs = AvailableDlcsLB.SelectedItems.Cast<KeyValuePair<string, Game>>().ToDictionary(i => i.Key, i => i.Value);
             if (selectedDlcs.Count() > 0)
             {
-                foreach (var dlc in manifest.dlcs.OrderBy(obj => obj.title))
+                foreach (var dlc in manifest.dlcs.OrderBy(obj => obj.Value.title))
                 {
-                    if (selectedDlcs.ContainsKey(dlc.id))
+                    if (selectedDlcs.ContainsKey(dlc.Key))
                     {
-                        if (dlc.size.ContainsKey("*"))
+                        if (dlc.Value.size.ContainsKey("*"))
                         {
-                            size.download_size += dlc.size["*"].download_size;
-                            size.disk_size += dlc.size["*"].disk_size;
+                            size.download_size += dlc.Value.size["*"].download_size;
+                            size.disk_size += dlc.Value.size["*"].disk_size;
                         }
-                        if (dlc.size.ContainsKey(selectedLanguage))
+                        if (dlc.Value.size.ContainsKey(selectedLanguage))
                         {
-                            size.download_size += dlc.size[selectedLanguage].download_size;
-                            size.disk_size += dlc.size[selectedLanguage].disk_size;
+                            size.download_size += dlc.Value.size[selectedLanguage].download_size;
+                            size.disk_size += dlc.Value.size[selectedLanguage].disk_size;
                         }
                     }
                 }
@@ -213,8 +215,8 @@ namespace GogOssLibraryNS
                         language = installedGameInfo.language,
                         version = installedGameInfo.version,
                     };
-                    var manifest = await Gogdl.GetGameInfo(downloadTask);
-                    downloadTask.downloadProperties.installPath = Path.Combine(installedGameInfo.install_path.Replace(manifest.folder_name, ""));
+                    var manifest = await gogDownloadApi.GetGameMetaManifest(downloadTask);
+                    downloadTask.downloadProperties.installPath = Path.Combine(installedGameInfo.install_path.Replace(manifest.installDirectory, ""));
 
                     foreach (var selectedOption in InstalledDlcsLB.SelectedItems.Cast<KeyValuePair<string, Game>>())
                     {
@@ -288,34 +290,30 @@ namespace GogOssLibraryNS
             LoadingITB.Visibility = Visibility.Visible;
             var installedGameInfo = GogOss.GetInstalledInfo(GameId);
 
-            var ownedDlcs = new List<GogDownloadGameInfo.Dlc>();
-            if (Gogdl.IsInstalled)
-            {
-                var gameInfo = await Gogdl.GetGameInfo(GameId, installedGameInfo);
-                ownedDlcs = gameInfo.dlcs;
-            }
+            var gameInfo = await gogDownloadApi.GetGameMetaManifest(GameId, installedGameInfo);
+            var ownedDlcs = gameInfo.dlcs;
             if (ownedDlcs.Count > 0)
             {
                 var installedDlcsIds = installedGameInfo.installed_DLCs;
                 installedDLCs = new ObservableCollection<KeyValuePair<string, Game>>();
                 notInstalledDLCs = new ObservableCollection<KeyValuePair<string, Game>>();
-                foreach (var ownedDlc in ownedDlcs.OrderBy(obj => obj.title))
+                foreach (var ownedDlc in ownedDlcs.OrderBy(obj => obj.Value.title))
                 {
-                    if (!ownedDlc.id.IsNullOrEmpty())
+                    if (!ownedDlc.Key.IsNullOrEmpty())
                     {
                         var dlcData = new Game
                         {
-                            Name = ownedDlc.title.RemoveTrademarks(),
-                            GameId = ownedDlc.id
+                            Name = ownedDlc.Value.title.RemoveTrademarks(),
+                            GameId = ownedDlc.Key
                         };
 
-                        if (installedDlcsIds.Count > 0 && installedDlcsIds.Contains(ownedDlc.id))
+                        if (installedDlcsIds.Count > 0 && installedDlcsIds.Contains(ownedDlc.Key))
                         {
-                            installedDLCs.Add(new KeyValuePair<string, Game>(ownedDlc.id, dlcData));
+                            installedDLCs.Add(new KeyValuePair<string, Game>(ownedDlc.Key, dlcData));
                         }
                         else
                         {
-                            notInstalledDLCs.Add(new KeyValuePair<string, Game>(ownedDlc.id, dlcData));
+                            notInstalledDLCs.Add(new KeyValuePair<string, Game>(ownedDlc.Key, dlcData));
                         }
                     }
                 }

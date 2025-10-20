@@ -346,10 +346,10 @@ namespace GogOssLibraryNS.Services
             if (await GetIsUserLoggedIn())
             {
                 var tokens = LoadTokens();
-                GogDownloadApi.HttpClient.DefaultRequestHeaders.Clear();
-                GogDownloadApi.HttpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
-                GogDownloadApi.HttpClient.DefaultRequestHeaders.Add("User-Agent", GogDownloadApi.UserAgent);
-                var response = await GogDownloadApi.HttpClient.GetAsync(@"https://embed.gog.com/user/data/games");
+                GogDownloadApi.Client.DefaultRequestHeaders.Clear();
+                GogDownloadApi.Client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
+                GogDownloadApi.Client.DefaultRequestHeaders.Add("User-Agent", GogDownloadApi.UserAgent);
+                var response = await GogDownloadApi.Client.GetAsync(@"https://embed.gog.com/user/data/games");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();

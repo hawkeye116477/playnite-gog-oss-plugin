@@ -1,6 +1,7 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,8 @@ namespace GogOssLibraryNS
         private IPlayniteAPI playniteAPI = API.Instance;
         public Installed gameInfo;
         public string selectedBetaChannel;
-
+        public GogDownloadApi gogDownloadApi = new();
+        private ILogger logger = LogManager.GetLogger();
         public GogOssDownloadPropertiesView()
         {
             InitializeComponent();
@@ -65,7 +67,7 @@ namespace GogOssLibraryNS
                 wantedItem.downloadProperties.version = gameInfo.version;
                 wantedItem.downloadProperties.language = gameInfo.language;
                 wantedItem.downloadProperties.extraContent = gameInfo.installed_DLCs;
-                var gameSize = await Gogdl.CalculateGameSize(SelectedDownload.gameID, gameInfo);
+                var gameSize = await GogOss.CalculateGameSize(SelectedDownload.gameID, gameInfo);
                 wantedItem.downloadSizeNumber = gameSize.download_size;
                 wantedItem.installSizeNumber = gameSize.disk_size;
             }
@@ -153,7 +155,7 @@ namespace GogOssLibraryNS
                 { DownloadAction.Update, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterInstallUpdate) }
             };
             TaskCBo.ItemsSource = downloadActionOptions;
-            var manifest = await Gogdl.GetGameInfo(wantedItem);
+            var manifest = await gogDownloadApi.GetProductBuilds(wantedItem);
             var betaChannels = new Dictionary<string, string>();
             if (manifest.available_branches.Count > 1)
             {
@@ -213,15 +215,15 @@ namespace GogOssLibraryNS
         private async Task RefreshVersions()
         {
             VersionSP.Visibility = Visibility.Collapsed;
-            var manifest = await Gogdl.GetGameInfo(SelectedDownload.gameID, gameInfo);
-            var builds = manifest.builds.items;
+            var manifest = await gogDownloadApi.GetProductBuilds(SelectedDownload);
+            var builds = manifest.items;
             var gameVersions = new Dictionary<string, string>();
             if (builds.Count > 0)
             {
                 var chosenBranch = selectedBetaChannel;
                 if (chosenBranch == "disabled")
                 {
-                    chosenBranch = null;
+                    chosenBranch = "";
                 }
                 foreach (var build in builds)
                 {
@@ -259,7 +261,8 @@ namespace GogOssLibraryNS
             var selectedVersionName = selectedVersion.Value.Split('—')[0].Trim();
             gameInfo.build_id = selectedBuildId;
             gameInfo.version = selectedVersionName;
-            var manifest = await Gogdl.GetGameInfo(SelectedDownload.gameID, gameInfo);
+            var manifest = await gogDownloadApi.GetGameMetaManifest(SelectedDownload);
+            var builds = await gogDownloadApi.GetProductBuilds(SelectedDownload);
             var gameLanguages = await RefreshLanguages();
             if (gameLanguages.Count > 1)
             {
@@ -297,8 +300,8 @@ namespace GogOssLibraryNS
                 {
                     foreach (var selectedDlc in gameInfo.installed_DLCs)
                     {
-                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.id == selectedDlc);
-                        if (selectedDlcItem != null)
+                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.Key == selectedDlc);
+                        if (selectedDlcItem.Value != null)
                         {
                             ExtraContentLB.SelectedItems.Add(selectedDlcItem);
                         }
@@ -317,7 +320,7 @@ namespace GogOssLibraryNS
 
         private async Task<Dictionary<string, string>> RefreshLanguages()
         {
-            var manifest = await Gogdl.GetGameInfo(SelectedDownload.gameID, gameInfo);
+            var manifest = await gogDownloadApi.GetGameMetaManifest(SelectedDownload);
             var languages = manifest.languages;
             var gameLanguages = new Dictionary<string, string>();
             if (languages.Count > 1)
@@ -354,7 +357,7 @@ namespace GogOssLibraryNS
 
         private async Task UpdateSizeInfo()
         {
-            var gameSize = await Gogdl.CalculateGameSize(SelectedDownload.gameID, gameInfo);
+            var gameSize = await GogOss.CalculateGameSize(SelectedDownload.gameID, gameInfo);
             DownloadSizeTB.Text = CommonHelpers.FormatSize(gameSize.download_size);
             InstallSizeTB.Text = CommonHelpers.FormatSize(gameSize.disk_size);
             UpdateSpaceInfo(SelectedDownload.downloadProperties.installPath, gameSize.disk_size);

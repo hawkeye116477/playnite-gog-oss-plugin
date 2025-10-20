@@ -27,7 +27,6 @@ namespace GogOssLibraryNS
     public class GogOssInstallController : InstallController
     {
         private readonly GogOssLibrary gogLibrary;
-
         public GogOssInstallController(Game game, GogOssLibrary gogLibrary) : base(game)
         {
             this.gogLibrary = gogLibrary;
@@ -46,11 +45,6 @@ namespace GogOssLibraryNS
 
         public static void LaunchInstaller(List<DownloadManagerData.Download> installData)
         {
-            if (!Gogdl.IsInstalled)
-            {
-                Gogdl.ShowNotInstalledError();
-                return;
-            }
             var playniteAPI = API.Instance;
             Window window = null;
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen && playniteAPI.ApplicationInfo.ApplicationVersion.Minor < 36)
@@ -140,11 +134,6 @@ namespace GogOssLibraryNS
                                 counter += 1;
                                 a.CurrentProgressValue = counter;
                                 continue;
-                            }
-                            var manifestFile = Path.Combine(Gogdl.ConfigPath, "manifests", game.GameId);
-                            if (File.Exists(manifestFile))
-                            {
-                                File.Delete(manifestFile);
                             }
                             var installedAppList = GogOssLibrary.GetInstalledAppList();
                             if (installedAppList.ContainsKey(game.GameId))
@@ -267,15 +256,15 @@ namespace GogOssLibraryNS
                         if (depends.Count > 0)
                         {
                             bool installedDependsModified = false;
-                            var installedDepends = Gogdl.GetInstalledDepends();
+                            var installedDepends = GogOss.GetInstalledDepends();
                             foreach (var depend in depends)
                             {
                                 if (!installedDepends.Contains(depend))
                                 {
-                                    var dependManifest = await Gogdl.GetRedistInfo(depend);
+                                    var dependManifest = await GogDownloadApi.GetRedistInfo(depend);
                                     if (dependManifest.executable.path != "")
                                     {
-                                        var dependExe = Path.GetFullPath(Path.Combine(Gogdl.DependenciesInstallationPath, dependManifest.executable.path));
+                                        var dependExe = Path.GetFullPath(Path.Combine(GogOss.DependenciesInstallationPath, dependManifest.executable.path));
                                         if (File.Exists(dependExe))
                                         {
                                             var process = ProcessStarter.StartProcess(dependExe, dependManifest.executable.arguments, true);
@@ -599,6 +588,7 @@ namespace GogOssLibraryNS
     {
         private IPlayniteAPI playniteAPI = API.Instance;
         private static ILogger logger = LogManager.GetLogger();
+        public GogDownloadApi gogDownloadApi = new GogDownloadApi();
 
         public async Task<Dictionary<string, UpdateInfo>> CheckGameUpdates(string gameTitle, string gameId, bool forceRefreshCache = false)
         {
@@ -609,20 +599,20 @@ namespace GogOssLibraryNS
                 gameID = gameId,
                 name = gameTitle
             };
-            var newGameInfo = await Gogdl.GetGameInfo(oldGameData, false, true, forceRefreshCache);
+            var newGameInfo = await gogDownloadApi.GetProductBuilds(oldGameData, forceRefreshCache);
 
-            if (newGameInfo.builds.items.Count > 0)
+            if (newGameInfo.items.Count > 0)
             {
                 bool updateAvailable = false;
-                var newBuild = newGameInfo.builds.items.FirstOrDefault(i => i.branch == null);
-                var oldBuildBranch = newGameInfo.builds.items.FirstOrDefault(i => i.build_id == installedInfo.build_id)?.branch;
+                var newBuild = newGameInfo.items.FirstOrDefault(i => i.branch == null);
+                var oldBuildBranch = newGameInfo.items.FirstOrDefault(i => i.build_id == installedInfo.build_id)?.branch;
                 if (oldBuildBranch.IsNullOrEmpty())
                 {
-                    oldBuildBranch = newGameInfo.builds.items.FirstOrDefault(i => i.legacy_build_id == installedInfo.build_id)?.branch;
+                    oldBuildBranch = newGameInfo.items.FirstOrDefault(i => i.legacy_build_id == installedInfo.build_id)?.branch;
                 }
                 if (!oldBuildBranch.IsNullOrEmpty())
                 {
-                    newBuild = newGameInfo.builds.items[0];
+                    newBuild = newGameInfo.items[0];
                 }
                 if (!newBuild.legacy_build_id.IsNullOrEmpty())
                 {
@@ -644,26 +634,27 @@ namespace GogOssLibraryNS
                 }
                 if (updateAvailable)
                 {
-                    var updateSize = await Gogdl.CalculateGameSize(gameId, installedInfo);
+                    var updateSize = await GogOss.CalculateGameSize(gameId, installedInfo);
                     DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
-                    var newVersionName = $"{newGameInfo.versionName} — ";
-                    if (newGameInfo.versionName.IsNullOrEmpty())
+                    var newVersionName = $"{newBuild.version_name} — ";
+                    if (newBuild.version_name.IsNullOrEmpty())
                     {
                         newVersionName = "";
                     }
                     newVersionName = $"{newVersionName}{newBuild.date_published.ToLocalTime().ToString("d", formatInfo)}";
+                    var newManifest = await gogDownloadApi.GetGameMetaManifest(newBuild.build_id, newBuild.branch, newBuild.os);
                     var updateInfo = new UpdateInfo
                     {
                         Install_path = installedInfo.install_path,
-                        Version = newGameInfo.versionName,
+                        Version = newBuild.version_name,
                         Title = installedInfo.title,
                         Title_for_updater = $"{installedInfo.title} {newVersionName}",
                         Download_size = updateSize.download_size,
                         Disk_size = updateSize.disk_size,
-                        Build_id = newGameInfo.buildId,
+                        Build_id = newBuild.build_id,
                         Language = installedInfo.language,
                         ExtraContent = installedInfo.installed_DLCs,
-                        Depends = newGameInfo.dependencies,
+                        Depends = newManifest.dependencies,
                     };
                     if (!newBuild.branch.IsNullOrEmpty())
                     {

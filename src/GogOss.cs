@@ -1,5 +1,6 @@
 ﻿using CliWrap;
 using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -34,8 +35,9 @@ namespace GogOssLibraryNS
 
         public static async Task CompleteInstallation(string gameId)
         {
+            var gogDownloadApi = new GogDownloadApi();
             var installedInfo = GetInstalledInfo(gameId);
-            var metaManifest = Gogdl.GetGameMetaManifest(gameId);
+            var metaManifest = await gogDownloadApi.GetGameMetaManifest(gameId, installedInfo);
             var shortLang = installedInfo.language.Split('-')[0];
             var langInEnglish = "";
             if (!shortLang.IsNullOrEmpty())
@@ -89,7 +91,7 @@ namespace GogOssLibraryNS
             }
             else if (metaManifest.scriptInterpreter)
             {
-                var isiInstallPath = Path.Combine(Gogdl.DependenciesInstallationPath, "__redist", "ISI");
+                var isiInstallPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", "ISI");
                 if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
                 {
                     foreach (var product in metaManifest.products)
@@ -252,5 +254,120 @@ namespace GogOssLibraryNS
 
         public static int MaxMaxWorkers = 40;
 
+        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
+        {
+            var downloadProperties = new DownloadProperties
+            {
+                buildId = installedInfo.build_id,
+                extraContent = installedInfo.installed_DLCs,
+                language = installedInfo.language,
+                version = installedInfo.version,
+                os = installedInfo.platform
+            };
+            var downloadData = new DownloadManagerData.Download
+            {
+                gameID = gameId,
+                name = installedInfo.title,
+                downloadProperties = downloadProperties
+            };
+            return await CalculateGameSize(downloadData);
+        }
+
+        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
+        {
+            var gogDownloadApi = new GogDownloadApi();
+            var manifest = await gogDownloadApi.GetGameMetaManifest(installData);
+            var size = new GogDownloadGameInfo.SizeType
+            {
+                download_size = 0,
+                disk_size = 0
+            };
+            if (manifest.size.ContainsKey("*"))
+            {
+                size.download_size += manifest.size["*"].download_size;
+                size.disk_size += manifest.size["*"].disk_size;
+            }
+            var selectedLanguage = installData.downloadProperties.language;
+            if (manifest.size.Count == 2)
+            {
+                selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
+            }
+            if (manifest.size.ContainsKey(selectedLanguage))
+            {
+                size.download_size += manifest.size[selectedLanguage].download_size;
+                size.disk_size += manifest.size[selectedLanguage].disk_size;
+            }
+            var selectedDlcs = installData.downloadProperties.extraContent;
+            if (selectedDlcs.Count() > 0)
+            {
+                foreach (var dlc in manifest.dlcs)
+                {
+                    if (selectedDlcs.Contains(dlc.Key))
+                    {
+                        if (dlc.Value.size.ContainsKey("*"))
+                        {
+                            size.download_size += dlc.Value.size["*"].download_size;
+                            size.disk_size += dlc.Value.size["*"].disk_size;
+                        }
+                        if (dlc.Value.size.ContainsKey(selectedLanguage))
+                        {
+                            size.download_size += dlc.Value.size[selectedLanguage].download_size;
+                            size.disk_size += dlc.Value.size[selectedLanguage].disk_size;
+                        }
+                    }
+                }
+            }
+            return size;
+        }
+
+        public static List<string> GetInstalledDepends()
+        {
+            var depends = new List<string>();
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+            var installedFile = Path.Combine(dataDir, "installedDepends.json");
+            if (File.Exists(installedFile))
+            {
+                var installedDependsManifest = Serialization.FromJson<InstalledDepends>(File.ReadAllText(installedFile));
+                if (installedDependsManifest != null)
+                {
+                    depends = installedDependsManifest.InstalledDependsList;
+                }
+            }
+            return depends;
+        }
+
+        public static string DependenciesInstallationPath
+        {
+            get
+            {
+                var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+                var dependPath = Path.Combine(dataDir, ".gogRedist");
+                return dependPath;
+            }
+        }
+
+        public static string GamesInstallationPath
+        {
+            get
+            {
+                var installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Games");
+                var playniteAPI = API.Instance;
+                if (playniteAPI.ApplicationInfo.IsPortable)
+                {
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    installPath = Path.Combine(playniteDirectoryVariable, "Games");
+                }
+                var savedSettings = GogOssLibrary.GetSettings();
+                if (savedSettings != null)
+                {
+                    var savedGamesInstallationPath = savedSettings.GamesInstallationPath;
+                    if (savedGamesInstallationPath != "")
+                    {
+                        installPath = savedGamesInstallationPath;
+                    }
+                }
+                return installPath;
+            }
+        }
     }
 }

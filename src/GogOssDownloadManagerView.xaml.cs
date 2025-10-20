@@ -254,7 +254,7 @@ namespace GogOssLibraryNS
             int channelCapacity = Math.Min(maxParallel * 2, 64);
 
             // Producer-consumer channel
-            var channel = Channel.CreateBounded<(string filePath, long offset, byte[]? chunkBuffer, int length, string? tempFilePath, long allocatedBytes)>(
+            var channel = Channel.CreateBounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes)>(
                 new BoundedChannelOptions(channelCapacity)
                 {
                     SingleReader = false,
@@ -334,8 +334,8 @@ namespace GogOssLibraryNS
             {
                 bool slotAcquired = false;
                 long allocatedBytes = 0;
-                byte[]? chunkBuffer = null;
-                string? tempFilePath = null;
+                byte[] chunkBuffer = null;
+                string tempFilePath = null;
 
                 try
                 {
@@ -582,7 +582,6 @@ namespace GogOssLibraryNS
             var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
             wantedItem.status = DownloadStatus.Running;
 
-            totalBytesDownloaded = 0;
             var startTime = DateTime.Now;
             var sw = Stopwatch.StartNew();
             long lastNetworkBytes = Interlocked.Read(ref resumeInitialNetworkBytes);
@@ -657,7 +656,7 @@ namespace GogOssLibraryNS
 
                 if (taskData.downloadItemType != DownloadItemType.Dependency)
                 {
-                    var gameMetaManifest = Gogdl.GetGameMetaManifest(gameID);
+                    var gameMetaManifest = await gogDownloadApi.GetGameMetaManifest(gameID);
                     var dependencies = installedGameInfo.Dependencies;
                     if (taskData.depends.Count > 0)
                     {

@@ -124,25 +124,8 @@ namespace GogOssLibraryNS
                 CheckForCometUpdatesBtn.IsEnabled = false;
                 OpenCometBinaryBtn.IsEnabled = false;
             }
-            if (Gogdl.IsInstalled)
-            {
-                var gogDlVersion = await Gogdl.GetVersion();
-                if (!gogDlVersion.IsNullOrEmpty())
-                {
-                    troubleshootingInformation.GogdlVersion = gogDlVersion;
-                    GogdlVersionTxt.Text = troubleshootingInformation.GogdlVersion;
-                }
-                GogdlBinaryTxt.Text = troubleshootingInformation.GogdlBinary;
-            }
-            else
-            {
-                troubleshootingInformation.GogdlVersion = "Not%20installed";
-                var gogdlFluentArgs = new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Gogdl" };
-                GogdlVersionTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, gogdlFluentArgs);
-                GogdlBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, gogdlFluentArgs);
-                CheckForGogdlUpdatesBtn.IsEnabled = false;
-                OpenGogdlBinaryBtn.IsEnabled = false;
-            }
+
+            troubleshootingInformation.GogdlVersion = "Not%20installed";
             PlayniteVersionTxt.Text = troubleshootingInformation.PlayniteVersion;
             PluginVersionTxt.Text = troubleshootingInformation.PluginVersion;
             GamesInstallationPathTxt.Text = troubleshootingInformation.GamesInstallationPath;
@@ -291,41 +274,6 @@ namespace GogOssLibraryNS
             UpdateAuthStatus();
         }
 
-        private async void CheckForGogdlUpdatesBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var versionInfoContent = await Gogdl.GetVersionInfoContent();
-            if (versionInfoContent.Tag_name != null)
-            {
-                var newVersion = versionInfoContent.Tag_name.Replace("v", "");
-                if (troubleshootingInformation.GogdlVersion != newVersion)
-                {
-                    var options = new List<MessageBoxOption>
-                    {
-                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog)),
-                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel)),
-                    };
-                    var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Gogdl", ["appVersion"] = (FluentString)newVersion }), LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
-                    if (result == options[0])
-                    {
-                        var changelogURL = $"https://github.com/Heroic-Games-Launcher/heroic-gogdl/releases/tag/v{newVersion}";
-                        Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
-                    }
-                }
-                else
-                {
-                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
-                }
-            }
-            else
-            {
-                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage), "Gogdl");
-            }
-        }
-
-        private void OpenGogdlBinaryBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ProcessStarter.StartProcess("cmd", $"/k {troubleshootingInformation.GogdlBinary} -h", Path.GetDirectoryName(troubleshootingInformation.GogdlBinary));
-        }
 
         private void GamesUpdatesCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -409,15 +357,6 @@ namespace GogOssLibraryNS
                     }
                 }
             }, globalProgressOptions);
-        }
-
-        private void ChooseGogdlBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|*.exe");
-            if (file != "")
-            {
-                SelectedGogdlPathTxt.Text = file;
-            }
         }
     }
 }
