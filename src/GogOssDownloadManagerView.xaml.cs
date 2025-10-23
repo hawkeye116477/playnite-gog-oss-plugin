@@ -268,6 +268,10 @@ namespace GogOssLibraryNS
             foreach (var depot in depotItems)
             {
                 var filePath = Path.Combine(fullInstallPath, depot.path);
+                if (filePath.Contains("__redist"))
+                {
+                    filePath = Path.Combine(GogOss.DependenciesInstallationPath, depot.path);
+                }
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
                 writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
 
@@ -550,8 +554,6 @@ namespace GogOssLibraryNS
             var gameID = taskData.gameID;
             var downloadProperties = taskData.downloadProperties;
             var gameTitle = taskData.name;
-            double cachedDownloadSizeNumber = taskData.downloadSizeNumber;
-            double downloadCache = 0;
             bool downloadSpeedInBits = false;
             if (settings.DisplayDownloadSpeedInBits)
             {
@@ -560,13 +562,24 @@ namespace GogOssLibraryNS
 
             gracefulInstallerCTS = new CancellationTokenSource();
 
-            List<string> depotHashes = await gogDownloadApi.GetNeededDepotManifestHashes(taskData);
+            List<string> depotHashes = new();
+
+            if (taskData.downloadItemType == DownloadItemType.Game)
+            {
+                depotHashes = await gogDownloadApi.GetNeededDepotManifestHashes(taskData);
+            }
+            else
+            {
+                var dependManifest = await GogDownloadApi.GetRedistInfo(taskData.gameID);
+                depotHashes.Add(dependManifest.manifest);
+            }
+            
             List<GogDepot.Item> depotItems = new List<GogDepot.Item>();
             List<string> chunksToDownload = new List<string>();
 
             foreach (var depotHash in depotHashes)
             {
-                var depotManifest = await gogDownloadApi.GetDepotInfo(depotHash);
+                var depotManifest = await gogDownloadApi.GetDepotInfo(depotHash, taskData.downloadItemType);
                 if (depotManifest.depot.items.Count > 0)
                 {
                     foreach (var depotItem in depotManifest.depot.items)
@@ -576,12 +589,9 @@ namespace GogOssLibraryNS
                 }
             }
 
-
-            var secureLinks = await gogDownloadApi.GetSecureLinks(taskData);
-
             var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
-            wantedItem.status = DownloadStatus.Running;
-
+            var secureLinks = await gogDownloadApi.GetSecureLinks(taskData);
+            
             var startTime = DateTime.Now;
             var sw = Stopwatch.StartNew();
             long lastNetworkBytes = Interlocked.Read(ref resumeInitialNetworkBytes);
@@ -636,6 +646,12 @@ namespace GogOssLibraryNS
                     gracefulInstallerCTS.Token,
                     userCancelCTS.Token
                 );
+
+                wantedItem.status = DownloadStatus.Running;
+                if (downloadProperties.maxWorkers == 0)
+                {
+                    downloadProperties.maxWorkers = CommonHelpers.CpuThreadsNumber;
+                }
                 await DownloadFilesAsync(linkedCTS.Token, depotItems, wantedItem.fullInstallPath, secureLinks, downloadProperties.maxWorkers);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();

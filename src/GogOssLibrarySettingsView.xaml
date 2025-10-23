@@ -70,7 +70,7 @@
                         Margin="0,0,0,2" />
                         <Separator Margin="0,0,0,10" />
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssCometUpdatePolicy}}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherUpdatePolicy},Args='launcherName=Comet'}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                             <ComboBox Grid.Row="0" Grid.Column="1" x:Name="LauncherUpdatesCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.CometUpdatePolicy}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">

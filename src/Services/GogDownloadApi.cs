@@ -346,7 +346,7 @@ namespace GogOssLibraryNS.Services
             return galaxyPath;
         }
 
-        public async Task<GogDepot> GetDepotInfo(string manifest, int version = 2)
+        public async Task<GogDepot> GetDepotInfo(string manifest, DownloadItemType downloadItemType = DownloadItemType.Game, int version = 2)
         {
             var cachePath = GogOssLibrary.Instance.GetCachePath("depotcache");
             var depotManifest = new GogDepot();
@@ -383,9 +383,13 @@ namespace GogOssLibraryNS.Services
 
                 Client.DefaultRequestHeaders.Clear();
                 Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-                var response =
-                    await Client.GetAsync(
-                        $"https://cdn.gog.com/content-system/v2/meta/{GetGalaxyPath(manifest)}");
+                var url = $"https://cdn.gog.com/content-system/v{version}/meta";
+                if (downloadItemType == DownloadItemType.Dependency)
+                {
+                    url = $"https://cdn.gog.com/content-system/v{version}/dependencies/meta";
+                }
+                logger.Debug($"{url}/{GetGalaxyPath(manifest)}");
+                var response = await Client.GetAsync($"{url}/{GetGalaxyPath(manifest)}");
                 Stream content;
                 if (response.IsSuccessStatusCode)
                 {
@@ -393,7 +397,7 @@ namespace GogOssLibraryNS.Services
                 }
                 else
                 {
-                    Console.Error.WriteLine($"An error occurred while downloading depot manifest {manifest}.");
+                    logger.Error($"An error occurred while downloading {manifest} depot manifest.");
                     return depotManifest;
                 }
 
@@ -411,14 +415,22 @@ namespace GogOssLibraryNS.Services
             List<string> urls = new List<string>();
             var url = "";
             var metaManifest = await GetGameMetaManifest(taskData);
-            if (metaManifest.version == 2)
+            if (taskData.downloadItemType == DownloadItemType.Game)
             {
-                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?generation=2&_version=2&path={path}";
+                if (metaManifest.version == 2)
+                {
+                    url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?generation=2&_version=2&path={path}";
+                }
+                else
+                {
+                    url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&type=depot%path={path}";
+                }
             }
             else
             {
-                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&type=depot%path={path}";
+                url = $"https://content-system.gog.com/open_link?generation=2&_version=2&path=/dependencies/store/{path}";
             }
+
 
             var gogAccountClient = new GogAccountClient();
             if (await gogAccountClient.GetIsUserLoggedIn())
@@ -437,16 +449,23 @@ namespace GogOssLibraryNS.Services
                         {
                             foreach (var endpoint in validJsonResponse.urls)
                             {
-                                var newUrl = endpoint.url_format;
-                                foreach (var key in endpoint.parameters.Keys)
-                                {
-                                    var keyValue = endpoint.parameters[key].ToString();
-                                    if (key == "path")
-                                    {
-                                        keyValue += "/{GALAXY_PATH}";
-                                    }
 
-                                    newUrl = newUrl.Replace('{' + key + '}', keyValue);
+                                var newUrl = endpoint.url_format;
+                                if (taskData.downloadItemType == DownloadItemType.Game)
+                                {
+                                    foreach (var key in endpoint.parameters.Keys)
+                                    {
+                                        var keyValue = endpoint.parameters[key].ToString();
+                                        if (key == "path")
+                                        {
+                                            keyValue += "/{GALAXY_PATH}";
+                                        }
+                                        newUrl = newUrl.Replace('{' + key + '}', keyValue);
+                                    }
+                                }
+                                else
+                                {
+                                    newUrl += "/{GALAXY_PATH}";
                                 }
                                 urls.Add(newUrl);
                             }
@@ -464,7 +483,7 @@ namespace GogOssLibraryNS.Services
 
         public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string dependId, string version = "2", bool skipRefreshing = false, bool forceRefreshCache = false)
         {
-            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("metacache");
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("manifests");
             var cacheInfoFileName = $"redist_v{version}.json";
             var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
             var redistManifest = new GogDownloadRedistManifest.Depot();

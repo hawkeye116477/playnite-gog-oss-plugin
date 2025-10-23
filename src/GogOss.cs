@@ -1,4 +1,5 @@
 ﻿using CliWrap;
+using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Playnite.Common;
@@ -276,46 +277,61 @@ namespace GogOssLibraryNS
         public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
         {
             var gogDownloadApi = new GogDownloadApi();
-            var manifest = await gogDownloadApi.GetGameMetaManifest(installData);
+
             var size = new GogDownloadGameInfo.SizeType
             {
                 download_size = 0,
                 disk_size = 0
             };
-            if (manifest.size.ContainsKey("*"))
+
+            if (installData.downloadItemType == DownloadItemType.Game)
             {
-                size.download_size += manifest.size["*"].download_size;
-                size.disk_size += manifest.size["*"].disk_size;
-            }
-            var selectedLanguage = installData.downloadProperties.language;
-            if (manifest.size.Count == 2)
-            {
-                selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
-            }
-            if (manifest.size.ContainsKey(selectedLanguage))
-            {
-                size.download_size += manifest.size[selectedLanguage].download_size;
-                size.disk_size += manifest.size[selectedLanguage].disk_size;
-            }
-            var selectedDlcs = installData.downloadProperties.extraContent;
-            if (selectedDlcs.Count() > 0)
-            {
-                foreach (var dlc in manifest.dlcs)
+                var manifest = await gogDownloadApi.GetGameMetaManifest(installData);
+                if (manifest.size.ContainsKey("*"))
                 {
-                    if (selectedDlcs.Contains(dlc.Key))
+                    size.download_size += manifest.size["*"].download_size;
+                    size.disk_size += manifest.size["*"].disk_size;
+                }
+                if (installData.downloadItemType == Enums.DownloadItemType.Dependency)
+                {
+                    return size;
+                }
+                var selectedLanguage = installData.downloadProperties.language;
+                if (manifest.size.Count == 2)
+                {
+                    selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
+                }
+                if (manifest.size.ContainsKey(selectedLanguage))
+                {
+                    size.download_size += manifest.size[selectedLanguage].download_size;
+                    size.disk_size += manifest.size[selectedLanguage].disk_size;
+                }
+                var selectedDlcs = installData.downloadProperties.extraContent;
+                if (selectedDlcs.Count() > 0)
+                {
+                    foreach (var dlc in manifest.dlcs)
                     {
-                        if (dlc.Value.size.ContainsKey("*"))
+                        if (selectedDlcs.Contains(dlc.Key))
                         {
-                            size.download_size += dlc.Value.size["*"].download_size;
-                            size.disk_size += dlc.Value.size["*"].disk_size;
-                        }
-                        if (dlc.Value.size.ContainsKey(selectedLanguage))
-                        {
-                            size.download_size += dlc.Value.size[selectedLanguage].download_size;
-                            size.disk_size += dlc.Value.size[selectedLanguage].disk_size;
+                            if (dlc.Value.size.ContainsKey("*"))
+                            {
+                                size.download_size += dlc.Value.size["*"].download_size;
+                                size.disk_size += dlc.Value.size["*"].disk_size;
+                            }
+                            if (dlc.Value.size.ContainsKey(selectedLanguage))
+                            {
+                                size.download_size += dlc.Value.size[selectedLanguage].download_size;
+                                size.disk_size += dlc.Value.size[selectedLanguage].disk_size;
+                            }
                         }
                     }
                 }
+            }
+            else
+            {
+                var dependManifest = await GogDownloadApi.GetRedistInfo(installData.gameID);
+                size.download_size = dependManifest.compressedSize;
+                size.disk_size = dependManifest.size;
             }
             return size;
         }

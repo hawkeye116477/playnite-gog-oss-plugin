@@ -155,33 +155,43 @@ namespace GogOssLibraryNS
                 { DownloadAction.Update, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterInstallUpdate) }
             };
             TaskCBo.ItemsSource = downloadActionOptions;
-            var manifest = await gogDownloadApi.GetProductBuilds(wantedItem);
-            var betaChannels = new Dictionary<string, string>();
-            if (manifest.available_branches.Count > 1)
+
+            if (wantedItem.downloadItemType == Enums.DownloadItemType.Game)
             {
-                foreach (var branch in manifest.available_branches)
+                var manifest = await gogDownloadApi.GetProductBuilds(wantedItem);
+                var betaChannels = new Dictionary<string, string>();
+                if (manifest.available_branches.Count > 1)
                 {
-                    if (branch == null)
+                    foreach (var branch in manifest.available_branches)
                     {
-                        betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                        if (branch == null)
+                        {
+                            betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                        }
+                        else
+                        {
+                            betaChannels.Add(branch, branch);
+                        }
                     }
-                    else
+                    if (betaChannels.Count > 0)
                     {
-                        betaChannels.Add(branch, branch);
+                        BetaChannelCBo.ItemsSource = betaChannels;
+                        var selectedBetaChannel = "disabled";
+                        if (!wantedItem.downloadProperties.betaChannel.IsNullOrEmpty() && manifest.available_branches.Contains(wantedItem.downloadProperties.betaChannel))
+                        {
+                            selectedBetaChannel = wantedItem.downloadProperties.betaChannel;
+                        }
+                        BetaChannelCBo.SelectedValue = selectedBetaChannel;
+                        BetaChannelSP.Visibility = Visibility.Visible;
                     }
-                }
-                if (betaChannels.Count > 0)
-                {
-                    BetaChannelCBo.ItemsSource = betaChannels;
-                    var selectedBetaChannel = "disabled";
-                    if (!wantedItem.downloadProperties.betaChannel.IsNullOrEmpty() && manifest.available_branches.Contains(wantedItem.downloadProperties.betaChannel))
-                    {
-                        selectedBetaChannel = wantedItem.downloadProperties.betaChannel;
-                    }
-                    BetaChannelCBo.SelectedValue = selectedBetaChannel;
-                    BetaChannelSP.Visibility = Visibility.Visible;
                 }
             }
+            else
+            {
+                SelectedGamePathTxt.IsReadOnly = true;
+                TaskCBo.IsReadOnly = true;
+            }
+
             gameInfo = new Installed()
             {
                 platform = SelectedDownload.downloadProperties.os,
@@ -192,7 +202,11 @@ namespace GogOssLibraryNS
                 installed_DLCs = SelectedDownload.downloadProperties.extraContent,
             };
             selectedBetaChannel = SelectedDownload.downloadProperties.betaChannel;
-            await RefreshVersions();
+
+            if (wantedItem.downloadItemType == Enums.DownloadItemType.Game)
+            {
+                await RefreshVersions();
+            }
 
             if (wantedItem.status != DownloadStatus.Canceled)
             {
