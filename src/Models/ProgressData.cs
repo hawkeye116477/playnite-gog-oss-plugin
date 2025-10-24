@@ -9,5 +9,6 @@
         public int ActiveDiskWorkers { get; set; }
         public long InitialNetworkBytes { get; set; }
         public long InitialDiskBytes { get; set; }
+        public bool FinalReport { get; set; } = false;
     }
 }

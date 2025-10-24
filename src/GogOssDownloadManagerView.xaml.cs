@@ -311,6 +311,7 @@ namespace GogOssLibraryNS
             long totalNetworkBytes = initialNetworkBytesLocal;
             long totalDiskBytes = initialDiskBytesLocal;
             int activeDownloaders = 0, activeDiskers = 0;
+            bool isFinalReport = false;
 
             async Task RentAndUseAsync(int size, Func<byte[], Task> action)
             {
@@ -329,7 +330,8 @@ namespace GogOssLibraryNS
                     NetworkBytes = Interlocked.Read(ref totalNetworkBytes),
                     DiskBytes = Interlocked.Read(ref totalDiskBytes),
                     ActiveDownloadWorkers = activeDownloaders,
-                    ActiveDiskWorkers = activeDiskers
+                    ActiveDiskWorkers = activeDiskers,
+                    FinalReport = isFinalReport
                 });
             }
 
@@ -544,6 +546,7 @@ namespace GogOssLibraryNS
                 try { s.Dispose(); } catch { }
             }
 
+            isFinalReport = true;
             ReportProgress();
         }
 
@@ -601,7 +604,7 @@ namespace GogOssLibraryNS
             progress = new Progress<ProgressData>(p =>
             {
                 double dt = (sw.Elapsed - lastStopwatchElapsed).TotalSeconds;
-                if (dt < 1) return;
+                if (dt < 1 && !p.FinalReport) return;
 
                 double rawNetSpeed = (p.NetworkBytes - lastNetworkBytes) / dt;
                 double rawDiskSpeed = (p.DiskBytes - lastDiskBytes) / dt;
