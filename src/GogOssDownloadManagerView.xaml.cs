@@ -265,6 +265,12 @@ namespace GogOssLibraryNS
             var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk)>();
             long totalSize = 0, initialDiskBytesLocal = 0, initialNetworkBytesLocal = 0;
 
+            var tempDir = Path.Combine(fullInstallPath, ".Downloader_temp");
+            if (!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+            }
+
             foreach (var depot in depotItems)
             {
                 var filePath = Path.Combine(fullInstallPath, depot.path);
@@ -395,7 +401,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                tempFilePath = Path.GetTempFileName();
+                                tempFilePath = Path.Combine(tempDir, $"{job.chunk.compressedMd5}.{Guid.NewGuid():N}.tmp");
                                 await RentAndUseAsync(bufferSize, async buffer =>
                                 {
                                     using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -407,7 +413,7 @@ namespace GogOssLibraryNS
                                         }),
                                         null);
 
-                                    using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.SequentialScan | FileOptions.DeleteOnClose);
+                                    using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.SequentialScan);
 
                                     int read;
                                     while ((read = await progressStream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false)) > 0)
@@ -518,10 +524,36 @@ namespace GogOssLibraryNS
                             }
                             finally
                             {
-                                try { fileWriteSemaphore.Release(); } catch { }
-                                try { if (item.chunkBuffer != null) ArrayPool<byte>.Shared.Return(item.chunkBuffer); } catch { }
-                                try { if (item.allocatedBytes > 0) memoryLimiter.Release(item.allocatedBytes); } catch { }
-                                try { if (!string.IsNullOrEmpty(item.tempFilePath)) File.Delete(item.tempFilePath); } catch { }
+                                try
+                                {
+                                    fileWriteSemaphore.Release();
+                                }
+                                catch
+                                { }
+                                try
+                                {
+                                    if (item.chunkBuffer != null)
+                                    {
+                                        ArrayPool<byte>.Shared.Return(item.chunkBuffer);
+                                    }
+                                }
+                                catch { }
+                                try
+                                {
+                                    if (item.allocatedBytes > 0)
+                                    {
+                                        memoryLimiter.Release(item.allocatedBytes);
+                                    }
+                                }
+                                catch { }
+                                try
+                                {
+                                    if (!string.IsNullOrEmpty(item.tempFilePath))
+                                    {
+                                        File.Delete(item.tempFilePath);
+                                    }
+                                }
+                                catch { }
                                 Interlocked.Decrement(ref activeDiskers);
                                 ReportProgress();
                             }
@@ -546,9 +578,22 @@ namespace GogOssLibraryNS
                 try { s.Dispose(); } catch { }
             }
 
-            isFinalReport = true;
-            ReportProgress();
+            try
+            {
+                isFinalReport = true;
+                ReportProgress();
+                if (Directory.Exists(tempDir))
+                {
+                    foreach (var f in Directory.EnumerateFiles(tempDir))
+                    {
+                        try { File.Delete(f); } catch { }
+                    }
+                    try { Directory.Delete(tempDir, false); } catch { }
+                }
+            }
+            catch {}
         }
+
 
         public async Task Install(DownloadManagerData.Download taskData)
         {
