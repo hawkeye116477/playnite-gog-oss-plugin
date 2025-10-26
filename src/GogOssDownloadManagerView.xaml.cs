@@ -240,10 +240,11 @@ namespace GogOssLibraryNS
             List<string> secureLinks,
             int maxParallel = 40,
             int bufferSize = 512 * 1024,
-            long maxMemoryBytes = 1024L * 1024 * 1024,
+            long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
             int maxRetries = 3)
         {
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
+
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
 
@@ -251,6 +252,7 @@ namespace GogOssLibraryNS
             using var memoryLimiter = new ByteLimiter(maxMemoryBytes);
 
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+
             int channelCapacity = Math.Min(maxParallel * 2, 64);
 
             // Producer-consumer channel
@@ -265,6 +267,8 @@ namespace GogOssLibraryNS
             var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk)>();
             long totalSize = 0, initialDiskBytesLocal = 0, initialNetworkBytesLocal = 0;
 
+            var fileExpectedSizes = new ConcurrentDictionary<string, long>();
+
             var tempDir = Path.Combine(fullInstallPath, ".Downloader_temp");
             if (!Directory.Exists(tempDir))
             {
@@ -278,11 +282,13 @@ namespace GogOssLibraryNS
                 {
                     filePath = Path.Combine(GogOss.DependenciesInstallationPath, depot.path);
                 }
+
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
                 writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
 
                 long expectedFileSize = depot.chunks.Sum(c => (long)c.size);
                 totalSize += expectedFileSize;
+                fileExpectedSizes.TryAdd(filePath, expectedFileSize);
 
                 long currentFileSize = File.Exists(filePath) ? new FileInfo(filePath).Length : 0;
                 long pos = 0;
@@ -385,8 +391,7 @@ namespace GogOssLibraryNS
                                     {
                                         Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                         ReportProgress();
-                                    }),
-                                    null);
+                                    }), null);
 
                                 int offset = 0;
                                 int read;
@@ -410,17 +415,11 @@ namespace GogOssLibraryNS
                                         {
                                             Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                             ReportProgress();
-                                        }),
-                                        null);
+                                        }), null);
 
-                                    using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.SequentialScan);
-
-                                    int read;
-                                    while ((read = await progressStream.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false)) > 0)
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        await tempFs.WriteAsync(buffer, 0, read, token).ConfigureAwait(false);
-                                    }
+                                    using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous);
+                                    await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
+                                    await tempFs.FlushAsync(token).ConfigureAwait(false);
                                 }).ConfigureAwait(false);
 
                                 await channel.Writer.WriteAsync((job.filePath, job.offset, null, 0, tempFilePath, 0), token).ConfigureAwait(false);
@@ -441,18 +440,30 @@ namespace GogOssLibraryNS
                         {
                             if (chunkBuffer != null)
                             {
-                                try { ArrayPool<byte>.Shared.Return(chunkBuffer); } catch { }
+                                try
+                                {
+                                    ArrayPool<byte>.Shared.Return(chunkBuffer);
+                                }
+                                catch { }
                                 chunkBuffer = null;
                             }
                             if (memoryReserved && allocatedBytes > 0)
                             {
-                                try { memoryLimiter.Release(allocatedBytes); } catch { }
+                                try
+                                {
+                                    memoryLimiter.Release(allocatedBytes);
+                                }
+                                catch {}
                                 allocatedBytes = 0;
                                 memoryReserved = false;
                             }
                             if (!string.IsNullOrEmpty(tempFilePath))
                             {
-                                try { File.Delete(tempFilePath); } catch { }
+                                try
+                                {
+                                    File.Delete(tempFilePath);
+                                }
+                                catch { }
                                 tempFilePath = null;
                             }
 
@@ -470,11 +481,41 @@ namespace GogOssLibraryNS
                 }
                 finally
                 {
-                    try { if (allocatedBytes > 0) memoryLimiter.Release(allocatedBytes); } catch { }
-                    try { if (chunkBuffer != null) ArrayPool<byte>.Shared.Return(chunkBuffer); } catch { }
-                    try { if (slotAcquired) downloadSemaphore.Release(); } catch { }
-                    try { Interlocked.Decrement(ref activeDownloaders); } catch { }
-                    try { if (!string.IsNullOrEmpty(tempFilePath)) File.Delete(tempFilePath); } catch { }
+                    try
+                    {
+                        if (allocatedBytes > 0)
+                        {
+                            memoryLimiter.Release(allocatedBytes);
+                        }
+                    }
+                    catch { }
+                    try
+                    {
+                        if (chunkBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(chunkBuffer);
+                        }
+                    }
+                    catch { }
+                    try
+                    {
+                        if (slotAcquired)
+                        {
+                            downloadSemaphore.Release();
+                        }
+                    }
+                    catch { }
+                    try {
+                        Interlocked.Decrement(ref activeDownloaders); 
+                    } 
+                    catch { }
+                    try {
+                        if (!string.IsNullOrEmpty(tempFilePath))
+                        {
+                            File.Delete(tempFilePath);
+                        }
+                    }
+                    catch { }
                     ReportProgress();
                 }
             }, token)).ToList();
@@ -499,27 +540,33 @@ namespace GogOssLibraryNS
                             {
                                 Stream sourceStream = item.chunkBuffer != null
                                     ? new MemoryStream(item.chunkBuffer, 0, item.length, writable: false)
-                                    : new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan);
+                                    : new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan | FileOptions.DeleteOnClose);
 
                                 using (sourceStream)
                                 using (var zlib = new ZlibStream(sourceStream, CompressionMode.Decompress))
-                                using (var outFs = new FileStream(item.filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, useAsync: true))
                                 {
-                                    outFs.Seek(item.offset, SeekOrigin.Begin);
-
-                                    int bytesRead;
-                                    long totalWritten = 0;
-                                    while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
+                                    using (var outFs = new FileStream(item.filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
                                     {
-                                        await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
-                                        Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                        totalWritten += bytesRead;
-                                        ReportProgress();
-                                    }
+                                        outFs.Seek(item.offset, SeekOrigin.Begin);
 
-                                    long expectedLength = item.offset + totalWritten;
-                                    if (outFs.Length > expectedLength)
-                                        outFs.SetLength(expectedLength);
+                                        int bytesRead;
+                                        long totalWritten = 0;
+                                        while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
+                                        {
+                                            await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
+                                            Interlocked.Add(ref totalDiskBytes, bytesRead);
+                                            totalWritten += bytesRead;
+                                            ReportProgress();
+                                        }
+
+                                        if (item.offset + totalWritten == fileExpectedSizes[item.filePath])
+                                        {
+                                            if (outFs.Length != fileExpectedSizes[item.filePath])
+                                            {
+                                                outFs.SetLength(fileExpectedSizes[item.filePath]);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             finally
@@ -528,8 +575,7 @@ namespace GogOssLibraryNS
                                 {
                                     fileWriteSemaphore.Release();
                                 }
-                                catch
-                                { }
+                                catch { }
                                 try
                                 {
                                     if (item.chunkBuffer != null)
@@ -546,14 +592,7 @@ namespace GogOssLibraryNS
                                     }
                                 }
                                 catch { }
-                                try
-                                {
-                                    if (!string.IsNullOrEmpty(item.tempFilePath))
-                                    {
-                                        File.Delete(item.tempFilePath);
-                                    }
-                                }
-                                catch { }
+
                                 Interlocked.Decrement(ref activeDiskers);
                                 ReportProgress();
                             }
@@ -561,6 +600,7 @@ namespace GogOssLibraryNS
                     }
                 }).ConfigureAwait(false);
             }, token)).ToList();
+
 
             try
             {
@@ -593,7 +633,6 @@ namespace GogOssLibraryNS
             }
             catch {}
         }
-
 
         public async Task Install(DownloadManagerData.Download taskData)
         {
