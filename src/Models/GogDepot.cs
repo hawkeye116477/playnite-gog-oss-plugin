@@ -15,6 +15,8 @@ namespace GogOssLibraryNS.Models
             public List<Item> items { get; set; } = new List<Item>();
             public Smallfilescontainer smallFilesContainer { get; set; }
             public Dictionary<string, List<Chunk>> sfcContainersByHash { get; set; } = new();
+            public List<DepotFile> files { get; set; } = new();
+            public int version { get; set; }
         }
         public class Item
         {
@@ -25,6 +27,17 @@ namespace GogOssLibraryNS.Models
             public string sha256 { get; set; } = "";
             public sfcRef sfcRef { get; set; }
         }
+
+        public class DepotFile
+        {
+            public long offset { get; set; }
+            public string hash { get; set; }
+            public string url { get; set; }
+            public string path { get; set; } = "";
+            public long size { get; set; }
+            public bool support { get; set; } = false;
+        }
+
         public class sfcRef
         {
             public long offset { get; set; }
@@ -44,5 +57,4 @@ namespace GogOssLibraryNS.Models
             public List<Chunk> chunks { get; set; } = new();
         }
     }
-
 }

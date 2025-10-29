@@ -6,7 +6,6 @@ namespace GogOssLibraryNS.Models
     {
         public List<Depot> depots { get; set; } = new List<Depot>();
         public string build_id { get; set; }
-        public List<string> HGLInstalled { get; set; } = new List<string>();
 
         public class Depot
         {

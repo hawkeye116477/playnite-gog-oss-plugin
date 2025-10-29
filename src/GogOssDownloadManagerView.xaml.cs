@@ -289,152 +289,208 @@ namespace GogOssLibraryNS
             }
 
             //
-            // STEP 1.1: SFC Files Separation and Filtering
+            // STEP 1.1 / 1.2 / 1.3 - JOB CREATION
             //
-            var sfcItemsToCheck = bigDepot.items.Where(d => d.sfcRef != null && d.sfcRef.size > 0).ToList();
 
-            foreach (var depotItem in sfcItemsToCheck)
+            // --- V1 LOGIC
+            if (bigDepot.version == 1 && bigDepot.files != null)
             {
-                string fullSmallFilePath = Path.Combine(fullInstallPath, depotItem.path);
-                string depotHash = depotItem.sfcRef.depotHash;
-
-                bigDepot.items.Remove(depotItem);
-                sfcFiles.Add(depotItem);
-
-                if (!File.Exists(fullSmallFilePath) || new FileInfo(fullSmallFilePath).Length != depotItem.sfcRef.size)
+                foreach (var file in bigDepot.files)
                 {
-                    sfcHashesToDownload.Add(depotHash);
+                    var depotFilePath = file.path.TrimStart('/', '\\');
+                    var filePath = Path.Combine(fullInstallPath, depotFilePath);
+                    if (file.support)
+                    {
+                        filePath = Path.Combine(fullInstallPath, "gog-support", depotFilePath);
+                    }
 
-                    sfcExtractionJobs.GetOrAdd(depotHash, new List<(string filePath, GogDepot.sfcRef sfcRef)>())
-                        .Add((fullSmallFilePath, depotItem.sfcRef));
+                    if (filePath.Contains("__redist"))
+                    {
+                        filePath = Path.Combine(GogOss.DependenciesInstallationPath, file.path);
+                    }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(fullSmallFilePath)!);
-                    writeSemaphores.TryAdd(fullSmallFilePath, new SemaphoreSlim(1));
-                }
-                else
-                {
-                    initialDiskBytesLocal += (long)depotItem.sfcRef.size;
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                    writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
+
+                    long expectedFileSize = file.size;
+                    long currentFileSize = File.Exists(filePath) ? new FileInfo(filePath).Length : 0;
+
+                    totalSize += expectedFileSize;
+
+                    if (currentFileSize != expectedFileSize)
+                    {
+                        var v1Chunk = new GogDepot.Chunk
+                        {
+                            offset = file.offset,
+                            size = expectedFileSize,
+                            compressedSize = expectedFileSize,
+                            compressedMd5 = file.url, // Probably main.bin always?
+                        };
+
+                        jobs.Add((filePath, 0, v1Chunk));
+                        totalCompressedSize += expectedFileSize;
+                    }
+                    else
+                    {
+                        initialDiskBytesLocal += expectedFileSize;
+                        initialNetworkBytesLocal += expectedFileSize;
+                    }
+
+                    fileExpectedSizes.TryAdd(filePath, expectedFileSize);
                 }
             }
-
-            bool shouldDownloadSfc = sfcHashesToDownload.Any();
-
-
-            //
-            // STEP 1.2: SFC Container Initialization
-            //
-            if (shouldDownloadSfc)
+            // --- V2 LOGIC
+            else if (bigDepot.version == 2)
             {
-                foreach (var kvp in bigDepot.sfcContainersByHash.Where(kvp => sfcHashesToDownload.Contains(kvp.Key)))
+                //
+                // STEP 1.1: SFC Files Separation and Filtering (V2 only)
+                //
+                var sfcItemsToCheck = bigDepot.items.Where(d => d.sfcRef != null && d.sfcRef.size > 0).ToList();
+
+                foreach (var depotItem in sfcItemsToCheck)
                 {
-                    string depotHash = kvp.Key;
-                    List<GogDepot.Chunk> chunks = kvp.Value;
+                    string fullSmallFilePath = Path.Combine(fullInstallPath, depotItem.path);
+                    string depotHash = depotItem.sfcRef.depotHash;
 
-                    string sfcFilePath = Path.Combine(tempDir, $"{sfcContainerBaseName}_{depotHash}.bin");
-                    sfcFilePathsByHash.TryAdd(depotHash, sfcFilePath);
+                    bigDepot.items.Remove(depotItem);
+                    sfcFiles.Add(depotItem);
 
-                    long sfcTotalDecSize = chunks.Sum(c => (long)c.size);
+                    if (!File.Exists(fullSmallFilePath) || new FileInfo(fullSmallFilePath).Length != depotItem.sfcRef.size)
+                    {
+                        sfcHashesToDownload.Add(depotHash);
 
-                    long currentSfcSize = File.Exists(sfcFilePath) ? new FileInfo(sfcFilePath).Length : 0;
+                        sfcExtractionJobs.GetOrAdd(depotHash, new List<(string filePath, GogDepot.sfcRef sfcRef)>())
+                            .Add((fullSmallFilePath, depotItem.sfcRef));
 
-                    long sfcPos = 0;
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullSmallFilePath)!);
+                        writeSemaphores.TryAdd(fullSmallFilePath, new SemaphoreSlim(1));
+                    }
+                    else
+                    {
+                        initialDiskBytesLocal += (long)depotItem.sfcRef.size;
+                    }
+                }
+
+                bool shouldDownloadSfc = sfcHashesToDownload.Any();
+
+
+                //
+                // STEP 1.2: SFC Container Initialization (V2 only)
+                //
+                if (shouldDownloadSfc)
+                {
+                    foreach (var kvp in bigDepot.sfcContainersByHash.Where(kvp => sfcHashesToDownload.Contains(kvp.Key)))
+                    {
+                        string depotHash = kvp.Key;
+                        List<GogDepot.Chunk> chunks = kvp.Value;
+
+                        string sfcFilePath = Path.Combine(tempDir, $"{sfcContainerBaseName}_{depotHash}.bin");
+                        sfcFilePathsByHash.TryAdd(depotHash, sfcFilePath);
+
+                        long sfcTotalDecSize = chunks.Sum(c => (long)c.size);
+
+                        long currentSfcSize = File.Exists(sfcFilePath) ? new FileInfo(sfcFilePath).Length : 0;
+
+                        long sfcPos = 0;
+                        bool foundFirstIncompleteChunk = false;
+
+                        foreach (var chunk in chunks)
+                        {
+                            long chunkSize = (long)chunk.size;
+                            long compressedSize = (long)chunk.compressedSize;
+
+                            if (foundFirstIncompleteChunk)
+                            {
+                                chunk.offset = sfcPos;
+                                jobs.Add((sfcFilePath, sfcPos, chunk));
+                                totalCompressedSize += compressedSize;
+                            }
+                            else if (sfcPos + chunkSize <= currentSfcSize)
+                            {
+                                initialDiskBytesLocal += chunkSize;
+                                initialNetworkBytesLocal += compressedSize;
+                            }
+                            else
+                            {
+                                chunk.offset = sfcPos;
+                                jobs.Add((sfcFilePath, sfcPos, chunk));
+                                totalCompressedSize += compressedSize;
+                                foundFirstIncompleteChunk = true;
+                            }
+                            sfcPos += chunkSize;
+                        }
+
+                        fileExpectedSizes.TryAdd(sfcFilePath, sfcTotalDecSize);
+                        writeSemaphores.TryAdd(sfcFilePath, new SemaphoreSlim(1));
+                    }
+                }
+
+                //
+                // STEP 1.3: Chunk Job Creation for regular V2 files
+                //
+                var allDepotItems = bigDepot.items.Concat(sfcFiles).ToList();
+
+                foreach (var depot in allDepotItems)
+                {
+                    var filePath = Path.Combine(fullInstallPath, depot.path);
+
+                    if (filePath.Contains("__redist"))
+                    {
+                        filePath = Path.Combine(GogOss.DependenciesInstallationPath, depot.path);
+                    }
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+
+                    if (depot.sfcRef == null || !shouldDownloadSfc)
+                    {
+                        writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
+                    }
+
+                    long expectedFileSize = depot.sfcRef != null && shouldDownloadSfc ? (long)depot.sfcRef.size : depot.chunks.Sum(c => (long)c.size);
+                    long expectedFileCompressedSize = depot.sfcRef != null && shouldDownloadSfc ? 0 : depot.chunks.Sum(c => (long)c.compressedSize);
+
+                    totalSize += expectedFileSize;
+
+                    if (depot.sfcRef == null || !shouldDownloadSfc)
+                    {
+                        totalCompressedSize += expectedFileCompressedSize;
+                    }
+
+                    fileExpectedSizes.TryAdd(filePath, expectedFileSize);
+
+                    long currentFileSize = File.Exists(filePath) ? new FileInfo(filePath).Length : 0;
+                    long pos = 0;
                     bool foundFirstIncompleteChunk = false;
 
-                    foreach (var chunk in chunks)
+                    if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
-                        long chunkSize = (long)chunk.size;
-                        long compressedSize = (long)chunk.compressedSize;
-
-                        if (foundFirstIncompleteChunk)
+                        foreach (var chunk in depot.chunks)
                         {
-                            chunk.offset = sfcPos;
-                            jobs.Add((sfcFilePath, sfcPos, chunk));
-                            totalCompressedSize += compressedSize;
+                            long chunkSize = (long)chunk.size;
+                            long compressedSize = (long)chunk.compressedSize;
+
+                            if (foundFirstIncompleteChunk)
+                            {
+                                chunk.offset = pos;
+                                jobs.Add((filePath, pos, chunk));
+                            }
+                            else if (pos + chunkSize <= currentFileSize)
+                            {
+                                initialDiskBytesLocal += chunkSize;
+                                initialNetworkBytesLocal += compressedSize;
+                            }
+                            else
+                            {
+                                chunk.offset = pos;
+                                jobs.Add((filePath, pos, chunk));
+                                foundFirstIncompleteChunk = true;
+                            }
+                            pos += chunkSize;
                         }
-                        else if (sfcPos + chunkSize <= currentSfcSize)
-                        {
-                            initialDiskBytesLocal += chunkSize;
-                            initialNetworkBytesLocal += compressedSize;
-                        }
-                        else
-                        {
-                            chunk.offset = sfcPos;
-                            jobs.Add((sfcFilePath, sfcPos, chunk));
-                            totalCompressedSize += compressedSize;
-                            foundFirstIncompleteChunk = true;
-                        }
-                        sfcPos += chunkSize;
-                    }
-
-                    fileExpectedSizes.TryAdd(sfcFilePath, sfcTotalDecSize);
-                    writeSemaphores.TryAdd(sfcFilePath, new SemaphoreSlim(1));
-                }
-            }
-
-            //
-            // STEP 1.3: Chunk Job Creation for regular and SFC files
-            //
-            var allDepotItems = bigDepot.items.Concat(sfcFiles).ToList();
-
-            foreach (var depot in allDepotItems)
-            {
-                var filePath = Path.Combine(fullInstallPath, depot.path);
-
-                if (filePath.Contains("__redist"))
-                {
-                    filePath = Path.Combine(GogOss.DependenciesInstallationPath, depot.path);
-                }
-
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-
-                if (depot.sfcRef == null || !shouldDownloadSfc)
-                {
-                    writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
-                }
-
-                long expectedFileSize = depot.sfcRef != null && shouldDownloadSfc ? (long)depot.sfcRef.size : depot.chunks.Sum(c => (long)c.size);
-                long expectedFileCompressedSize = depot.sfcRef != null && shouldDownloadSfc ? 0 : depot.chunks.Sum(c => (long)c.compressedSize);
-
-                totalSize += expectedFileSize;
-
-                if (depot.sfcRef == null || !shouldDownloadSfc)
-                {
-                    totalCompressedSize += expectedFileCompressedSize;
-                }
-
-                fileExpectedSizes.TryAdd(filePath, expectedFileSize);
-
-                long currentFileSize = File.Exists(filePath) ? new FileInfo(filePath).Length : 0;
-                long pos = 0;
-                bool foundFirstIncompleteChunk = false;
-
-                if (depot.sfcRef == null || !shouldDownloadSfc)
-                {
-                    foreach (var chunk in depot.chunks)
-                    {
-                        long chunkSize = (long)chunk.size;
-                        long compressedSize = (long)chunk.compressedSize;
-
-                        if (foundFirstIncompleteChunk)
-                        {
-                            chunk.offset = pos;
-                            jobs.Add((filePath, pos, chunk));
-                        }
-                        else if (pos + chunkSize <= currentFileSize)
-                        {
-                            initialDiskBytesLocal += chunkSize;
-                            initialNetworkBytesLocal += compressedSize;
-                        }
-                        else
-                        {
-                            chunk.offset = pos;
-                            jobs.Add((filePath, pos, chunk));
-                            foundFirstIncompleteChunk = true;
-                        }
-                        pos += chunkSize;
                     }
                 }
             }
+
 
             jobs = jobs.OrderBy(job => job.filePath)
                        .ThenBy(job => job.offset)
@@ -513,6 +569,8 @@ namespace GogOssLibraryNS
                         allocatedBytes = compressedSize;
                     }
 
+                    bool isV1 = bigDepot.version == 1;
+
                     int attempt = 0;
                     int delayMs = 500;
 
@@ -521,9 +579,25 @@ namespace GogOssLibraryNS
                         attempt++;
                         try
                         {
-                            var url = secureLinks[0].Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
+                            string url;
+                            if (isV1)
+                            {
+                                url = secureLinks[0].Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
+                            }
+                            else
+                            {
+                                url = secureLinks[0].Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
+                            }
 
                             using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                            if (isV1)
+                            {
+                                long start = job.chunk.offset;
+                                long end = job.chunk.offset + (long)job.chunk.size - 1;
+                                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(start, end);
+                            }
+
                             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                             response.EnsureSuccessStatusCode();
 
@@ -683,26 +757,46 @@ namespace GogOssLibraryNS
                                     ? new MemoryStream(item.chunkBuffer, 0, item.length, writable: false)
                                     : new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan | FileOptions.DeleteOnClose);
 
-                                bool isSfcContainer = item.filePath.Contains(sfcContainerBaseName) && item.filePath.StartsWith(tempDir) && shouldDownloadSfc;
+                                bool isSfcContainer = item.filePath.Contains(sfcContainerBaseName) && item.filePath.StartsWith(tempDir) && bigDepot.version == 2;
+
 
                                 using (sourceStream)
-                                using (var zlib = new ZlibStream(sourceStream, CompressionMode.Decompress))
                                 using (var outFs = new FileStream(item.filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
                                 {
                                     outFs.Seek(item.offset, SeekOrigin.Begin);
 
                                     int bytesRead;
                                     long totalWritten = 0;
-                                    while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
-                                    {
-                                        await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
 
-                                        if (!isSfcContainer)
+                                    if (bigDepot.version == 2)
+                                    {
+                                        using (var zlib = new ZlibStream(sourceStream, CompressionMode.Decompress))
                                         {
-                                            Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                            ReportProgress();
+                                            while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
+                                            {
+                                                await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
+                                                if (!isSfcContainer)
+                                                {
+                                                    Interlocked.Add(ref totalDiskBytes, bytesRead);
+                                                    ReportProgress();
+                                                }
+                                                totalWritten += bytesRead;
+                                            }
                                         }
-                                        totalWritten += bytesRead;
+                                    }
+                                    else
+                                    {
+                                        while ((bytesRead = await sourceStream.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
+                                        {
+                                            await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
+
+                                            if (!isSfcContainer)
+                                            {
+                                                Interlocked.Add(ref totalDiskBytes, bytesRead);
+                                                ReportProgress();
+                                            }
+                                            totalWritten += bytesRead;
+                                        }
                                     }
 
                                     if (fileExpectedSizes.ContainsKey(item.filePath) && item.offset + totalWritten == fileExpectedSizes[item.filePath])
@@ -761,9 +855,9 @@ namespace GogOssLibraryNS
             await Task.WhenAll(ioWorkers).ConfigureAwait(false);
 
             //
-            // STEP 4: SFC File Extraction
+            // STEP 4: SFC File Extraction (V2 only)
             //
-            if (shouldDownloadSfc && sfcExtractionJobs.Any())
+            if (bigDepot.version == 2 && sfcExtractionJobs.Any())
             {
                 var extractionWorkers = sfcExtractionJobs.Where(kvp => sfcHashesToDownload.Contains(kvp.Key))
                     .SelectMany(kvp =>
@@ -870,7 +964,7 @@ namespace GogOssLibraryNS
                 isFinalReport = true;
                 ReportProgress();
 
-                if (shouldDownloadSfc)
+                if (bigDepot.version == 2 && sfcHashesToDownload.Any())
                 {
                     foreach (var depotHash in sfcHashesToDownload)
                     {
@@ -934,9 +1028,11 @@ namespace GogOssLibraryNS
 
             GogDepot.Depot bigDepot = new();
 
+            var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
             foreach (var depotHash in depotHashes)
             {
-                var depotManifest = await gogDownloadApi.GetDepotInfo(depotHash, taskData.downloadItemType);
+                var depotManifest = await gogDownloadApi.GetDepotInfo(depotHash, taskData, metaManifest.version);
+                bigDepot.version = depotManifest.version;
                 if (depotManifest.depot.items.Count > 0)
                 {
                     foreach (var depotItem in depotManifest.depot.items)
@@ -951,6 +1047,13 @@ namespace GogOssLibraryNS
                 if (depotManifest.depot.smallFilesContainer?.chunks.Count > 0)
                 {
                     bigDepot.sfcContainersByHash.Add(depotHash, depotManifest.depot.smallFilesContainer.chunks);
+                }
+                if (depotManifest.depot.files.Count > 0)
+                {
+                    foreach (var depotFile in depotManifest.depot.files)
+                    {
+                        bigDepot.files.Add(depotFile);
+                    }
                 }
             }
 

@@ -12,16 +12,14 @@ namespace GogOssLibraryNS.Models
         public string buildId { get; set; } = "";
         public string clientId { get; set; }
         public string clientSecret { get; set; }
-        public Depot[] depots { get; set; }
+        public List<Depot> depots { get; set; } = new List<Depot>();
         public string installDirectory { get; set; }
         public Offlinedepot offlineDepot { get; set; }
         public string platform { get; set; }
         public List<Product> products { get; set; } = new List<Product>();
         public bool scriptInterpreter { get; set; } = false;
         public string[] tags { get; set; }
-        public int version { get; set; }
-        public string HGLInstallLanguage { get; set; }
-        public object[] HGLdlcs { get; set; }
+        public int version { get; set; } = 2;
         public List<string> dependencies { get; set; } = new List<string>();
         public ProductV1 product { get; set; } = new ProductV1();
         public bool errorDisplayed { get; set; } = false;
@@ -48,11 +46,12 @@ namespace GogOssLibraryNS.Models
         public class Depot
         {
             public long compressedSize { get; set; }
-            public string[] languages { get; set; }
+            public List<string> languages { get; set; } = new List<string>();
             public string manifest { get; set; }
-            public string productId { get; set; }
+            public string productId { get; set; } = "";
             public long size { get; set; }
             public bool isGogDepot { get; set; }
+            public List<string> gameIDs { get; set; } = new List<string>();
         }
 
         public class ProductV1
@@ -63,13 +62,16 @@ namespace GogOssLibraryNS.Models
             public string rootGameID { get; set; }
             public List<Gameid> gameIDs { get; set; }
             public string projectName { get; set; }
+            public List<Depot> depots { get; set; } = new List<Depot>();
         }
 
         public class Gameid
         {
             public string gameID { get; set; }
             public bool standalone { get; set; }
+            public Dictionary<string, string> name { get; set; }
         }
+
 
         public class Product
         {
@@ -77,7 +79,6 @@ namespace GogOssLibraryNS.Models
             public string productId { get; set; } = "";
             public string temp_arguments { get; set; } = "";
             public string temp_executable { get; set; } = "";
-
         }
 
         public class SupportCommand

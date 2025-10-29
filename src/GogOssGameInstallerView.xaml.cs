@@ -513,7 +513,6 @@ namespace GogOssLibraryNS
             singleGameInstallData.downloadProperties.buildId = selectedVersion.Key;
             singleGameInstallData.downloadProperties.version = selectedVersion.Value.Split('—')[0].Trim();
 
-
             var gogDownloadApi = new GogDownloadApi();
             manifest = await gogDownloadApi.GetGameMetaManifest(singleGameInstallData);
             var gameLanguages = RefreshLanguages(singleGameInstallData);
