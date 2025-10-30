@@ -1117,7 +1117,6 @@ namespace GogOssLibraryNS
                 }
             }
 
-
             var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
             var startTime = DateTime.Now;
             var sw = Stopwatch.StartNew();

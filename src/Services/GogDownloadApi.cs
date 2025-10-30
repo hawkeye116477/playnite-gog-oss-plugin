@@ -194,7 +194,7 @@ namespace GogOssLibraryNS.Services
                 }
                 if (downloadItemType == DownloadItemType.Dependency)
                 {
-                    var redistManifest = await GetRedistInfo(gameId, "2", false, forceRefreshCache);
+                    var redistManifest = await GetRedistInfo(gameId, false, forceRefreshCache);
                     manifest.executable = redistManifest.executable;
                     manifest.buildId = redistManifest.build_id;
                     manifest.size = new Dictionary<string, GogGameMetaManifest.SizeType>();
@@ -301,7 +301,7 @@ namespace GogOssLibraryNS.Services
                                 }
                                 else
                                 {
-                                    logger.Debug($"Unsupported manifest version: {manifest.version}. Please report that.");
+                                    logger.Error($"Unsupported manifest version: {manifest.version}. Please report that.");
                                 }
 
                                 var depots = new List<GogGameMetaManifest.Depot>();
@@ -321,7 +321,7 @@ namespace GogOssLibraryNS.Services
                                 {
                                     if (!depot.targetDir.IsNullOrEmpty())
                                     {
-                                        var redistManifest = await GetRedistInfo(depot.redist, "2", false, forceRefreshCache);
+                                        var redistManifest = await GetRedistInfo(depot.redist, false, forceRefreshCache);
                                         depot.size = redistManifest.size;
                                         depot.compressedSize = redistManifest.compressedSize;
                                         depot.languages.Add("*");
@@ -619,8 +619,9 @@ namespace GogOssLibraryNS.Services
             return urls;
         }
 
-        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string dependId, string version = "2", bool skipRefreshing = false, bool forceRefreshCache = false)
+        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string dependId, bool skipRefreshing = false, bool forceRefreshCache = false)
         {
+            var version = "2";
             var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("manifests");
             var cacheInfoFileName = $"redist_v{version}.json";
             var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
@@ -707,8 +708,16 @@ namespace GogOssLibraryNS.Services
             if (correctJson)
             {
                 var depots = manifest.depots;
-                redistManifest = depots.First(d => d.dependencyId == dependId);
-                redistManifest.build_id = manifest.build_id;
+                redistManifest = depots.FirstOrDefault(d => d.dependencyId == dependId);
+                if (redistManifest != null)
+                {
+                    redistManifest.build_id = manifest.build_id;
+                }
+                else
+                {
+                    redistManifest = new();
+                    logger.Error($"Unrecognized dependency: {dependId}. Please clear cache or report that if wont help.");
+                }    
             }
             return redistManifest;
         }
