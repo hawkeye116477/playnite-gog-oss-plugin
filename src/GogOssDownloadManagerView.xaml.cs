@@ -253,7 +253,7 @@ namespace GogOssLibraryNS
 
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
-            using var memoryLimiter = new ByteLimiter(maxMemoryBytes);
+            using var memoryLimiter = new MemoryLimiter(maxMemoryBytes);
 
             const string sfcContainerBaseName = "smallFilesContainer";
             var sfcFilePathsByHash = new ConcurrentDictionary<string, string>();

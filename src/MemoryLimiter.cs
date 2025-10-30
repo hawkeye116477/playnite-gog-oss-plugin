@@ -5,7 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public sealed class ByteLimiter : IDisposable
+    public sealed class MemoryLimiter : IDisposable
     {
         private readonly long _maxBytes;
         private long _currentUsage;
@@ -14,7 +14,7 @@
         private readonly object _lock = new object();
         private bool _disposed;
 
-        public ByteLimiter(long maxBytes)
+        public MemoryLimiter(long maxBytes)
         {
             if (maxBytes <= 0)
                 throw new ArgumentOutOfRangeException(nameof(maxBytes), "MaxBytes must be positive.");
@@ -24,7 +24,7 @@
         public bool TryReserve(long bytes)
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(ByteLimiter));
+                throw new ObjectDisposedException(nameof(MemoryLimiter));
             if (bytes <= 0) return true;
 
             while (true)
@@ -43,7 +43,7 @@
         public Task WaitAsync(long bytes, CancellationToken token = default)
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(ByteLimiter));
+                throw new ObjectDisposedException(nameof(MemoryLimiter));
             if (bytes <= 0) return Task.CompletedTask;
 
             lock (_lock)
@@ -82,7 +82,7 @@
         public void Release(long bytesToRelease)
         {
             if (_disposed)
-                throw new ObjectDisposedException(nameof(ByteLimiter));
+                throw new ObjectDisposedException(nameof(MemoryLimiter));
             if (bytesToRelease <= 0) return;
 
             long newValue = Interlocked.Add(ref _currentUsage, -bytesToRelease);

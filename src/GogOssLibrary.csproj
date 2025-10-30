@@ -287,7 +287,7 @@
     </Compile>
     <Compile Include="Helpers.cs" />
     <Compile Include="LocalizationKeys.cs" />
-    <Compile Include="ByteLimiter.cs" />
+    <Compile Include="MemoryLimiter.cs" />
     <Compile Include="Models\GogBuildsData.cs" />
     <Compile Include="Models\GogDepot.cs" />
     <Compile Include="Models\SecureLinks.cs" />
