@@ -1162,7 +1162,36 @@ namespace GogOssLibraryNS
                 if (item != null)
                 {
                     item.progress = p.TotalBytes > 0 ? (double)p.DiskBytes / p.TotalBytes * 100 : 0;
-                    item.status = DownloadStatus.Running;
+                    if (item.status != DownloadStatus.Running)
+                    {
+                        item.status = DownloadStatus.Running;
+                        GameTitleTB.Text = gameTitle;
+                        if (downloadProperties.downloadAction != DownloadAction.Update)
+                        {
+                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadingLabel);
+                        }
+                        else
+                        {
+                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
+                        }
+                    }
+                    if (p.TotalCompressedBytes == p.NetworkBytes)
+                    {
+                        switch (downloadProperties.downloadAction)
+                        {
+                            case DownloadAction.Install:
+                                DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation);
+                                break;
+                            case DownloadAction.Update:
+                                DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonFinishingUpdate);
+                                break;
+                            case DownloadAction.Repair:
+                                DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonFinishingRepair);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                     item.downloadedNumber = p.NetworkBytes;
                 }
             });
@@ -1174,7 +1203,6 @@ namespace GogOssLibraryNS
                     userCancelCTS.Token
                 );
 
-                wantedItem.status = DownloadStatus.Running;
                 if (downloadProperties.maxWorkers == 0)
                 {
                     downloadProperties.maxWorkers = CommonHelpers.CpuThreadsNumber;
@@ -1208,7 +1236,7 @@ namespace GogOssLibraryNS
                             dependencies.Add(depend);
                         }
                     }
-                    Game game = new Game();
+                    Game game = new();
                     {
                         game = playniteAPI.Database.Games.FirstOrDefault(item => item.PluginId == GogOssLibrary.Instance.Id
                                                                                  && item.GameId == gameID);
