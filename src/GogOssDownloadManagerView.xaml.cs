@@ -237,7 +237,7 @@ namespace GogOssLibraryNS
             CancellationToken token,
             GogDepot.Depot bigDepot,
             string fullInstallPath,
-            List<string> secureLinks,
+            SecureLinks allSecureLinks,
             int maxParallel = 40,
             int bufferSize = 512 * 1024,
             long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
@@ -245,6 +245,8 @@ namespace GogOssLibraryNS
         {
             // STEP 0: Service and Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
+            var secureLinks = allSecureLinks.mainSecureLinks.secureLinks;
+            var dependencyLinks = allSecureLinks.inGameDependsSecureLinks.secureLinks;
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
@@ -265,7 +267,7 @@ namespace GogOssLibraryNS
             int channelCapacity = Math.Min(maxParallel * 2, 64);
 
             // Producer-consumer channel
-            var channel = Channel.CreateBounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes)>(
+            var channel = Channel.CreateBounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, bool isRedist, bool isCompressed)>(
                 new BoundedChannelOptions(channelCapacity)
                 {
                     SingleReader = false,
@@ -273,7 +275,7 @@ namespace GogOssLibraryNS
                     FullMode = BoundedChannelFullMode.Wait
                 });
 
-            var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk)>();
+            var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist)>();
 
             long totalSize = 0;
             long totalCompressedSize = 0;
@@ -289,16 +291,18 @@ namespace GogOssLibraryNS
             }
 
             //
-            // STEP 1.1 / 1.2 / 1.3 - JOB CREATION
+            // STEP 1.1 / 1.2 / 1.3 - JOB CREATION (UNIFIED LOGIC)
             //
 
-            // --- V1 LOGIC
-            if (bigDepot.version == 1 && bigDepot.files != null)
+            // --- V1 LOGIC (Primary files for V1 depot)
+            if (bigDepot.version == 1 && bigDepot.files.Any())
             {
                 foreach (var file in bigDepot.files)
                 {
                     var depotFilePath = file.path.TrimStart('/', '\\');
                     var filePath = Path.Combine(fullInstallPath, depotFilePath);
+                    bool isRedist = false;
+
                     if (file.support)
                     {
                         filePath = Path.Combine(fullInstallPath, "gog-support", depotFilePath);
@@ -327,7 +331,7 @@ namespace GogOssLibraryNS
                             compressedMd5 = file.url, // Probably main.bin always?
                         };
 
-                        jobs.Add((filePath, 0, v1Chunk));
+                        jobs.Add((filePath, 0, v1Chunk, isRedist));
                         totalCompressedSize += expectedFileSize;
                     }
                     else
@@ -339,8 +343,10 @@ namespace GogOssLibraryNS
                     fileExpectedSizes.TryAdd(filePath, expectedFileSize);
                 }
             }
-            // --- V2 LOGIC
-            else if (bigDepot.version == 2)
+
+            // --- V2/DEPENDENCIES LOGIC
+            bool shouldDownloadSfc = false;
+            if (bigDepot.version == 2 || bigDepot.items.Any())
             {
                 //
                 // STEP 1.1: SFC Files Separation and Filtering (V2 only)
@@ -371,7 +377,7 @@ namespace GogOssLibraryNS
                     }
                 }
 
-                bool shouldDownloadSfc = sfcHashesToDownload.Any();
+                shouldDownloadSfc = sfcHashesToDownload.Any();
 
 
                 //
@@ -402,7 +408,7 @@ namespace GogOssLibraryNS
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = sfcPos;
-                                jobs.Add((sfcFilePath, sfcPos, chunk));
+                                jobs.Add((sfcFilePath, sfcPos, chunk, false));
                                 totalCompressedSize += compressedSize;
                             }
                             else if (sfcPos + chunkSize <= currentSfcSize)
@@ -413,7 +419,7 @@ namespace GogOssLibraryNS
                             else
                             {
                                 chunk.offset = sfcPos;
-                                jobs.Add((sfcFilePath, sfcPos, chunk));
+                                jobs.Add((sfcFilePath, sfcPos, chunk, false));
                                 totalCompressedSize += compressedSize;
                                 foundFirstIncompleteChunk = true;
                             }
@@ -426,12 +432,13 @@ namespace GogOssLibraryNS
                 }
 
                 //
-                // STEP 1.3: Chunk Job Creation for regular V2 files
+                // STEP 1.3: Chunk Job Creation for regular V2/Dependency files
                 //
                 var allDepotItems = bigDepot.items.Concat(sfcFiles).ToList();
 
                 foreach (var depot in allDepotItems)
                 {
+                    bool isRedist = false;
                     var filePath = Path.Combine(fullInstallPath, depot.path);
 
                     if (filePath.Contains("__redist"))
@@ -439,7 +446,13 @@ namespace GogOssLibraryNS
                         filePath = Path.Combine(GogOss.DependenciesInstallationPath, depot.path);
                     }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                    if (depot.redistTargetDir != "")
+                    {
+                        filePath = Path.Combine(fullInstallPath, depot.path);
+                        isRedist = true;
+                    }
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
@@ -472,7 +485,7 @@ namespace GogOssLibraryNS
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = pos;
-                                jobs.Add((filePath, pos, chunk));
+                                jobs.Add((filePath, pos, chunk, isRedist));
                             }
                             else if (pos + chunkSize <= currentFileSize)
                             {
@@ -482,7 +495,7 @@ namespace GogOssLibraryNS
                             else
                             {
                                 chunk.offset = pos;
-                                jobs.Add((filePath, pos, chunk));
+                                jobs.Add((filePath, pos, chunk, isRedist));
                                 foundFirstIncompleteChunk = true;
                             }
                             pos += chunkSize;
@@ -571,6 +584,9 @@ namespace GogOssLibraryNS
 
                     bool isV1 = bigDepot.version == 1;
 
+                    bool isCompressed = !isV1 || job.isRedist;
+                    var currentSecureLinks = job.isRedist ? dependencyLinks : secureLinks;
+
                     int attempt = 0;
                     int delayMs = 500;
 
@@ -580,13 +596,13 @@ namespace GogOssLibraryNS
                         try
                         {
                             string url;
-                            if (isV1)
+                            if (isV1 && !job.isRedist)
                             {
-                                url = secureLinks[0].Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
+                                url = currentSecureLinks[0].Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
                             }
                             else
                             {
-                                url = secureLinks[0].Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
+                                url = currentSecureLinks[0].Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
                             }
 
                             using var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -619,7 +635,7 @@ namespace GogOssLibraryNS
                                     offset += read;
                                 }
 
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes), token).ConfigureAwait(false);
+                                await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.isRedist, isCompressed), token).ConfigureAwait(false);
 
                                 chunkBuffer = null;
                                 allocatedBytes = 0;
@@ -642,7 +658,7 @@ namespace GogOssLibraryNS
                                     await tempFs.FlushAsync(token).ConfigureAwait(false);
                                 }).ConfigureAwait(false);
 
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, null, 0, tempFilePath, 0), token).ConfigureAwait(false);
+                                await channel.Writer.WriteAsync((job.filePath, job.offset, null, 0, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
                                 tempFilePath = null;
                             }
 
@@ -768,7 +784,7 @@ namespace GogOssLibraryNS
                                     int bytesRead;
                                     long totalWritten = 0;
 
-                                    if (bigDepot.version == 2)
+                                    if (item.isCompressed)
                                     {
                                         using (var zlib = new ZlibStream(sourceStream, CompressionMode.Decompress))
                                         {
@@ -854,9 +870,7 @@ namespace GogOssLibraryNS
 
             await Task.WhenAll(ioWorkers).ConfigureAwait(false);
 
-            //
             // STEP 4: SFC File Extraction (V2 only)
-            //
             if (bigDepot.version == 2 && sfcExtractionJobs.Any())
             {
                 var extractionWorkers = sfcExtractionJobs.Where(kvp => sfcHashesToDownload.Contains(kvp.Key))
@@ -1026,13 +1040,22 @@ namespace GogOssLibraryNS
                 depotHashes.Add(dependManifest.manifest);
             }
 
-            GogDepot.Depot bigDepot = new();
-
             var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
+
+            var mainSecureLinks = await gogDownloadApi.GetSecureLinks(taskData);
+            var allSecureLinks = new SecureLinks
+            {
+                mainSecureLinks = new(),
+                inGameDependsSecureLinks = new()
+            };
+            allSecureLinks.mainSecureLinks.secureLinks = mainSecureLinks;
+
+
+            GogDepot.Depot bigDepot = new();
+            bigDepot.version = metaManifest.version;
             foreach (var depotHash in depotHashes)
             {
                 var depotManifest = await gogDownloadApi.GetDepotInfo(depotHash, taskData, metaManifest.version);
-                bigDepot.version = depotManifest.version;
                 if (depotManifest.depot.items.Count > 0)
                 {
                     foreach (var depotItem in depotManifest.depot.items)
@@ -1057,9 +1080,45 @@ namespace GogOssLibraryNS
                 }
             }
 
-            var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
-            var secureLinks = await gogDownloadApi.GetSecureLinks(taskData);
+            List<string> inGameDependsHashes = new();
+            if (metaManifest.version == 1)
+            {
+                foreach (var depot in metaManifest.product.depots)
+                {
+                    if (!depot.redist.IsNullOrEmpty() && !depot.targetDir.IsNullOrEmpty())
+                    {
+                        var dependManifest = await GogDownloadApi.GetRedistInfo(depot.redist);
+                        var dependData = new DownloadManagerData.Download
+                        {
+                            gameID = depot.redist,
+                            downloadItemType = DownloadItemType.Dependency
+                        };
+                        dependData.downloadProperties = new DownloadProperties
+                        {
+                            os = taskData.downloadProperties.os,
+                        };
 
+                        var depotManifest = await gogDownloadApi.GetDepotInfo(dependManifest.manifest, dependData);
+                        if (depotManifest.depot.items.Count > 0)
+                        {
+                            var dependsSecureLinks = await gogDownloadApi.GetSecureLinks(dependData);
+                            if (allSecureLinks.inGameDependsSecureLinks.secureLinks.Count == 0)
+                            {
+
+                                allSecureLinks.inGameDependsSecureLinks.secureLinks = dependsSecureLinks;
+                            }
+                            foreach (var depotItem in depotManifest.depot.items)
+                            {
+                                depotItem.redistTargetDir = depot.targetDir;
+                                bigDepot.items.Add(depotItem);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
             var startTime = DateTime.Now;
             var sw = Stopwatch.StartNew();
             long lastNetworkBytes = Interlocked.Read(ref resumeInitialNetworkBytes);
@@ -1121,7 +1180,7 @@ namespace GogOssLibraryNS
                 {
                     downloadProperties.maxWorkers = CommonHelpers.CpuThreadsNumber;
                 }
-                await DownloadFilesAsync(linkedCTS.Token, bigDepot, wantedItem.fullInstallPath, secureLinks, downloadProperties.maxWorkers);
+                await DownloadFilesAsync(linkedCTS.Token, bigDepot, wantedItem.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
                 var installedGameInfo = new Installed

@@ -18,6 +18,7 @@ namespace GogOssLibraryNS.Models
             public List<DepotFile> files { get; set; } = new();
             public int version { get; set; }
         }
+
         public class Item
         {
             public string path { get; set; } = "";
@@ -26,6 +27,7 @@ namespace GogOssLibraryNS.Models
             public List<string> flags { get; set; }
             public string sha256 { get; set; } = "";
             public sfcRef sfcRef { get; set; }
+            public string redistTargetDir { get; set; } = "";
         }
 
         public class DepotFile

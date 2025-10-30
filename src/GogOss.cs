@@ -292,7 +292,7 @@ namespace GogOssLibraryNS
                     size.download_size += manifest.size["*"].download_size;
                     size.disk_size += manifest.size["*"].disk_size;
                 }
-                if (installData.downloadItemType == Enums.DownloadItemType.Dependency)
+                if (installData.downloadItemType == DownloadItemType.Dependency)
                 {
                     return size;
                 }

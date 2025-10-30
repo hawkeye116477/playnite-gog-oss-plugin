@@ -137,7 +137,7 @@ namespace GogOssLibraryNS.Services
             {
                 cacheInfoFileName = $"{gameId}_build{buildId}.json";
             }
-            else
+            else if (downloadItemType == DownloadItemType.Game)
             {
                 var builds = await GetProductBuilds(gameId, platform);
                 if (builds.items.Count > 0)
@@ -319,6 +319,13 @@ namespace GogOssLibraryNS.Services
                                 }
                                 foreach (var depot in depots)
                                 {
+                                    if (!depot.targetDir.IsNullOrEmpty())
+                                    {
+                                        var redistManifest = await GetRedistInfo(depot.redist, "2", false, forceRefreshCache);
+                                        depot.size = redistManifest.size;
+                                        depot.compressedSize = redistManifest.compressedSize;
+                                        depot.languages.Add("*");
+                                    }
                                     foreach (var language in depot.languages.ToList())
                                     {
                                         var newLanguage = language;
@@ -376,10 +383,17 @@ namespace GogOssLibraryNS.Services
                                                     depot.size;
                                                 manifest.dlcs[depot.productId].size[newLanguage].disk_size += depot.size;
                                             }
-                                            else if (depot.gameIDs.Contains(gameId))
+                                            else if (depot.gameIDs.Contains(gameId) || !depot.targetDir.IsNullOrEmpty())
                                             {
                                                 manifest.size[newLanguage].disk_size += depot.size;
-                                                manifest.size[newLanguage].download_size += depot.size;
+                                                if (depot.compressedSize == 0)
+                                                {
+                                                    manifest.size[newLanguage].download_size += depot.size;
+                                                }
+                                                else
+                                                {
+                                                    manifest.size[newLanguage].download_size += depot.compressedSize;
+                                                }
                                             }
                                         }
                                     }

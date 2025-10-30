@@ -47,11 +47,15 @@ namespace GogOssLibraryNS.Models
         {
             public long compressedSize { get; set; }
             public List<string> languages { get; set; } = new List<string>();
-            public string manifest { get; set; }
+            public string manifest { get; set; } = "";
             public string productId { get; set; } = "";
             public long size { get; set; }
             public bool isGogDepot { get; set; }
             public List<string> gameIDs { get; set; } = new List<string>();
+            public string redist { get; set; }
+            public string executable { get; set; }
+            public string argument { get; set; }
+            public string targetDir { get; set; }
         }
 
         public class ProductV1

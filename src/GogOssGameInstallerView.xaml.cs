@@ -260,6 +260,16 @@ namespace GogOssLibraryNS
                 if (manifest.dependencies.Count > 0)
                 {
                     installData.depends = manifest.dependencies;
+                    if (manifest.version == 1)
+                    {
+                        foreach (var dependv1 in manifest.depots)
+                        {
+                            if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
+                            {
+                                installData.depends.Add(dependv1.redist);
+                            }
+                        }
+                    }
                     foreach (var depend in manifest.dependencies)
                     {
                         depends.AddMissing(depend);

@@ -290,6 +290,7 @@
     <Compile Include="ByteLimiter.cs" />
     <Compile Include="Models\GogBuildsData.cs" />
     <Compile Include="Models\GogDepot.cs" />
+    <Compile Include="Models\SecureLinks.cs" />
     <Compile Include="Models\GogOwned.cs" />
     <Compile Include="Models\GogSecureLinks.cs" />
     <Compile Include="Models\ProgressData.cs" />
