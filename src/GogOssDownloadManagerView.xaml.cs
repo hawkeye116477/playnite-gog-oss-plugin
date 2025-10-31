@@ -1148,6 +1148,166 @@ namespace GogOssLibraryNS
             long lastDiskBytes = Interlocked.Read(ref resumeInitialDiskBytes);
             TimeSpan lastStopwatchElapsed = TimeSpan.Zero;
 
+            userCancelCTS = new CancellationTokenSource();
+            var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
+                gracefulInstallerCTS.Token,
+                userCancelCTS.Token
+            );
+            GameTitleTB.Text = gameTitle;
+            if (Directory.Exists(taskData.fullInstallPath))
+            {
+                var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
+                if (allFiles.Any())
+                {
+                    taskData.status = DownloadStatus.Running;
+                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
+                    int countFiles = allFiles.Count;
+                    int verifiedFiles = 0;
+
+                    if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0)
+                    {
+                        var itemsMap = bigDepot.items
+                            .Where(i => !string.IsNullOrEmpty(i.path))
+                            .ToDictionary(i => i.path, i => i);
+
+                        var filesMap = bigDepot.files
+                            .Where(f => !string.IsNullOrEmpty(f.path))
+                            .ToDictionary(f => f.path, f => f);
+
+                        var reporter = Task.Run(async () =>
+                        {
+                            try
+                            {
+                                while (!linkedCTS.Token.IsCancellationRequested)
+                                {
+                                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                                    {
+                                        DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                        ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                                    });
+
+                                    if (verifiedFiles >= countFiles) break;
+                                    await Task.Delay(500, linkedCTS.Token).ConfigureAwait(false);
+                                }
+                            }
+                            catch (TaskCanceledException) { }
+                        }, linkedCTS.Token);
+
+                        try
+                        {
+                            await Task.Run(() =>
+                            {
+                                foreach (var file in allFiles)
+                                {
+                                    linkedCTS.Token.ThrowIfCancellationRequested();
+
+                                    try
+                                    {
+                                        string relativePath = RelativePath.Get(taskData.fullInstallPath, file);
+
+                                        if (itemsMap.TryGetValue(relativePath, out var searchedItem))
+                                        {
+                                            string checksumType = "md5";
+                                            string correctChecksum = "";
+
+                                            if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
+                                            {
+                                                correctChecksum = searchedItem.chunks[0].md5;
+                                            }
+
+                                            if (correctChecksum.IsNullOrEmpty())
+                                            {
+                                                correctChecksum = searchedItem.md5;
+                                            }
+
+                                            if (correctChecksum.IsNullOrEmpty())
+                                            {
+                                                correctChecksum = searchedItem.sha256;
+                                                checksumType = "sha256";
+                                            }
+
+                                            if (!string.IsNullOrEmpty(correctChecksum))
+                                            {
+                                                try
+                                                {
+                                                    string calculatedChecksum = checksumType switch
+                                                    {
+                                                        "md5" => Helpers.GetMD5(file),
+                                                        "sha256" => Helpers.GetSHA256(file),
+                                                        _ => null
+                                                    };
+
+                                                    if (calculatedChecksum != null &&
+                                                        !string.Equals(calculatedChecksum, correctChecksum, StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        try { File.Delete(file); }
+                                                        catch (Exception) { }
+                                                    }
+                                                }
+                                                catch (Exception hashEx)
+                                                {
+                                                    logger.Warn(hashEx.Message);
+                                                }
+                                            }
+
+                                            Interlocked.Increment(ref verifiedFiles);
+                                            continue;
+                                        }
+
+                                        if (filesMap.TryGetValue(relativePath, out var depotFile))
+                                        {
+                                            string correctMd5 = depotFile.hash;
+                                            if (!string.IsNullOrEmpty(correctMd5))
+                                            {
+                                                try
+                                                {
+                                                    string calculatedMd5 = Helpers.GetMD5(file);
+
+                                                    if (calculatedMd5 != null &&
+                                                        !string.Equals(calculatedMd5, correctMd5, StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        try { File.Delete(file); }
+                                                        catch (Exception) { }
+                                                    }
+                                                }
+                                                catch (Exception hashEx)
+                                                {
+                                                    logger.Warn(hashEx.Message);
+                                                }
+                                            }
+
+                                            Interlocked.Increment(ref verifiedFiles);
+                                            continue;
+                                        }
+                                        Interlocked.Increment(ref verifiedFiles);
+                                    }
+                                    catch (OperationCanceledException) { throw; }
+                                    catch (Exception)
+                                    {
+                                        Interlocked.Increment(ref verifiedFiles);
+                                    }
+                                }
+                            }, linkedCTS.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                        }
+                        finally
+                        {
+                            verifiedFiles = countFiles;
+                            try { await reporter; } catch (TaskCanceledException) { }
+
+                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                            {
+                                DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                            });
+                        }
+                    }
+                }
+            }
+
+
             progress = new Progress<ProgressData>(p =>
             {
                 taskData.downloadSizeNumber = p.TotalCompressedBytes;
@@ -1189,7 +1349,6 @@ namespace GogOssLibraryNS
                     if (item.status != DownloadStatus.Running)
                     {
                         item.status = DownloadStatus.Running;
-                        GameTitleTB.Text = gameTitle;
                         if (downloadProperties.downloadAction != DownloadAction.Update)
                         {
                             DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadingLabel);
@@ -1221,12 +1380,6 @@ namespace GogOssLibraryNS
             });
             try
             {
-                userCancelCTS = new CancellationTokenSource();
-                var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
-                    gracefulInstallerCTS.Token,
-                    userCancelCTS.Token
-                );
-
                 if (downloadProperties.maxWorkers == 0)
                 {
                     downloadProperties.maxWorkers = CommonHelpers.CpuThreadsNumber;

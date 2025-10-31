@@ -15,6 +15,28 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static string GetMD5(string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (var md5 = System.Security.Cryptography.MD5.Create())
+                {
+                    return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
+                }
+            }
+        }
+
+        public static string GetSHA256(string filePath)
+        {
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+                using (var sha256 = System.Security.Cryptography.SHA256.Create())
+                {
+                    return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "");
+                }
+            }
+        }
+
         /// <summary>
         /// Found at https://stackoverflow.com/a/2132004
         /// </summary>

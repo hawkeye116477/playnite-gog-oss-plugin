@@ -26,6 +26,7 @@ namespace GogOssLibraryNS.Models
             public string type { get; set; } = "";
             public List<string> flags { get; set; }
             public string sha256 { get; set; } = "";
+            public string md5 { get; set; } = "";
             public sfcRef sfcRef { get; set; }
             public string redistTargetDir { get; set; } = "";
         }
