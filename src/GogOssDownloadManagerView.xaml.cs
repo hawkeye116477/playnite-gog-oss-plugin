@@ -824,6 +824,10 @@ namespace GogOssLibraryNS
                                     }
                                 }
                             }
+                            catch (OperationCanceledException)
+                            {
+                                throw;
+                            }
                             catch (Exception ex)
                             {
                                 logger.Error($"Error occurred during writing chunk to file {item.filePath}: {ex.Message}");
@@ -868,7 +872,15 @@ namespace GogOssLibraryNS
                 channel.Writer.TryComplete();
             }
 
-            await Task.WhenAll(ioWorkers).ConfigureAwait(false);
+            try
+            {
+                await Task.WhenAll(ioWorkers).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+
+            }
+
 
             // STEP 4: SFC File Extraction (V2 only)
             if (bigDepot.version == 2 && sfcExtractionJobs.Any())
@@ -935,6 +947,10 @@ namespace GogOssLibraryNS
                                     }).ConfigureAwait(false);
                                 }
                             }
+                            catch (OperationCanceledException)
+                            {
+                                throw;
+                            }
                             catch (Exception ex)
                             {
                                 logger.Error($"An error occurred during extraction of {smallFilePath} from container {containerFilePath}: {ex.Message}");
@@ -958,8 +974,17 @@ namespace GogOssLibraryNS
                         }));
                     }).ToList();
 
-                await Task.WhenAll(extractionWorkers).ConfigureAwait(false);
+                try
+                {
+                    await Task.WhenAll(extractionWorkers).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
+                {
+                }
             }
+
+            token.ThrowIfCancellationRequested();
+
 
             //
             // STEP 5: Cleanup
@@ -1312,10 +1337,34 @@ namespace GogOssLibraryNS
                     logger.Error(ex.Message);
                     wantedItem.status = DownloadStatus.Error;
                 }
-                else if (userCancelCTS.IsCancellationRequested)
+                else if (userCancelCTS.IsCancellationRequested && wantedItem.downloadProperties.downloadAction == DownloadAction.Install)
                 {
-                    if (Directory.Exists(taskData.fullInstallPath))
-                        Directory.Delete(taskData.fullInstallPath, true);
+                    const int maxRetries = 5;
+                    int delayMs = 100;
+                    for (int i = 0; i < maxRetries; i++)
+                    {
+                        try
+                        {
+                            if (Directory.Exists(taskData.fullInstallPath))
+                            {
+                                Directory.Delete(taskData.fullInstallPath, true);
+                            }
+                            break;
+                        }
+                        catch (Exception rex)
+                        {
+                            if (i < maxRetries - 1)
+                            {
+                                await Task.Delay(delayMs);
+                                delayMs *= 2;
+                            }
+                            else
+                            {
+                                logger.Warn($"Can't remove directory {taskData.fullInstallPath}: {rex.Message}. Please try removing manually.");
+                                break;
+                            }
+                        }
+                    }
                 }
             }
             finally
@@ -1371,18 +1420,9 @@ namespace GogOssLibraryNS
                     {
                         if (selectedRow.status == DownloadStatus.Running)
                         {
-                            // Gogdl can't properly gracefully cancel, so we need to force it :-)
                             userCancelCTS?.Cancel();
                             userCancelCTS?.Dispose();
-                            //gracefulInstallerCTS?.Dispose();
                         }
-                        //if (selectedRow.fullInstallPath != null && selectedRow.downloadProperties.downloadAction == DownloadAction.Install)
-                        //{
-                        //	if (Directory.Exists(selectedRow.fullInstallPath))
-                        //	{
-                        //		Directory.Delete(selectedRow.fullInstallPath, true);
-                        //	}
-                        //}
                         selectedRow.status = DownloadStatus.Canceled;
                         selectedRow.downloadedNumber = 0;
                         selectedRow.progress = 0;
