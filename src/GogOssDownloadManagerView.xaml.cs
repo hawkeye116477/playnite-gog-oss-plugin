@@ -42,7 +42,6 @@ namespace GogOssLibraryNS
     /// </summary>
     public partial class GogOssDownloadManagerView : UserControl
     {
-        public CancellationTokenSource forcefulInstallerCTS;
         public CancellationTokenSource gracefulInstallerCTS;
         public CancellationTokenSource userCancelCTS;
 
@@ -1388,7 +1387,6 @@ namespace GogOssLibraryNS
                         {
                             gracefulInstallerCTS?.Cancel();
                             gracefulInstallerCTS?.Dispose();
-                            forcefulInstallerCTS?.Dispose();
                         }
                         selectedRow.status = DownloadStatus.Paused;
                     }
@@ -1446,7 +1444,6 @@ namespace GogOssLibraryNS
                 {
                     gracefulInstallerCTS?.Cancel();
                     gracefulInstallerCTS?.Dispose();
-                    forcefulInstallerCTS?.Dispose();
                 }
                 selectedEntry.status = DownloadStatus.Canceled;
             }

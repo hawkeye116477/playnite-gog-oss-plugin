@@ -638,7 +638,6 @@ namespace GogOssLibraryNS
                     {
                         downloadManager.gracefulInstallerCTS?.Cancel();
                         downloadManager.gracefulInstallerCTS?.Dispose();
-                        downloadManager.forcefulInstallerCTS?.Dispose();
                     }
                     download.status = DownloadStatus.Paused;
                 }
