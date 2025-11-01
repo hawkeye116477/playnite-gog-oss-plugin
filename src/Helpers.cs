@@ -2,6 +2,7 @@
 using SharpCompress.Compressors.Deflate;
 using System;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace GogOssLibraryNS
 {
@@ -9,7 +10,7 @@ namespace GogOssLibraryNS
     {
         public static string GetMD5(byte[] bytes)
         {
-            using (var md5 = System.Security.Cryptography.MD5.Create())
+            using (var md5 = MD5.Create())
             {
                 return BitConverter.ToString(md5.ComputeHash(bytes)).Replace("-", "");
             }
@@ -17,23 +18,31 @@ namespace GogOssLibraryNS
 
         public static string GetMD5(string filePath)
         {
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(filePath,
+                                               FileMode.Open,
+                                               FileAccess.Read,
+                                               FileShare.Read,
+                                               bufferSize: 1 * 1024 * 1024,
+                                               options: FileOptions.SequentialScan))
+            using (var md5 = MD5.Create())
             {
-                using (var md5 = System.Security.Cryptography.MD5.Create())
-                {
-                    return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
-                }
+                var hash = md5.ComputeHash(stream);
+                return BitConverter.ToString(hash).Replace("-", "");
             }
         }
 
         public static string GetSHA256(string filePath)
         {
-            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(filePath,
+                                               FileMode.Open,
+                                               FileAccess.Read,
+                                               FileShare.Read,
+                                               bufferSize: 1 * 1024 * 1024,
+                                               options: FileOptions.SequentialScan))
+            using (var sha256 = SHA256.Create())
             {
-                using (var sha256 = System.Security.Cryptography.SHA256.Create())
-                {
-                    return BitConverter.ToString(sha256.ComputeHash(stream)).Replace("-", "");
-                }
+                var hash = sha256.ComputeHash(stream);
+                return BitConverter.ToString(hash).Replace("-", "");
             }
         }
 
