@@ -1311,6 +1311,7 @@ namespace GogOssLibraryNS
             progress = new Progress<ProgressData>(p =>
             {
                 taskData.downloadSizeNumber = p.TotalCompressedBytes;
+                taskData.installSizeNumber = p.TotalBytes;
                 double dt = (sw.Elapsed - lastStopwatchElapsed).TotalSeconds;
                 if (dt < 1 && !p.FinalReport) return;
 

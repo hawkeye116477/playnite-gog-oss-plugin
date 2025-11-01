@@ -294,7 +294,7 @@ namespace GogOssLibraryNS
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
                 if (wantedItem != null)
                 {
-                    if (wantedItem.status == DownloadStatus.Completed && !installedAppList.ContainsKey(installData.gameID))
+                    if (wantedItem.status == DownloadStatus.Completed)
                     {
                         downloadManager.downloadManagerData.downloads.Remove(wantedItem);
                     }
@@ -318,7 +318,7 @@ namespace GogOssLibraryNS
                     {
                         foreach (var branch in builds.available_branches)
                         {
-                            if (branch == null)
+                            if (branch == "")
                             {
                                 betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
                             }
