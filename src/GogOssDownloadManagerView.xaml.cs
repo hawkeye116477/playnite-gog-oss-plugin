@@ -256,6 +256,7 @@ namespace GogOssLibraryNS
             using var memoryLimiter = new MemoryLimiter(maxMemoryBytes);
 
             const string sfcContainerBaseName = "smallFilesContainer";
+            const string chunkTempBaseName = "temp_chunk_";
             var sfcFilePathsByHash = new ConcurrentDictionary<string, string>();
             var sfcExtractionJobs = new ConcurrentDictionary<string, List<(string filePath, GogDepot.sfcRef sfcRef)>>();
 
@@ -566,6 +567,9 @@ namespace GogOssLibraryNS
                 byte[] chunkBuffer = null;
                 string tempFilePath = null;
 
+                var chunk = job.chunk;
+                string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}");
+
                 try
                 {
                     await downloadSemaphore.WaitAsync(token).ConfigureAwait(false);
@@ -573,7 +577,6 @@ namespace GogOssLibraryNS
                     Interlocked.Increment(ref activeDownloaders);
                     ReportProgress();
 
-                    var chunk = job.chunk;
                     long compressedSize = (long)chunk.compressedSize;
 
                     bool isV1 = bigDepot.version == 1;
@@ -631,6 +634,34 @@ namespace GogOssLibraryNS
                                     request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(start, end);
                                 }
 
+                                long resumeStartByte = 0;
+                                if (!memoryReserved)
+                                {
+                                    tempFilePath = chunkTempPath;
+
+                                    if (File.Exists(tempFilePath))
+                                    {
+                                        resumeStartByte = new FileInfo(tempFilePath).Length;
+                                        if (resumeStartByte >= compressedSize)
+                                        {
+                                            await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
+                                            tempFilePath = null;
+                                            return;
+                                        }
+                                        else if (resumeStartByte > 0)
+                                        {
+                                            if (!isV1)
+                                            {
+                                                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(resumeStartByte, compressedSize - 1);
+                                            }
+                                            else
+                                            {
+                                                resumeStartByte = 0;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                                 response.EnsureSuccessStatusCode();
 
@@ -660,7 +691,6 @@ namespace GogOssLibraryNS
                                 }
                                 else
                                 {
-                                    tempFilePath = Path.Combine(tempDir, $"{job.chunk.compressedMd5}.{Guid.NewGuid():N}.tmp");
                                     await RentAndUseAsync(bufferSize, async buffer =>
                                     {
                                         using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -670,12 +700,16 @@ namespace GogOssLibraryNS
                                                 Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                                 ReportProgress();
                                             }), null);
-                                        using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous);
+
+                                        FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
+                                        using var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous);
+
                                         await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
                                         await tempFs.FlushAsync(token).ConfigureAwait(false);
+
+                                        await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
                                     }).ConfigureAwait(false);
 
-                                    await channel.Writer.WriteAsync((job.filePath, job.offset, null, 0, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
                                     tempFilePath = null;
                                 }
 
@@ -714,15 +748,7 @@ namespace GogOssLibraryNS
                                     memoryReserved = false;
                                 }
 
-                                if (!string.IsNullOrEmpty(tempFilePath))
-                                {
-                                    try
-                                    {
-                                        File.Delete(tempFilePath);
-                                    }
-                                    catch { }
-                                    tempFilePath = null;
-                                }
+                                tempFilePath = null;
 
                                 if (attempt < maxRetries)
                                 {
@@ -762,14 +788,6 @@ namespace GogOssLibraryNS
                             downloadSemaphore.Release();
                         }
                         Interlocked.Decrement(ref activeDownloaders);
-                        if (!string.IsNullOrEmpty(tempFilePath))
-                        {
-                            try
-                            {
-                                File.Delete(tempFilePath);
-                            }
-                            catch { }
-                        }
                     }
                     catch { }
                     ReportProgress();
@@ -788,17 +806,24 @@ namespace GogOssLibraryNS
                     {
                         while (channel.Reader.TryRead(out var item))
                         {
-                            token.ThrowIfCancellationRequested();
-
                             var fileWriteSemaphore = writeSemaphores[item.filePath];
                             await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                             Interlocked.Increment(ref activeDiskers);
 
+                            bool deleteTempFile = false;
+
                             try
                             {
-                                Stream sourceStream = item.chunkBuffer != null
-                                    ? new MemoryStream(item.chunkBuffer, 0, item.length, writable: false)
-                                    : new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan | FileOptions.DeleteOnClose);
+                                Stream sourceStream;
+                                if (item.chunkBuffer != null)
+                                {
+                                    sourceStream = new MemoryStream(item.chunkBuffer, 0, item.length, writable: false);
+                                }
+                                else
+                                {
+                                    sourceStream = new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan);
+                                    deleteTempFile = true;
+                                }
 
                                 bool isSfcContainer = item.filePath.Contains(sfcContainerBaseName) && item.filePath.StartsWith(tempDir) && bigDepot.version == 2;
 
@@ -848,6 +873,18 @@ namespace GogOssLibraryNS
                                         {
                                             outFs.SetLength(fileExpectedSizes[item.filePath]);
                                         }
+                                    }
+                                }
+
+                                if (deleteTempFile)
+                                {
+                                    try
+                                    {
+                                        File.Delete(item.tempFilePath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        logger.Warn($"Failed to delete temporary chunk file {item.tempFilePath}: {ex.Message}");
                                     }
                                 }
                             }
@@ -1030,39 +1067,29 @@ namespace GogOssLibraryNS
                 isFinalReport = true;
                 ReportProgress();
 
-                if (bigDepot.version == 2 && sfcHashesToDownload.Any())
-                {
-                    foreach (var depotHash in sfcHashesToDownload)
-                    {
-                        if (sfcFilePathsByHash.TryGetValue(depotHash, out var path))
-                        {
-                            try
-                            {
-                                File.Delete(path);
-                            }
-                            catch { }
-                        }
-                    }
-                }
-
                 if (Directory.Exists(tempDir))
                 {
-                    foreach (var f in Directory.EnumerateFiles(tempDir))
+                    if (!token.IsCancellationRequested)
                     {
                         try
                         {
-                            File.Delete(f);
+                            Directory.Delete(tempDir, true);
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            logger.Warn($"Failed to recursively delete temporary directory {tempDir} after successful download: {ex.Message}");
+                        }
                     }
-                    try
+                    else
                     {
-                        Directory.Delete(tempDir, false);
+                        logger.Info($"Download was canceled. Retaining temporary directory: {tempDir} for resume.");
                     }
-                    catch { }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                logger.Error($"An error occurred during final cleanup: {ex.Message}");
+            }
         }
 
         public async Task Install(DownloadManagerData.Download taskData)
@@ -1335,7 +1362,6 @@ namespace GogOssLibraryNS
                 }
             }
 
-
             progress = new Progress<ProgressData>(p =>
             {
                 taskData.downloadSizeNumber = p.TotalCompressedBytes;
@@ -1378,14 +1404,6 @@ namespace GogOssLibraryNS
                     if (item.status != DownloadStatus.Running)
                     {
                         item.status = DownloadStatus.Running;
-                        if (downloadProperties.downloadAction != DownloadAction.Update)
-                        {
-                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadingLabel);
-                        }
-                        else
-                        {
-                            DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
-                        }
                     }
                     if (p.TotalCompressedBytes == p.NetworkBytes)
                     {
@@ -1416,6 +1434,14 @@ namespace GogOssLibraryNS
                 var preferredCdn = settings.PreferredCdn;
                 var preferredCdnString = PreferredCdn.GetCdnDict()[preferredCdn];
 
+                if (downloadProperties.downloadAction != DownloadAction.Update)
+                {
+                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadingLabel);
+                }
+                else
+                {
+                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
+                }
                 await DownloadFilesAsync(linkedCTS.Token, bigDepot, wantedItem.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
@@ -1521,35 +1547,6 @@ namespace GogOssLibraryNS
                     logger.Error(ex.Message);
                     wantedItem.status = DownloadStatus.Error;
                 }
-                else if (userCancelCTS.IsCancellationRequested && wantedItem.downloadProperties.downloadAction == DownloadAction.Install)
-                {
-                    const int maxRetries = 5;
-                    int delayMs = 100;
-                    for (int i = 0; i < maxRetries; i++)
-                    {
-                        try
-                        {
-                            if (Directory.Exists(taskData.fullInstallPath))
-                            {
-                                Directory.Delete(taskData.fullInstallPath, true);
-                            }
-                            break;
-                        }
-                        catch (Exception rex)
-                        {
-                            if (i < maxRetries - 1)
-                            {
-                                await Task.Delay(delayMs);
-                                delayMs *= 2;
-                            }
-                            else
-                            {
-                                logger.Warn($"Can't remove directory {taskData.fullInstallPath}: {rex.Message}. Please try removing manually.");
-                                break;
-                            }
-                        }
-                    }
-                }
             }
             finally
             {
@@ -1590,7 +1587,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void CancelDownloadBtn_Click(object sender, RoutedEventArgs e)
+        private async void CancelDownloadBtn_Click(object sender, RoutedEventArgs e)
         {
             if (DownloadsDG.SelectedIndex != -1)
             {
@@ -1605,6 +1602,33 @@ namespace GogOssLibraryNS
                         {
                             userCancelCTS?.Cancel();
                             userCancelCTS?.Dispose();
+                        }
+
+                        const int maxRetries = 5;
+                        int delayMs = 500;
+                        for (int i = 0; i < maxRetries; i++)
+                        {
+                            try
+                            {
+                                if (Directory.Exists(selectedRow.fullInstallPath))
+                                {
+                                    Directory.Delete(selectedRow.fullInstallPath, true);
+                                }
+                                break;
+                            }
+                            catch (Exception rex)
+                            {
+                                if (i < maxRetries - 1)
+                                {
+                                    await Task.Delay(delayMs);
+                                    delayMs *= 2;
+                                }
+                                else
+                                {
+                                    logger.Warn($"Can't remove directory {selectedRow.fullInstallPath}: {rex.Message}. Please try removing manually.");
+                                    break;
+                                }
+                            }
                         }
                         selectedRow.status = DownloadStatus.Canceled;
                         selectedRow.downloadedNumber = 0;
