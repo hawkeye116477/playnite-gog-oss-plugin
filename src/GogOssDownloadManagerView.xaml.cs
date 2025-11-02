@@ -237,7 +237,7 @@ namespace GogOssLibraryNS
             GogDepot.Depot bigDepot,
             string fullInstallPath,
             SecureLinks allSecureLinks,
-            int maxParallel = 40,
+            int maxParallel,
             int bufferSize = 512 * 1024,
             long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
             int maxRetries = 3,
@@ -576,85 +576,68 @@ namespace GogOssLibraryNS
                     var chunk = job.chunk;
                     long compressedSize = (long)chunk.compressedSize;
 
-                    bool memoryReserved = memoryLimiter.TryReserve(compressedSize);
-                    if (memoryReserved)
-                    {
-                        allocatedBytes = compressedSize;
-                    }
-
                     bool isV1 = bigDepot.version == 1;
-
                     bool isCompressed = !isV1 || job.isRedist;
+
                     var currentSecureLinks = job.isRedist ? dependencyLinks : secureLinks;
-                    var currentSecureLink = currentSecureLinks[0];
+                    var availableCdns = new List<string>(currentSecureLinks);
+
                     if (preferredCdn != "")
                     {
-                        var newSecureLink = currentSecureLinks.FirstOrDefault(l => l.Contains(preferredCdn.ToLower()));
-                        if (!newSecureLink.IsNullOrEmpty())
+                        var preferredLink = availableCdns.FirstOrDefault(l => l.Contains(preferredCdn.ToLower()));
+                        if (!preferredLink.IsNullOrEmpty())
                         {
-                            currentSecureLink = newSecureLink;
+                            availableCdns.Remove(preferredLink);
+                            availableCdns.Insert(0, preferredLink);
                         }
                     }
 
-                    int attempt = 0;
-                    int delayMs = 500;
-
-                    while (attempt < maxRetries)
+                    foreach (var currentSecureLink in availableCdns)
                     {
-                        attempt++;
-                        try
+                        bool memoryReserved = false;
+                        int attempt = 0;
+                        int delayMs = 500;
+
+                        while (attempt < maxRetries)
                         {
-                            string url;
-                            if (isV1 && !job.isRedist)
+                            attempt++;
+                            try
                             {
-                                url = currentSecureLink.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
-                            }
-                            else
-                            {
-                                url = currentSecureLink.Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
-                            }
-
-                            using var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-                            if (isV1)
-                            {
-                                long start = job.chunk.offset;
-                                long end = job.chunk.offset + (long)job.chunk.size - 1;
-                                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(start, end);
-                            }
-
-                            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
-                            response.EnsureSuccessStatusCode();
-
-                            if (memoryReserved)
-                            {
-                                chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
-
-                                using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                                using var progressStream = new ProgressStream.ProgressStream(networkStream,
-                                    new Progress<int>(bytesRead =>
-                                    {
-                                        Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                        ReportProgress();
-                                    }), null);
-                                int offset = 0;
-                                int read;
-                                while ((read = await progressStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
+                                if (!memoryReserved && allocatedBytes == 0)
                                 {
-                                    offset += read;
+                                    memoryReserved = memoryLimiter.TryReserve(compressedSize);
+                                    if (memoryReserved)
+                                    {
+                                        allocatedBytes = compressedSize;
+                                    }
                                 }
 
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.isRedist, isCompressed), token).ConfigureAwait(false);
-
-                                chunkBuffer = null;
-                                allocatedBytes = 0;
-                                memoryReserved = false;
-                            }
-                            else
-                            {
-                                tempFilePath = Path.Combine(tempDir, $"{job.chunk.compressedMd5}.{Guid.NewGuid():N}.tmp");
-                                await RentAndUseAsync(bufferSize, async buffer =>
+                                string url;
+                                if (isV1 && !job.isRedist)
                                 {
+                                    url = currentSecureLink.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
+                                }
+                                else
+                                {
+                                    url = currentSecureLink.Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
+                                }
+
+                                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                                if (isV1)
+                                {
+                                    long start = job.chunk.offset;
+                                    long end = job.chunk.offset + (long)job.chunk.size - 1;
+                                    request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(start, end);
+                                }
+
+                                using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                                response.EnsureSuccessStatusCode();
+
+                                if (memoryReserved)
+                                {
+                                    chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
+
                                     using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                                     using var progressStream = new ProgressStream.ProgressStream(networkStream,
                                         new Progress<int>(bytesRead =>
@@ -662,70 +645,105 @@ namespace GogOssLibraryNS
                                             Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                             ReportProgress();
                                         }), null);
-                                    using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous);
-                                    await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
-                                    await tempFs.FlushAsync(token).ConfigureAwait(false);
-                                }).ConfigureAwait(false);
+                                    int offset = 0;
+                                    int read;
+                                    while ((read = await progressStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
+                                    {
+                                        offset += read;
+                                    }
 
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, null, 0, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
-                                tempFilePath = null;
-                            }
+                                    await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.isRedist, isCompressed), token).ConfigureAwait(false);
 
-                            break;
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            throw;
-                        }
-                        catch (ObjectDisposedException ex) when (token.IsCancellationRequested)
-                        {
-                            throw new OperationCanceledException("Download canceled (stream closed)", ex, token);
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Debug($"Download attempt {attempt} failed for chunk {job.chunk.compressedMd5} of file {job.filePath}: {ex.Message}");
-
-                            if (chunkBuffer != null)
-                            {
-                                try
-                                {
-                                    ArrayPool<byte>.Shared.Return(chunkBuffer);
+                                    chunkBuffer = null;
+                                    allocatedBytes = 0;
+                                    memoryReserved = false;
                                 }
-                                catch { }
-                                chunkBuffer = null;
-                            }
-                            if (memoryReserved && allocatedBytes > 0)
-                            {
-                                try
+                                else
                                 {
-                                    memoryLimiter.Release(allocatedBytes);
-                                }
-                                catch { }
-                                allocatedBytes = 0;
-                                memoryReserved = false;
-                            }
-                            if (!string.IsNullOrEmpty(tempFilePath))
-                            {
-                                try
-                                {
-                                    File.Delete(tempFilePath);
-                                }
-                                catch { }
-                                tempFilePath = null;
-                            }
+                                    tempFilePath = Path.Combine(tempDir, $"{job.chunk.compressedMd5}.{Guid.NewGuid():N}.tmp");
+                                    await RentAndUseAsync(bufferSize, async buffer =>
+                                    {
+                                        using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                                        using var progressStream = new ProgressStream.ProgressStream(networkStream,
+                                            new Progress<int>(bytesRead =>
+                                            {
+                                                Interlocked.Add(ref totalNetworkBytes, bytesRead);
+                                                ReportProgress();
+                                            }), null);
+                                        using var tempFs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous);
+                                        await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
+                                        await tempFs.FlushAsync(token).ConfigureAwait(false);
+                                    }).ConfigureAwait(false);
 
-                            if (attempt < maxRetries)
-                            {
-                                await Task.Delay(delayMs, token).ConfigureAwait(false);
+                                    await channel.Writer.WriteAsync((job.filePath, job.offset, null, 0, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
+                                    tempFilePath = null;
+                                }
+
+                                return;
                             }
-                            else
+                            catch (OperationCanceledException)
                             {
-                                logger.Error($"Failed to download chunk {job.chunk.compressedMd5} of file {job.filePath} after {maxRetries} attempts: {ex}.");
                                 throw;
                             }
-                            delayMs *= 2;
+                            catch (ObjectDisposedException ex) when (token.IsCancellationRequested)
+                            {
+                                throw new OperationCanceledException("Download canceled (stream closed)", ex, token);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Warn($"Download attempt {attempt} failed for chunk {job.chunk.compressedMd5} of file {job.filePath} using CDN {currentSecureLink}: {ex.Message}");
+
+                                if (chunkBuffer != null)
+                                {
+                                    try
+                                    {
+                                        ArrayPool<byte>.Shared.Return(chunkBuffer);
+                                    }
+                                    catch { }
+                                    chunkBuffer = null;
+                                }
+
+                                if (memoryReserved && allocatedBytes > 0)
+                                {
+                                    try
+                                    {
+                                        memoryLimiter.Release(allocatedBytes);
+                                    }
+                                    catch { }
+                                    allocatedBytes = 0;
+                                    memoryReserved = false;
+                                }
+
+                                if (!string.IsNullOrEmpty(tempFilePath))
+                                {
+                                    try
+                                    {
+                                        File.Delete(tempFilePath);
+                                    }
+                                    catch { }
+                                    tempFilePath = null;
+                                }
+
+                                if (attempt < maxRetries)
+                                {
+                                    await Task.Delay(delayMs, token).ConfigureAwait(false);
+                                }
+                                else if (currentSecureLink != availableCdns.Last())
+                                {
+                                    logger.Warn($"Max retries reached ({maxRetries}) for CDN {currentSecureLink}. Switching to next CDN.");
+                                    break;
+                                }
+                                else
+                                {
+                                    logger.Error($"Failed to download chunk {job.chunk.compressedMd5} of file {job.filePath} after {maxRetries} attempts on all {availableCdns.Count} CDNs: {ex}.");
+                                    throw;
+                                }
+
+                                delayMs *= 2;
+                            }
                         }
                     }
+                    throw new Exception($"Failed to download chunk {job.chunk.compressedMd5} of file {job.filePath} after trying all available CDNs.");
                 }
                 finally
                 {
