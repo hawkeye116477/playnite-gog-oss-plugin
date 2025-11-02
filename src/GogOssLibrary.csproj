@@ -248,6 +248,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comet.cs" />
+    <Compile Include="Enums\GogCdn.cs" />
     <Compile Include="Enums\UpdatePolicy.cs" />
     <Compile Include="GogOss.cs" />
     <Compile Include="GogOssCloud.cs" />

@@ -104,6 +104,9 @@ namespace GogOssLibraryNS
             AutoClearCacheCBo.ItemsSource = autoClearOptions;
             AutoRemoveCompletedDownloadsCBo.ItemsSource = autoClearOptions;
 
+            var preferredCdnActions = PreferredCdn.GetCdnDict();
+            PreferredCdnCBo.ItemsSource = preferredCdnActions;
+
             troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)
             {

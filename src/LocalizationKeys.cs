@@ -30,10 +30,6 @@ namespace System
         /// </summary>
         public const string GogOssEnableCometSupportToolTip = "gog-oss-enable-comet-support-tool-tip";
         /// <summary>
-        /// Check for Comet and Gogdl updates
-        /// </summary>
-        public const string GogOssCometUpdatePolicy = "gog-oss-comet-update-policy";
-        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";
@@ -137,6 +133,10 @@ namespace System
         /// Are you sure you want to uninstall selected DLCs?
         /// </summary>
         public const string CommonUninstallSelectedDlcs = "common-uninstall-selected-dlcs";
+        /// <summary>
+        /// Preferred CDN
+        /// </summary>
+        public const string CommonDownloaderPreferredCdn = "common-downloader-preferred-cdn";
         /// <summary>
         /// {$launcherName} Path
         /// </summary>

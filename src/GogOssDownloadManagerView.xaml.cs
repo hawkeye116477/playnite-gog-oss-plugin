@@ -240,7 +240,8 @@ namespace GogOssLibraryNS
             int maxParallel = 40,
             int bufferSize = 512 * 1024,
             long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
-            int maxRetries = 3)
+            int maxRetries = 3,
+            string preferredCdn = "")
         {
             // STEP 0: Service and Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
@@ -585,6 +586,15 @@ namespace GogOssLibraryNS
 
                     bool isCompressed = !isV1 || job.isRedist;
                     var currentSecureLinks = job.isRedist ? dependencyLinks : secureLinks;
+                    var currentSecureLink = currentSecureLinks[0];
+                    if (preferredCdn != "")
+                    {
+                        var newSecureLink = currentSecureLinks.FirstOrDefault(l => l.Contains(preferredCdn.ToLower()));
+                        if (!newSecureLink.IsNullOrEmpty())
+                        {
+                            currentSecureLink = newSecureLink;
+                        }
+                    }
 
                     int attempt = 0;
                     int delayMs = 500;
@@ -597,11 +607,11 @@ namespace GogOssLibraryNS
                             string url;
                             if (isV1 && !job.isRedist)
                             {
-                                url = currentSecureLinks[0].Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
+                                url = currentSecureLink.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
                             }
                             else
                             {
-                                url = currentSecureLinks[0].Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
+                                url = currentSecureLink.Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
                             }
 
                             using var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -1385,7 +1395,10 @@ namespace GogOssLibraryNS
                 {
                     downloadProperties.maxWorkers = CommonHelpers.CpuThreadsNumber;
                 }
-                await DownloadFilesAsync(linkedCTS.Token, bigDepot, wantedItem.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers);
+                var preferredCdn = settings.PreferredCdn;
+                var preferredCdnString = PreferredCdn.GetCdnDict()[preferredCdn];
+
+                await DownloadFilesAsync(linkedCTS.Token, bigDepot, wantedItem.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
                 var installedGameInfo = new Installed

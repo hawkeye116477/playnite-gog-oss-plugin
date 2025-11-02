@@ -33,6 +33,7 @@ namespace GogOssLibraryNS
         public long NextClearingTime { get; set; } = 0;
         public long NextRemovingCompletedDownloadsTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
+        public GogCdn PreferredCdn { get; set; } = GogCdn.Akamai;
     }
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {
