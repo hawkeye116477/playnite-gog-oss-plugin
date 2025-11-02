@@ -568,7 +568,9 @@ namespace GogOssLibraryNS
                 string tempFilePath = null;
 
                 var chunk = job.chunk;
-                string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}");
+
+                string fileHashSuffix = Path.GetFileName(job.filePath).GetHashCode().ToString("X");
+                string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}_{fileHashSuffix}");
 
                 try
                 {
@@ -810,8 +812,6 @@ namespace GogOssLibraryNS
                             await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                             Interlocked.Increment(ref activeDiskers);
 
-                            bool deleteTempFile = false;
-
                             try
                             {
                                 Stream sourceStream;
@@ -821,8 +821,12 @@ namespace GogOssLibraryNS
                                 }
                                 else
                                 {
-                                    sourceStream = new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, FileOptions.SequentialScan);
-                                    deleteTempFile = true;
+                                    sourceStream = new FileStream(item.tempFilePath!,
+                                                                    FileMode.Open,
+                                                                    FileAccess.Read,
+                                                                    FileShare.None,
+                                                                    bufferSize,
+                                                                    FileOptions.SequentialScan | FileOptions.DeleteOnClose);
                                 }
 
                                 bool isSfcContainer = item.filePath.Contains(sfcContainerBaseName) && item.filePath.StartsWith(tempDir) && bigDepot.version == 2;
@@ -873,18 +877,6 @@ namespace GogOssLibraryNS
                                         {
                                             outFs.SetLength(fileExpectedSizes[item.filePath]);
                                         }
-                                    }
-                                }
-
-                                if (deleteTempFile)
-                                {
-                                    try
-                                    {
-                                        File.Delete(item.tempFilePath);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        logger.Warn($"Failed to delete temporary chunk file {item.tempFilePath}: {ex.Message}");
                                     }
                                 }
                             }
