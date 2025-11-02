@@ -1209,11 +1209,13 @@ namespace GogOssLibraryNS
                 userCancelCTS.Token
             );
             GameTitleTB.Text = gameTitle;
+
             if (Directory.Exists(taskData.fullInstallPath))
             {
                 var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
                 if (allFiles.Any())
                 {
+                    var verificationFinishedSource = new TaskCompletionSource<bool>();
                     taskData.status = DownloadStatus.Running;
                     DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
                     int countFiles = allFiles.Count;
@@ -1231,21 +1233,29 @@ namespace GogOssLibraryNS
 
                         var reporter = Task.Run(async () =>
                         {
-                            try
+                            while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
                             {
-                                while (!linkedCTS.Token.IsCancellationRequested)
+                                try
                                 {
+                                    var delay = Task.Delay(500, linkedCTS.Token);
+                                    var completedTask = await Task.WhenAny(delay, verificationFinishedSource.Task);
+
+                                    if (completedTask == verificationFinishedSource.Task)
+                                    {
+                                        break;
+                                    }
+
                                     _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
                                     {
                                         DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                         ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                                     });
-
-                                    if (verifiedFiles >= countFiles) break;
-                                    await Task.Delay(500, linkedCTS.Token).ConfigureAwait(false);
+                                }
+                                catch (TaskCanceledException)
+                                {
+                                    break;
                                 }
                             }
-                            catch (TaskCanceledException) { }
                         }, linkedCTS.Token);
 
                         try
@@ -1304,7 +1314,6 @@ namespace GogOssLibraryNS
                                                     logger.Warn(hashEx.Message);
                                                 }
                                             }
-
                                             Interlocked.Increment(ref verifiedFiles);
                                             continue;
                                         }
@@ -1330,7 +1339,6 @@ namespace GogOssLibraryNS
                                                     logger.Warn(hashEx.Message);
                                                 }
                                             }
-
                                             Interlocked.Increment(ref verifiedFiles);
                                             continue;
                                         }
@@ -1346,17 +1354,16 @@ namespace GogOssLibraryNS
                         }
                         catch (OperationCanceledException)
                         {
+                            verificationFinishedSource.TrySetCanceled();
                         }
                         finally
                         {
-                            verifiedFiles = countFiles;
-                            try { await reporter; } catch (TaskCanceledException) { }
+                            Interlocked.Exchange(ref verifiedFiles, countFiles);
 
-                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
-                            {
-                                DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                                ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
-                            });
+                            verificationFinishedSource.TrySetResult(true);
+
+                            DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                            ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                         }
                     }
                 }
