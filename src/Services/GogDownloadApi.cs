@@ -632,7 +632,6 @@ namespace GogOssLibraryNS.Services
             bool correctJson = false;
             if (File.Exists(cacheInfoFile))
             {
-                logger.Debug(cacheInfoFile);
                 if (!skipRefreshing)
                 {
                     if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7) || forceRefreshCache)
