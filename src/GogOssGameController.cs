@@ -604,7 +604,7 @@ namespace GogOssLibraryNS
             if (newGameInfo.items.Count > 0)
             {
                 bool updateAvailable = false;
-                var newBuild = newGameInfo.items.FirstOrDefault(i => i.branch == null);
+                var newBuild = newGameInfo.items.FirstOrDefault(i => i.branch == "");
                 var oldBuildBranch = newGameInfo.items.FirstOrDefault(i => i.build_id == installedInfo.build_id)?.branch;
                 if (oldBuildBranch.IsNullOrEmpty())
                 {
