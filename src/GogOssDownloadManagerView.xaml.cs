@@ -427,6 +427,12 @@ namespace GogOssLibraryNS
                             sfcPos += chunkSize;
                         }
 
+                        if (File.Exists(sfcFilePath))
+                        {
+                            initialNetworkBytesLocal += new FileInfo(sfcFilePath).Length;
+                        }
+
+
                         fileExpectedSizes.TryAdd(sfcFilePath, sfcTotalDecSize);
                         writeSemaphores.TryAdd(sfcFilePath, new SemaphoreSlim(1));
                     }
@@ -500,6 +506,12 @@ namespace GogOssLibraryNS
                                 foundFirstIncompleteChunk = true;
                             }
                             pos += chunkSize;
+
+                            string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}");
+                            if (File.Exists(chunkTempPath))
+                            {
+                                initialNetworkBytesLocal += Math.Min(new FileInfo(chunkTempPath).Length, compressedSize);
+                            }
                         }
                     }
                 }
@@ -569,8 +581,7 @@ namespace GogOssLibraryNS
 
                 var chunk = job.chunk;
 
-                string fileHashSuffix = Path.GetFileName(job.filePath).GetHashCode().ToString("X");
-                string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}_{fileHashSuffix}");
+                string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}");
 
                 try
                 {
