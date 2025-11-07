@@ -182,6 +182,7 @@
     <Compile Include="..\third_party\playnite-common-plugin\src\LocalizeExtension.cs">
       <Link>Shared\LocalizeExtension.cs</Link>
     </Compile>
+    <Compile Include="ResumeState.cs" />
     <Compile Include="Xdelta.cs" />
     <Page Include="..\third_party\playnite-common-plugin\src\MessageCheckBoxDialog.xaml">
       <Link>Shared\MessageCheckBoxDialog.xaml</Link>

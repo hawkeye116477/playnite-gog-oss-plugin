@@ -265,7 +265,7 @@ namespace GogOssLibraryNS
             int channelCapacity = Math.Min(maxParallel * 2, 64);
 
             // Producer-consumer channel
-            var channel = Channel.CreateBounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, bool isRedist, bool isCompressed)>(
+            var channel = Channel.CreateBounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, bool isRedist, bool isCompressed, string chunkId)>(
                 new BoundedChannelOptions(channelCapacity)
                 {
                     SingleReader = false,
@@ -287,6 +287,10 @@ namespace GogOssLibraryNS
             {
                 Directory.CreateDirectory(tempDir);
             }
+
+            var resumeState = new ResumeState();
+            string resumeStatePath = Path.Combine(tempDir, "resume-state.json");
+            resumeState.Load(resumeStatePath);
 
             //
             // STEP 1.1 / 1.2 / 1.3 - JOB CREATION (UNIFIED LOGIC)
@@ -410,8 +414,11 @@ namespace GogOssLibraryNS
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = sfcPos;
-                                jobs.Add((sfcFilePath, sfcPos, chunk, false));
-                                totalCompressedSize += compressedSize;
+                                if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
+                                {
+                                    jobs.Add((sfcFilePath, sfcPos, chunk, false));
+                                    totalCompressedSize += compressedSize;
+                                }
                             }
                             else if (sfcPos + chunkSize <= currentSfcSize)
                             {
@@ -421,19 +428,20 @@ namespace GogOssLibraryNS
                             else
                             {
                                 chunk.offset = sfcPos;
-                                jobs.Add((sfcFilePath, sfcPos, chunk, false));
-                                totalCompressedSize += compressedSize;
+                                if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
+                                {
+                                    jobs.Add((sfcFilePath, sfcPos, chunk, false));
+                                    totalCompressedSize += compressedSize;
+                                }
+                                else
+                                {
+                                    initialDiskBytesLocal += chunkSize;
+                                    initialNetworkBytesLocal += compressedSize;
+                                }
                                 foundFirstIncompleteChunk = true;
                             }
                             sfcPos += chunkSize;
                         }
-
-                        if (File.Exists(sfcFilePath))
-                        {
-                            initialNetworkBytesLocal += new FileInfo(sfcFilePath).Length;
-                        }
-
-
                         fileExpectedSizes.TryAdd(sfcFilePath, sfcTotalDecSize);
                         writeSemaphores.TryAdd(sfcFilePath, new SemaphoreSlim(1));
                     }
@@ -494,6 +502,24 @@ namespace GogOssLibraryNS
                     long pos = 0;
                     bool foundFirstIncompleteChunk = false;
 
+                    if (File.Exists(filePath))
+                    {
+                        if (currentFileSize > expectedFileSize)
+                        {
+                            try
+                            {
+                                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
+                                fs.SetLength(expectedFileSize);
+                                logger.Info($"Trimmed file {filePath} from {currentFileSize} to {expectedFileSize} bytes.");
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Warn($"Failed to trim file {filePath}: {ex.Message}");
+                            }
+                        }
+                    }
+
+
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
                         foreach (var chunk in depot.chunks)
@@ -504,7 +530,15 @@ namespace GogOssLibraryNS
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = pos;
-                                jobs.Add((filePath, pos, chunk, isRedist));
+                                if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
+                                {
+                                    jobs.Add((filePath, pos, chunk, isRedist));
+                                }
+                                else
+                                {
+                                    initialDiskBytesLocal += chunkSize;
+                                    initialNetworkBytesLocal += compressedSize;
+                                }
                             }
                             else if (pos + chunkSize <= currentFileSize)
                             {
@@ -514,7 +548,15 @@ namespace GogOssLibraryNS
                             else
                             {
                                 chunk.offset = pos;
-                                jobs.Add((filePath, pos, chunk, isRedist));
+                                if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
+                                {
+                                    jobs.Add((filePath, pos, chunk, isRedist));
+                                }
+                                else
+                                {
+                                    initialDiskBytesLocal += chunkSize;
+                                    initialNetworkBytesLocal += compressedSize;
+                                }
                                 foundFirstIncompleteChunk = true;
                             }
                             pos += chunkSize;
@@ -671,7 +713,7 @@ namespace GogOssLibraryNS
                                         resumeStartByte = new FileInfo(tempFilePath).Length;
                                         if (resumeStartByte >= compressedSize)
                                         {
-                                            await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
+                                            await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
                                             tempFilePath = null;
                                             return;
                                         }
@@ -710,7 +752,7 @@ namespace GogOssLibraryNS
                                         offset += read;
                                     }
 
-                                    await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.isRedist, isCompressed), token).ConfigureAwait(false);
+                                    await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.isRedist, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
 
                                     chunkBuffer = null;
                                     allocatedBytes = 0;
@@ -734,7 +776,7 @@ namespace GogOssLibraryNS
                                         await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
                                         await tempFs.FlushAsync(token).ConfigureAwait(false);
 
-                                        await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed), token).ConfigureAwait(false);
+                                        await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
                                     }).ConfigureAwait(false);
 
                                     tempFilePath = null;
@@ -903,6 +945,7 @@ namespace GogOssLibraryNS
                                             outFs.SetLength(fileExpectedSizes[item.filePath]);
                                         }
                                     }
+                                    resumeState.MarkCompleted(item.filePath, item.chunkId);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -951,17 +994,25 @@ namespace GogOssLibraryNS
             finally
             {
                 channel.Writer.TryComplete();
+                try
+                {
+                    await Task.WhenAll(ioWorkers).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
+                {
+
+                }
+                try
+                {
+                    resumeState.Save(resumeStatePath);
+                }
+                catch
+                {
+
+                }
             }
 
-            try
-            {
-                await Task.WhenAll(ioWorkers).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException) when (token.IsCancellationRequested)
-            {
-
-            }
-
+          
 
             // STEP 4: SFC File Extraction (V2 only)
             if (bigDepot.version == 2 && sfcExtractionJobs.Any())
@@ -1274,6 +1325,7 @@ namespace GogOssLibraryNS
             }
 
             gracefulInstallerCTS = new CancellationTokenSource();
+            userCancelCTS = new();
 
             List<string> depotHashes = new();
 
@@ -1413,7 +1465,10 @@ namespace GogOssLibraryNS
             }
             else
             {
-                logger.Warn("Xdelta3 isn't installed, so patching isn't possible.");
+                if (!Xdelta.IsInstalled)
+                {
+                    logger.Warn("Xdelta3 isn't installed, so patching isn't possible.");
+                }
             }
 
             if (foundPatch)
@@ -1436,7 +1491,7 @@ namespace GogOssLibraryNS
             GameTitleTB.Text = gameTitle;
 
             // Verify and repair files
-            if (Directory.Exists(taskData.fullInstallPath))
+            if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(Path.Combine(taskData.fullInstallPath, ".Downloader_temp", "resume-state.json")))
             {
                 var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
                 if (allFiles.Any())
