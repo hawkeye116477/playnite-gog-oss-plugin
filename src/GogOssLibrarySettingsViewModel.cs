@@ -15,7 +15,7 @@ namespace GogOssLibraryNS
         public string Locale { get; set; } = "en";
         public string GamesInstallationPath { get; set; } = "";
         public string SelectedCometPath { get; set; } = "";
-        public string SelectedGogdlPath { get; set; } = "";
+        public string SelectedXdeltaPath { get; set; } = "";
         public int MaxWorkers { get; set; } = 0;
         public bool UnattendedInstall { get; set; } = false;
         public bool DownloadAllDlcs { get; set; } = false;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GogOssLibraryNS.Models
 {
@@ -18,7 +14,7 @@ namespace GogOssLibraryNS.Models
         public string platform { get; set; }
         public List<Product> products { get; set; } = new List<Product>();
         public bool scriptInterpreter { get; set; } = false;
-        public string[] tags { get; set; }
+        public List<string> tags { get; set; }
         public int version { get; set; } = 2;
         public List<string> dependencies { get; set; } = new List<string>();
         public ProductV1 product { get; set; } = new ProductV1();
@@ -33,6 +29,9 @@ namespace GogOssLibraryNS.Models
         public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
 
         public string readableName { get; set; } = "";
+        public string buildId_source { get; set; }
+        public string buildId_target { get; set; }
+        public string algorithm { get; set; }
 
         public class Offlinedepot
         {
@@ -56,6 +55,7 @@ namespace GogOssLibraryNS.Models
             public string executable { get; set; }
             public string argument { get; set; }
             public string targetDir { get; set; }
+            public List<string> osBitness { get; set; }
         }
 
         public class ProductV1

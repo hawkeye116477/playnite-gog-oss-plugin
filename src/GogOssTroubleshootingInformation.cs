@@ -4,7 +4,7 @@ namespace GogOssLibraryNS
 {
     public class GogOssTroubleshootingInformation
     {
-        public string PlayniteVersion
+        public static string PlayniteVersion
         {
             get
             {
@@ -25,5 +25,6 @@ namespace GogOssLibraryNS
         public string GogdlVersion { get; set; } = "";
         public string CometBinary => Comet.ClientExecPath;
         public string GamesInstallationPath => GogOss.GamesInstallationPath;
+        public string XdeltaBinary => Xdelta.InstallationPath;
     }
 }

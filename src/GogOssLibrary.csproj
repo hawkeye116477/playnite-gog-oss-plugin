@@ -182,6 +182,7 @@
     <Compile Include="..\third_party\playnite-common-plugin\src\LocalizeExtension.cs">
       <Link>Shared\LocalizeExtension.cs</Link>
     </Compile>
+    <Compile Include="Xdelta.cs" />
     <Page Include="..\third_party\playnite-common-plugin\src\MessageCheckBoxDialog.xaml">
       <Link>Shared\MessageCheckBoxDialog.xaml</Link>
       <SubType>Designer</SubType>
@@ -291,7 +292,7 @@
     <Compile Include="MemoryLimiter.cs" />
     <Compile Include="Models\GogBuildsData.cs" />
     <Compile Include="Models\GogDepot.cs" />
-    <Compile Include="Models\SecureLinks.cs" />
+    <Compile Include="Models\PatchResponse.cs" />
     <Compile Include="Models\GogOwned.cs" />
     <Compile Include="Models\GogSecureLinks.cs" />
     <Compile Include="Models\ProgressData.cs" />

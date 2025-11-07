@@ -128,12 +128,22 @@ namespace GogOssLibraryNS
                 OpenCometBinaryBtn.IsEnabled = false;
             }
 
+            if (!Xdelta.IsInstalled)
+            {
+                var xdeltaFluentArgs = new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Xdelta" };
+                XdeltaBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, xdeltaFluentArgs);
+            }
+            else
+            {
+                XdeltaBinaryTxt.Text = troubleshootingInformation.XdeltaBinary;
+            }
+
             troubleshootingInformation.GogdlVersion = "Not%20installed";
-            PlayniteVersionTxt.Text = troubleshootingInformation.PlayniteVersion;
+            PlayniteVersionTxt.Text = GogOssTroubleshootingInformation.PlayniteVersion;
             PluginVersionTxt.Text = troubleshootingInformation.PluginVersion;
             GamesInstallationPathTxt.Text = troubleshootingInformation.GamesInstallationPath;
             LogFilesPathTxt.Text = playniteAPI.Paths.ConfigurationPath;
-            ReportBugHyp.NavigateUri = new Uri($"https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&pluginV={troubleshootingInformation.PluginVersion}&playniteV={troubleshootingInformation.PlayniteVersion}&cometV={troubleshootingInformation.CometVersion}&gogdlV={troubleshootingInformation.GogdlVersion}");
+            ReportBugHyp.NavigateUri = new Uri($"https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues/new?assignees=&labels=bug&projects=&template=bugs.yml&pluginV={troubleshootingInformation.PluginVersion}&playniteV={GogOssTroubleshootingInformation.PlayniteVersion}&cometV={troubleshootingInformation.CometVersion}&gogdlV={troubleshootingInformation.GogdlVersion}");
 
             if (playniteAPI.ApplicationSettings.PlaytimeImportMode == PlaytimeImportMode.Never)
             {
@@ -360,6 +370,20 @@ namespace GogOssLibraryNS
                     }
                 }
             }, globalProgressOptions);
+        }
+
+        private void ChooseXdeltaBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|xdelta3*.exe");
+            if (file != "")
+            {
+                SelectedXdeltaPathTxt.Text = file;
+            }
+        }
+
+        private void OpenXdeltaBinaryBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Xdelta.StartClient();
         }
     }
 }

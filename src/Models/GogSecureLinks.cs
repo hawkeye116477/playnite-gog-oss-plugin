@@ -8,6 +8,10 @@ namespace GogOssLibraryNS.Models
 {
     public class GogSecureLinks
     {
+        public List<string> mainSecureLinks = new();
+        public List<string> inGameDependsSecureLinks = new();
+        public List<string> patchSecureLinks = new();
+
         public int product_id { get; set; }
         public string type { get; set; }
         public List<Url> urls { get; set; }

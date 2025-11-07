@@ -1,10 +1,8 @@
 ﻿using CliWrap;
-using CliWrap.EventStream;
 using Playnite.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,7 +18,6 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Playnite.SDK.Plugins;
 using System.Collections.Specialized;
-using System.Text;
 using CommonPlugin.Enums;
 using CommonPlugin;
 using Playnite.SDK.Models;
@@ -232,21 +229,21 @@ namespace GogOssLibraryNS
             await DoNextJobInQueue();
         }
 
-        private async Task DownloadFilesAsync(
-            CancellationToken token,
-            GogDepot.Depot bigDepot,
-            string fullInstallPath,
-            SecureLinks allSecureLinks,
-            int maxParallel,
-            int bufferSize = 512 * 1024,
-            long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
-            int maxRetries = 3,
-            string preferredCdn = "")
+        private async Task DownloadFilesAsync(CancellationToken token,
+                                              GogDepot.Depot bigDepot,
+                                              string fullInstallPath,
+                                              GogSecureLinks allSecureLinks,
+                                              int maxParallel,
+                                              int bufferSize = 512 * 1024,
+                                              long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
+                                              int maxRetries = 3,
+                                              string preferredCdn = "")
         {
             // STEP 0: Service and Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
-            var secureLinks = allSecureLinks.mainSecureLinks.secureLinks;
-            var dependencyLinks = allSecureLinks.inGameDependsSecureLinks.secureLinks;
+            var secureLinks = allSecureLinks.mainSecureLinks;
+            var dependencyLinks = allSecureLinks.inGameDependsSecureLinks;
+            var patchesLinks = allSecureLinks.patchSecureLinks;
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
@@ -314,7 +311,11 @@ namespace GogOssLibraryNS
                         filePath = Path.Combine(GogOss.DependenciesInstallationPath, file.path);
                     }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                    var targetDirectory = Path.GetDirectoryName(filePath);
+                    if (!Directory.Exists(targetDirectory))
+                    {
+                        Directory.CreateDirectory(targetDirectory);
+                    }
                     writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
 
                     long expectedFileSize = file.size;
@@ -446,7 +447,18 @@ namespace GogOssLibraryNS
                 foreach (var depot in allDepotItems)
                 {
                     bool isRedist = false;
-                    var filePath = Path.Combine(fullInstallPath, depot.path);
+
+                    string filePath;
+                    if (string.Equals(depot.type ?? "", "DepotDiff", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string md5part = depot.md5 ?? Guid.NewGuid().ToString();
+                        string patchFileName = $"{md5part}.patch";
+                        filePath = Path.Combine(tempDir, patchFileName);
+                    }
+                    else
+                    {
+                        filePath = Path.Combine(fullInstallPath, depot.path);
+                    }
 
                     if (filePath.Contains("__redist"))
                     {
@@ -459,7 +471,7 @@ namespace GogOssLibraryNS
                         isRedist = true;
                     }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
@@ -595,7 +607,9 @@ namespace GogOssLibraryNS
                     bool isV1 = bigDepot.version == 1;
                     bool isCompressed = !isV1 || job.isRedist;
 
-                    var currentSecureLinks = job.isRedist ? dependencyLinks : secureLinks;
+                    bool isPatchFile = Path.GetFileName(job.filePath).IndexOf(".patch", StringComparison.OrdinalIgnoreCase) >= 0;
+                    var currentSecureLinks = isPatchFile ? patchesLinks : (job.isRedist ? dependencyLinks : secureLinks);
+
                     var availableCdns = new List<string>(currentSecureLinks);
 
                     if (preferredCdn != "")
@@ -1050,11 +1064,162 @@ namespace GogOssLibraryNS
                 }
             }
 
+
+            // STEP 5: Patching
+            try
+            {
+                var allItems = bigDepot.items.Concat(sfcFiles).ToList();
+                if (allItems != null && allItems.Count > 0)
+                {
+                    var depotDiffItems = allItems.Where(i => string.Equals(i.type ?? "", "DepotDiff", StringComparison.OrdinalIgnoreCase)).ToList();
+
+                    if (depotDiffItems != null && depotDiffItems.Count >= 0)
+                    {
+                        logger.Info($"Found {depotDiffItems.Count} patches to apply concurrently (max {sfcExtractSemaphore.CurrentCount} at a time).");
+                        var patchingTasks = new List<Task>();
+
+                        using var reportingCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+                        var reportingToken = reportingCts.Token;
+
+                        var reportingTask = Task.Run(async () =>
+                        {
+                            while (!reportingToken.IsCancellationRequested)
+                            {
+                                try
+                                {
+                                    await Task.Delay(500, reportingToken).ConfigureAwait(false);
+                                    ReportProgress();
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    break;
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.Error($"Error in patching reporting task: {ex.Message}");
+                                    await Task.Delay(1000, reportingToken).ConfigureAwait(false);
+                                }
+                            }
+                        }, reportingToken);
+
+                        var targetFileSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+
+                        try
+                        {
+                            foreach (var diff in depotDiffItems)
+                            {
+                                token.ThrowIfCancellationRequested();
+
+                                var patchTask = Task.Run(async () =>
+                                {
+                                    string sourceRel = diff.path_source ?? "";
+                                    string targetRel = diff.path_target ?? diff.path ?? sourceRel;
+
+                                    string sourcePath = Path.Combine(fullInstallPath, sourceRel.TrimStart('\\', '/'));
+                                    string finalTargetPath = Path.Combine(fullInstallPath, targetRel.TrimStart('\\', '/'));
+
+
+                                    var targetLock = targetFileSemaphores.GetOrAdd(finalTargetPath, _ => new SemaphoreSlim(1, 1));
+
+                                    string patchedTempPath = "";
+
+                                    await sfcExtractSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    await targetLock.WaitAsync(token).ConfigureAwait(false);
+
+                                    try
+                                    {
+                                        string md5part = diff.md5 ?? Guid.NewGuid().ToString();
+                                        string deltaTempPath = Path.Combine(tempDir, $"{md5part}.patch");
+
+                                        if (!File.Exists(deltaTempPath))
+                                        {
+                                            throw new FileNotFoundException($"Expected delta not found in temp: {deltaTempPath}");
+                                        }
+
+                                        if (!File.Exists(sourcePath))
+                                        {
+                                            throw new FileNotFoundException($"Source file required for DepotDiff patch not found: {sourcePath}");
+                                        }
+
+                                        patchedTempPath = Path.Combine(tempDir, Guid.NewGuid().ToString() + ".patched");
+
+                                        try
+                                        {
+                                            var result = await Cli.Wrap(Xdelta.InstallationPath)
+                                                     .WithArguments(new[] { "-d", "-s", sourcePath, deltaTempPath, patchedTempPath })
+                                                     .AddCommandToLog()
+                                                     .ExecuteAsync();
+
+                                            Directory.CreateDirectory(Path.GetDirectoryName(finalTargetPath) ?? fullInstallPath);
+
+                                            if (File.Exists(finalTargetPath))
+                                            {
+                                                string backupPath = finalTargetPath + ".bak";
+                                                File.Replace(patchedTempPath, finalTargetPath, backupPath, ignoreMetadataErrors: true);
+                                                if (File.Exists(backupPath))
+                                                {
+                                                    try
+                                                    {
+                                                        File.Delete(backupPath);
+                                                    }
+                                                    catch { }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                File.Move(patchedTempPath, finalTargetPath);
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            logger.Error($"Failed to apply xdelta3 patch for delta '{deltaTempPath}': {ex.Message}");
+                                            throw;
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        try
+                                        {
+                                            if (File.Exists(patchedTempPath))
+                                            {
+                                                File.Delete(patchedTempPath);
+                                            }
+                                        }
+                                        catch { }
+                                        sfcExtractSemaphore.Release();
+                                        targetLock.Release();
+
+                                        ReportProgress();
+                                    }
+                                }, token);
+
+                                patchingTasks.Add(patchTask);
+                            }
+
+                            await Task.WhenAll(patchingTasks).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            foreach (var semaphore in targetFileSemaphores.Values)
+                            {
+                                try { semaphore.Dispose(); } catch { }
+                            }
+
+                            reportingCts.Cancel();
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+
             token.ThrowIfCancellationRequested();
 
 
             //
-            // STEP 5: Cleanup
+            // STEP 6: Cleanup
             //
             foreach (var s in writeSemaphores.Values)
             {
@@ -1125,12 +1290,12 @@ namespace GogOssLibraryNS
             var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
 
             var mainSecureLinks = await gogDownloadApi.GetSecureLinks(taskData);
-            var allSecureLinks = new SecureLinks
+            var allSecureLinks = new GogSecureLinks
             {
                 mainSecureLinks = new(),
                 inGameDependsSecureLinks = new()
             };
-            allSecureLinks.mainSecureLinks.secureLinks = mainSecureLinks;
+            allSecureLinks.mainSecureLinks = mainSecureLinks;
 
 
             GogDepot.Depot bigDepot = new();
@@ -1184,10 +1349,10 @@ namespace GogOssLibraryNS
                         if (depotManifest.depot.items.Count > 0)
                         {
                             var dependsSecureLinks = await gogDownloadApi.GetSecureLinks(dependData);
-                            if (allSecureLinks.inGameDependsSecureLinks.secureLinks.Count == 0)
+                            if (allSecureLinks.inGameDependsSecureLinks.Count == 0)
                             {
 
-                                allSecureLinks.inGameDependsSecureLinks.secureLinks = dependsSecureLinks;
+                                allSecureLinks.inGameDependsSecureLinks = dependsSecureLinks;
                             }
                             foreach (var depotItem in depotManifest.depot.items)
                             {
@@ -1199,20 +1364,78 @@ namespace GogOssLibraryNS
                 }
             }
 
-            var wantedItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameID);
+            bool foundPatch = false;
+            GogDepot.Depot patchesDepot = new();
+            if (taskData.downloadProperties.downloadAction == DownloadAction.Update && Xdelta.IsInstalled)
+            {
+                var installedAppList = GogOssLibrary.GetInstalledAppList();
+                if (installedAppList.ContainsKey(gameID))
+                {
+                    var oldBuild = installedAppList[gameID].build_id;
+                    var newBuild = taskData.downloadProperties.buildId;
+                    if (oldBuild != newBuild)
+                    {
+                        var patchManifest = await gogDownloadApi.GetGogPatchMetaManifest(gameID, oldBuild, newBuild);
+                        if (!patchManifest.errorDisplayed)
+                        {
+                            foundPatch = true;
+                            var productIds = new List<string> { taskData.gameID };
+                            if (taskData.downloadProperties.extraContent != null
+                                && taskData.downloadProperties.extraContent.Count > 0)
+                            {
+                                productIds.AddRange(taskData.downloadProperties.extraContent);
+                            }
+                            foreach (var depot in patchManifest.depots)
+                            {
+                                var chosenlanguage = taskData.downloadProperties.language;
+                                if (string.IsNullOrEmpty(chosenlanguage))
+                                {
+                                    chosenlanguage = patchManifest.languages.First();
+                                }
+                                if (depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
+                                {
+                                    if (productIds.Contains(depot.productId))
+                                    {
+                                        var depotManifest = await gogDownloadApi.GetDepotInfo(depot.manifest, taskData, isPatch: true);
+                                        if (depotManifest.depot.items.Count > 0)
+                                        {
+                                            foreach (var depotItem in depotManifest.depot.items)
+                                            {
+                                                patchesDepot.items.Add(depotItem);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                logger.Warn("Xdelta3 isn't installed, so patching isn't possible.");
+            }
+
+            if (foundPatch)
+            {
+                var patchSecureLinks = await gogDownloadApi.GetSecureLinks(taskData, true);
+                allSecureLinks.patchSecureLinks = patchSecureLinks;
+            }
+
             var startTime = DateTime.Now;
             var sw = Stopwatch.StartNew();
             long lastNetworkBytes = Interlocked.Read(ref resumeInitialNetworkBytes);
             long lastDiskBytes = Interlocked.Read(ref resumeInitialDiskBytes);
             TimeSpan lastStopwatchElapsed = TimeSpan.Zero;
 
-            userCancelCTS = new CancellationTokenSource();
+
             var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
                 gracefulInstallerCTS.Token,
                 userCancelCTS.Token
             );
             GameTitleTB.Text = gameTitle;
 
+            // Verify and repair files
             if (Directory.Exists(taskData.fullInstallPath))
             {
                 var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
@@ -1224,7 +1447,7 @@ namespace GogOssLibraryNS
                     int countFiles = allFiles.Count;
                     int verifiedFiles = 0;
 
-                    if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0)
+                    if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
                     {
                         var itemsMap = bigDepot.items
                             .Where(i => !string.IsNullOrEmpty(i.path))
@@ -1233,6 +1456,10 @@ namespace GogOssLibraryNS
                         var filesMap = bigDepot.files
                             .Where(f => !string.IsNullOrEmpty(f.path))
                             .ToDictionary(f => f.path, f => f);
+
+                        var patchesMap = patchesDepot.items
+                            .Where(p => !string.IsNullOrEmpty(p.path_source))
+                            .ToDictionary(p => p.path_source, p => p);
 
                         var reporter = Task.Run(async () =>
                         {
@@ -1273,77 +1500,104 @@ namespace GogOssLibraryNS
                                     {
                                         string relativePath = RelativePath.Get(taskData.fullInstallPath, file);
 
-                                        if (itemsMap.TryGetValue(relativePath, out var searchedItem))
+                                        if (patchesDepot.items.Count > 0)
                                         {
-                                            string checksumType = "md5";
-                                            string correctChecksum = "";
-
-                                            if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
+                                            if (patchesDepot.items.Count > 0 && patchesMap.TryGetValue(relativePath, out var searchedItem))
                                             {
-                                                correctChecksum = searchedItem.chunks[0].md5;
-                                            }
-
-                                            if (correctChecksum.IsNullOrEmpty())
-                                            {
-                                                correctChecksum = searchedItem.md5;
-                                            }
-
-                                            if (correctChecksum.IsNullOrEmpty())
-                                            {
-                                                correctChecksum = searchedItem.sha256;
-                                                checksumType = "sha256";
-                                            }
-
-                                            if (!string.IsNullOrEmpty(correctChecksum))
-                                            {
-                                                try
+                                                string correctChecksum = searchedItem.md5_source;
+                                                string calculatedChecksum = Helpers.GetMD5(file);
+                                                if (calculatedChecksum != null &&
+                                                            !string.Equals(calculatedChecksum, correctChecksum,
+                                                                           StringComparison.OrdinalIgnoreCase))
                                                 {
-                                                    string calculatedChecksum = checksumType switch
+                                                    try
                                                     {
-                                                        "md5" => Helpers.GetMD5(file),
-                                                        "sha256" => Helpers.GetSHA256(file),
-                                                        _ => null
-                                                    };
-
-                                                    if (calculatedChecksum != null &&
-                                                        !string.Equals(calculatedChecksum, correctChecksum, StringComparison.OrdinalIgnoreCase))
-                                                    {
-                                                        try { File.Delete(file); }
-                                                        catch (Exception) { }
+                                                        File.Delete(file);
                                                     }
-                                                }
-                                                catch (Exception hashEx)
-                                                {
-                                                    logger.Warn(hashEx.Message);
+                                                    catch (Exception) { }
+                                                    patchesDepot.items.Remove(searchedItem);
+                                                    GogDepot.Item bigDepotItem = bigDepot.items.FirstOrDefault(i =>
+                                                    i.path == searchedItem.path_source);
+                                                    patchesDepot.items.Add(bigDepotItem);
                                                 }
                                             }
-                                            Interlocked.Increment(ref verifiedFiles);
-                                            continue;
                                         }
-
-                                        if (filesMap.TryGetValue(relativePath, out var depotFile))
+                                        else
                                         {
-                                            string correctMd5 = depotFile.hash;
-                                            if (!string.IsNullOrEmpty(correctMd5))
+                                            if (itemsMap.TryGetValue(relativePath, out var searchedItem))
                                             {
-                                                try
-                                                {
-                                                    string calculatedMd5 = Helpers.GetMD5(file);
+                                                string checksumType = "md5";
+                                                string correctChecksum = "";
 
-                                                    if (calculatedMd5 != null &&
-                                                        !string.Equals(calculatedMd5, correctMd5, StringComparison.OrdinalIgnoreCase))
+                                                if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
+                                                {
+                                                    correctChecksum = searchedItem.chunks[0].md5;
+                                                }
+
+                                                if (correctChecksum.IsNullOrEmpty())
+                                                {
+                                                    correctChecksum = searchedItem.md5;
+                                                }
+
+                                                if (correctChecksum.IsNullOrEmpty())
+                                                {
+                                                    correctChecksum = searchedItem.sha256;
+                                                    checksumType = "sha256";
+                                                }
+
+                                                if (!string.IsNullOrEmpty(correctChecksum))
+                                                {
+                                                    try
                                                     {
-                                                        try { File.Delete(file); }
-                                                        catch (Exception) { }
+                                                        string calculatedChecksum = checksumType switch
+                                                        {
+                                                            "md5" => Helpers.GetMD5(file),
+                                                            "sha256" => Helpers.GetSHA256(file),
+                                                            _ => null
+                                                        };
+
+                                                        if (calculatedChecksum != null &&
+                                                            !string.Equals(calculatedChecksum, correctChecksum, StringComparison.OrdinalIgnoreCase))
+                                                        {
+                                                            try
+                                                            {
+                                                                File.Delete(file);
+                                                            }
+                                                            catch (Exception) { }
+                                                        }
+                                                    }
+                                                    catch (Exception hashEx)
+                                                    {
+                                                        logger.Warn(hashEx.Message);
                                                     }
                                                 }
-                                                catch (Exception hashEx)
+                                            }
+
+                                            if (filesMap.TryGetValue(relativePath, out var depotFile))
+                                            {
+                                                string correctMd5 = depotFile.hash;
+                                                if (!string.IsNullOrEmpty(correctMd5))
                                                 {
-                                                    logger.Warn(hashEx.Message);
+                                                    try
+                                                    {
+                                                        string calculatedMd5 = Helpers.GetMD5(file);
+
+                                                        if (calculatedMd5 != null &&
+                                                            !string.Equals(calculatedMd5, correctMd5, StringComparison.OrdinalIgnoreCase))
+                                                        {
+                                                            try
+                                                            {
+                                                                File.Delete(file);
+                                                            }
+                                                            catch (Exception) { }
+                                                        }
+                                                    }
+                                                    catch (Exception hashEx)
+                                                    {
+                                                        logger.Warn(hashEx.Message);
+                                                    }
                                                 }
                                             }
-                                            Interlocked.Increment(ref verifiedFiles);
-                                            continue;
                                         }
                                         Interlocked.Increment(ref verifiedFiles);
                                     }
@@ -1372,12 +1626,20 @@ namespace GogOssLibraryNS
                 }
             }
 
+            if (patchesDepot.items.Count > 0)
+            {
+                bigDepot.items = patchesDepot.items;
+            }
+
             progress = new Progress<ProgressData>(p =>
             {
                 taskData.downloadSizeNumber = p.TotalCompressedBytes;
                 taskData.installSizeNumber = p.TotalBytes;
                 double dt = (sw.Elapsed - lastStopwatchElapsed).TotalSeconds;
-                if (dt < 1 && !p.FinalReport) return;
+                if (dt < 1 && !p.FinalReport)
+                {
+                    return;
+                }
 
                 double rawNetSpeed = (p.NetworkBytes - lastNetworkBytes) / dt;
                 double rawDiskSpeed = (p.DiskBytes - lastDiskBytes) / dt;
@@ -1452,7 +1714,7 @@ namespace GogOssLibraryNS
                 {
                     DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
                 }
-                await DownloadFilesAsync(linkedCTS.Token, bigDepot, wantedItem.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
+                await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
                 var installedGameInfo = new Installed
@@ -1526,10 +1788,10 @@ namespace GogOssLibraryNS
 
                 GogOssLibrary.Instance.installedAppListModified = true;
 
-                wantedItem.status = DownloadStatus.Completed;
-                wantedItem.progress = 100.0;
+                taskData.status = DownloadStatus.Completed;
+                taskData.progress = 100.0;
                 DateTimeOffset now = DateTime.UtcNow;
-                wantedItem.completedTime = now.ToUnixTimeSeconds();
+                taskData.completedTime = now.ToUnixTimeSeconds();
                 if (settings.DisplayDownloadTaskFinishedNotifications)
                 {
                     var notificationMessage = LOC.CommonInstallationFinished;
@@ -1552,10 +1814,10 @@ namespace GogOssLibraryNS
             }
             catch (Exception ex)
             {
-                if (!(ex is OperationCanceledException))
+                if (ex is not OperationCanceledException)
                 {
                     logger.Error(ex.Message);
-                    wantedItem.status = DownloadStatus.Error;
+                    taskData.status = DownloadStatus.Error;
                 }
             }
             finally
@@ -1614,29 +1876,32 @@ namespace GogOssLibraryNS
                             userCancelCTS?.Dispose();
                         }
 
-                        const int maxRetries = 5;
-                        int delayMs = 500;
-                        for (int i = 0; i < maxRetries; i++)
+                        if (selectedRow.downloadProperties.downloadAction == DownloadAction.Install)
                         {
-                            try
+                            const int maxRetries = 5;
+                            int delayMs = 500;
+                            for (int i = 0; i < maxRetries; i++)
                             {
-                                if (Directory.Exists(selectedRow.fullInstallPath))
+                                try
                                 {
-                                    Directory.Delete(selectedRow.fullInstallPath, true);
-                                }
-                                break;
-                            }
-                            catch (Exception rex)
-                            {
-                                if (i < maxRetries - 1)
-                                {
-                                    await Task.Delay(delayMs);
-                                    delayMs *= 2;
-                                }
-                                else
-                                {
-                                    logger.Warn($"Can't remove directory {selectedRow.fullInstallPath}: {rex.Message}. Please try removing manually.");
+                                    if (Directory.Exists(selectedRow.fullInstallPath))
+                                    {
+                                        Directory.Delete(selectedRow.fullInstallPath, true);
+                                    }
                                     break;
+                                }
+                                catch (Exception rex)
+                                {
+                                    if (i < maxRetries - 1)
+                                    {
+                                        await Task.Delay(delayMs);
+                                        delayMs *= 2;
+                                    }
+                                    else
+                                    {
+                                        logger.Warn($"Can't remove directory {selectedRow.fullInstallPath}: {rex.Message}. Please try removing manually.");
+                                        break;
+                                    }
                                 }
                             }
                         }
