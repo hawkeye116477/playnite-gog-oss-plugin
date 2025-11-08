@@ -124,7 +124,7 @@ namespace GogOssLibraryNS
         {
             if (!ClientExecPath.IsNullOrEmpty())
             {
-                ProcessStarter.StartProcess("cmd", $"/K {ClientExecPath} -h", Path.GetDirectoryName(ClientExecPath));
+                ProcessStarter.StartProcess("cmd", $"/K \"{ClientExecPath}\" -h", Path.GetDirectoryName(ClientExecPath));
             }
         }
 
