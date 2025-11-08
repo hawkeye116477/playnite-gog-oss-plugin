@@ -214,11 +214,11 @@ namespace GogOssLibraryNS
 
         private void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>();
+            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<KeyValuePair<string, GogGameMetaManifest.Dlc>>();
             ChosenGame.downloadProperties.extraContent = new List<string>();
             foreach (var selectedDlc in selectedDlcs)
             {
-                ChosenGame.downloadProperties.extraContent.Add(selectedDlc.id);
+                ChosenGame.downloadProperties.extraContent.Add(selectedDlc.Key);
             }
             if (AllOrNothingChk.IsChecked == true && selectedDlcs.Count() != ExtraContentLB.Items.Count)
             {

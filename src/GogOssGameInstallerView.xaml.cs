@@ -653,11 +653,11 @@ namespace GogOssLibraryNS
             {
                 InstallBtn.IsEnabled = false;
                 DownloadManagerData.Download installData = singleGameInstallData;
-                var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>();
+                var selectedDlcs = ExtraContentLB.SelectedItems.Cast<KeyValuePair<string, GogGameMetaManifest.Dlc>>();
                 installData.downloadProperties.extraContent = new List<string>();
                 foreach (var selectedDlc in selectedDlcs)
                 {
-                    installData.downloadProperties.extraContent.Add(selectedDlc.id);
+                    installData.downloadProperties.extraContent.Add(selectedDlc.Key);
                 }
                 if (AllOrNothingChk.IsChecked == true && selectedDlcs.Count() != ExtraContentLB.Items.Count)
                 {

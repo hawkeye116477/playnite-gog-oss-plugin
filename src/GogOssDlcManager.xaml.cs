@@ -97,11 +97,11 @@ namespace GogOssLibraryNS
             }
         }
 
-        private async Task<GogDownloadGameInfo.SizeType> CalculateDlcsSize()
+        private async Task<GogGameMetaManifest.SizeType> CalculateDlcsSize()
         {
             var installedGameInfo = GogOss.GetInstalledInfo(GameId);
             var manifest = await gogDownloadApi.GetGameMetaManifest(GameId, installedGameInfo);
-            var size = new GogDownloadGameInfo.SizeType
+            var size = new GogGameMetaManifest.SizeType
             {
                 download_size = 0,
                 disk_size = 0

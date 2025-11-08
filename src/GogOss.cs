@@ -255,7 +255,7 @@ namespace GogOssLibraryNS
 
         public static int MaxMaxWorkers = 40;
 
-        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
+        public static async Task<GogGameMetaManifest.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
         {
             var downloadProperties = new DownloadProperties
             {
@@ -274,11 +274,11 @@ namespace GogOssLibraryNS
             return await CalculateGameSize(downloadData);
         }
 
-        public static async Task<GogDownloadGameInfo.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
+        public static async Task<GogGameMetaManifest.SizeType> CalculateGameSize(DownloadManagerData.Download installData)
         {
             var gogDownloadApi = new GogDownloadApi();
 
-            var size = new GogDownloadGameInfo.SizeType
+            var size = new GogGameMetaManifest.SizeType
             {
                 download_size = 0,
                 disk_size = 0

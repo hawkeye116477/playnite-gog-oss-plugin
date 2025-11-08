@@ -89,11 +89,11 @@ namespace GogOssLibraryNS
         private async void ExtraContentLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SaveBtn.IsEnabled = false;
-            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<GogDownloadGameInfo.Dlc>();
+            var selectedDlcs = ExtraContentLB.SelectedItems.Cast<KeyValuePair<string, GogGameMetaManifest.Dlc>>();
             gameInfo.installed_DLCs = new List<string>();
             foreach (var selectedDlc in selectedDlcs)
             {
-                gameInfo.installed_DLCs.Add(selectedDlc.id);
+                gameInfo.installed_DLCs.Add(selectedDlc.Key);
             }
             if (AllOrNothingChk.IsChecked == true && selectedDlcs.Count() != ExtraContentLB.Items.Count)
             {
@@ -164,7 +164,7 @@ namespace GogOssLibraryNS
                 {
                     foreach (var branch in manifest.available_branches)
                     {
-                        if (branch == null)
+                        if (branch == "")
                         {
                             betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
                         }
