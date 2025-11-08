@@ -327,18 +327,17 @@ namespace GogOssLibraryNS
 
                     totalSize += expectedFileSize;
 
-                    if (currentFileSize != expectedFileSize)
+                    var v1Chunk = new GogDepot.Chunk
                     {
-                        var v1Chunk = new GogDepot.Chunk
-                        {
-                            offset = file.offset,
-                            size = expectedFileSize,
-                            compressedSize = expectedFileSize,
-                            compressedMd5 = file.url, // Probably main.bin always?
-                        };
-
+                        offset = file.offset,
+                        size = expectedFileSize,
+                        compressedSize = expectedFileSize,
+                        compressedMd5 = file.url, // Probably main.bin always?
+                    };
+                    totalCompressedSize += expectedFileSize;
+                    if (currentFileSize != expectedFileSize && !resumeState.IsCompleted(filePath, v1Chunk.compressedMd5))
+                    {
                         jobs.Add((filePath, 0, v1Chunk, isRedist));
-                        totalCompressedSize += expectedFileSize;
                     }
                     else
                     {
