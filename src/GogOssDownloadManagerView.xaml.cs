@@ -326,6 +326,7 @@ namespace GogOssLibraryNS
                     long currentFileSize = File.Exists(filePath) ? new FileInfo(filePath).Length : 0;
 
                     totalSize += expectedFileSize;
+                    totalCompressedSize += expectedFileSize;
 
                     var v1Chunk = new GogDepot.Chunk
                     {
@@ -334,7 +335,6 @@ namespace GogOssLibraryNS
                         compressedSize = expectedFileSize,
                         compressedMd5 = file.url, // Probably main.bin always?
                     };
-                    totalCompressedSize += expectedFileSize;
                     if (currentFileSize != expectedFileSize && !resumeState.IsCompleted(filePath, v1Chunk.compressedMd5))
                     {
                         jobs.Add((filePath, 0, v1Chunk, isRedist));
@@ -410,13 +410,15 @@ namespace GogOssLibraryNS
                             long chunkSize = (long)chunk.size;
                             long compressedSize = (long)chunk.compressedSize;
 
+                            totalSize += chunkSize;
+                            totalCompressedSize += compressedSize;
+
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = sfcPos;
                                 if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
                                     jobs.Add((sfcFilePath, sfcPos, chunk, false));
-                                    totalCompressedSize += compressedSize;
                                 }
                             }
                             else if (sfcPos + chunkSize <= currentSfcSize)
@@ -430,7 +432,6 @@ namespace GogOssLibraryNS
                                 if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
                                     jobs.Add((sfcFilePath, sfcPos, chunk, false));
-                                    totalCompressedSize += compressedSize;
                                 }
                                 else
                                 {
