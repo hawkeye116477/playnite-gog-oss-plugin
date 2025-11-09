@@ -385,5 +385,171 @@ namespace GogOssLibraryNS
                 return installPath;
             }
         }
+
+        public static async Task<GogDepot.Depot> GetInstalledBigDepot(Installed installedInfo, string gameId)
+        {
+            GogDepot.Depot bigDepot = new();
+            var installedDepotPath = Path.Combine(installedInfo.install_path, ".manifest_oss");
+            var installedDepotFile = Path.Combine(installedDepotPath, "bigDepot.json");
+            bool correctJson = false;
+            if (File.Exists(installedDepotFile))
+            {
+                var content = FileSystem.ReadFileAsStringSafe(installedDepotFile);
+                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out GogDepot.Depot newBigDepot))
+                {
+                    if (newBigDepot != null)
+                    {
+                        correctJson = true;
+                        bigDepot = newBigDepot;
+                    }
+                }
+            }
+            if (!correctJson)
+            {
+                var taskProperties = new DownloadProperties
+                {
+                    buildId = installedInfo.build_id,
+                    extraContent = installedInfo.installed_DLCs,
+                    language = installedInfo.language,
+                    os = installedInfo.platform,
+                    version = installedInfo.version
+                };
+                var taskData = new DownloadManagerData.Download
+                {
+                    gameID = gameId,
+                    name = installedInfo.title,
+                    downloadProperties = taskProperties,
+                };
+                bigDepot = await CreateNewBigDepot(taskData);
+            }
+            return bigDepot;
+        }
+
+        public static async Task<GogDepot.Depot> CreateNewBigDepot(DownloadManagerData.Download taskData)
+        {
+            GogDownloadApi gogDownloadApi = new();
+            Dictionary<string, List<string>> depotHashes = new();
+            if (taskData.downloadItemType == DownloadItemType.Game)
+            {
+                depotHashes = await gogDownloadApi.GetNeededDepotManifestHashes(taskData);
+            }
+            else
+            {
+                var dependManifest = await GogDownloadApi.GetRedistInfo(taskData.gameID);
+                var dependHashes = new List<string>
+                {
+                    dependManifest.manifest
+                };
+                depotHashes.Add(taskData.gameID, dependHashes);
+            }
+
+            var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
+
+            GogDepot.Depot bigDepot = new();
+            bigDepot.version = metaManifest.version;
+            foreach (var depotHash in depotHashes)
+            {
+                foreach (var singleDepotHash in depotHash.Value)
+                {
+                    var depotManifest = await gogDownloadApi.GetDepotInfo(singleDepotHash, taskData, metaManifest.version);
+                    if (depotManifest.depot.items.Count > 0)
+                    {
+                        foreach (var depotItem in depotManifest.depot.items)
+                        {
+                            if (depotItem.sfcRef != null)
+                            {
+                                depotItem.sfcRef.depotHash = singleDepotHash;
+                            }
+                            depotItem.product_id = depotHash.Key;
+                            bigDepot.items.Add(depotItem);
+                        }
+                    }
+                    if (depotManifest.depot.smallFilesContainer?.chunks.Count > 0)
+                    {
+                        depotManifest.depot.smallFilesContainer.product_id = depotHash.Key;
+                        bigDepot.sfcContainersByHash.Add(singleDepotHash, depotManifest.depot.smallFilesContainer);
+                    }
+                    if (depotManifest.depot.files.Count > 0)
+                    {
+                        foreach (var depotFile in depotManifest.depot.files)
+                        {
+                            depotFile.product_id = depotHash.Key;
+                            bigDepot.files.Add(depotFile);
+                        }
+                    }
+                }
+            }
+
+            if (metaManifest.version == 1)
+            {
+                foreach (var depot in metaManifest.product.depots)
+                {
+                    if (!depot.redist.IsNullOrEmpty() && !depot.targetDir.IsNullOrEmpty())
+                    {
+                        var dependManifest = await GogDownloadApi.GetRedistInfo(depot.redist);
+                        var dependData = new DownloadManagerData.Download
+                        {
+                            gameID = depot.redist,
+                            downloadItemType = DownloadItemType.Dependency
+                        };
+                        dependData.downloadProperties = new DownloadProperties
+                        {
+                            os = taskData.downloadProperties.os,
+                        };
+
+                        var depotManifest = await gogDownloadApi.GetDepotInfo(dependManifest.manifest, dependData);
+                        if (depotManifest.depot.items.Count > 0)
+                        {
+                            foreach (var depotItem in depotManifest.depot.items)
+                            {
+                                depotItem.redistTargetDir = depot.targetDir;
+                                bigDepot.items.Add(depotItem);
+                            }
+                        }
+                    }
+                }
+            }
+            return bigDepot;
+        }
+
+        public static void AddToHeroicInstalledList(Installed installedInfo, string gameId, double installSize = 0)
+        {
+            var heroicInstalledPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gog_store", "installed.json");
+            if (File.Exists(heroicInstalledPath))
+            {
+                var heroicInstalledContent = FileSystem.ReadFileAsStringSafe(heroicInstalledPath);
+                if (!heroicInstalledContent.IsNullOrWhiteSpace())
+                {
+                    if (installSize == 0)
+                    {
+                        foreach (var file in Directory.GetFiles(installedInfo.install_path, "*", SearchOption.AllDirectories))
+                        {
+                            installSize += new FileInfo(file).Length;
+                        }
+                    }
+                    var heroicInstallInfo = new HeroicInstalled.HeroicInstalledSingle
+                    {
+                        appName = gameId,
+                        build_id = installedInfo.build_id,
+                        title = installedInfo.title,
+                        version = installedInfo.version,
+                        platform = installedInfo.platform,
+                        install_path = installedInfo.install_path,
+                        language = installedInfo.language,
+                        installed_DLCs = installedInfo.installed_DLCs,
+                        install_size = CommonPlugin.CommonHelpers.FormatSize(installSize)
+                    };
+                    var heroicInstalledJson = Serialization.FromJson<HeroicInstalled>(heroicInstalledContent);
+                    var wantedHeroicItem = heroicInstalledJson.installed.FirstOrDefault(i => i.appName == gameId);
+                    if (wantedHeroicItem != null)
+                    {
+                        heroicInstalledJson.installed.Remove(wantedHeroicItem);
+                    }
+                    heroicInstalledJson.installed.Add(heroicInstallInfo);
+                    var strConf = Serialization.ToJson(heroicInstalledJson, true);
+                    File.WriteAllText(heroicInstalledPath, strConf);
+                }
+            }
+        }
     }
 }

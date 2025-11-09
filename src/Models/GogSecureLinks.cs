@@ -8,9 +8,9 @@ namespace GogOssLibraryNS.Models
 {
     public class GogSecureLinks
     {
-        public List<string> mainSecureLinks = new();
-        public List<string> inGameDependsSecureLinks = new();
-        public List<string> patchSecureLinks = new();
+        public Dictionary<string, List<FinalUrl>> mainSecureLinks = new();
+        public Dictionary<string, List<FinalUrl>> inGameDependsSecureLinks = new();
+        public Dictionary<string, List<FinalUrl>> patchSecureLinks = new();
 
         public int product_id { get; set; }
         public string type { get; set; }
@@ -24,6 +24,12 @@ namespace GogOssLibraryNS.Models
             public int max_fails { get; set; }
             public int[] supports_generation { get; set; }
             public bool fallback_only = false;
+        }
+
+        public class FinalUrl
+        {
+            public string endpoint_name { get; set; }
+            public string formatted_url { get; set; }
         }
     }
 }

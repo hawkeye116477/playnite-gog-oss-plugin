@@ -413,9 +413,9 @@ namespace GogOssLibraryNS.Services
             return manifest;
         }
 
-        public async Task<List<string>> GetNeededDepotManifestHashes(DownloadManagerData.Download taskData)
+        public async Task<Dictionary<string, List<string>>> GetNeededDepotManifestHashes(DownloadManagerData.Download taskData)
         {
-            List<string> depotHashes = new List<string>();
+            Dictionary<string, List<string>> depotHashes = new();
             var metaManifest = await GetGameMetaManifest(taskData);
             var depots = metaManifest.depots;
             if (metaManifest.version == 1)
@@ -427,6 +427,7 @@ namespace GogOssLibraryNS.Services
             {
                 productIds.AddRange(taskData.downloadProperties.extraContent);
             }
+
             foreach (var depot in depots)
             {
                 var chosenlanguage = taskData.downloadProperties.language;
@@ -440,17 +441,25 @@ namespace GogOssLibraryNS.Services
                     var manifestHash = depot.manifest;
                     if (metaManifest.version == 2 && productIds.Contains(depot.productId))
                     {
-                        depotHashes.Add(manifestHash);
+                        if (!depotHashes.ContainsKey(depot.productId))
+                        {
+                            depotHashes.Add(depot.productId, new List<string>());
+                        }
+                        depotHashes[depot.productId].Add(manifestHash);
                     }
                     else if (metaManifest.version == 1 && depot.gameIDs.Any(sgame => productIds.Contains(sgame)))
                     {
-                        depotHashes.Add(manifestHash);
+                        if (!depotHashes.ContainsKey(depot.gameIDs[0]))
+                        {
+                            depotHashes.Add(depot.gameIDs[0], new List<string>());
+                        }
+                        depotHashes[depot.gameIDs[0]].Add(manifestHash);
                     }
                 }
             }
-
             return depotHashes;
         }
+
         public string GetGalaxyPath(string manifestHash)
         {
             var galaxyPath = manifestHash;
@@ -503,17 +512,17 @@ namespace GogOssLibraryNS.Services
                 Client.DefaultRequestHeaders.Clear();
                 Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 var url = $"https://cdn.gog.com/content-system/v2/meta";
-                if (version == 1 && taskData.downloadItemType == DownloadItemType.Game)
-                {
-                    url = $"https://cdn.gog.com/content-system/v1/manifests/{taskData.gameID}/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
-                }
-                if (taskData.downloadItemType == DownloadItemType.Dependency)
-                {
-                    url = $"https://cdn.gog.com/content-system/v{version}/dependencies/meta";
-                }
                 if (isPatch)
                 {
                     url = $"https://cdn.gog.com/content-system/v{version}/patches/meta";
+                }
+                else if (version == 1 && taskData.downloadItemType == DownloadItemType.Game)
+                {
+                    url = $"https://cdn.gog.com/content-system/v1/manifests/{taskData.gameID}/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
+                }
+                else if (taskData.downloadItemType == DownloadItemType.Dependency)
+                {
+                    url = $"https://cdn.gog.com/content-system/v{version}/dependencies/meta";
                 }
                 var fullUrl = $"{url}/{GetGalaxyPath(manifest)}";
                 if (version == 1 && taskData.downloadItemType == DownloadItemType.Game)
@@ -549,13 +558,42 @@ namespace GogOssLibraryNS.Services
             return depotManifest;
         }
 
-
-        public async Task<List<string>> GetSecureLinks(DownloadManagerData.Download taskData, bool isPatch = false)
+        public async Task<Dictionary<string, List<GogSecureLinks.FinalUrl>>> GetSecureLinksForAllProducts(DownloadManagerData.Download taskData, bool isPatch = false)
         {
-            List<string> urls = new List<string>();
+            Dictionary<string, List<GogSecureLinks.FinalUrl>> allSecureLinks = new();
+            List<string> productIds = new();
+            productIds.Add(taskData.gameID);
+            if (taskData.downloadProperties.extraContent.Count > 0)
+            {
+                foreach (var dlc in taskData.downloadProperties.extraContent)
+                {
+                    productIds.Add(dlc);
+                }
+            }
+            foreach (var productId in productIds)
+            {
+                var dlcData = new DownloadManagerData.Download
+                {
+                    gameID = productId
+                };
+                dlcData.downloadProperties = taskData.downloadProperties;
+                var securelinks = await GetSecureLinks(dlcData, isPatch);
+                allSecureLinks.Add(productId, securelinks);
+            }
+            return allSecureLinks;
+        }
+
+
+        public async Task<List<GogSecureLinks.FinalUrl>> GetSecureLinks(DownloadManagerData.Download taskData, bool isPatch = false)
+        {
+            List<GogSecureLinks.FinalUrl> urls = new();
             var url = "";
             var metaManifest = await GetGameMetaManifest(taskData);
-            if (taskData.downloadItemType == DownloadItemType.Game)
+            if (isPatch)
+            {
+                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&generation=2&path=/&root=/patches/store";
+            }
+            else if (taskData.downloadItemType == DownloadItemType.Game)
             {
                 if (metaManifest.version == 2)
                 {
@@ -566,14 +604,9 @@ namespace GogOssLibraryNS.Services
                     url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&type=depot&path=/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
                 }
             }
-            else
+            else if (taskData.downloadItemType == DownloadItemType.Dependency)
             {
                 url = $"https://content-system.gog.com/open_link?generation=2&_version=2&path=/dependencies/store/";
-            }
-
-            if (isPatch)
-            {
-                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&generation=2&path=/&root=/patches/store";
             }
 
             var gogAccountClient = new GogAccountClient();
@@ -610,7 +643,12 @@ namespace GogOssLibraryNS.Services
                                 {
                                     newUrl += "/{GALAXY_PATH}";
                                 }
-                                urls.Add(newUrl);
+                                var newFinalUrl = new GogSecureLinks.FinalUrl
+                                {
+                                    formatted_url = newUrl,
+                                    endpoint_name = endpoint.endpoint_name
+                                };
+                                urls.Add(newFinalUrl);
                             }
                         }
                     }

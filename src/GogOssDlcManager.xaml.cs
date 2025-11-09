@@ -21,8 +21,8 @@ namespace GogOssLibraryNS
     /// </summary>
     public partial class GogOssDlcManager : UserControl
     {
-        private Game Game => DataContext as Game;
-        public string GameId => Game.GameId;
+        private Game Game;
+        private string GameId;
         public Window DlcManagerWindow => Window.GetWindow(this);
         public ObservableCollection<KeyValuePair<string, Game>> installedDLCs;
         public ObservableCollection<KeyValuePair<string, Game>> notInstalledDLCs;
@@ -172,7 +172,7 @@ namespace GogOssLibraryNS
             AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
-        private async void UninstallBtn_Click(object sender, RoutedEventArgs e)
+        private void UninstallBtn_Click(object sender, RoutedEventArgs e)
         {
             var playniteAPI = API.Instance;
             if (InstalledDlcsLB.SelectedItems.Count > 0)
@@ -196,53 +196,66 @@ namespace GogOssLibraryNS
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    var settings = GogOssLibrary.GetSettings();
-                    DlcManagerWindow.Close();
-                    GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
+                    var globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
 
-                    var tasks = new List<DownloadManagerData.Download>();
-                    downloadTask = new DownloadManagerData.Download
-                    {
-                        gameID = Game.GameId,
-                        name = Game.Name,
-                    };
-                    var installedGameInfo = GogOss.GetInstalledInfo(GameId);
-                    downloadTask.fullInstallPath = installedGameInfo.install_path;
-                    downloadTask.downloadProperties = new DownloadProperties()
-                    {
-                        buildId = installedGameInfo.build_id,
-                        extraContent = installedGameInfo.installed_DLCs,
-                        language = installedGameInfo.language,
-                        version = installedGameInfo.version,
-                    };
-                    var manifest = await gogDownloadApi.GetGameMetaManifest(downloadTask);
-                    downloadTask.downloadProperties.installPath = Path.Combine(installedGameInfo.install_path.Replace(manifest.installDirectory, ""));
+                    var selectedKeys = new HashSet<string>(InstalledDlcsLB.SelectedItems
+                        .OfType<KeyValuePair<string, Game>>()
+                        .Select(s => s.Key));
 
-                    foreach (var selectedOption in InstalledDlcsLB.SelectedItems.Cast<KeyValuePair<string, Game>>())
+                    playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                     {
-                        downloadTask.downloadProperties.extraContent.Remove(selectedOption.Key);
-                    }
-
-                    downloadTask.downloadSizeNumber = 0;
-                    downloadTask.installSizeNumber = 0;
-
-                    tasks.Add(downloadTask);
-                    if (tasks.Count > 0)
-                    {
-                        var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == Game.GameId);
-                        if (wantedItem != null)
+                        a.IsIndeterminate = true;
+                        var installedInfo = GogOss.GetInstalledInfo(GameId);
+                        var bigDepot = await GogOss.GetInstalledBigDepot(installedInfo, GameId);
+                        if (bigDepot != null)
                         {
-                            if (wantedItem.status != DownloadStatus.Running)
+                            var options = new ParallelOptions
                             {
-                                downloadManager.downloadManagerData.downloads.Remove(wantedItem);
-                                downloadManager.downloadsChanged = true;
-                                wantedItem = null;
+                                MaxDegreeOfParallelism = CommonHelpers.CpuThreadsNumber - 1
+                            };
+
+                            var entries = bigDepot.items.Select(i => (i.product_id, i.path))
+                                                        .Concat(bigDepot.files.Select(f => (f.product_id, f.path)))
+                                                        .Where(e => selectedKeys.Contains(e.product_id))
+                                                        .ToList();
+                            Parallel.ForEach(entries, options, e =>
+                            {
+                                var pathToRemove = Path.Combine(installedInfo.install_path, e.path.TrimStart('/', '\\'));
+                                if (File.Exists(pathToRemove))
+                                {
+                                    File.Delete(pathToRemove);
+                                }
+                            });
+                            foreach (var selectedKey in selectedKeys)
+                            {
+                                installedInfo.installed_DLCs.Remove(selectedKey);
                             }
+                            var installedAppList = GogOssLibrary.GetInstalledAppList();
+                            if (installedAppList.ContainsKey(GameId))
+                            {
+                                installedAppList.Remove(GameId);
+                            }
+                            installedAppList.Add(GameId, installedInfo);
+                            GogOssLibrary.Instance.installedAppListModified = true;
+                            GogOss.AddToHeroicInstalledList(installedInfo, GameId);     
                         }
-                        if (wantedItem == null)
-                        {
-                            await downloadManager.EnqueueMultipleJobs(tasks);
-                        }
+                    }, globalProgressOptions);
+                    foreach (var selectedKey in selectedKeys)
+                    {
+                        var selectedDlcKvp = installedDLCs.FirstOrDefault(kvp => kvp.Key == selectedKey);
+                        installedDLCs.Remove(selectedDlcKvp);
+                        notInstalledDLCs.Add(selectedDlcKvp);
+                    }
+                    if (AvailableDlcsLB.Items.Count > 0)
+                    {
+                        BottomADGrd.Visibility = Visibility.Visible;
+                        TopADSP.Visibility = Visibility.Visible;
+                        NoAvailableDlcsTB.Visibility = Visibility.Collapsed;
+                    }
+                    if (InstalledDlcsLB.Items.Count == 0)
+                    {
+                        InstalledDlcsSP.Visibility = Visibility.Collapsed;
+                        NoInstalledDlcsTB.Visibility = Visibility.Visible;
                     }
                 }
             }
@@ -277,6 +290,8 @@ namespace GogOssLibraryNS
 
         private async void GogOssDlcManagerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            Game = DataContext as Game;
+            GameId = Game.GameId;
             var playniteAPI = API.Instance;
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
             {
@@ -367,7 +382,6 @@ namespace GogOssLibraryNS
                 BottomADGrd.Visibility = Visibility.Collapsed;
                 AvailableDlcsAOBrd.Visibility = Visibility.Collapsed;
             }
-
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

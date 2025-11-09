@@ -239,7 +239,7 @@ namespace GogOssLibraryNS
                                               int maxRetries = 3,
                                               string preferredCdn = "")
         {
-            // STEP 0: Service and Initial Setup
+            // STEP 0: Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
             var secureLinks = allSecureLinks.mainSecureLinks;
             var dependencyLinks = allSecureLinks.inGameDependsSecureLinks;
@@ -273,7 +273,7 @@ namespace GogOssLibraryNS
                     FullMode = BoundedChannelFullMode.Wait
                 });
 
-            var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist)>();
+            var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist, string productId)>();
 
             long totalSize = 0;
             long totalCompressedSize = 0;
@@ -337,7 +337,7 @@ namespace GogOssLibraryNS
                     };
                     if (currentFileSize != expectedFileSize && !resumeState.IsCompleted(filePath, v1Chunk.compressedMd5))
                     {
-                        jobs.Add((filePath, 0, v1Chunk, isRedist));
+                        jobs.Add((filePath, 0, v1Chunk, isRedist, file.product_id));
                     }
                     else
                     {
@@ -393,7 +393,7 @@ namespace GogOssLibraryNS
                     foreach (var kvp in bigDepot.sfcContainersByHash.Where(kvp => sfcHashesToDownload.Contains(kvp.Key)))
                     {
                         string depotHash = kvp.Key;
-                        List<GogDepot.Chunk> chunks = kvp.Value;
+                        List<GogDepot.Chunk> chunks = kvp.Value.chunks;
 
                         string sfcFilePath = Path.Combine(tempDir, $"{sfcContainerBaseName}_{depotHash}.bin");
                         sfcFilePathsByHash.TryAdd(depotHash, sfcFilePath);
@@ -418,7 +418,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = sfcPos;
                                 if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((sfcFilePath, sfcPos, chunk, false));
+                                    jobs.Add((sfcFilePath, sfcPos, chunk, false, kvp.Value.product_id));
                                 }
                             }
                             else if (sfcPos + chunkSize <= currentSfcSize)
@@ -431,7 +431,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = sfcPos;
                                 if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((sfcFilePath, sfcPos, chunk, false));
+                                    jobs.Add((sfcFilePath, sfcPos, chunk, false, kvp.Value.product_id));
                                 }
                                 else
                                 {
@@ -532,7 +532,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = pos;
                                 if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((filePath, pos, chunk, isRedist));
+                                    jobs.Add((filePath, pos, chunk, isRedist, depot.product_id));
                                 }
                                 else
                                 {
@@ -550,7 +550,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = pos;
                                 if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((filePath, pos, chunk, isRedist));
+                                    jobs.Add((filePath, pos, chunk, isRedist, depot.product_id));
                                 }
                                 else
                                 {
@@ -650,14 +650,34 @@ namespace GogOssLibraryNS
                     bool isCompressed = !isV1 || job.isRedist;
 
                     bool isPatchFile = Path.GetFileName(job.filePath).IndexOf(".patch", StringComparison.OrdinalIgnoreCase) >= 0;
-                    var currentSecureLinks = isPatchFile ? patchesLinks : (job.isRedist ? dependencyLinks : secureLinks);
+                    var currentSecureLinksDict = new Dictionary<string, List<GogSecureLinks.FinalUrl>>();
 
-                    var availableCdns = new List<string>(currentSecureLinks);
+                    if (isPatchFile)
+                    {
+                        currentSecureLinksDict = patchesLinks;
+                    }
+                    else if (job.isRedist)
+                    {
+                        currentSecureLinksDict = dependencyLinks;
+                    }
+                    else
+                    {
+                        currentSecureLinksDict = secureLinks;
+                    }
+                    var productId = job.productId;
+                    if (job.isRedist)
+                    {
+                        productId = "redist_v2";
+                    }
+                    var currentSecureLinks = currentSecureLinksDict[productId];
+
+                    var availableCdns = new List<GogSecureLinks.FinalUrl>(currentSecureLinks);
 
                     if (preferredCdn != "")
                     {
-                        var preferredLink = availableCdns.FirstOrDefault(l => l.Contains(preferredCdn.ToLower()));
-                        if (!preferredLink.IsNullOrEmpty())
+                        var preferredLink = availableCdns.FirstOrDefault(l => l.endpoint_name.Contains(preferredCdn.ToLower()));
+
+                        if (!preferredLink.formatted_url.IsNullOrEmpty())
                         {
                             availableCdns.Remove(preferredLink);
                             availableCdns.Insert(0, preferredLink);
@@ -687,11 +707,11 @@ namespace GogOssLibraryNS
                                 string url;
                                 if (isV1 && !job.isRedist)
                                 {
-                                    url = currentSecureLink.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
+                                    url = currentSecureLink.formatted_url.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
                                 }
                                 else
                                 {
-                                    url = currentSecureLink.Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
+                                    url = currentSecureLink.formatted_url.Replace("{GALAXY_PATH}", gogDownloadApi.GetGalaxyPath(chunk.compressedMd5));
                                 }
 
                                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -794,7 +814,7 @@ namespace GogOssLibraryNS
                             }
                             catch (Exception ex)
                             {
-                                logger.Warn($"Download attempt {attempt} failed for chunk {job.chunk.compressedMd5} of file {job.filePath} using CDN {currentSecureLink}: {ex.Message}");
+                                logger.Warn($"Download attempt {attempt} failed for chunk {job.chunk.compressedMd5} of file {job.filePath} using {currentSecureLink.endpoint_name} CDN: {ex.Message}");
 
                                 if (chunkBuffer != null)
                                 {
@@ -825,7 +845,7 @@ namespace GogOssLibraryNS
                                 }
                                 else if (currentSecureLink != availableCdns.Last())
                                 {
-                                    logger.Warn($"Max retries reached ({maxRetries}) for CDN {currentSecureLink}. Switching to next CDN.");
+                                    logger.Warn($"Max retries reached ({maxRetries}) for {currentSecureLink.endpoint_name} CDN. Switching to next CDN.");
                                     break;
                                 }
                                 else
@@ -1122,7 +1142,7 @@ namespace GogOssLibraryNS
                 {
                     var depotDiffItems = allItems.Where(i => string.Equals(i.type ?? "", "DepotDiff", StringComparison.OrdinalIgnoreCase)).ToList();
 
-                    if (depotDiffItems != null && depotDiffItems.Count >= 0)
+                    if (depotDiffItems != null && depotDiffItems.Count > 0)
                     {
                         logger.Info($"Found {depotDiffItems.Count} patches to apply concurrently (max {sfcExtractSemaphore.CurrentCount} at a time).");
                         var patchingTasks = new List<Task>();
@@ -1325,99 +1345,41 @@ namespace GogOssLibraryNS
             gracefulInstallerCTS = new CancellationTokenSource();
             userCancelCTS = new();
 
-            List<string> depotHashes = new();
 
-            if (taskData.downloadItemType == DownloadItemType.Game)
-            {
-                depotHashes = await gogDownloadApi.GetNeededDepotManifestHashes(taskData);
-            }
-            else
-            {
-                var dependManifest = await GogDownloadApi.GetRedistInfo(taskData.gameID);
-                depotHashes.Add(dependManifest.manifest);
-            }
-
-            var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
-
-            var mainSecureLinks = await gogDownloadApi.GetSecureLinks(taskData);
             var allSecureLinks = new GogSecureLinks
             {
                 mainSecureLinks = new(),
                 inGameDependsSecureLinks = new()
             };
-            allSecureLinks.mainSecureLinks = mainSecureLinks;
+            allSecureLinks.mainSecureLinks = await gogDownloadApi.GetSecureLinksForAllProducts(taskData);
 
-
-            GogDepot.Depot bigDepot = new();
-            bigDepot.version = metaManifest.version;
-            foreach (var depotHash in depotHashes)
+            var bigDepot = await GogOss.CreateNewBigDepot(taskData);
+            var dependFoundIdDepot = bigDepot.items.FirstOrDefault(i => !i.redistTargetDir.IsNullOrEmpty());
+            if (dependFoundIdDepot != null)
             {
-                var depotManifest = await gogDownloadApi.GetDepotInfo(depotHash, taskData, metaManifest.version);
-                if (depotManifest.depot.items.Count > 0)
+                var dependData = new DownloadManagerData.Download
                 {
-                    foreach (var depotItem in depotManifest.depot.items)
-                    {
-                        if (depotItem.sfcRef != null)
-                        {
-                            depotItem.sfcRef.depotHash = depotHash;
-                        }
-                        bigDepot.items.Add(depotItem);
-                    }
-                }
-                if (depotManifest.depot.smallFilesContainer?.chunks.Count > 0)
+                    gameID = "redist_v2",
+                    downloadItemType = DownloadItemType.Dependency
+                };
+                dependData.downloadProperties = new DownloadProperties
                 {
-                    bigDepot.sfcContainersByHash.Add(depotHash, depotManifest.depot.smallFilesContainer.chunks);
-                }
-                if (depotManifest.depot.files.Count > 0)
+                    os = taskData.downloadProperties.os,
+                };
+                var dependsSecureLinks = await gogDownloadApi.GetSecureLinks(dependData);
+                if (allSecureLinks.inGameDependsSecureLinks.Count == 0)
                 {
-                    foreach (var depotFile in depotManifest.depot.files)
-                    {
-                        bigDepot.files.Add(depotFile);
-                    }
+                    allSecureLinks.inGameDependsSecureLinks.Add("redist_v2", dependsSecureLinks);
                 }
             }
 
-            List<string> inGameDependsHashes = new();
-            if (metaManifest.version == 1)
-            {
-                foreach (var depot in metaManifest.product.depots)
-                {
-                    if (!depot.redist.IsNullOrEmpty() && !depot.targetDir.IsNullOrEmpty())
-                    {
-                        var dependManifest = await GogDownloadApi.GetRedistInfo(depot.redist);
-                        var dependData = new DownloadManagerData.Download
-                        {
-                            gameID = depot.redist,
-                            downloadItemType = DownloadItemType.Dependency
-                        };
-                        dependData.downloadProperties = new DownloadProperties
-                        {
-                            os = taskData.downloadProperties.os,
-                        };
-
-                        var depotManifest = await gogDownloadApi.GetDepotInfo(dependManifest.manifest, dependData);
-                        if (depotManifest.depot.items.Count > 0)
-                        {
-                            var dependsSecureLinks = await gogDownloadApi.GetSecureLinks(dependData);
-                            if (allSecureLinks.inGameDependsSecureLinks.Count == 0)
-                            {
-
-                                allSecureLinks.inGameDependsSecureLinks = dependsSecureLinks;
-                            }
-                            foreach (var depotItem in depotManifest.depot.items)
-                            {
-                                depotItem.redistTargetDir = depot.targetDir;
-                                bigDepot.items.Add(depotItem);
-                            }
-                        }
-                    }
-                }
-            }
+            var originalDepotJson = Serialization.ToJson(bigDepot);
 
             bool foundPatch = false;
             GogDepot.Depot patchesDepot = new();
             if (taskData.downloadProperties.downloadAction == DownloadAction.Update && Xdelta.IsInstalled)
             {
+                var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
                 if (installedAppList.ContainsKey(gameID))
                 {
@@ -1446,7 +1408,8 @@ namespace GogOssLibraryNS
                                 {
                                     if (productIds.Contains(depot.productId))
                                     {
-                                        var depotManifest = await gogDownloadApi.GetDepotInfo(depot.manifest, taskData, isPatch: true);
+                                        var depotManifest = await gogDownloadApi.GetDepotInfo(depot.manifest, taskData, metaManifest.version,
+                                                                                              true);
                                         if (depotManifest.depot.items.Count > 0)
                                         {
                                             foreach (var depotItem in depotManifest.depot.items)
@@ -1471,8 +1434,7 @@ namespace GogOssLibraryNS
 
             if (foundPatch)
             {
-                var patchSecureLinks = await gogDownloadApi.GetSecureLinks(taskData, true);
-                allSecureLinks.patchSecureLinks = patchSecureLinks;
+                allSecureLinks.patchSecureLinks = await gogDownloadApi.GetSecureLinksForAllProducts(taskData, true);
             }
 
             var startTime = DateTime.Now;
@@ -1488,240 +1450,274 @@ namespace GogOssLibraryNS
             );
             GameTitleTB.Text = gameTitle;
 
+
+            // Remove duplicates (sometimes can appear with dlcs, but who knows if accidently can happen...)
+            if (bigDepot.items.Count > 0)
+            {
+                var seenPathsItems = new HashSet<string>();
+                bigDepot.items.RemoveAll(i => !string.IsNullOrEmpty(i.path) && !seenPathsItems.Add(i.path));
+            }
+            if (bigDepot.files.Count > 0)
+            {
+                var seenPathsFiles = new HashSet<string>();
+                bigDepot.files.RemoveAll(i => !string.IsNullOrEmpty(i.path) && !seenPathsFiles.Add(i.path));
+            }
+
             // Verify and repair files
             string tempPath = Path.Combine(taskData.fullInstallPath, ".Downloader_temp");
             string resumeStatePath = Path.Combine(tempPath, "resume-state.json");
+
+
+
+
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {
-                var resumeState = new ResumeState();
-                if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
+                bool skipVerify = false;
+                if (taskData.downloadProperties.downloadAction == DownloadAction.Install)
                 {
-                    resumeState.Load(resumeStatePath);
-                }
-                var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
-                if (allFiles.Any())
-                {
-                    var verificationFinishedSource = new TaskCompletionSource<bool>();
-                    taskData.status = DownloadStatus.Running;
-                    DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
-                    int countFiles = allFiles.Count;
-                    int verifiedFiles = 0;
-
-                    if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
+                    var installedAppList = GogOssLibrary.GetInstalledAppList();
+                    if (installedAppList.ContainsKey(gameID))
                     {
-                        var itemsMap = bigDepot.items
-                            .Where(i => !string.IsNullOrEmpty(i.path))
-                            .ToDictionary(i => i.path, i => i);
-
-                        var filesMap = bigDepot.files
-                            .Where(f => !string.IsNullOrEmpty(f.path))
-                            .ToDictionary(f => f.path, f => f);
-
-                        var patchesMap = patchesDepot.items
-                            .Where(p => !string.IsNullOrEmpty(p.path_source))
-                            .ToDictionary(p => p.path_source, p => p);
-
-                        var reporter = Task.Run(async () =>
+                        var oldBuild = installedAppList[gameID].build_id;
+                        var newBuild = taskData.downloadProperties.buildId;
+                        if (oldBuild == newBuild)
                         {
-                            while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
-                            {
-                                try
-                                {
-                                    var delay = Task.Delay(500, linkedCTS.Token);
-                                    var completedTask = await Task.WhenAny(delay, verificationFinishedSource.Task);
+                            skipVerify = true;
+                        }
+                    }
+                }
+                if (!skipVerify)
+                {
+                    var resumeState = new ResumeState();
+                    if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
+                    {
+                        resumeState.Load(resumeStatePath);
+                    }
+                    var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
+                    if (allFiles.Any())
+                    {
+                        var verificationFinishedSource = new TaskCompletionSource<bool>();
+                        taskData.status = DownloadStatus.Running;
+                        DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
+                        int countFiles = allFiles.Count;
+                        int verifiedFiles = 0;
 
-                                    if (completedTask == verificationFinishedSource.Task)
+                        if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
+                        {
+                            var itemsMap = bigDepot.items
+                                .Where(i => !string.IsNullOrEmpty(i.path))
+                                .ToDictionary(i => i.path, i => i);
+
+                            var filesMap = bigDepot.files
+                                .Where(f => !string.IsNullOrEmpty(f.path))
+                                .ToDictionary(f => f.path, f => f);
+
+                            var patchesMap = patchesDepot.items
+                                .Where(p => !string.IsNullOrEmpty(p.path_source))
+                                .ToDictionary(p => p.path_source, p => p);
+
+                            var reporter = Task.Run(async () =>
+                            {
+                                while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
+                                {
+                                    try
+                                    {
+                                        var delay = Task.Delay(500, linkedCTS.Token);
+                                        var completedTask = await Task.WhenAny(delay, verificationFinishedSource.Task);
+
+                                        if (completedTask == verificationFinishedSource.Task)
+                                        {
+                                            break;
+                                        }
+
+                                        _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                                        {
+                                            DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                            ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                                        });
+                                    }
+                                    catch (TaskCanceledException)
                                     {
                                         break;
                                     }
-
-                                    _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
-                                    {
-                                        DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                                        ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
-                                    });
-                                }
-                                catch (TaskCanceledException)
-                                {
-                                    break;
-                                }
-                            }
-                        }, linkedCTS.Token);
-
-                        try
-                        {
-                            await Task.Run(() =>
-                            {
-                                foreach (var file in allFiles)
-                                {
-                                    linkedCTS.Token.ThrowIfCancellationRequested();
-
-                                    try
-                                    {
-                                        string relativePath = RelativePath.Get(taskData.fullInstallPath, file);
-
-                                        if (patchesDepot.items.Count > 0)
-                                        {
-                                            if (patchesDepot.items.Count > 0 && patchesMap.TryGetValue(relativePath, out var searchedItem))
-                                            {
-                                                string correctChecksum = searchedItem.md5_source;
-                                                string calculatedChecksum = Helpers.GetMD5(file);
-                                                if (calculatedChecksum != null &&
-                                                            !string.Equals(calculatedChecksum, correctChecksum,
-                                                                           StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    try
-                                                    {
-                                                        File.Delete(file);
-                                                    }
-                                                    catch (Exception) { }
-                                                    patchesDepot.items.Remove(searchedItem);
-                                                    GogDepot.Item bigDepotItem = bigDepot.items.FirstOrDefault(i =>
-                                                    i.path == searchedItem.path_source);
-                                                    patchesDepot.items.Add(bigDepotItem);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (itemsMap.TryGetValue(relativePath, out var searchedItem))
-                                            {
-                                                string checksumType = "md5";
-                                                string correctChecksum = "";
-
-                                                if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
-                                                {
-                                                    correctChecksum = searchedItem.chunks[0].md5;
-                                                }
-
-                                                if (correctChecksum.IsNullOrEmpty())
-                                                {
-                                                    correctChecksum = searchedItem.md5;
-                                                }
-
-                                                if (correctChecksum.IsNullOrEmpty())
-                                                {
-                                                    correctChecksum = searchedItem.sha256;
-                                                    checksumType = "sha256";
-                                                }
-
-                                                if (!string.IsNullOrEmpty(correctChecksum))
-                                                {
-                                                    try
-                                                    {
-                                                        string calculatedChecksum = checksumType switch
-                                                        {
-                                                            "md5" => Helpers.GetMD5(file),
-                                                            "sha256" => Helpers.GetSHA256(file),
-                                                            _ => null
-                                                        };
-
-                                                        if (calculatedChecksum != null &&
-                                                            !string.Equals(calculatedChecksum, correctChecksum, StringComparison.OrdinalIgnoreCase))
-                                                        {
-                                                            try
-                                                            {
-                                                                File.Delete(file);
-                                                            }
-                                                            catch (Exception) { }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
-                                                            {
-                                                                bigDepot.items.Remove(searchedItem);
-                                                            }
-                                                            else
-                                                            {
-                                                                if (searchedItem.chunks != null)
-                                                                {
-                                                                    foreach (var chunk in searchedItem.chunks)
-                                                                    {
-                                                                        resumeState.MarkCompleted(file, chunk.compressedMd5);
-                                                                    }
-                                                                }
-                                                                else if (!correctChecksum.IsNullOrEmpty())
-                                                                {
-                                                                    resumeState.MarkCompleted(file, correctChecksum);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    catch (Exception hashEx)
-                                                    {
-                                                        logger.Warn(hashEx.Message);
-                                                    }
-                                                }
-                                            }
-
-                                            if (filesMap.TryGetValue(relativePath, out var depotFile))
-                                            {
-                                                string correctMd5 = depotFile.hash;
-                                                if (!string.IsNullOrEmpty(correctMd5))
-                                                {
-                                                    try
-                                                    {
-                                                        string calculatedMd5 = Helpers.GetMD5(file);
-
-                                                        if (calculatedMd5 != null &&
-                                                            !string.Equals(calculatedMd5, correctMd5, StringComparison.OrdinalIgnoreCase))
-                                                        {
-                                                            try
-                                                            {
-                                                                File.Delete(file);
-                                                            }
-                                                            catch (Exception) { }
-                                                        }
-                                                        else
-                                                        {
-                                                            if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
-                                                            {
-                                                                bigDepot.files.Remove(depotFile);
-                                                            }
-                                                            else
-                                                            {
-                                                                resumeState.MarkCompleted(file, depotFile.hash);
-                                                            }
-                                                        }
-                                                    }
-                                                    catch (Exception hashEx)
-                                                    {
-                                                        logger.Warn(hashEx.Message);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        Interlocked.Increment(ref verifiedFiles);
-                                    }
-                                    catch (OperationCanceledException) { throw; }
-                                    catch (Exception)
-                                    {
-                                        Interlocked.Increment(ref verifiedFiles);
-                                    }
                                 }
                             }, linkedCTS.Token);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            verificationFinishedSource.TrySetCanceled();
-                        }
-                        finally
-                        {
-                            Interlocked.Exchange(ref verifiedFiles, countFiles);
 
-                            verificationFinishedSource.TrySetResult(true);
+                            try
+                            {
+                                await Task.Run(() =>
+                                {
+                                    foreach (var file in allFiles)
+                                    {
+                                        linkedCTS.Token.ThrowIfCancellationRequested();
 
-                            DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                            ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                                        try
+                                        {
+                                            string relativePath = RelativePath.Get(taskData.fullInstallPath, file);
+
+                                            if (patchesDepot.items.Count > 0)
+                                            {
+                                                if (patchesDepot.items.Count > 0 && patchesMap.TryGetValue(relativePath, out var searchedItem))
+                                                {
+                                                    string correctChecksum = searchedItem.md5_source;
+                                                    string calculatedChecksum = Helpers.GetMD5(file);
+                                                    if (calculatedChecksum != null &&
+                                                                !string.Equals(calculatedChecksum, correctChecksum,
+                                                                               StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        try
+                                                        {
+                                                            File.Delete(file);
+                                                        }
+                                                        catch (Exception) { }
+                                                        patchesDepot.items.Remove(searchedItem);
+                                                        GogDepot.Item bigDepotItem = bigDepot.items.FirstOrDefault(i =>
+                                                        i.path == searchedItem.path_source);
+                                                        patchesDepot.items.Add(bigDepotItem);
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (itemsMap.TryGetValue(relativePath, out var searchedItem))
+                                                {
+                                                    string checksumType = "md5";
+                                                    string correctChecksum = "";
+
+                                                    if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
+                                                    {
+                                                        correctChecksum = searchedItem.chunks[0].md5;
+                                                    }
+
+                                                    if (correctChecksum.IsNullOrEmpty())
+                                                    {
+                                                        correctChecksum = searchedItem.md5;
+                                                    }
+
+                                                    if (correctChecksum.IsNullOrEmpty())
+                                                    {
+                                                        correctChecksum = searchedItem.sha256;
+                                                        checksumType = "sha256";
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(correctChecksum))
+                                                    {
+                                                        try
+                                                        {
+                                                            string calculatedChecksum = checksumType switch
+                                                            {
+                                                                "md5" => Helpers.GetMD5(file),
+                                                                "sha256" => Helpers.GetSHA256(file),
+                                                                _ => null
+                                                            };
+
+                                                            if (calculatedChecksum != null &&
+                                                                !string.Equals(calculatedChecksum, correctChecksum, StringComparison.OrdinalIgnoreCase))
+                                                            {
+                                                                try
+                                                                {
+                                                                    File.Delete(file);
+                                                                }
+                                                                catch (Exception) { }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
+                                                                {
+                                                                    bigDepot.items.Remove(searchedItem);
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (searchedItem.chunks != null)
+                                                                    {
+                                                                        foreach (var chunk in searchedItem.chunks)
+                                                                        {
+                                                                            resumeState.MarkCompleted(file, chunk.compressedMd5);
+                                                                        }
+                                                                    }
+                                                                    else if (!correctChecksum.IsNullOrEmpty())
+                                                                    {
+                                                                        resumeState.MarkCompleted(file, correctChecksum);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        catch (Exception hashEx)
+                                                        {
+                                                            logger.Warn(hashEx.Message);
+                                                        }
+                                                    }
+                                                }
+
+                                                if (filesMap.TryGetValue(relativePath, out var depotFile))
+                                                {
+                                                    string correctMd5 = depotFile.hash;
+                                                    if (!string.IsNullOrEmpty(correctMd5))
+                                                    {
+                                                        try
+                                                        {
+                                                            string calculatedMd5 = Helpers.GetMD5(file);
+
+                                                            if (calculatedMd5 != null &&
+                                                                !string.Equals(calculatedMd5, correctMd5, StringComparison.OrdinalIgnoreCase))
+                                                            {
+                                                                try
+                                                                {
+                                                                    File.Delete(file);
+                                                                }
+                                                                catch (Exception) { }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
+                                                                {
+                                                                    bigDepot.files.Remove(depotFile);
+                                                                }
+                                                                else
+                                                                {
+                                                                    resumeState.MarkCompleted(file, depotFile.hash);
+                                                                }
+                                                            }
+                                                        }
+                                                        catch (Exception hashEx)
+                                                        {
+                                                            logger.Warn(hashEx.Message);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            Interlocked.Increment(ref verifiedFiles);
+                                        }
+                                        catch (OperationCanceledException) { throw; }
+                                        catch (Exception)
+                                        {
+                                            Interlocked.Increment(ref verifiedFiles);
+                                        }
+                                    }
+                                }, linkedCTS.Token);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                verificationFinishedSource.TrySetCanceled();
+                            }
+                            finally
+                            {
+                                Interlocked.Exchange(ref verifiedFiles, countFiles);
+
+                                verificationFinishedSource.TrySetResult(true);
+
+                                DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                            }
                         }
-                    }
-                    if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
-                    {
-                        if (!Directory.Exists(tempPath))
+                        if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
                         {
-                            Directory.CreateDirectory(tempPath);
+                            if (!Directory.Exists(tempPath))
+                            {
+                                Directory.CreateDirectory(tempPath);
+                            }
+                            resumeState.Save(resumeStatePath);
                         }
-                        resumeState.Save(resumeStatePath);
                     }
                 }
             }
@@ -1832,9 +1828,8 @@ namespace GogOssLibraryNS
                     installedAppList.Remove(gameID);
                 }
 
-                if (taskData.downloadItemType != DownloadItemType.Dependency)
+                if (taskData.downloadItemType == DownloadItemType.Game)
                 {
-                    var gameMetaManifest = await gogDownloadApi.GetGameMetaManifest(gameID);
                     var dependencies = installedGameInfo.Dependencies;
                     if (taskData.depends.Count > 0)
                     {
@@ -1855,38 +1850,18 @@ namespace GogOssLibraryNS
                         playniteAPI.Database.Games.Update(game);
                     }
                     installedAppList.Add(gameID, installedGameInfo);
-                    var heroicInstalledPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gog_store", "installed.json");
-                    if (File.Exists(heroicInstalledPath))
+                    var installedDepotPath = Path.Combine(installedGameInfo.install_path, ".manifest_oss");
+                    Directory.CreateDirectory(installedDepotPath);
+                    var installedDepotFile = Path.Combine(installedDepotPath, "bigDepot.json");
+                    if (File.Exists(installedDepotFile))
                     {
-                        var heroicInstalledContent = FileSystem.ReadFileAsStringSafe(heroicInstalledPath);
-                        if (!heroicInstalledContent.IsNullOrWhiteSpace())
-                        {
-                            var heroicInstallInfo = new HeroicInstalled.HeroicInstalledSingle
-                            {
-                                appName = gameID,
-                                build_id = installedGameInfo.build_id,
-                                title = installedGameInfo.title,
-                                version = installedGameInfo.version,
-                                platform = installedGameInfo.platform,
-                                install_path = installedGameInfo.install_path,
-                                language = installedGameInfo.language,
-                                installed_DLCs = installedGameInfo.installed_DLCs,
-                                install_size = CommonHelpers.FormatSize(taskData.installSizeNumber)
-                            };
-                            var heroicInstalledJson = Serialization.FromJson<HeroicInstalled>(heroicInstalledContent);
-                            var wantedHeroicItem = heroicInstalledJson.installed.FirstOrDefault(i => i.appName == taskData.gameID);
-                            if (wantedHeroicItem != null)
-                            {
-                                heroicInstalledJson.installed.Remove(wantedHeroicItem);
-                            }
-                            heroicInstalledJson.installed.Add(heroicInstallInfo);
-                            var strConf = Serialization.ToJson(heroicInstalledJson, true);
-                            File.WriteAllText(heroicInstalledPath, strConf);
-                        }
+                        File.Delete(installedDepotFile);
                     }
+                    File.WriteAllText(installedDepotFile, originalDepotJson);
                 }
 
                 GogOssLibrary.Instance.installedAppListModified = true;
+                GogOss.AddToHeroicInstalledList(installedGameInfo, gameID, taskData.installSizeNumber);
 
                 taskData.status = DownloadStatus.Completed;
                 taskData.progress = 100.0;
