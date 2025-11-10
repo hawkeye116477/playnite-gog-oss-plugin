@@ -17,6 +17,7 @@ namespace GogOssLibraryNS
         public string SelectedCometPath { get; set; } = "";
         public string SelectedXdeltaPath { get; set; } = "";
         public int MaxWorkers { get; set; } = 0;
+        public int ConnectionTimeout { get; set; } = GogOss.DefaultConnectionTimeout;
         public bool UnattendedInstall { get; set; } = false;
         public bool DownloadAllDlcs { get; set; } = false;
         public bool DisplayDownloadSpeedInBits { get; set; } = false;

@@ -1833,8 +1833,16 @@ namespace GogOssLibraryNS
                 else
                 {
                     DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
+                
                 }
-                await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
+
+                var connectionTimeout = settings.ConnectionTimeout;
+                if (connectionTimeout == 0)
+                {
+                    connectionTimeout = GogOss.DefaultConnectionTimeout;
+                }
+
+                await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString, connectionTimeout: connectionTimeout);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
                 var installedGameInfo = new Installed

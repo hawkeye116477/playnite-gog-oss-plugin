@@ -253,6 +253,7 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static int DefaultConnectionTimeout = 10;
         public static int MaxMaxWorkers = 40;
 
         public static async Task<GogGameMetaManifest.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
