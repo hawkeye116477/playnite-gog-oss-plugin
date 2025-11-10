@@ -1342,7 +1342,8 @@ namespace GogOssLibraryNS
             var initialSetupFinishedSource = new TaskCompletionSource<bool>();
 
             var sw = Stopwatch.StartNew();
-            GameTitleTB.Text = taskData.name;
+            var gameTitle = taskData.name;
+            GameTitleTB.Text = gameTitle;
             DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel)}";
             taskData.status = DownloadStatus.Running;
 
@@ -1529,11 +1530,6 @@ namespace GogOssLibraryNS
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
                 {
-                    var resumeState = new ResumeState();
-                    if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
-                    {
-                        resumeState.Load(resumeStatePath);
-                    }
                     var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
                     if (allFiles.Any())
                     {
@@ -1679,24 +1675,7 @@ namespace GogOssLibraryNS
                                                             }
                                                             else
                                                             {
-                                                                if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
-                                                                {
-                                                                    bigDepot.items.Remove(searchedItem);
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (searchedItem.chunks != null)
-                                                                    {
-                                                                        foreach (var chunk in searchedItem.chunks)
-                                                                        {
-                                                                            resumeState.MarkCompleted(file, chunk.compressedMd5);
-                                                                        }
-                                                                    }
-                                                                    else if (!correctChecksum.IsNullOrEmpty())
-                                                                    {
-                                                                        resumeState.MarkCompleted(file, correctChecksum);
-                                                                    }
-                                                                }
+                                                                bigDepot.items.Remove(searchedItem);
                                                             }
                                                         }
                                                         catch (Exception hashEx)
@@ -1726,14 +1705,7 @@ namespace GogOssLibraryNS
                                                             }
                                                             else
                                                             {
-                                                                if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
-                                                                {
-                                                                    bigDepot.files.Remove(depotFile);
-                                                                }
-                                                                else
-                                                                {
-                                                                    resumeState.MarkCompleted(file, depotFile.hash);
-                                                                }
+                                                                bigDepot.files.Remove(depotFile);
                                                             }
                                                         }
                                                         catch (Exception hashEx)
@@ -1767,14 +1739,6 @@ namespace GogOssLibraryNS
                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                             }
-                        }
-                        if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
-                        {
-                            if (!Directory.Exists(tempPath))
-                            {
-                                Directory.CreateDirectory(tempPath);
-                            }
-                            resumeState.Save(resumeStatePath);
                         }
                     }
                 }
