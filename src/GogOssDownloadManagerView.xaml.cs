@@ -1463,30 +1463,13 @@ namespace GogOssLibraryNS
                 bigDepot.files.RemoveAll(i => !string.IsNullOrEmpty(i.path) && !seenPathsFiles.Add(i.path));
             }
 
+
             // Verify and repair files
             string tempPath = Path.Combine(taskData.fullInstallPath, ".Downloader_temp");
             string resumeStatePath = Path.Combine(tempPath, "resume-state.json");
-
-
-
-
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {
-                bool skipVerify = false;
-                if (taskData.downloadProperties.downloadAction == DownloadAction.Install)
-                {
-                    var installedAppList = GogOssLibrary.GetInstalledAppList();
-                    if (installedAppList.ContainsKey(gameID))
-                    {
-                        var oldBuild = installedAppList[gameID].build_id;
-                        var newBuild = taskData.downloadProperties.buildId;
-                        if (oldBuild == newBuild)
-                        {
-                            skipVerify = true;
-                        }
-                    }
-                }
-                if (!skipVerify)
+                if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
                 {
                     var resumeState = new ResumeState();
                     if (taskData.downloadProperties.downloadAction != DownloadAction.Repair)
