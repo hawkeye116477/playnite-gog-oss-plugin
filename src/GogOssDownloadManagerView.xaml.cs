@@ -238,8 +238,7 @@ namespace GogOssLibraryNS
                                               int bufferSize = 512 * 1024,
                                               long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
                                               int maxRetries = 3,
-                                              string preferredCdn = "",
-                                              int connectionTimeout = 10)
+                                              string preferredCdn = "")
         {
             // STEP 0: Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
@@ -249,7 +248,6 @@ namespace GogOssLibraryNS
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
-            client.Timeout = TimeSpan.FromSeconds(connectionTimeout);
 
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
@@ -1836,13 +1834,7 @@ namespace GogOssLibraryNS
                 
                 }
 
-                var connectionTimeout = settings.ConnectionTimeout;
-                if (connectionTimeout == 0)
-                {
-                    connectionTimeout = GogOss.DefaultConnectionTimeout;
-                }
-
-                await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString, connectionTimeout: connectionTimeout);
+                await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
                 var installedGameInfo = new Installed
@@ -2334,6 +2326,13 @@ namespace GogOssLibraryNS
         private void GogOssDownloadManagerUC_Loaded(object sender, RoutedEventArgs e)
         {
             CommonHelpers.SetControlBackground(this);
+            var settings = GogOssLibrary.GetSettings();
+            var connectionTimeout = settings.ConnectionTimeout;
+            if (connectionTimeout == 0)
+            {
+                connectionTimeout = GogOss.DefaultConnectionTimeout;
+            }
+            client.Timeout = TimeSpan.FromSeconds(connectionTimeout);
         }
     }
 }
