@@ -1332,20 +1332,49 @@ namespace GogOssLibraryNS
 
         public async Task Install(DownloadManagerData.Download taskData)
         {
+            gracefulInstallerCTS = new CancellationTokenSource();
+            userCancelCTS = new();
+            var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
+                gracefulInstallerCTS.Token,
+                userCancelCTS.Token
+            );
+
+            var initialSetupFinishedSource = new TaskCompletionSource<bool>();
+
+            var sw = Stopwatch.StartNew();
+            GameTitleTB.Text = taskData.name;
+            DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel)}";
+            taskData.status = DownloadStatus.Running;
+
+            var tempReporter = Task.Run(async () =>
+            {
+                while (!linkedCTS.Token.IsCancellationRequested || !initialSetupFinishedSource.Task.IsCompleted)
+                {
+                    try
+                    {
+                        await Task.Delay(500, linkedCTS.Token);
+                        if (!linkedCTS.Token.IsCancellationRequested)
+                        {
+                            ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                        }
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        initialSetupFinishedSource.TrySetCanceled();
+                        break;
+                    }
+                }
+            }, linkedCTS.Token);
+
             var installCommand = new List<string>();
             var settings = GogOssLibrary.GetSettings();
             var gameID = taskData.gameID;
             var downloadProperties = taskData.downloadProperties;
-            var gameTitle = taskData.name;
             bool downloadSpeedInBits = false;
             if (settings.DisplayDownloadSpeedInBits)
             {
                 downloadSpeedInBits = true;
             }
-
-            gracefulInstallerCTS = new CancellationTokenSource();
-            userCancelCTS = new();
-
 
             var allSecureLinks = new GogSecureLinks
             {
@@ -1438,18 +1467,9 @@ namespace GogOssLibraryNS
                 allSecureLinks.patchSecureLinks = await gogDownloadApi.GetSecureLinksForAllProducts(taskData, true);
             }
 
-            var startTime = DateTime.Now;
-            var sw = Stopwatch.StartNew();
             long lastNetworkBytes = Interlocked.Read(ref resumeInitialNetworkBytes);
             long lastDiskBytes = Interlocked.Read(ref resumeInitialDiskBytes);
             TimeSpan lastStopwatchElapsed = TimeSpan.Zero;
-
-
-            var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
-                gracefulInstallerCTS.Token,
-                userCancelCTS.Token
-            );
-            GameTitleTB.Text = gameTitle;
 
 
             // Remove duplicates (sometimes can appear with dlcs, but who knows if accidently can happen...)
@@ -1465,10 +1485,37 @@ namespace GogOssLibraryNS
             }
 
 
-            // Verify and repair files
+            // Remove old files not available in new update
             string tempPath = Path.Combine(taskData.fullInstallPath, ".Downloader_temp");
             string resumeStatePath = Path.Combine(tempPath, "resume-state.json");
+            if (Directory.Exists(taskData.fullInstallPath) && !foundPatch && taskData.downloadProperties.downloadAction == DownloadAction.Update && !File.Exists(resumeStatePath))
+            {
+                var installedAppList = GogOssLibrary.GetInstalledAppList();
+                var oldBigDepot = await GogOss.GetInstalledBigDepot(installedAppList[gameID], gameID);
 
+                var allGameFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories);
+
+                var newItemsMap = bigDepot.items
+                    .Where(i => !string.IsNullOrEmpty(i.path))
+                    .ToDictionary(i => i.path, i => i);
+
+                var oldItemsMap = oldBigDepot.items
+                    .Where(i => !string.IsNullOrEmpty(i.path))
+                    .ToDictionary(i => i.path, i => i);
+
+                var options = new ParallelOptions { MaxDegreeOfParallelism = CommonHelpers.CpuThreadsNumber - 1 };
+
+                Parallel.ForEach(allGameFiles, options, gameFile =>
+                {
+                    string relativePath = RelativePath.Get(taskData.fullInstallPath, gameFile);
+                    if (oldItemsMap.ContainsKey(relativePath) && !newItemsMap.ContainsKey(relativePath))
+                    {
+                        File.Delete(gameFile);
+                    }
+                });
+            }
+
+            // Verify and repair files
             if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
             {
                 if (File.Exists(resumeStatePath))
@@ -1477,6 +1524,7 @@ namespace GogOssLibraryNS
                 }
             }
 
+            initialSetupFinishedSource.TrySetResult(true);
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
@@ -1521,7 +1569,7 @@ namespace GogOssLibraryNS
                                 long initialBytes = Interlocked.Read(ref totalBytesRead);
                                 var swDelta = Stopwatch.StartNew();
 
-                                while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
+                                while (!linkedCTS.Token.IsCancellationRequested || !verificationFinishedSource.Task.IsCompleted)
                                 {
                                     try
                                     {
