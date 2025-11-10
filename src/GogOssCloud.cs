@@ -26,7 +26,7 @@ namespace GogOssLibraryNS
         public GogRemoteConfig GetCloudConfig(Game game, bool skipRefreshingMetadata = true)
         {
             string content = null;
-            var cacheCloudPath = GogOssLibrary.Instance.GetCachePath("cloudcache");
+            var cacheCloudPath = GogOssLibrary.Instance.GetCachePath("cloud");
             var cacheCloudFile = Path.Combine(cacheCloudPath, $"cloudConfig-{game.GameId}.json");
             if (File.Exists(cacheCloudFile))
             {

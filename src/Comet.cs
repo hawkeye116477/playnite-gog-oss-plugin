@@ -136,7 +136,7 @@ namespace GogOssLibraryNS
             {
                 throw new Exception(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)" Comet" }));
             }
-            var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("infocache");
+            var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("info");
             if (!Directory.Exists(cacheVersionPath))
             {
                 Directory.CreateDirectory(cacheVersionPath);

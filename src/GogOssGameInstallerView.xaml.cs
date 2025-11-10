@@ -212,11 +212,6 @@ namespace GogOssLibraryNS
             }
             SelectedGamePathTxt.Text = installPath;
             UpdateSpaceInfo(installPath);
-            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("infocache");
-            if (!Directory.Exists(cacheInfoPath))
-            {
-                Directory.CreateDirectory(cacheInfoPath);
-            }
             MaxWorkersNI.MaxValue = GogOss.MaxMaxWorkers;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             var downloadItemsAlreadyAdded = new List<string>();

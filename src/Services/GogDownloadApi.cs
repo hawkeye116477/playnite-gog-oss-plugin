@@ -29,7 +29,7 @@ namespace GogOssLibraryNS.Services
 
         public async Task<GogBuildsData> GetProductBuilds(string gameId, string platform = "windows", bool forceRefreshCache = false)
         {
-            var cachePath = GogOssLibrary.Instance.GetCachePath("downloadbuildscache");
+            var cachePath = GogOssLibrary.Instance.GetCachePath("builds");
 
             var newBuildsInfoContent = new GogBuildsData();
             string content = null;
@@ -162,7 +162,7 @@ namespace GogOssLibraryNS.Services
                 }
             }
 
-            var cachePath = GogOssLibrary.Instance.GetCachePath("manifests");
+            var cachePath = GogOssLibrary.Instance.GetCachePath("meta");
             var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
             bool correctJson = false;
             if (File.Exists(cacheInfoFile))
@@ -472,7 +472,7 @@ namespace GogOssLibraryNS.Services
 
         public async Task<GogDepot> GetDepotInfo(string manifest, DownloadManagerData.Download taskData, int version = 2, bool isPatch = false)
         {
-            var cachePath = GogOssLibrary.Instance.GetCachePath("depotcache");
+            var cachePath = GogOssLibrary.Instance.GetCachePath("depot");
             var depotManifest = new GogDepot();
             if (version == 1)
             {
@@ -665,7 +665,7 @@ namespace GogOssLibraryNS.Services
         public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string dependId, bool skipRefreshing = false, bool forceRefreshCache = false)
         {
             var version = "2";
-            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("manifests");
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("meta");
             var cacheInfoFileName = $"redist_v{version}.json";
             var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
             var redistManifest = new GogDownloadRedistManifest.Depot();
