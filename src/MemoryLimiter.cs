@@ -1,10 +1,9 @@
-﻿namespace GogOssLibraryNS
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+namespace GogOssLibraryNS
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     public sealed class MemoryLimiter : IDisposable
     {
         private readonly long _maxBytes;

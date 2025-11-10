@@ -16,7 +16,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        public static string GetMD5(string filePath)
+        public static string GetMD5(string filePath, IProgress<int> progress = null)
         {
             using (var stream = new FileStream(filePath,
                                                FileMode.Open,
@@ -24,14 +24,15 @@ namespace GogOssLibraryNS
                                                FileShare.Read,
                                                bufferSize: 1 * 1024 * 1024,
                                                options: FileOptions.SequentialScan))
+            using (var progressStream = new ProgressStream.ProgressStream(stream, progress))
             using (var md5 = MD5.Create())
             {
-                var hash = md5.ComputeHash(stream);
+                var hash = md5.ComputeHash(progressStream);
                 return BitConverter.ToString(hash).Replace("-", "");
             }
         }
 
-        public static string GetSHA256(string filePath)
+        public static string GetSHA256(string filePath, IProgress<int> progress = null)
         {
             using (var stream = new FileStream(filePath,
                                                FileMode.Open,
@@ -39,9 +40,10 @@ namespace GogOssLibraryNS
                                                FileShare.Read,
                                                bufferSize: 1 * 1024 * 1024,
                                                options: FileOptions.SequentialScan))
+            using (var progressStream = new ProgressStream.ProgressStream(stream, progress))
             using (var sha256 = SHA256.Create())
             {
-                var hash = sha256.ComputeHash(stream);
+                var hash = sha256.ComputeHash(progressStream);
                 return BitConverter.ToString(hash).Replace("-", "");
             }
         }

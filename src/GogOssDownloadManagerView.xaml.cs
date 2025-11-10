@@ -31,6 +31,7 @@ using SharpCompress.Compressors.Deflate;
 using System.Collections.Concurrent;
 using System.Buffers;
 using System.Threading.Channels;
+using System.Windows.Threading;
 
 namespace GogOssLibraryNS
 {
@@ -1467,6 +1468,15 @@ namespace GogOssLibraryNS
             // Verify and repair files
             string tempPath = Path.Combine(taskData.fullInstallPath, ".Downloader_temp");
             string resumeStatePath = Path.Combine(tempPath, "resume-state.json");
+
+            if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
+            {
+                if (File.Exists(resumeStatePath))
+                {
+                    File.Delete(resumeStatePath);
+                }
+            }
+
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
@@ -1484,6 +1494,7 @@ namespace GogOssLibraryNS
                         DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
                         int countFiles = allFiles.Count;
                         int verifiedFiles = 0;
+                        long totalBytesRead = 0;
 
                         if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
                         {
@@ -1499,25 +1510,40 @@ namespace GogOssLibraryNS
                                 .Where(p => !string.IsNullOrEmpty(p.path_source))
                                 .ToDictionary(p => p.path_source, p => p);
 
+                            var perFileProgress = new Progress<int>(bytes =>
+                            {
+                                Interlocked.Add(ref totalBytesRead, bytes);
+                            });
+
                             var reporter = Task.Run(async () =>
                             {
+                                long previousBytes = 0;
+                                long initialBytes = Interlocked.Read(ref totalBytesRead);
+                                var swDelta = Stopwatch.StartNew();
+
                                 while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
                                 {
                                     try
                                     {
-                                        var delay = Task.Delay(500, linkedCTS.Token);
-                                        var completedTask = await Task.WhenAny(delay, verificationFinishedSource.Task);
+                                        await Task.Delay(500, linkedCTS.Token);
 
-                                        if (completedTask == verificationFinishedSource.Task)
-                                        {
-                                            break;
-                                        }
+                                        double elapsedSec = swDelta.Elapsed.TotalSeconds;
+                                        long currentBytes = Interlocked.Read(ref totalBytesRead);
+                                        long deltaBytes = currentBytes - previousBytes;
+                                        previousBytes = currentBytes;
+                                        double rawDiskSpeed = deltaBytes / elapsedSec;
 
-                                        _ = Application.Current.Dispatcher?.BeginInvoke((Action)delegate
+                                        swDelta.Restart();
+
+                                        _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
                                         {
-                                            DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                                            ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
-                                        });
+                                            if (!linkedCTS.Token.IsCancellationRequested)
+                                            {
+                                                DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                                ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                                                DiskSpeedTB.Text = CommonHelpers.FormatSize(deltaBytes / elapsedSec, "B") + "/s";
+                                            }
+                                        }), DispatcherPriority.Background);
                                     }
                                     catch (TaskCanceledException)
                                     {
@@ -1543,7 +1569,7 @@ namespace GogOssLibraryNS
                                                 if (patchesDepot.items.Count > 0 && patchesMap.TryGetValue(relativePath, out var searchedItem))
                                                 {
                                                     string correctChecksum = searchedItem.md5_source;
-                                                    string calculatedChecksum = Helpers.GetMD5(file);
+                                                    string calculatedChecksum = Helpers.GetMD5(file, perFileProgress);
                                                     if (calculatedChecksum != null &&
                                                                 !string.Equals(calculatedChecksum, correctChecksum,
                                                                                StringComparison.OrdinalIgnoreCase))
@@ -1589,8 +1615,8 @@ namespace GogOssLibraryNS
                                                         {
                                                             string calculatedChecksum = checksumType switch
                                                             {
-                                                                "md5" => Helpers.GetMD5(file),
-                                                                "sha256" => Helpers.GetSHA256(file),
+                                                                "md5" => Helpers.GetMD5(file, perFileProgress),
+                                                                "sha256" => Helpers.GetSHA256(file, perFileProgress),
                                                                 _ => null
                                                             };
 
@@ -1639,7 +1665,7 @@ namespace GogOssLibraryNS
                                                     {
                                                         try
                                                         {
-                                                            string calculatedMd5 = Helpers.GetMD5(file);
+                                                            string calculatedMd5 = Helpers.GetMD5(file, perFileProgress);
 
                                                             if (calculatedMd5 != null &&
                                                                 !string.Equals(calculatedMd5, correctMd5, StringComparison.OrdinalIgnoreCase))
@@ -1688,6 +1714,7 @@ namespace GogOssLibraryNS
                                 Interlocked.Exchange(ref verifiedFiles, countFiles);
 
                                 verificationFinishedSource.TrySetResult(true);
+                                reporter.Dispose();
 
                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
