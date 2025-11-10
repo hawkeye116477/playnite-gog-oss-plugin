@@ -137,9 +137,6 @@
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonMaxWorkers}}" Grid.Column="0"
                             Grid.Row="0" Margin="0,0,15,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <common:NumericInput Grid.Row="0" Grid.Column="1" Margin="0,0,0,5" MinValue="0" x:Name="MaxWorkersNI" Value="{Binding Settings.MaxWorkers}" HorizontalAlignment="Left"/>
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonConnectionTimeout}}" Grid.Column="0"
-                            Grid.Row="1" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                        <common:NumericInput Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" MinValue="0" MaxValue="600" StepSize="5" Value="{Binding Settings.ConnectionTimeout}" HorizontalAlignment="Left"/>
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="{common:Localize Key={x:Static system:LOC.CommonDownloaderPreferredCdn}}" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                         <ComboBox Grid.Row="2" Grid.Column="1" x:Name="PreferredCdnCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.PreferredCdn}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Margin="10,0,0,5" HorizontalAlignment="Left" />
                         <TextBlock Grid.Column="0" Grid.Row="3"
