@@ -238,7 +238,8 @@ namespace GogOssLibraryNS
                                               int bufferSize = 512 * 1024,
                                               long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
                                               int maxRetries = 3,
-                                              string preferredCdn = "")
+                                              string preferredCdn = "",
+                                              int connectionTimeout = 10)
         {
             // STEP 0: Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
@@ -248,6 +249,7 @@ namespace GogOssLibraryNS
 
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
+            client.Timeout = TimeSpan.FromSeconds(connectionTimeout);
 
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
@@ -274,7 +276,7 @@ namespace GogOssLibraryNS
                     FullMode = BoundedChannelFullMode.Wait
                 });
 
-            var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist, string productId)>();
+            var jobs = new HashSet<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist, string productId)>();
 
             long totalSize = 0;
             long totalCompressedSize = 0;
@@ -573,9 +575,9 @@ namespace GogOssLibraryNS
             }
 
 
-            jobs = jobs.OrderBy(job => job.filePath)
-                       .ThenBy(job => job.offset)
-                       .ToList();
+            jobs = jobs.OrderBy(job => job.offset)
+                       .ToHashSet();
+
 
             Interlocked.Exchange(ref resumeInitialDiskBytes, initialDiskBytesLocal);
             Interlocked.Exchange(ref resumeInitialNetworkBytes, initialNetworkBytesLocal);
@@ -1041,7 +1043,7 @@ namespace GogOssLibraryNS
                     {
                         string depotHash = kvp.Key;
                         string containerFilePath = sfcFilePathsByHash[depotHash];
-                        var orderedJobs = kvp.Value.OrderBy(job => job.sfcRef.offset).ToList();
+                        var orderedJobs = kvp.Value.OrderBy(job => job.sfcRef.offset).ToHashSet();
 
                         return orderedJobs.Select(job => Task.Run(async () =>
                         {
@@ -1783,7 +1785,7 @@ namespace GogOssLibraryNS
                 string eta = remaining > 0 ? TimeSpan.FromSeconds(remaining / speedForEta).ToString(@"hh\:mm\:ss") : "00:00:00";
 
                 DownloadSpeedTB.Text = CommonHelpers.FormatSize(rawNetSpeed, "B", downloadSpeedInBits) + "/s";
-                DiskSpeedTB.Text = CommonHelpers.FormatSize(rawDiskSpeed, "B", downloadSpeedInBits) + "/s";
+                DiskSpeedTB.Text = CommonHelpers.FormatSize(rawDiskSpeed, "B") + "/s";
                 EtaTB.Text = eta;
                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
 
