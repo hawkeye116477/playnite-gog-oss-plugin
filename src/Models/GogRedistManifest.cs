@@ -2,7 +2,7 @@
 
 namespace GogOssLibraryNS.Models
 {
-    public class GogDownloadRedistManifest
+    public class GogRedistManifest
     {
         public List<Depot> depots { get; set; } = new List<Depot>();
         public string build_id { get; set; }

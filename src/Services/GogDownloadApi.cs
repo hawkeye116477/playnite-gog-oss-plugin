@@ -662,14 +662,14 @@ namespace GogOssLibraryNS.Services
             return urls;
         }
 
-        public static async Task<GogDownloadRedistManifest.Depot> GetRedistInfo(string dependId, bool skipRefreshing = false, bool forceRefreshCache = false)
+        public static async Task<GogRedistManifest.Depot> GetRedistInfo(string dependId, bool skipRefreshing = false, bool forceRefreshCache = false)
         {
             var version = "2";
-            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("meta");
+            var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("redist");
             var cacheInfoFileName = $"redist_v{version}.json";
             var cacheInfoFile = Path.Combine(cacheInfoPath, cacheInfoFileName);
-            var redistManifest = new GogDownloadRedistManifest.Depot();
-            var manifest = new GogDownloadRedistManifest();
+            var redistManifest = new GogRedistManifest.Depot();
+            var manifest = new GogRedistManifest();
             var playniteAPI = API.Instance;
             var logger = LogManager.GetLogger();
             bool correctJson = false;

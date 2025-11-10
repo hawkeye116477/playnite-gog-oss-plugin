@@ -26,7 +26,7 @@ namespace GogOssLibraryNS.Models
 
         public Dictionary<string, Dlc> dlcs { get; set; } = new Dictionary<string, Dlc>();
 
-        public GogDownloadRedistManifest.Executable executable { get; set; } = new GogDownloadRedistManifest.Executable();
+        public GogRedistManifest.Executable executable { get; set; } = new GogRedistManifest.Executable();
 
         public string readableName { get; set; } = "";
         public string buildId_source { get; set; }

@@ -110,7 +110,7 @@
     <Compile Include="Models\GogRemoteConfig.cs" />
     <Compile Include="Models\GogGameMetaManifest.cs" />
     <Compile Include="Models\GameSettings.cs" />
-    <Compile Include="Models\GogDownloadRedistManifest.cs" />
+    <Compile Include="Models\GogRedistManifest.cs" />
     <Compile Include="Models\GogGameMetadata.cs" />
     <Compile Include="Models\GogGameTaskInfo.cs" />
     <Compile Include="Models\GetOwnedGamesResult.cs" />
