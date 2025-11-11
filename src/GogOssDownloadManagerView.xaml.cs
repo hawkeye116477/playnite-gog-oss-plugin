@@ -263,16 +263,10 @@ namespace GogOssLibraryNS
             var sfcHashesToDownload = new HashSet<string>();
 
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
-            int channelCapacity = Math.Min(maxParallel * 2, 64);
 
             // Producer-consumer channel
-            var channel = Channel.CreateBounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, bool isRedist, bool isCompressed, string chunkId)>(
-                new BoundedChannelOptions(channelCapacity)
-                {
-                    SingleReader = false,
-                    SingleWriter = false,
-                    FullMode = BoundedChannelFullMode.Wait
-                });
+            var channel = Channel.CreateUnbounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, bool isRedist, bool isCompressed, string chunkId)>(
+                );
 
             var jobs = new HashSet<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist, string productId)>();
 
@@ -1027,7 +1021,7 @@ namespace GogOssLibraryNS
                 {
                     resumeState.Save(resumeStatePath);
                 }
-                catch
+                catch (Exception)
                 {
 
                 }
