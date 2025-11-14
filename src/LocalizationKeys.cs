@@ -623,6 +623,14 @@ namespace System
         /// </summary>
         public const string CommonMigrationConfirm = "common-migration-confirm";
         /// <summary>
+        /// Migrate all games to {$originalPluginShortName} plugin
+        /// </summary>
+        public const string CommonRevertMigrateGames = "common-revert-migrate-games";
+        /// <summary>
+        /// Migrating all games to {$originalPluginShortName} plugin...
+        /// </summary>
+        public const string CommonRevertMigratingGames = "common-revert-migrating-games";
+        /// <summary>
         /// Updates for games from {$updatesSourceName} are being downloaded.
         /// </summary>
         public const string CommonGamesUpdatesUnderway = "common-games-updates-underway";
@@ -630,6 +638,10 @@ namespace System
         /// Only one instance of {$pluginShortName} may install/import/move applications at a time. Do you want to pause download manager tasks to continue?
         /// </summary>
         public const string CommonInstanceNotice = "common-instance-notice";
+        /// <summary>
+        /// Reload
+        /// </summary>
+        public const string CommonReload = "common-reload";
         /// <summary>
         /// Filter Active
         /// </summary>

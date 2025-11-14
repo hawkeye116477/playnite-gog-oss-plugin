@@ -52,7 +52,9 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonMigrateGamesOriginal}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,5,0,0" Name="MigrateGogBtn" IsEnabled="False" Click="MigrateGogBtn_Click"></Button>
+                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonMigrateGamesOriginal}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,5,0,0" Name="MigrateGogBtn" IsEnabled="False" Click="MigrateGogBtn_Click" ToolTip="GOG => GOG OSS"></Button>
+
+                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonRevertMigrateGames}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,15,0,0" Name="MigrateRevertGogBtn" IsEnabled="False" Click="MigrateRevertGogBtn_Click" ToolTip="GOG OSS => GOG"></Button>
 
                     <CheckBox IsChecked="{Binding Settings.EnableCometSupport}" DockPanel.Dock="Top" Margin="0,15,0,0"
                   Content="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupport}}" ToolTip="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupportToolTip}}"/>

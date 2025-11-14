@@ -56,6 +56,7 @@ namespace GogOssLibraryNS
             if (installedAddons.Contains("GogLibrary_Builtin"))
             {
                 MigrateGogBtn.IsEnabled = true;
+                MigrateRevertGogBtn.IsEnabled = true;
             }
 
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
@@ -384,6 +385,65 @@ namespace GogOssLibraryNS
         private void OpenXdeltaBinaryBtn_Click(object sender, RoutedEventArgs e)
         {
             Xdelta.StartClient();
+        }
+
+        private void MigrateRevertGogBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var commonFluentArgs = new Dictionary<string, IFluentType>
+            {
+                { "pluginShortName", (FluentString)"GOG" },
+                { "originalPluginShortName", (FluentString)"GOG OSS" },
+            };
+
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationConfirm, commonFluentArgs), LocalizationManager.Instance.GetString(LOC.CommonRevertMigrateGames), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+            {
+                return;
+            }
+            GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonRevertMigratingGames), false) { IsIndeterminate = false };
+            playniteAPI.Dialogs.ActivateGlobalProgress((a) =>
+            {
+                using (playniteAPI.Database.BufferedUpdate())
+                {
+                    var gamesToMigrate = playniteAPI.Database.Games.Where(i => i.PluginId == GogOssLibrary.Instance.Id).ToList();
+                    var migratedGames = new List<string>();
+                    var notImportedGames = new List<string>();
+                    if (gamesToMigrate.Count > 0)
+                    {
+                        var iterator = 0;
+                        a.ProgressMaxValue = gamesToMigrate.Count() + 1;
+                        a.CurrentProgressValue = 0;
+                        foreach (var game in gamesToMigrate.ToList())
+                        {
+                            iterator++;
+                            var alreadyExists = playniteAPI.Database.Games.FirstOrDefault(i => i.GameId == game.GameId && i.PluginId == GogOssLibrary.Instance.Id);
+                            if (alreadyExists == null)
+                            {
+                                game.PluginId = Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E");
+                                playniteAPI.Database.Games.Update(game);
+                                migratedGames.Add(game.GameId);
+                                a.CurrentProgressValue = iterator;
+                            }
+                        }
+                        a.CurrentProgressValue = gamesToMigrate.Count() + 1;
+                        if (migratedGames.Count > 0)
+                        {
+                            playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationCompleted), LocalizationManager.Instance.GetString(LOC.CommonMigrateGamesOriginal), MessageBoxButton.OK, MessageBoxImage.Information);
+                            logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG OSS to GOG.");
+                        }
+                        if (migratedGames.Count == 0 && notImportedGames.Count == 0)
+                        {
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationNoGames));
+                        }
+                    }
+                    else
+                    {
+                        a.ProgressMaxValue = 1;
+                        a.CurrentProgressValue = 1;
+                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationNoGames));
+                    }
+                }
+            }, globalProgressOptions);
         }
     }
 }
