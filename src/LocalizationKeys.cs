@@ -643,6 +643,10 @@ namespace System
         /// </summary>
         public const string CommonReload = "common-reload";
         /// <summary>
+        /// Are you sure you want to reload data? That may cause earthquake near {$updatesSourceName} servers.
+        /// </summary>
+        public const string CommonReloadConfirm = "common-reload-confirm";
+        /// <summary>
         /// Filter Active
         /// </summary>
         public const string ThirdPartyPlayniteFilterActiveLabel = "third-party-playnite-filter-active-label";

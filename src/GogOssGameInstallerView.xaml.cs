@@ -203,6 +203,18 @@ namespace GogOssLibraryNS
                 RepairBtn.Visibility = Visibility.Visible;
                 AfterInstallingSP.Visibility = Visibility.Collapsed;
             }
+            await RefreshAll();
+            var settings = GogOssLibrary.GetSettings();
+            var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game);
+            ReloadBtn.IsEnabled = true;
+            if (settings.UnattendedInstall && (games.First().downloadProperties.downloadAction == DownloadAction.Install))
+            {
+                await StartTask(DownloadAction.Install);
+            }
+        }
+
+        public async Task RefreshAll()
+        {
             var settings = GogOssLibrary.GetSettings();
             var installPath = GogOss.GamesInstallationPath;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
@@ -437,11 +449,8 @@ namespace GogOssLibraryNS
             {
                 InstallerWindow.Close();
             }
-            if (settings.UnattendedInstall && (games.First().downloadProperties.downloadAction == DownloadAction.Install))
-            {
-                await StartTask(DownloadAction.Install);
-            }
         }
+
 
         private Dictionary<string, string> RefreshLanguages(DownloadManagerData.Download installData)
         {
@@ -701,6 +710,30 @@ namespace GogOssLibraryNS
                 CalculateTotalSize();
                 InstallBtn.IsEnabled = true;
             }
+        }
+
+        private async void ReloadBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), LocalizationManager.Instance.GetString(LOC.CommonReload), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                InstallBtn.IsEnabled = false;
+                DownloadSizeTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel);
+                var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+                var cacheDir = Path.Combine(dataDir, "cache");
+                foreach (var file in Directory.GetFiles(cacheDir, "*", SearchOption.AllDirectories))
+                {
+                    foreach (var installData in MultiInstallData)
+                    {
+                        if (file.Contains(installData.gameID))
+                        {
+                            File.Delete(file);
+                        }
+                    }
+                }
+                await RefreshAll();
+            }
+
         }
     }
 }

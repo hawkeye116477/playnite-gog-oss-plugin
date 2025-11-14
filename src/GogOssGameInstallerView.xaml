@@ -62,7 +62,9 @@
                     FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,5,0"
                     Click="InstallBtn_Click" IsEnabled="False" />
                 <Button x:Name="CancelBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
-                    FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CancelBtn_Click" />
+                    FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="CancelBtn_Click" Margin="0,0,5,0" />
+                <Button x:Name="ReloadBtn" Content="{common:Localize Key={x:Static system:LOC.CommonReload}}" ContentStringFormat="&#xefd1; {0}"
+                    FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="ReloadBtn_Click" Margin="5,0,0,0" IsEnabled="False"  />
             </StackPanel>
             <Separator Margin="0,5"/>
             <DockPanel Margin="0,0,0,5" Name="FolderDP">
