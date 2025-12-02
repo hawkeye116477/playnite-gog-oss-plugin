@@ -1326,6 +1326,7 @@ namespace GogOssLibraryNS
 
         public async Task Install(DownloadManagerData.Download taskData)
         {
+            logger.Debug($"Installing {taskData.name} ({taskData.gameID})...");
             gracefulInstallerCTS = new CancellationTokenSource();
             userCancelCTS = new();
             var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
@@ -1728,8 +1729,6 @@ namespace GogOssLibraryNS
                                 Interlocked.Exchange(ref verifiedFiles, countFiles);
 
                                 verificationFinishedSource.TrySetResult(true);
-                                reporter.Dispose();
-
                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                             }
