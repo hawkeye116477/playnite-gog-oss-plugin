@@ -22,7 +22,7 @@
 
     <DockPanel Margin="0,0,0,10">
         <StackPanel Orientation="Horizontal" x:Name="TopSP" Margin="0,10,10,0" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSaveLabel}}" ContentStringFormat="&#xee00; {0}" FontFamily="{DynamicResource FontIcoFont}" Click="SaveBtn_Click" Margin="0,0,7,0" Name="SaveBtn" />
+            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSaveLabel}}" ContentStringFormat="&#xee00; {0}" FontFamily="{DynamicResource FontIcoFont}" Click="SaveBtn_Click" Margin="0,0,8,0" Name="SaveBtn" />
             <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
                     FontFamily="{DynamicResource FontIcoFont}" Name="CancelBtn" Click="CancelBtn_Click" />
         </StackPanel>
