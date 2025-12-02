@@ -353,6 +353,12 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
+            bool excludeGoodie = true;
+            if (excludeGoodie)
+            {
+                games.RemoveAll(a => a.game.title.Contains("goodie", StringComparison.OrdinalIgnoreCase));
+            }
             return games;
         }
 
