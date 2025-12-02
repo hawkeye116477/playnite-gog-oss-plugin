@@ -273,7 +273,14 @@ namespace GogOssLibraryNS
                 if (answer == MessageBoxResult.Yes)
                 {
                     view.DeleteDomainCookies(".gog.com");
-                    File.Delete(GogOss.TokensPath);
+                    if (File.Exists(GogOss.TokensPath))
+                    {
+                        File.Delete(GogOss.TokensPath);
+                    }
+                    if (File.Exists(GogOss.EncryptedTokensPath))
+                    {
+                        File.Delete(GogOss.EncryptedTokensPath);
+                    }
                     UpdateAuthStatus();
                 }
                 else

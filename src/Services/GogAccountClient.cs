@@ -2,11 +2,14 @@
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
+using PlayniteExtensions.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -98,8 +101,9 @@ namespace GogOssLibraryNS.Services
                     };
                     tokenResponse.client_id.Add(clientId, responseJson);
                     var strConf = Serialization.ToJson(tokenResponse.client_id, false);
-                    FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.TokensPath));
-                    File.WriteAllText(GogOss.TokensPath, strConf);
+                    FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.EncryptedTokensPath));
+                    Encryption.EncryptToFile(GogOss.EncryptedTokensPath, strConf, Encoding.UTF8,
+                                         WindowsIdentity.GetCurrent().User.Value);
                 }
                 else
                 {
@@ -145,12 +149,13 @@ namespace GogOssLibraryNS.Services
                 };
                 tokenResponse.client_id.Add(clientId, responseJson);
                 var strConf = Serialization.ToJson(tokenResponse.client_id, false);
-                var tokenFullPath = Path.GetDirectoryName(GogOss.TokensPath);
+                var tokenFullPath = Path.GetDirectoryName(GogOss.EncryptedTokensPath);
                 if (!Directory.Exists(tokenFullPath))
                 {
                     FileSystem.CreateDirectory(tokenFullPath);
                 }
-                File.WriteAllText(GogOss.TokensPath, strConf);
+                Encryption.EncryptToFile(GogOss.EncryptedTokensPath, strConf, Encoding.UTF8,
+                                         WindowsIdentity.GetCurrent().User.Value);
                 return true;
             }
             else
@@ -168,8 +173,11 @@ namespace GogOssLibraryNS.Services
             {
                 return accountInfo;
             }
-
-            var tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.TokensPath);
+            var tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.EncryptedTokensPath);
+            if (File.Exists(GogOss.TokensPath))
+            {
+                tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.TokensPath);
+            }
             var tokenExpirySeconds = tokens.expires_in;
             DateTime tokenExpiryTime = tokenLastUpdateTime.AddSeconds(tokenExpirySeconds);
             if (DateTime.UtcNow > tokenExpiryTime)
@@ -216,9 +224,19 @@ namespace GogOssLibraryNS.Services
         {
             if (File.Exists(GogOss.TokensPath))
             {
+                var tokensTxt = File.ReadAllText(GogOss.TokensPath);
+                Encryption.EncryptToFile(GogOss.EncryptedTokensPath, tokensTxt, Encoding.UTF8,
+                                         WindowsIdentity.GetCurrent().User.Value);
+                File.Delete(GogOss.TokensPath);
+            }
+
+            if (File.Exists(GogOss.EncryptedTokensPath))
+            {
                 try
                 {
-                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponse.TokenResponsePart>>(File.ReadAllText(GogOss.TokensPath));
+                    var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponse.TokenResponsePart>>(
+                     Encryption.DecryptFromFile(GogOss.EncryptedTokensPath, Encoding.UTF8,
+                                                WindowsIdentity.GetCurrent().User.Value));
                     var firstKey = jsonResponse.First().Value;
                     return firstKey;
                 }
@@ -226,7 +244,6 @@ namespace GogOssLibraryNS.Services
                 {
                     logger.Error(e, "Failed to load saved tokens.");
                 }
-
             }
             return null;
         }
