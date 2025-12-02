@@ -139,7 +139,7 @@ namespace GogOssLibraryNS
                 XdeltaBinaryTxt.Text = troubleshootingInformation.XdeltaBinary;
             }
 
-            troubleshootingInformation.GogdlVersion = "Not%20installed";
+            troubleshootingInformation.GogdlVersion = "Not%20needed";
             PlayniteVersionTxt.Text = GogOssTroubleshootingInformation.PlayniteVersion;
             PluginVersionTxt.Text = troubleshootingInformation.PluginVersion;
             GamesInstallationPathTxt.Text = troubleshootingInformation.GamesInstallationPath;
