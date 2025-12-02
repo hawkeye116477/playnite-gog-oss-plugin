@@ -5,6 +5,7 @@ namespace GogOssLibraryNS.Models
 {
     public class GogBuildsData
     {
+        public bool installable = true;
         public bool errorDisplayed = false;
         public int total_count { get; set; }
         public int count { get; set; }

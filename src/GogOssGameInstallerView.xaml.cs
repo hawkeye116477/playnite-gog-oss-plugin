@@ -245,9 +245,12 @@ namespace GogOssLibraryNS
             foreach (var installData in MultiInstallData.ToList())
             {
                 builds = await gogDownloadApi.GetProductBuilds(installData.gameID);
-
-                if (builds.errorDisplayed)
+                if (builds.errorDisplayed || builds.installable == false)
                 {
+                    if (builds.installable == false)
+                    {
+                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOssGameNotInstallable, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)installData.name, ["url"] = (FluentString)"https://gog.com/account " }));
+                    }
                     gamesListShouldBeDisplayed = true;
                     MultiInstallData.Remove(installData);
                     continue;
@@ -609,7 +612,10 @@ namespace GogOssLibraryNS
                     VersionSP.Visibility = Visibility.Visible;
                 }
             }
-            await SetGameVersion();
+            if (builds.items.Count > 0)
+            {
+                await SetGameVersion();
+            }
         }
 
         private async void BetaChannelCBo_SelectionChanged(object sender, SelectionChangedEventArgs e)

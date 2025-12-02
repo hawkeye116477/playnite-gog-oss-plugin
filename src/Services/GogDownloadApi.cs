@@ -97,6 +97,10 @@ namespace GogOssLibraryNS.Services
                             var buildsInfoContentString = Serialization.ToJson(newBuildsInfoContent);
                             File.WriteAllText(cacheInfoFile, buildsInfoContentString);
                         }
+                        else
+                        {
+                            newBuildsInfoContent.installable = false;
+                        }
                     }
                 }
                 else
