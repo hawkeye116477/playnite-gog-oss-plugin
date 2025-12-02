@@ -178,7 +178,7 @@ namespace System
         /// </summary>
         public const string CommonUnattendedInstallToolTip = "common-unattended-install-tool-tip";
         /// <summary>
-        /// Maximum number of worker processes
+        /// Maximum number of parallel tasks
         /// </summary>
         public const string CommonMaxWorkers = "common-max-workers";
         /// <summary>
