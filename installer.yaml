@@ -1,5 +1,23 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.2.0
+    RequiredApiVersion: 6.4.0
+    ReleaseDate: 2025-12-03
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.2.0/GogOssLibrary_1_2_0.pext
+    Changelog:
+      - Divorced from gogdl
+      - '[Xdelta 3](https://github.com/hawkeye116477/xdelta/releases/) is now required
+        for applying game update patches (updates will work without patches, but may
+        be slower)'
+      - Improved resuming and cancellation of downloads
+      - Increased security by adding encryption to login tokens
+      - Added possibility to set favourite CDN
+      - Added possibility to revert migration from GOG to OSS version
+      - Added possibility to faster reload game data in installer
+      - Fixed starting Comet for some cases
+      - Excluded goodies from being imported
+      - Fixed problems with updating games
+      - Added Chinese Simplified translations by [fejich](https://github.com/fejich)
   - Version: 1.1.15
     RequiredApiVersion: 6.4.0
     ReleaseDate: 2025-09-29
