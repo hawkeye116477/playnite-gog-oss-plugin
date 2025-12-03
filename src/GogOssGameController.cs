@@ -40,16 +40,24 @@ namespace GogOssLibraryNS
                 new DownloadManagerData.Download { gameID = Game.GameId, name = Game.Name, downloadProperties = installProperties }
             };
             LaunchInstaller(installData);
-            InvokeOnInstallationCancelled(new GameInstallationCancelledEventArgs());
+            Game.IsInstalling = false;
         }
 
         public static void LaunchInstaller(List<DownloadManagerData.Download> installData)
         {
             var playniteAPI = API.Instance;
-            Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+            Window window = null;
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen && playniteAPI.ApplicationInfo.ApplicationVersion.Minor < 36)
             {
-                ShowMaximizeButton = false,
-            });
+                window = new Window();
+            }
+            else
+            {
+                window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                {
+                    ShowMaximizeButton = false,
+                });
+            }
             window.DataContext = installData;
             window.Content = new GogOssGameInstallerView();
             window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
@@ -175,6 +183,7 @@ namespace GogOssLibraryNS
                     }
                     else
                     {
+                        
                         playniteAPI.Dialogs.ShowMessage($"{LocalizationManager.Instance.GetString(LOC.CommonUninstallError, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)notUninstalledGamesCombined, ["count"] = (FluentNumber)notUninstalledGames.Count })} {LocalizationManager.Instance.GetString(LOC.CommonCheckLog)}");
                     }
                 }
