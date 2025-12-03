@@ -27,7 +27,6 @@ namespace GogOssLibraryNS
         public ObservableCollection<KeyValuePair<string, Game>> installedDLCs;
         public ObservableCollection<KeyValuePair<string, Game>> notInstalledDLCs;
         public long availableFreeSpace;
-        public DownloadManagerData.Download downloadTask;
         public GogDownloadApi gogDownloadApi = new();
 
         public GogOssDlcManager()
@@ -49,7 +48,7 @@ namespace GogOssLibraryNS
                 GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
                 var tasks = new List<DownloadManagerData.Download>();
-                downloadTask = new DownloadManagerData.Download
+                var downloadTask = new DownloadManagerData.Download
                 {
                     gameID = Game.GameId,
                     name = Game.Name,

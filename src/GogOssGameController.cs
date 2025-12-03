@@ -695,7 +695,6 @@ namespace GogOssLibraryNS
                     GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
                     foreach (var gameToUpdate in gamesToUpdate)
                     {
-                        var downloadData = new DownloadManagerData.Download { gameID = gameToUpdate.Key, downloadProperties = downloadProperties };
                         var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameToUpdate.Key);
                         if (wantedItem != null)
                         {
