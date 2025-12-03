@@ -1560,7 +1560,7 @@ namespace GogOssLibraryNS
                                 long initialBytes = Interlocked.Read(ref totalBytesRead);
                                 var swDelta = Stopwatch.StartNew();
 
-                                while (!linkedCTS.Token.IsCancellationRequested || !verificationFinishedSource.Task.IsCompleted)
+                                while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
                                 {
                                     try
                                     {
@@ -1727,8 +1727,8 @@ namespace GogOssLibraryNS
                             finally
                             {
                                 Interlocked.Exchange(ref verifiedFiles, countFiles);
-
                                 verificationFinishedSource.TrySetResult(true);
+                                await reporter;
                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                             }
