@@ -1326,7 +1326,6 @@ namespace GogOssLibraryNS
 
         public async Task Install(DownloadManagerData.Download taskData)
         {
-            logger.Debug($"Installing {taskData.name} ({taskData.gameID})...");
             gracefulInstallerCTS = new CancellationTokenSource();
             userCancelCTS = new();
             var linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(
@@ -1582,7 +1581,7 @@ namespace GogOssLibraryNS
                                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                                                 DiskSpeedTB.Text = CommonHelpers.FormatSize(deltaBytes / elapsedSec, "B") + "/s";
                                             }
-                                        }), DispatcherPriority.Background);
+                                        }));
                                     }
                                     catch (TaskCanceledException)
                                     {
@@ -1737,6 +1736,7 @@ namespace GogOssLibraryNS
                 }
             }
 
+            DescriptionTB.Text = "";
             if (patchesDepot.items.Count > 0)
             {
                 bigDepot.items = patchesDepot.items;
@@ -1827,6 +1827,7 @@ namespace GogOssLibraryNS
                 
                 }
 
+                logger.Debug($"Downloading {taskData.name} ({taskData.gameID}) to {taskData.downloadProperties.installPath} ...");
                 await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
 
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
