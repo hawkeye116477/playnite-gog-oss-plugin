@@ -706,24 +706,25 @@ namespace GogOssLibraryNS
                         }
                         else
                         {
-                            if (downloadProperties == null)
+                            var settings = GogOssLibrary.GetSettings();
+                            DownloadProperties newDownloadProperties = new()
                             {
-                                var settings = GogOssLibrary.GetSettings();
-                                downloadProperties = new DownloadProperties()
-                                {
-                                    downloadAction = DownloadAction.Update,
-                                    maxWorkers = settings.MaxWorkers,
-                                };
+                                downloadAction = DownloadAction.Update,
+                                maxWorkers = settings.MaxWorkers,
+                            };
+                            if (downloadProperties != null)
+                            {
+                                newDownloadProperties = Serialization.GetClone(downloadProperties);
                             }
-                            downloadProperties.buildId = gameToUpdate.Value.Build_id;
-                            downloadProperties.version = gameToUpdate.Value.Version;
-                            downloadProperties.language = gameToUpdate.Value.Language;
-                            downloadProperties.extraContent = gameToUpdate.Value.ExtraContent;
-                            downloadProperties.os = gameToUpdate.Value.Os;
-                            downloadProperties.installPath = gameToUpdate.Value.Install_path;
+                            newDownloadProperties.buildId = gameToUpdate.Value.Build_id;
+                            newDownloadProperties.version = gameToUpdate.Value.Version;
+                            newDownloadProperties.language = gameToUpdate.Value.Language;
+                            newDownloadProperties.extraContent = gameToUpdate.Value.ExtraContent;
+                            newDownloadProperties.os = gameToUpdate.Value.Os;
+                            newDownloadProperties.installPath = gameToUpdate.Value.Install_path;
                             if (!gameToUpdate.Value.BetaChannel.IsNullOrEmpty())
                             {
-                                downloadProperties.betaChannel = gameToUpdate.Value.BetaChannel;
+                                newDownloadProperties.betaChannel = gameToUpdate.Value.BetaChannel;
                             }
                             var updateTask = new DownloadManagerData.Download
                             {
@@ -731,7 +732,7 @@ namespace GogOssLibraryNS
                                 name = gameToUpdate.Value.Title,
                                 downloadSizeNumber = gameToUpdate.Value.Download_size,
                                 installSizeNumber = gameToUpdate.Value.Disk_size,
-                                downloadProperties = downloadProperties
+                                downloadProperties = newDownloadProperties
                             };
                             updateTask.fullInstallPath = gameToUpdate.Value.Install_path;
                             updateTask.depends = gameToUpdate.Value.Depends;
