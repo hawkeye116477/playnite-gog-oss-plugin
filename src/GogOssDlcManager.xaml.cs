@@ -28,6 +28,7 @@ namespace GogOssLibraryNS
         public ObservableCollection<KeyValuePair<string, Game>> notInstalledDLCs;
         public long availableFreeSpace;
         public GogDownloadApi gogDownloadApi = new();
+        private IPlayniteAPI playniteAPI = API.Instance;
 
         public GogOssDlcManager()
         {
@@ -297,14 +298,41 @@ namespace GogOssLibraryNS
                 CloseWindowTab.Visibility = Visibility.Visible;
             }
             CommonHelpers.SetControlBackground(this);
+            await RefreshAll();
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.Source is TabControl tabControl)
+            {
+                if (tabControl.SelectedItem == CloseWindowTab)
+                {
+                    Window.GetWindow(this).Close();
+                }
+            }
+
+        }
+
+        private async Task RefreshAll()
+        {
             BottomADGrd.Visibility = Visibility.Collapsed;
             TopADSP.Visibility = Visibility.Collapsed;
             InstalledDlcsSP.Visibility = Visibility.Collapsed;
+            ReloadABtn.IsEnabled = false;
             LoadingATB.Visibility = Visibility.Visible;
             LoadingITB.Visibility = Visibility.Visible;
             var installedGameInfo = GogOss.GetInstalledInfo(GameId);
 
-            var gameInfo = await gogDownloadApi.GetGameMetaManifest(GameId, installedGameInfo);
+            var gameInfo = new GogGameMetaManifest();
+            if (Game.IsInstalled)
+            {
+                gameInfo = await gogDownloadApi.GetGameMetaManifest(GameId, installedGameInfo);
+            }
+            else
+            {
+                gameInfo = await gogDownloadApi.GetGameMetaManifest(GameId);
+            }
+
             var ownedDlcs = gameInfo.dlcs;
             if (ownedDlcs.Count > 0)
             {
@@ -377,22 +405,32 @@ namespace GogOssLibraryNS
             }
             if (Game.InstallDirectory.IsNullOrEmpty())
             {
-                AvailableDlcsActionSP.Visibility = Visibility.Collapsed;
+                InstallBtn.Visibility = Visibility.Collapsed;
+                SelectAllAvDlcsBtn.Visibility = Visibility.Collapsed;
                 BottomADGrd.Visibility = Visibility.Collapsed;
                 AvailableDlcsAOBrd.Visibility = Visibility.Collapsed;
             }
+            ReloadABtn.IsEnabled = true;
         }
 
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void ReloadABtn_Click(object sender, RoutedEventArgs e)
         {
-            if (e.Source is TabControl tabControl)
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), LocalizationManager.Instance.GetString(LOC.CommonReload), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
             {
-                if (tabControl.SelectedItem == CloseWindowTab)
+                InstallBtn.IsEnabled = false;
+                DownloadSizeTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel);
+                var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+                var cacheDir = Path.Combine(dataDir, "cache");
+                foreach (var file in Directory.GetFiles(cacheDir, "*", SearchOption.AllDirectories))
                 {
-                    Window.GetWindow(this).Close();
+                    if (file.Contains(GameId))
+                    {
+                        File.Delete(file);
+                    }
                 }
+                await RefreshAll();
             }
-
         }
     }
 }
