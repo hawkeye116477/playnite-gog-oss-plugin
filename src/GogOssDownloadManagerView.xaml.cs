@@ -1380,8 +1380,8 @@ namespace GogOssLibraryNS
             allSecureLinks.mainSecureLinks = await gogDownloadApi.GetSecureLinksForAllProducts(taskData);
 
             var bigDepot = await GogOss.CreateNewBigDepot(taskData);
-            var dependFoundIdDepot = bigDepot.items.FirstOrDefault(i => !i.redistTargetDir.IsNullOrEmpty());
-            if (dependFoundIdDepot != null)
+            var dependFoundInDepot = bigDepot.items.FirstOrDefault(i => !i.redistTargetDir.IsNullOrEmpty());
+            if (dependFoundInDepot != null)
             {
                 var dependData = new DownloadManagerData.Download
                 {
@@ -1440,6 +1440,7 @@ namespace GogOssLibraryNS
                                         {
                                             foreach (var depotItem in depotManifest.depot.items)
                                             {
+                                                depotItem.product_id = depot.productId;
                                                 patchesDepot.items.Add(depotItem);
                                             }
                                         }
