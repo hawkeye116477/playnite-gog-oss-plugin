@@ -1333,33 +1333,34 @@ namespace GogOssLibraryNS
                 userCancelCTS.Token
             );
 
-            var initialSetupFinishedSource = new TaskCompletionSource<bool>();
-
             var sw = Stopwatch.StartNew();
             var gameTitle = taskData.name;
             GameTitleTB.Text = gameTitle;
             DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel)}";
             taskData.status = DownloadStatus.Running;
 
+            var tempReporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
             var tempReporter = Task.Run(async () =>
             {
-                while (!linkedCTS.Token.IsCancellationRequested || !initialSetupFinishedSource.Task.IsCompleted)
+                while (!tempReporterCts.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        await Task.Delay(500, linkedCTS.Token);
-                        if (!linkedCTS.Token.IsCancellationRequested)
+                        await Task.Delay(500, tempReporterCts.Token);
+                        if (!tempReporterCts.Token.IsCancellationRequested)
                         {
-                            ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
+                            {
+                                ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
+                            }));
                         }
                     }
                     catch (TaskCanceledException)
                     {
-                        initialSetupFinishedSource.TrySetCanceled();
                         break;
                     }
                 }
-            }, linkedCTS.Token);
+            }, tempReporterCts.Token);
 
             var installCommand = new List<string>();
             var settings = GogOssLibrary.GetSettings();
@@ -1519,7 +1520,14 @@ namespace GogOssLibraryNS
                 }
             }
 
-            initialSetupFinishedSource.TrySetResult(true);
+            tempReporterCts.Cancel();
+            try
+            {
+                await tempReporter;
+            }
+            catch (OperationCanceledException) { }
+            DescriptionTB.Text = "";
+
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
@@ -1527,7 +1535,6 @@ namespace GogOssLibraryNS
                     var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
                     if (allFiles.Any())
                     {
-                        var verificationFinishedSource = new TaskCompletionSource<bool>();
                         taskData.status = DownloadStatus.Running;
                         DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
                         int countFiles = allFiles.Count;
@@ -1553,17 +1560,19 @@ namespace GogOssLibraryNS
                                 Interlocked.Add(ref totalBytesRead, bytes);
                             });
 
+                            var reporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
+
                             var reporter = Task.Run(async () =>
                             {
                                 long previousBytes = 0;
                                 long initialBytes = Interlocked.Read(ref totalBytesRead);
                                 var swDelta = Stopwatch.StartNew();
 
-                                while (!linkedCTS.Token.IsCancellationRequested && !verificationFinishedSource.Task.IsCompleted)
+                                while (!reporterCts.Token.IsCancellationRequested)
                                 {
                                     try
                                     {
-                                        await Task.Delay(500, linkedCTS.Token);
+                                        await Task.Delay(500, reporterCts.Token);
 
                                         double elapsedSec = swDelta.Elapsed.TotalSeconds;
                                         long currentBytes = Interlocked.Read(ref totalBytesRead);
@@ -1575,7 +1584,7 @@ namespace GogOssLibraryNS
 
                                         _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
                                         {
-                                            if (!linkedCTS.Token.IsCancellationRequested)
+                                            if (!reporterCts.Token.IsCancellationRequested && !linkedCTS.Token.IsCancellationRequested)
                                             {
                                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
@@ -1588,7 +1597,7 @@ namespace GogOssLibraryNS
                                         break;
                                     }
                                 }
-                            }, linkedCTS.Token);
+                            }, reporterCts.Token);
 
                             try
                             {
@@ -1721,13 +1730,17 @@ namespace GogOssLibraryNS
                             }
                             catch (OperationCanceledException)
                             {
-                                verificationFinishedSource.TrySetCanceled();
+
                             }
                             finally
                             {
                                 Interlocked.Exchange(ref verifiedFiles, countFiles);
-                                verificationFinishedSource.TrySetResult(true);
-                                await reporter;
+                                reporterCts.Cancel();
+                                try
+                                {
+                                    await reporter;
+                                }
+                                catch (OperationCanceledException) { }
                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                             }
@@ -1824,7 +1837,6 @@ namespace GogOssLibraryNS
                 else
                 {
                     DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonDownloadingUpdate);
-                
                 }
 
                 logger.Debug($"Downloading {taskData.name} ({taskData.gameID}) to {taskData.downloadProperties.installPath} ...");
