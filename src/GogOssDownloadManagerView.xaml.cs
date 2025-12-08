@@ -1210,9 +1210,9 @@ namespace GogOssLibraryNS
                                         try
                                         {
                                             var result = await Cli.Wrap(Xdelta.InstallationPath)
-                                                     .WithArguments(new[] { "-d", "-s", sourcePath, deltaTempPath, patchedTempPath })
-                                                     .AddCommandToLog()
-                                                     .ExecuteAsync();
+                                                                  .WithArguments(new[] { "-d", "-s", sourcePath, deltaTempPath, patchedTempPath })
+                                                                  .AddCommandToLog()
+                                                                  .ExecuteAsync();
 
                                             Directory.CreateDirectory(Path.GetDirectoryName(finalTargetPath) ?? fullInstallPath);
 
@@ -1534,28 +1534,25 @@ namespace GogOssLibraryNS
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
                 {
                     var allFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
-                    if (allFiles.Any())
+                    int countFiles = allFiles.Count;
+
+                    if (countFiles > 0)
                     {
                         taskData.status = DownloadStatus.Running;
                         DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
-                        int countFiles = allFiles.Count;
                         int verifiedFiles = 0;
                         long totalBytesRead = 0;
 
                         if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
                         {
-                            var itemsMap = bigDepot.items
-                                .Where(i => !string.IsNullOrEmpty(i.path))
-                                .ToDictionary(i => i.path, i => i);
+                            var itemsMap = bigDepot.items.Where(i => !string.IsNullOrEmpty(i.path))
+                                                         .ToDictionary(i => i.path, i => i);
 
-                            var filesMap = bigDepot.files
-                                .Where(f => !string.IsNullOrEmpty(f.path))
-                                .ToDictionary(f => f.path, f => f);
+                            var filesMap = bigDepot.files.Where(f => !string.IsNullOrEmpty(f.path))
+                                                         .ToDictionary(f => f.path, f => f);
 
-                            var patchesMap = patchesDepot.items
-                                .Where(p => !string.IsNullOrEmpty(p.path_source))
-                                .ToDictionary(p => p.path_source, p => p);
-
+                            var patchesMap = patchesDepot.items.Where(p => !string.IsNullOrEmpty(p.path_source))
+                                                               .ToDictionary(p => p.path_source, p => p);
                             var perFileProgress = new Progress<int>(bytes =>
                             {
                                 Interlocked.Add(ref totalBytesRead, bytes);
@@ -1565,8 +1562,8 @@ namespace GogOssLibraryNS
 
                             var reporter = Task.Run(async () =>
                             {
+                                long lastUiUpdate = 0;
                                 long previousBytes = 0;
-                                long initialBytes = Interlocked.Read(ref totalBytesRead);
                                 var swDelta = Stopwatch.StartNew();
 
                                 while (!reporterCts.Token.IsCancellationRequested)
@@ -1575,23 +1572,28 @@ namespace GogOssLibraryNS
                                     {
                                         await Task.Delay(500, reporterCts.Token);
 
-                                        double elapsedSec = swDelta.Elapsed.TotalSeconds;
                                         long currentBytes = Interlocked.Read(ref totalBytesRead);
                                         long deltaBytes = currentBytes - previousBytes;
                                         previousBytes = currentBytes;
-                                        double rawDiskSpeed = deltaBytes / elapsedSec;
 
+                                        double elapsedSec = swDelta.Elapsed.TotalSeconds;
                                         swDelta.Restart();
 
-                                        _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
+                                        long now = Stopwatch.GetTimestamp();
+
+                                        if (now - lastUiUpdate >= TimeSpan.FromMilliseconds(500).Ticks)
                                         {
-                                            if (!reporterCts.Token.IsCancellationRequested && !linkedCTS.Token.IsCancellationRequested)
+                                            lastUiUpdate = now;
+                                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
                                             {
+                                                if (reporterCts.Token.IsCancellationRequested || linkedCTS.Token.IsCancellationRequested)
+                                                    return;
+
                                                 DescriptionTB.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
                                                 ElapsedTB.Text = sw.Elapsed.ToString(@"hh\:mm\:ss");
                                                 DiskSpeedTB.Text = CommonHelpers.FormatSize(deltaBytes / elapsedSec, "B") + "/s";
-                                            }
-                                        }));
+                                            }));
+                                        }
                                     }
                                     catch (TaskCanceledException)
                                     {
@@ -1982,32 +1984,46 @@ namespace GogOssLibraryNS
                             userCancelCTS?.Dispose();
                         }
 
-                        if (selectedRow.downloadProperties.downloadAction == DownloadAction.Install)
+                        const int maxRetries = 5;
+                        int delayMs = 500;
+                        var tempDir = Path.Combine(selectedRow.fullInstallPath, ".Downloader_temp");
+                        string resumeStatePath = Path.Combine(tempDir, "resume-state.json");
+                        for (int i = 0; i < maxRetries; i++)
                         {
-                            const int maxRetries = 5;
-                            int delayMs = 500;
-                            for (int i = 0; i < maxRetries; i++)
+                            try
                             {
-                                try
+                                if (selectedRow.downloadProperties.downloadAction == DownloadAction.Install)
                                 {
                                     if (Directory.Exists(selectedRow.fullInstallPath))
                                     {
                                         Directory.Delete(selectedRow.fullInstallPath, true);
                                     }
-                                    break;
                                 }
-                                catch (Exception rex)
+                                else
                                 {
-                                    if (i < maxRetries - 1)
+                                    if (File.Exists(resumeStatePath))
                                     {
-                                        await Task.Delay(delayMs);
-                                        delayMs *= 2;
+                                        File.Delete(resumeStatePath);
                                     }
-                                    else
+                                }
+                                break;
+                            }
+                            catch (Exception rex)
+                            {
+                                if (i < maxRetries - 1)
+                                {
+                                    await Task.Delay(delayMs);
+                                    delayMs *= 2;
+                                }
+                                else
+                                {
+                                    var itemToRemove = selectedRow.fullInstallPath;
+                                    if (selectedRow.downloadProperties.downloadAction != DownloadAction.Install)
                                     {
-                                        logger.Warn($"Can't remove directory {selectedRow.fullInstallPath}: {rex.Message}. Please try removing manually.");
-                                        break;
+                                        itemToRemove = resumeStatePath;
                                     }
+                                    logger.Warn($"Can't remove {itemToRemove}: {rex.Message}. Please try removing manually.");
+                                    break;
                                 }
                             }
                         }
