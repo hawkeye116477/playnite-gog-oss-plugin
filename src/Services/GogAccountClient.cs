@@ -88,9 +88,9 @@ namespace GogOssLibraryNS.Services
                     { "code", code }
                 };
                 var newTokenUrl = FormatUrl(urlParams, tokenUrl);
-                var response = await httpClient.GetAsync(newTokenUrl);
-                if (response.IsSuccessStatusCode)
+                try
                 {
+                    var response = await httpClient.GetAsync(newTokenUrl);
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                     DateTimeOffset now = DateTime.UtcNow;
@@ -105,9 +105,9 @@ namespace GogOssLibraryNS.Services
                     Encryption.EncryptToFile(GogOss.EncryptedTokensPath, strConf, Encoding.UTF8,
                                          WindowsIdentity.GetCurrent().User.Value);
                 }
-                else
+                catch (Exception ex)
                 {
-                    logger.Error($"Failed to authenticate with GOG. Error: {response.ReasonPhrase}");
+                    logger.Error($"Failed to authenticate with GOG. Error: {ex}");
                 }
             }
         }
@@ -136,9 +136,10 @@ namespace GogOssLibraryNS.Services
                 { "refresh_token", refreshToken }
             };
             var newTokenUrl = FormatUrl(urlParams, tokenUrl);
-            var response = await httpClient.GetAsync(newTokenUrl);
-            if (response.IsSuccessStatusCode)
+            
+            try
             {
+                var response = await httpClient.GetAsync(newTokenUrl);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                 DateTimeOffset now = DateTime.UtcNow;
@@ -158,9 +159,9 @@ namespace GogOssLibraryNS.Services
                                          WindowsIdentity.GetCurrent().User.Value);
                 return true;
             }
-            else
+            catch (Exception ex)
             {
-                logger.Error("Failed to renew tokens.");
+                logger.Error($"Failed to renew tokens: {ex}.");
                 return false;
             }
         }

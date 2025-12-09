@@ -203,6 +203,16 @@ namespace GogOssLibraryNS
                 RepairBtn.Visibility = Visibility.Visible;
                 AfterInstallingSP.Visibility = Visibility.Collapsed;
             }
+
+            var clientApi = new GogAccountClient();
+            var userLoggedIn = await clientApi.GetIsUserLoggedIn();
+            if (!userLoggedIn)
+            {
+                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
+                InstallerWindow.Close();
+                return;
+            }
+
             await RefreshAll();
             var settings = GogOssLibrary.GetSettings();
             var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game);
@@ -433,14 +443,8 @@ namespace GogOssLibraryNS
                 GamesBrd.Visibility = Visibility.Visible;
             }
 
-            var clientApi = new GogAccountClient();
-            var userLoggedIn = await clientApi.GetIsUserLoggedIn();
-            if (games.Count <= 0 || !userLoggedIn)
+            if (games.Count <= 0)
             {
-                if (!userLoggedIn)
-                {
-                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
-                }
                 InstallerWindow.Close();
                 return;
             }
