@@ -19,6 +19,7 @@ third-party-playnite-yes-label = Ya
 third-party-playnite-no-label = Tidak
 third-party-playnite-downloading-label = Mengunduh…
 third-party-playnite-loading-label = Memuat...
+third-party-playnite-download-label = Unduh
 third-party-playnite-progress-metadata = Mendownload metadata...
 third-party-playnite-menu-restart-system = Restart Sistem
 third-party-playnite-menu-shutdown-system = Matikan Sistem

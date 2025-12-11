@@ -389,5 +389,24 @@ namespace GogOssLibraryNS.Services
             }
             return ownedList;
         }
+
+        public async Task<LibraryGameDetailsResponse> GetOwnedGameDetails(string gameId)
+        {
+            try
+            {
+                var tokens = LoadTokens();
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
+                var response = await httpClient.GetAsync($@"https://www.gog.com/account/gameDetails/{gameId}.json");
+                response.EnsureSuccessStatusCode();
+                var stringInfo = await response.Content.ReadAsStringAsync();
+                return Serialization.FromJson<LibraryGameDetailsResponse>(stringInfo);
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"An error occurred when fetching owned game details: {ex}");
+            }
+            return new LibraryGameDetailsResponse();
+        }
     }
 }

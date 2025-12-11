@@ -19,6 +19,7 @@ third-party-playnite-yes-label = はい
 third-party-playnite-no-label = いいえ
 third-party-playnite-downloading-label = ダウンロード中
 third-party-playnite-loading-label = 読み込み中…
+third-party-playnite-download-label = ダウンロード
 third-party-playnite-progress-metadata = メタデータを取得中…
 third-party-playnite-menu-restart-system = システムの再起動
 third-party-playnite-menu-shutdown-system = システムのシャットダウン

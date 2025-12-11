@@ -49,3 +49,4 @@ LOCCommonLinksForum
 LOCCommonLinksStorePage
 LOCGameUninstallError
 LOCDownloadError
+LOCDownloadLabel

@@ -30,6 +30,10 @@ namespace System
         /// </summary>
         public const string GogOssEnableCometSupportToolTip = "gog-oss-enable-comet-support-tool-tip";
         /// <summary>
+        /// Manage extras
+        /// </summary>
+        public const string GogOssManageExtras = "gog-oss-manage-extras";
+        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";
@@ -706,6 +710,10 @@ namespace System
         /// Loading…
         /// </summary>
         public const string ThirdPartyPlayniteLoadingLabel = "third-party-playnite-loading-label";
+        /// <summary>
+        /// Download
+        /// </summary>
+        public const string ThirdPartyPlayniteDownloadLabel = "third-party-playnite-download-label";
         /// <summary>
         /// Downloading metadata…
         /// </summary>

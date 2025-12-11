@@ -1,4 +1,5 @@
-﻿using SharpCompress.Compressors;
+﻿using ByteSizeLib;
+using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 using System;
 using System.IO;
@@ -80,6 +81,11 @@ namespace GogOssLibraryNS
             using var streamReader = new StreamReader(zlibStream);
             var result = streamReader.ReadToEnd();
             return result;
+        }
+
+        public static double StringSizeToBytes(string size)
+        {
+            return ByteSize.Parse($"{size}").Bytes;
         }
     }
 }

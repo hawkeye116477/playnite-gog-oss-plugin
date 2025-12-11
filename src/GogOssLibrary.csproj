@@ -76,6 +76,9 @@
     <Compile Include="GogOssExtraInstallationSettingsView.xaml.cs">
       <DependentUpon>GogOssExtraInstallationSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GogOssExtrasManager.xaml.cs">
+      <DependentUpon>GogOssExtrasManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GogOssGameController.cs" />
     <Compile Include="GogOssGameInstallerView.xaml.cs">
       <DependentUpon>GogOssGameInstallerView.xaml</DependentUpon>
@@ -100,6 +103,7 @@
     <Compile Include="MemoryLimiter.cs" />
     <Compile Include="Models\GogBuildsData.cs" />
     <Compile Include="Models\GogDepot.cs" />
+    <Compile Include="Models\LibraryGameDetailsResponse.cs" />
     <Compile Include="Models\PatchResponse.cs" />
     <Compile Include="Models\GogOwned.cs" />
     <Compile Include="Models\GogSecureLinks.cs" />
@@ -190,6 +194,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GogOssExtraInstallationSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GogOssExtrasManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -786,6 +786,26 @@ namespace GogOssLibraryNS
                             window.ShowDialog();
                         }
                     };
+                    yield return new GameMenuItem
+                    {
+                        Description = LocalizationManager.Instance.GetString(LOC.GogOssManageExtras),
+                        Icon = "ExtrasIcon",
+                        Action = (args) =>
+                        {
+                            Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
+                            {
+                                ShowMaximizeButton = false,
+                            });
+                            window.Title = $"{LocalizationManager.Instance.GetString(LOC.GogOssManageExtras)} - {game.Name}";
+                            window.DataContext = game;
+                            window.Content = new GogOssExtrasManager();
+                            window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
+                            window.SizeToContent = SizeToContent.WidthAndHeight;
+                            window.MinWidth = 600;
+                            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            window.ShowDialog();
+                        }
+                    };
                     if (game.IsInstalled)
                     {
                         yield return new GameMenuItem
