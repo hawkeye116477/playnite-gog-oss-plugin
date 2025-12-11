@@ -5,6 +5,7 @@ using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Linguini.Shared.Types.Bundle;
 using Playnite.SDK;
+using Playnite.SDK.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -128,10 +129,6 @@ namespace GogOssLibraryNS
                         continue;
                     }
                     var downloadProperties = GetDownloadProperties(installData, downloadAction);
-                    if (installData.downloadItemType == DownloadItemType.Dependency)
-                    {
-                        downloadProperties = GetDownloadProperties(installData, downloadAction);
-                    }
                     installData.downloadProperties = downloadProperties;
                     downloadTasks.Add(installData);
                 }
@@ -174,9 +171,11 @@ namespace GogOssLibraryNS
             {
                 maxWorkers = int.Parse(MaxWorkersNI.Value);
             }
-            installData.downloadProperties.downloadAction = downloadAction;
-            installData.downloadProperties.maxWorkers = maxWorkers;
-            return installData.downloadProperties;
+            DownloadProperties newDownloadProperties = new();
+            newDownloadProperties = Serialization.GetClone(installData.downloadProperties);
+            newDownloadProperties.downloadAction = downloadAction;
+            newDownloadProperties.maxWorkers = maxWorkers;
+            return newDownloadProperties;
         }
 
         private void CalculateTotalSize()
