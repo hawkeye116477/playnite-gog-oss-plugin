@@ -62,7 +62,6 @@ namespace GogOssLibraryNS
                     {
                         if (!support_command.executable.IsNullOrEmpty())
                         {
-                            var playniteAPI = API.Instance;
                             var supportPath = Path.Combine(installedInfo.install_path, "gog-support", support_command.gameID);
                             var supportExe = Path.GetFullPath(Path.Combine(supportPath, support_command.executable.TrimStart('/')));
                             var supportArgs = new List<string>
