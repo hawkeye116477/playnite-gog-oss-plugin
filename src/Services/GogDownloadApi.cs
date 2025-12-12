@@ -533,15 +533,17 @@ namespace GogOssLibraryNS.Services
                 {
                     fullUrl = $"{url}/{manifest}.json";
                 }
-                var response = await Client.GetAsync(fullUrl);
+               
                 Stream content;
-                if (response.IsSuccessStatusCode)
+                try
                 {
+                    var response = await Client.GetAsync(fullUrl);
+                    response.EnsureSuccessStatusCode();
                     content = await response.Content.ReadAsStreamAsync();
                 }
-                else
+                catch (Exception ex)
                 {
-                    logger.Error($"An error occurred while downloading {manifest} depot manifest.");
+                    logger.Error($"An error occurred while downloading {manifest} depot manifest from {fullUrl}: {ex}.");
                     return depotManifest;
                 }
 
