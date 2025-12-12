@@ -20,6 +20,36 @@ namespace GogOssLibraryNS
             _baseDelayMs = baseDelayMs;
         }
 
+        internal static async Task<HttpRequestMessage> CloneRequestAsync(HttpRequestMessage originalRequest)
+        {
+            var newRequest = new HttpRequestMessage(originalRequest.Method, originalRequest.RequestUri)
+            {
+                Version = originalRequest.Version,
+            };
+
+            foreach (var header in originalRequest.Headers)
+            {
+                newRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            }
+
+            foreach (var property in originalRequest.Properties)
+            {
+                newRequest.Properties.Add(property);
+            }
+
+            if (originalRequest.Content != null)
+            {
+                var contentBytes = await originalRequest.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var newContent = new ByteArrayContent(contentBytes);
+                foreach (var contentHeader in originalRequest.Content.Headers)
+                {
+                    newContent.Headers.TryAddWithoutValidation(contentHeader.Key, contentHeader.Value);
+                }
+                newRequest.Content = newContent;
+            }
+            return newRequest;
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken token)
@@ -29,7 +59,8 @@ namespace GogOssLibraryNS
             {
                 try
                 {
-                    response = await base.SendAsync(request, token);
+                    var newRequest = await CloneRequestAsync(request);
+                    response = await base.SendAsync(newRequest, token);
                     if ((int)response.StatusCode >= 500 && (int)response.StatusCode < 600)
                     {
                         var errorBody = await response.Content.ReadAsStringAsync();
