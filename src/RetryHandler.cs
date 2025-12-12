@@ -32,17 +32,17 @@ namespace GogOssLibraryNS
                     response = await base.SendAsync(request, token);
                     response.EnsureSuccessStatusCode();
                 }
-                catch (Exception ex)
+                catch
                 {
                     if (i < _maxRetries - 1)
                     {
                         int delay = (int)(_baseDelayMs * Math.Pow(2, i));
-                        logger.Debug($"Retrying.... . Attempts left: {_maxRetries - i - 1}");
+                        logger.Debug($"Retrying request.... . Attempts left: {_maxRetries - i - 1}");
                         await Task.Delay(delay, token);
                     }
                     else
                     {
-                        throw new HttpRequestException("All retry attempts failed.", ex);
+                        throw;
                     }
                 }
             }
