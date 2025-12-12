@@ -31,6 +31,7 @@ namespace GogOssLibraryNS
                 {
                     response = await base.SendAsync(request, token);
                     response.EnsureSuccessStatusCode();
+                    return response;
                 }
                 catch
                 {
