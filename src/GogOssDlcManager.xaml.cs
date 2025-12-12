@@ -315,6 +315,8 @@ namespace GogOssLibraryNS
 
         private async Task RefreshAll()
         {
+            NoAvailableDlcsTB.Visibility = Visibility.Collapsed;
+            NoInstalledDlcsTB.Visibility = Visibility.Collapsed;
             BottomADGrd.Visibility = Visibility.Collapsed;
             TopADSP.Visibility = Visibility.Collapsed;
             InstalledDlcsSP.Visibility = Visibility.Collapsed;

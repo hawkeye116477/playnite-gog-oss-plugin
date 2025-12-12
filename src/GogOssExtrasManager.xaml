@@ -60,6 +60,7 @@
                 </ListBox.Resources>
             </ListBox>
             <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}" Margin="0,5,0,0"  Visibility="Collapsed" Name="LoadingATB" />
+            <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNoAvailableExtras}}" Margin="0,5,0,0"  Visibility="Collapsed" Name="NoExtrasATB" />
         </StackPanel>
 
 

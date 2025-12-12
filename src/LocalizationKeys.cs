@@ -34,6 +34,10 @@ namespace System
         /// </summary>
         public const string GogOssManageExtras = "gog-oss-manage-extras";
         /// <summary>
+        /// No available extras.
+        /// </summary>
+        public const string GogOssNoAvailableExtras = "gog-oss-no-available-extras";
+        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";

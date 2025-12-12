@@ -42,6 +42,7 @@ namespace GogOssLibraryNS
             BottomADGrd.Visibility = Visibility.Collapsed;
             ReloadABtn.IsEnabled = false;
             LoadingATB.Visibility = Visibility.Visible;
+            NoExtrasATB.Visibility = Visibility.Collapsed;
 
             var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
             LibraryGameDetailsResponse gameDetailsInfo = new();
@@ -88,8 +89,12 @@ namespace GogOssLibraryNS
                 BottomADGrd.Visibility = Visibility.Visible;
                 DownloadBtn.IsEnabled = true;
             }
-            ReloadABtn.IsEnabled = true;
+            else
+            {
+                NoExtrasATB.Visibility = Visibility.Visible;
+            }
             LoadingATB.Visibility = Visibility.Collapsed;
+            ReloadABtn.IsEnabled = true;
         }
 
         private void AvailableExtrasLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
