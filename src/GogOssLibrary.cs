@@ -1065,13 +1065,14 @@ namespace GogOssLibraryNS
 
                     if (gamesToCompleteInstall.Any())
                     {
-                        GlobalProgressOptions installProgressOptions = new($"{LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation)}", false);
+                        GlobalProgressOptions installProgressOptions = new(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false) { IsIndeterminate = false };
                         PlayniteApi.Dialogs.ActivateGlobalProgress(async (progress) =>
                         {
                             progress.ProgressMaxValue = gamesToCompleteInstall.Count;
                             int current = 0;
                             foreach (var game in gamesToCompleteInstall)
                             {
+                                progress.Text = $"{LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation)} ({game.Value.title})";
                                 await GogOss.CompleteInstallation(game.Key);
                                 current++;
                                 progress.CurrentProgressValue = current;
