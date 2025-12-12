@@ -1052,6 +1052,39 @@ namespace GogOssLibraryNS
                     }
                 };
             }
+
+            yield return new MainMenuItem
+            {
+                Description = LocalizationManager.Instance.GetString(LOC.CommonFinishInstallation),
+                MenuSection = $"@{Instance.Name}",
+                Icon = "FinishInstallationIcon",
+                Action = (args) =>
+                {
+                    var installedAppList = GetInstalledAppList();
+                    var gamesToCompleteInstall = installedAppList.Where(g => !GogOss.GetInstalledInfo(g.Key).is_fully_installed).ToList();
+
+                    if (gamesToCompleteInstall.Any())
+                    {
+                        GlobalProgressOptions installProgressOptions = new($"{LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation)}", false);
+                        PlayniteApi.Dialogs.ActivateGlobalProgress(async (progress) =>
+                        {
+                            progress.ProgressMaxValue = gamesToCompleteInstall.Count;
+                            int current = 0;
+                            foreach (var game in gamesToCompleteInstall)
+                            {
+                                await GogOss.CompleteInstallation(game.Key);
+                                current++;
+                                progress.CurrentProgressValue = current;
+                            }
+                        }, installProgressOptions);
+                    }
+                    else
+                    {
+                        PlayniteApi.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoFinishNeeded));
+                    }
+                }
+            };
+
         }
     }
 }

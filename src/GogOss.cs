@@ -32,6 +32,10 @@ namespace GogOssLibraryNS
             {
                 installedInfo = installedAppList[gameId];
             }
+            else
+            {
+                installedInfo.is_fully_installed = true;
+            }
             return installedInfo;
         }
 
@@ -184,6 +188,42 @@ namespace GogOssLibraryNS
                 Directory.CreateDirectory(startMenuDir);
             }
             shortcut.Save(Path.Combine(startMenuDir, $"{folderName}.lnk"));
+
+            // Install dependencies
+            var depends = installedInfo.Dependencies.ToList();
+            if (depends.Count > 0)
+            {
+                bool installedDependsModified = false;
+                var installedDepends = GetInstalledDepends();
+                foreach (var depend in depends)
+                {
+                    if (!installedDepends.Contains(depend))
+                    {
+                        var dependManifest = await GogDownloadApi.GetRedistInfo(depend);
+                        if (dependManifest.executable.path != "")
+                        {
+                            var dependExe = Path.GetFullPath(Path.Combine(DependenciesInstallationPath, dependManifest.executable.path));
+                            if (File.Exists(dependExe))
+                            {
+                                var process = ProcessStarter.StartProcess(dependExe, dependManifest.executable.arguments, true);
+                                process.WaitForExit();
+                            }
+                        }
+                        installedInfo.Dependencies.Remove(depend);
+                        installedDepends.Add(depend);
+                        installedDependsModified = true;
+                    }
+                }
+                if (installedDependsModified)
+                {
+                    var installedDependsManifest = new InstalledDepends();
+                    installedDependsManifest.InstalledDependsList = installedDepends;
+                    var commonHelpers = GogOssLibrary.Instance.commonHelpers;
+                    commonHelpers.SaveJsonSettingsToFile(installedDependsManifest, "", "installedDepends", true);
+                }
+            }
+            installedInfo.is_fully_installed = true;
+            GogOssLibrary.Instance.installedAppListModified = true;
         }
 
         public static GogGameActionInfo GetGogGameInfoFromFile(string manifestFilePath)

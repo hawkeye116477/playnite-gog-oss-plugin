@@ -232,53 +232,15 @@ namespace GogOssLibraryNS
 
         public void BeforeGameStarting()
         {
-            var installedAppList = GogOssLibrary.GetInstalledAppList();
-            if (installedAppList.ContainsKey(Game.GameId))
+            var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
+            if (installedInfo.is_fully_installed == false)
             {
-                var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
-                if (installedInfo.is_fully_installed == false)
+                var playniteAPI = API.Instance;
+                GlobalProgressOptions installProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false);
+                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
-                    var playniteAPI = API.Instance;
-                    GlobalProgressOptions installProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false);
-                    playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
-                    {
-                        await GogOss.CompleteInstallation(Game.GameId);
-                        var depends = installedInfo.Dependencies.ToList();
-                        if (depends.Count > 0)
-                        {
-                            bool installedDependsModified = false;
-                            var installedDepends = GogOss.GetInstalledDepends();
-                            foreach (var depend in depends)
-                            {
-                                if (!installedDepends.Contains(depend))
-                                {
-                                    var dependManifest = await GogDownloadApi.GetRedistInfo(depend);
-                                    if (dependManifest.executable.path != "")
-                                    {
-                                        var dependExe = Path.GetFullPath(Path.Combine(GogOss.DependenciesInstallationPath, dependManifest.executable.path));
-                                        if (File.Exists(dependExe))
-                                        {
-                                            var process = ProcessStarter.StartProcess(dependExe, dependManifest.executable.arguments, true);
-                                            process.WaitForExit();
-                                        }
-                                    }
-                                    installedInfo.Dependencies.Remove(depend);
-                                    installedDepends.Add(depend);
-                                    installedDependsModified = true;
-                                }
-                            }
-                            if (installedDependsModified)
-                            {
-                                var installedDependsManifest = new InstalledDepends();
-                                installedDependsManifest.InstalledDependsList = installedDepends;
-                                var commonHelpers = GogOssLibrary.Instance.commonHelpers;
-                                commonHelpers.SaveJsonSettingsToFile(installedDependsManifest, "", "installedDepends", true);
-                            }
-                        }
-                        installedInfo.is_fully_installed = true;
-                        GogOssLibrary.Instance.installedAppListModified = true;
-                    }, installProgressOptions);
-                }
+                    await GogOss.CompleteInstallation(Game.GameId);
+                }, installProgressOptions);
             }
             gogOssCloud.SyncGameSaves(Game, CloudSyncAction.Download);
         }
