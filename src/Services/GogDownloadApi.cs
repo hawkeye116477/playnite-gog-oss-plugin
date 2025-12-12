@@ -19,7 +19,9 @@ namespace GogOssLibraryNS.Services
     {
         private IPlayniteAPI playniteAPI = API.Instance;
         private ILogger logger = LogManager.GetLogger();
-        public static readonly HttpClient Client = new HttpClient();
+        private static readonly RetryHandler retryHandler = new(new HttpClientHandler());
+        public static readonly HttpClient Client = new(retryHandler);
+
         public static string UserAgent => $"Playnite/{GogOssTroubleshootingInformation.PlayniteVersion}";
 
         public async Task<GogBuildsData> GetProductBuilds(DownloadManagerData.Download downloadInfo, bool forceRefreshCache = false)
@@ -70,11 +72,10 @@ namespace GogOssLibraryNS.Services
 
                 Client.DefaultRequestHeaders.Clear();
                 Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-                var response =
-                    await Client.GetAsync(
-                        $"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
-                if (response.IsSuccessStatusCode)
+                try
                 {
+                    var response = await Client.GetAsync($"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
+                    response.EnsureSuccessStatusCode();
                     content = await response.Content.ReadAsStringAsync();
                     if (!content.IsNullOrWhiteSpace())
                     {
@@ -103,10 +104,10 @@ namespace GogOssLibraryNS.Services
                         }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    newBuildsInfoContent.errorDisplayed = true;
                     logger.Error($"[GOG OSS] An error occurred while downloading {gameId} builds info.");
+                    newBuildsInfoContent.errorDisplayed = true;
                 }
             }
             return newBuildsInfoContent;
@@ -533,7 +534,6 @@ namespace GogOssLibraryNS.Services
                 {
                     fullUrl = $"{url}/{manifest}.json";
                 }
-               
                 Stream content;
                 try
                 {
@@ -622,9 +622,10 @@ namespace GogOssLibraryNS.Services
                 Client.DefaultRequestHeaders.Clear();
                 Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 Client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
-                var response = await Client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
+                try
                 {
+                    var response = await Client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     if (!string.IsNullOrWhiteSpace(content))
                     {
@@ -658,6 +659,10 @@ namespace GogOssLibraryNS.Services
                             }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error($"An error occured while getting secure links: {ex}.");
                 }
             }
             else

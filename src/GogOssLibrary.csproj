@@ -134,6 +134,7 @@
     <Compile Include="ReplaceExtensions.cs" />
     <Compile Include="ResumeState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryHandler.cs" />
     <Compile Include="Xdelta.cs" />
     <Compile Include="Services\GogAccountClient.cs" />
     <Compile Include="Services\GogApiClient.cs" />
