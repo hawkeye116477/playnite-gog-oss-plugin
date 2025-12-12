@@ -22,6 +22,8 @@ namespace GogOssLibraryNS
     {
         private static ILogger logger = LogManager.GetLogger();
         public GogDownloadApi gogDownloadApi = new GogDownloadApi();
+        private static readonly RetryHandler retryHandler = new(new HttpClientHandler());
+        public static readonly HttpClient httpClient = new(retryHandler);
 
         public GogRemoteConfig GetCloudConfig(Game game, bool skipRefreshingMetadata = true)
         {
@@ -44,7 +46,6 @@ namespace GogOssLibraryNS
                 var playniteAPI = API.Instance;
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
-                    using var httpClient = new HttpClient();
                     httpClient.DefaultRequestHeaders.Clear();
                     var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                     var response = await httpClient.GetAsync($"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
@@ -126,7 +127,7 @@ namespace GogOssLibraryNS
             return calculatedPaths;
         }
 
-        internal async Task UploadGameSaves(CloudFile localFile, List<CloudFile> cloudFiles, HttpClient httpClient, string urlPart, bool force, int attempts = 3)
+        internal async Task UploadGameSaves(CloudFile localFile, List<CloudFile> cloudFiles, string urlPart, bool force)
         {
             var data = File.ReadAllBytes(localFile.real_file_path);
             StreamContent compressedData;
@@ -167,20 +168,6 @@ namespace GogOssLibraryNS
                 var uploadResponse = await httpClient.PutAsync($"https://cloudstorage.gog.com/v1/{urlPart}", compressedData);
                 uploadResponse.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException exception)
-            {
-                if (attempts > 1)
-                {
-                    attempts -= 1;
-                    logger.Debug($"Retrying upload of '{localFile.real_file_path}' file. Attempts left: {attempts}");
-                    await Task.Delay(2000);
-                    await UploadGameSaves(localFile, cloudFiles, httpClient, urlPart, force, attempts);
-                }
-                else
-                {
-                    logger.Error($"An error occured while uploading '{localFile.real_file_path}' file: {exception}.");
-                }
-            }
             catch (Exception exception)
             {
                 logger.Error($"An error occured while uploading '{localFile.real_file_path}' file: {exception}.");
@@ -191,7 +178,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        internal async Task<bool> DownloadGameSaves(CloudFile cloudFile, List<CloudFile> localFiles, HttpClient httpClient, string urlPart, bool force, int attempts = 3)
+        internal async Task<bool> DownloadGameSaves(CloudFile cloudFile, List<CloudFile> localFiles, string urlPart, bool force)
         {
             bool errorDisplayed = false;
             var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
@@ -247,21 +234,6 @@ namespace GogOssLibraryNS
                     gzip.Close();
                 }
                 File.SetLastWriteTime(cloudFile.real_file_path, cloudLocalLastModified);
-            }
-            catch (HttpRequestException exception)
-            {
-                if (attempts > 1)
-                {
-                    attempts -= 1;
-                    logger.Debug($"Retrying download of '{cloudFile.real_file_path}' file. Attempts left: {attempts}");
-                    await Task.Delay(2000);
-                    await DownloadGameSaves(cloudFile, localFiles, httpClient, urlPart, force, attempts);
-                }
-                else
-                {
-                    logger.Error($"An error occured while downloading '{cloudFile.real_file_path}' file: {exception}.");
-                    errorDisplayed = true;
-                }
             }
             catch (Exception exception)
             {
@@ -326,7 +298,6 @@ namespace GogOssLibraryNS
                         var tokens = gogAccountClient.LoadTokens();
                         if (tokens != null)
                         {
-                            using var httpClient = new HttpClient();
                             httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
                             var metaManifest = await gogDownloadApi.GetGameMetaManifest(game.GameId);
                             var urlParams = new Dictionary<string, string>
@@ -420,7 +391,7 @@ namespace GogOssLibraryNS
                                     {
                                         foreach (var localFile in localFiles.ToList())
                                         {
-                                            await UploadGameSaves(localFile, cloudFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force, 3);
+                                            await UploadGameSaves(localFile, cloudFiles, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force);
                                         }
                                     }
                                     break;
@@ -435,7 +406,7 @@ namespace GogOssLibraryNS
                                         var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.GameId);
                                         foreach (var cloudFile in cloudFiles)
                                         {
-                                            var result = await DownloadGameSaves(cloudFile, localFiles, httpClient, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
+                                            var result = await DownloadGameSaves(cloudFile, localFiles, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
                                             if (result)
                                             {
                                                 errorDisplayed = true;
