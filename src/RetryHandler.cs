@@ -30,10 +30,17 @@ namespace GogOssLibraryNS
                 try
                 {
                     response = await base.SendAsync(request, token);
-                    response.EnsureSuccessStatusCode();
-                    return response;
+                    if ((int)response.StatusCode >= 500 && (int)response.StatusCode < 600)
+                    {
+                        var errorBody = await response.Content.ReadAsStringAsync();
+                        throw new HttpRequestException($"Server error: {(int)response.StatusCode} {response.ReasonPhrase}. Body: {errorBody}");
+                    }
+                    else
+                    {
+                        return response;
+                    }
                 }
-                catch
+                catch when (!token.IsCancellationRequested)
                 {
                     if (i < _maxRetries - 1)
                     {
