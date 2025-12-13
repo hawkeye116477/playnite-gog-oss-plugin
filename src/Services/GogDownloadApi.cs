@@ -609,7 +609,11 @@ namespace GogOssLibraryNS.Services
         {
             List<GogSecureLinks.FinalUrl> urls = new();
             var url = "";
-            var metaManifest = await GetGameMetaManifest(taskData);
+            var metaManifest = new GogGameMetaManifest();
+            if (taskData.downloadItemType != DownloadItemType.Dependency)
+            {
+                metaManifest = await GetGameMetaManifest(taskData);
+            }
             if (isPatch)
             {
                 url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&generation=2&path=/&root=/patches/store";
