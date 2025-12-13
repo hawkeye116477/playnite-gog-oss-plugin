@@ -107,7 +107,7 @@ namespace GogOssLibraryNS.Services
                 }
                 catch (Exception ex)
                 {
-                    logger.Error($"[GOG OSS] An error occurred while downloading {gameId} builds info.");
+                    logger.Error($"[GOG OSS] An error occurred while downloading {gameId} builds info: {ex}.");
                     newBuildsInfoContent.errorDisplayed = true;
                 }
             }
