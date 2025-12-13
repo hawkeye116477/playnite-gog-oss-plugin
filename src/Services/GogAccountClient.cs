@@ -91,7 +91,7 @@ namespace GogOssLibraryNS.Services
                 var newTokenUrl = FormatUrl(urlParams, tokenUrl);
                 try
                 {
-                    var response = await httpClient.GetAsync(newTokenUrl);
+                    using var response = await httpClient.GetAsync(newTokenUrl);
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                     DateTimeOffset now = DateTime.UtcNow;
@@ -140,7 +140,7 @@ namespace GogOssLibraryNS.Services
             
             try
             {
-                var response = await httpClient.GetAsync(newTokenUrl);
+                using var response = await httpClient.GetAsync(newTokenUrl);
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var responseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(responseContent);
                 DateTimeOffset now = DateTime.UtcNow;
@@ -199,7 +199,7 @@ namespace GogOssLibraryNS.Services
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
             try
             {
-                var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
+                using var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
                 if (!response.IsSuccessStatusCode)
                 {
                     if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -262,7 +262,7 @@ namespace GogOssLibraryNS.Services
             try
             {
                 var url = string.Format(baseUrl, account.username, 1);
-                var response = await httpClient.GetAsync(url);
+                using var response = await httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
                     stringLibContent = await response.Content.ReadAsStringAsync();
@@ -277,10 +277,10 @@ namespace GogOssLibraryNS.Services
                     {
                         for (int i = 2; i <= libraryData.pages; i++)
                         {
-                            response = await httpClient.GetAsync(url);
-                            if (response.IsSuccessStatusCode)
+                            using var nextResponse = await httpClient.GetAsync(url);
+                            if (nextResponse.IsSuccessStatusCode)
                             {
-                                stringLibContent = await response.Content.ReadAsStringAsync();
+                                stringLibContent = await nextResponse.Content.ReadAsStringAsync();
                                 var pageData = Serialization.FromJson<PagedResponse<LibraryGameResponse>>(stringLibContent);
                                 games.AddRange(pageData._embedded.items);
                             }
@@ -305,7 +305,7 @@ namespace GogOssLibraryNS.Services
             var tokens = LoadTokens();
             httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
-            var response = await httpClient.GetAsync(string.Format(baseUrl, 1));
+            using var response = await httpClient.GetAsync(string.Format(baseUrl, 1));
 
             if (response.IsSuccessStatusCode)
             {
@@ -336,10 +336,10 @@ namespace GogOssLibraryNS.Services
                 {
                     for (int i = 2; i <= libraryData.totalPages; i++)
                     {
-                        response = await httpClient.GetAsync(string.Format(baseUrl, i));
-                        if (response.IsSuccessStatusCode)
+                        using var nextResponse = await httpClient.GetAsync(string.Format(baseUrl, i));
+                        if (nextResponse.IsSuccessStatusCode)
                         {
-                            gamesList = await response.Content.ReadAsStringAsync();
+                            gamesList = await nextResponse.Content.ReadAsStringAsync();
                             var pageData = libraryData = Serialization.FromJson<GetOwnedGamesResult>(gamesList);
                             games.AddRange(pageData.products.Select(a => new LibraryGameResponse()
                             {
@@ -371,10 +371,10 @@ namespace GogOssLibraryNS.Services
             if (await GetIsUserLoggedIn())
             {
                 var tokens = LoadTokens();
-                GogDownloadApi.Client.DefaultRequestHeaders.Clear();
-                GogDownloadApi.Client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
-                GogDownloadApi.Client.DefaultRequestHeaders.Add("User-Agent", GogDownloadApi.UserAgent);
-                var response = await GogDownloadApi.Client.GetAsync(@"https://embed.gog.com/user/data/games");
+                var request = new HttpRequestMessage(HttpMethod.Get, @"https://embed.gog.com/user/data/games");
+                request.Headers.Add("Authorization", "Bearer " + tokens.access_token);
+                request.Headers.Add("User-Agent", GogDownloadApi.UserAgent);
+                using var response = await httpClient.SendAsync(request);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -398,7 +398,7 @@ namespace GogOssLibraryNS.Services
                 var tokens = LoadTokens();
                 httpClient.DefaultRequestHeaders.Clear();
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {tokens.access_token}");
-                var response = await httpClient.GetAsync($@"https://www.gog.com/account/gameDetails/{gameId}.json");
+                using var response = await httpClient.GetAsync($@"https://www.gog.com/account/gameDetails/{gameId}.json");
                 response.EnsureSuccessStatusCode();
                 var stringInfo = await response.Content.ReadAsStringAsync();
                 return Serialization.FromJson<LibraryGameDetailsResponse>(stringInfo);
