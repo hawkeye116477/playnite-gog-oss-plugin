@@ -1,4 +1,5 @@
 ﻿using ByteSizeLib;
+using Playnite.SDK;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 using System;
@@ -77,10 +78,19 @@ namespace GogOssLibraryNS
 
         public static string DecompressZlib(Stream content)
         {
-            using var zlibStream = new ZlibStream(content, CompressionMode.Decompress);
-            using var streamReader = new StreamReader(zlibStream);
-            var result = streamReader.ReadToEnd();
-            return result;
+            var logger = LogManager.GetLogger();
+            try
+            {
+                using var zlibStream = new ZlibStream(content, CompressionMode.Decompress);
+                using var streamReader = new StreamReader(zlibStream);
+                var result = streamReader.ReadToEnd();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"[GOG OSS] An error occurred while decompressing data: {ex}.");
+                return string.Empty;
+            }
         }
 
         public static double StringSizeToBytes(string size)
