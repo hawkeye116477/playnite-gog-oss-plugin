@@ -1397,7 +1397,10 @@ namespace GogOssLibraryNS
                 var dependsSecureLinks = await gogDownloadApi.GetSecureLinks(dependData);
                 if (allSecureLinks.inGameDependsSecureLinks.Count == 0)
                 {
-                    allSecureLinks.inGameDependsSecureLinks.Add("redist_v2", dependsSecureLinks);
+                    if (dependsSecureLinks.Count > 0)
+                    {
+                        allSecureLinks.inGameDependsSecureLinks.Add("redist_v2", dependsSecureLinks);
+                    }
                 }
             }
 
@@ -1530,6 +1533,19 @@ namespace GogOssLibraryNS
             }
             catch (OperationCanceledException) { }
             DescriptionTB.Text = "";
+
+
+            // Stop continuing if no links
+            if (allSecureLinks.mainSecureLinks.Count == 0 ||
+                (foundPatch && allSecureLinks.patchSecureLinks.Count == 0) ||
+                (dependFoundInDepot != null && allSecureLinks.inGameDependsSecureLinks.Count == 0))
+            {
+                taskData.status = DownloadStatus.Error;
+                downloadsChanged = true;
+                await DoNextJobInQueue();
+                return;
+            }
+
 
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {

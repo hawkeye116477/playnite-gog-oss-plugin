@@ -596,7 +596,10 @@ namespace GogOssLibraryNS.Services
                 };
                 dlcData.downloadProperties = taskData.downloadProperties;
                 var securelinks = await GetSecureLinks(dlcData, isPatch);
-                allSecureLinks.Add(productId, securelinks);
+                if (securelinks.Count > 0)
+                {
+                    allSecureLinks.Add(productId, securelinks);
+                }
             }
             return allSecureLinks;
         }
