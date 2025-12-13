@@ -9,7 +9,6 @@ namespace GogOssLibraryNS.Models
     public class GogDepot
     {
         public Depot depot { get; set; } = new();
-        public int version { get; set; }
         public class Depot
         {
             public List<Item> items { get; set; } = new List<Item>();

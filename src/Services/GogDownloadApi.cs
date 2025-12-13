@@ -555,8 +555,22 @@ namespace GogOssLibraryNS.Services
                     using var reader = new StreamReader(content);
                     result = await reader.ReadToEndAsync();
                 }
-                File.WriteAllText(cacheInfoFile, result);
                 depotManifest = Serialization.FromJson<GogDepot>(result);
+                if (depotManifest.depot.files.Count > 0)
+                {
+                    foreach (var depotFile in depotManifest.depot.files)
+                    {
+                        depotFile.path = depotFile.path.TrimStart('/', '\\');
+                    }
+                }
+                if (depotManifest.depot.items.Count > 0)
+                {
+                    foreach (var depotItem in depotManifest.depot.items)
+                    {
+                        depotItem.path = depotItem.path.TrimStart('/', '\\');
+                    }
+                }
+                File.WriteAllText(cacheInfoFile, Serialization.ToJson(depotManifest));
             }
 
             return depotManifest;

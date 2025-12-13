@@ -307,7 +307,7 @@ namespace GogOssLibraryNS
 
                     if (filePath.Contains("__redist"))
                     {
-                        filePath = Path.Combine(GogOss.DependenciesInstallationPath, file.path);
+                        filePath = Path.Combine(GogOss.DependenciesInstallationPath, depotFilePath);
                     }
 
                     var targetDirectory = Path.GetDirectoryName(filePath);
@@ -355,6 +355,7 @@ namespace GogOssLibraryNS
 
                 foreach (var depotItem in sfcItemsToCheck)
                 {
+                    depotItem.path = depotItem.path.TrimStart('/', '\\');
                     string fullSmallFilePath = Path.Combine(fullInstallPath, depotItem.path);
                     string depotHash = depotItem.sfcRef.depotHash;
 
@@ -449,6 +450,7 @@ namespace GogOssLibraryNS
 
                 foreach (var depot in allDepotItems)
                 {
+                    depot.path = depot.path.TrimStart('/', '\\');
                     bool isRedist = false;
 
                     string filePath;
