@@ -25,6 +25,13 @@ namespace GogOssLibraryNS
         public GogDownloadApi gogDownloadApi = new GogDownloadApi();
         private static readonly RetryHandler retryHandler = new(new HttpClientHandler());
         public static readonly HttpClient httpClient = new(retryHandler);
+        public static string UserAgent => "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
+
+        static GogOssCloud()
+        {
+            httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+            httpClient.DefaultRequestHeaders.Add("X-Object-Meta-User-Agent", UserAgent);
+        }
 
         public GogRemoteConfig GetCloudConfig(Game game, bool skipRefreshingMetadata = true)
         {
@@ -49,6 +56,7 @@ namespace GogOssLibraryNS
                 {
                     var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                     var request = new HttpRequestMessage(HttpMethod.Get, $"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
+                    request.Headers.Add("User-Agent", UserAgent);
                     using var response = await httpClient.SendAsync(request);
                     if (response.IsSuccessStatusCode)
                     {
@@ -297,7 +305,7 @@ namespace GogOssLibraryNS
                     };
                     cloudSaveFolders.Add(newCloudSaveFolder);
                 }
-                
+
                 var playniteAPI = API.Instance;
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonSyncing, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)game.Name }), false);
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
@@ -334,10 +342,6 @@ namespace GogOssLibraryNS
                                 logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
                             }
                             var cloudFiles = new List<CloudFile>();
-
-                            var gogUserAgent = "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
-                            request.Headers.Add("User-Agent", gogUserAgent);
-                            request.Headers.Add("X-Object-Meta-User-Agent", gogUserAgent);
                             using var response = await httpClient.SendAsync(request);
                             if (response.IsSuccessStatusCode)
                             {

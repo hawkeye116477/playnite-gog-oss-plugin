@@ -22,6 +22,11 @@ namespace GogOssLibraryNS.Services
 
         public static string UserAgent => $"Playnite/{GogOssTroubleshootingInformation.PlayniteVersion}";
 
+        static GogDownloadApi()
+        {
+            Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+        }
+
         public async Task<GogBuildsData> GetProductBuilds(DownloadManagerData.Download downloadInfo, bool forceRefreshCache = false)
         {
             return await GetProductBuilds(downloadInfo.gameID, downloadInfo.downloadProperties.os, forceRefreshCache);
@@ -68,11 +73,9 @@ namespace GogOssLibraryNS.Services
                     Directory.CreateDirectory(cachePath);
                 }
 
-                Client.DefaultRequestHeaders.Clear();
-                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 try
                 {
-                    var response = await Client.GetAsync($"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
+                    using var response = await Client.GetAsync($"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
                     response.EnsureSuccessStatusCode();
                     content = await response.Content.ReadAsStringAsync();
                     if (!content.IsNullOrWhiteSpace())
@@ -145,8 +148,6 @@ namespace GogOssLibraryNS.Services
                 var builds = await GetProductBuilds(gameId, platform);
                 if (builds.items.Count > 0)
                 {
-                    Client.DefaultRequestHeaders.Clear();
-                    Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                     string chosenBranch = branch;
                     if (chosenBranch == "disabled")
                     {
@@ -215,8 +216,6 @@ namespace GogOssLibraryNS.Services
                 var builds = await GetProductBuilds(gameId, platform);
                 if (builds.items.Count > 0)
                 {
-                    Client.DefaultRequestHeaders.Clear();
-                    Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                     string chosenBranch = branch;
                     var chosenBuildId = buildId;
                     if (chosenBranch == "disabled")
@@ -234,7 +233,8 @@ namespace GogOssLibraryNS.Services
 
                         cacheInfoFileName = $"{gameId}_build{newBuildId}.json";
                         cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
-                        var response = await Client.GetAsync(selectedBuild.link);
+
+                        using var response = await Client.GetAsync(selectedBuild.link);
                         Stream content = null;
                         if (response.IsSuccessStatusCode)
                         {
@@ -512,8 +512,6 @@ namespace GogOssLibraryNS.Services
                     Directory.CreateDirectory(cachePath);
                 }
 
-                Client.DefaultRequestHeaders.Clear();
-                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 var url = $"https://cdn.gog.com/content-system/v2/meta";
                 if (isPatch)
                 {
@@ -535,7 +533,7 @@ namespace GogOssLibraryNS.Services
                 Stream content;
                 try
                 {
-                    var response = await Client.GetAsync(fullUrl);
+                    using var response = await Client.GetAsync(fullUrl);
                     response.EnsureSuccessStatusCode();
                     content = await response.Content.ReadAsStreamAsync();
                 }
@@ -638,12 +636,11 @@ namespace GogOssLibraryNS.Services
             if (await gogAccountClient.GetIsUserLoggedIn())
             {
                 var tokens = gogAccountClient.LoadTokens();
-                Client.DefaultRequestHeaders.Clear();
-                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-                Client.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
                 try
                 {
-                    var response = await Client.GetAsync(url);
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    request.Headers.Add("Authorization", "Bearer " + tokens.access_token);
+                    using var response = await Client.SendAsync(request);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     if (!string.IsNullOrWhiteSpace(content))
@@ -726,14 +723,13 @@ namespace GogOssLibraryNS.Services
             }
             if (!correctJson)
             {
-                Client.DefaultRequestHeaders.Clear();
-                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
                 var dependsURL = "https://content-system.gog.com/dependencies/repository?generation=2";
                 if (version == "1")
                 {
                     dependsURL = "https://content-system.gog.com/redists/repository";
                 }
-                var response = await Client.GetAsync(dependsURL);
+
+                using var response = await Client.GetAsync(dependsURL);
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -743,7 +739,7 @@ namespace GogOssLibraryNS.Services
                         var manifestUrl = jsonResponse["repository_manifest"];
                         if (!manifestUrl.IsNullOrEmpty())
                         {
-                            var manifestResponse = await Client.GetAsync(manifestUrl);
+                            using var manifestResponse = await Client.GetAsync(manifestUrl);
                             Stream manifestContent = null;
                             if (response.IsSuccessStatusCode)
                             {
@@ -826,9 +822,8 @@ namespace GogOssLibraryNS.Services
                 {
                     Directory.CreateDirectory(cachePath);
                 }
-                Client.DefaultRequestHeaders.Clear();
-                Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-                var response = await Client.GetAsync(
+
+                using var response = await Client.GetAsync(
                         $"https://content-system.gog.com/products/{gameId}/patches?_version=4&from_build_id={oldBuildId}&to_build_id={newBuildId}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -838,7 +833,7 @@ namespace GogOssLibraryNS.Services
                         var jsonResponse = Serialization.FromJson<PatchResponse>(content);
                         if (!jsonResponse.link.IsNullOrEmpty())
                         {
-                            var finalResponse = await Client.GetAsync(jsonResponse.link);
+                            using var finalResponse = await Client.GetAsync(jsonResponse.link);
                             if (finalResponse.IsSuccessStatusCode)
                             {
                                 Stream metaContent = await finalResponse.Content.ReadAsStreamAsync();
