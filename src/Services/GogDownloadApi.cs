@@ -249,7 +249,7 @@ namespace GogOssLibraryNS.Services
                         var result = "";
                         if (selectedBuild.generation >= 2)
                         {
-                            result = Helpers.DecompressZlib(content);
+                            result = await Helpers.DecompressZlib(content);
                         }
                         else
                         {
@@ -546,7 +546,7 @@ namespace GogOssLibraryNS.Services
                 var result = "";
                 if (version == 2)
                 {
-                    result = Helpers.DecompressZlib(content);
+                    result = await Helpers.DecompressZlib(content);
                 }
                 else
                 {
@@ -753,7 +753,7 @@ namespace GogOssLibraryNS.Services
                             {
                                 Directory.CreateDirectory(cacheInfoPath);
                             }
-                            var manifestResult = Helpers.DecompressZlib(manifestContent);
+                            var manifestResult = await Helpers.DecompressZlib(manifestContent);
                             if (!manifestResult.IsNullOrWhiteSpace())
                             {
                                 if (Serialization.TryFromJson(manifestResult, out manifest))
@@ -837,7 +837,7 @@ namespace GogOssLibraryNS.Services
                             if (finalResponse.IsSuccessStatusCode)
                             {
                                 Stream metaContent = await finalResponse.Content.ReadAsStreamAsync();
-                                var result = Helpers.DecompressZlib(metaContent);
+                                var result = await Helpers.DecompressZlib(metaContent);
                                 if (!result.IsNullOrWhiteSpace())
                                 {
                                     if (result == "{}")

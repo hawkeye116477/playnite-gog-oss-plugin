@@ -5,6 +5,7 @@ using SharpCompress.Compressors.Deflate;
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace GogOssLibraryNS
 {
@@ -76,14 +77,14 @@ namespace GogOssLibraryNS
             return new string(parmChars).Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        public static string DecompressZlib(Stream content)
+        public static async Task<string> DecompressZlib(Stream content)
         {
             var logger = LogManager.GetLogger();
             try
             {
                 using var zlibStream = new ZlibStream(content, CompressionMode.Decompress);
                 using var streamReader = new StreamReader(zlibStream);
-                var result = streamReader.ReadToEnd();
+                var result = await streamReader.ReadToEndAsync();
                 return result;
             }
             catch (Exception ex)
