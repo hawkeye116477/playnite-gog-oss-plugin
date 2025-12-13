@@ -1512,7 +1512,10 @@ namespace GogOssLibraryNS
                     string relativePath = RelativePath.Get(taskData.fullInstallPath, gameFile);
                     if (oldItemsMap.ContainsKey(relativePath) && !newItemsMap.ContainsKey(relativePath))
                     {
-                        File.Delete(gameFile);
+                        if (File.Exists(gameFile))
+                        {
+                            File.Delete(gameFile);
+                        }
                     }
                 });
             }
