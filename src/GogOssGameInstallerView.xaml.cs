@@ -202,20 +202,9 @@ namespace GogOssLibraryNS
                 RepairBtn.Visibility = Visibility.Visible;
                 AfterInstallingSP.Visibility = Visibility.Collapsed;
             }
-
-            var clientApi = new GogAccountClient();
-            var userLoggedIn = await clientApi.GetIsUserLoggedIn();
-            if (!userLoggedIn)
-            {
-                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
-                InstallerWindow.Close();
-                return;
-            }
-
             await RefreshAll();
             var settings = GogOssLibrary.GetSettings();
             var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game);
-            ReloadBtn.IsEnabled = true;
             if (settings.UnattendedInstall && (games.First().downloadProperties.downloadAction == DownloadAction.Install))
             {
                 await StartTask(DownloadAction.Install);
@@ -224,6 +213,7 @@ namespace GogOssLibraryNS
 
         public async Task RefreshAll()
         {
+            ReloadBtn.IsEnabled = false;
             var settings = GogOssLibrary.GetSettings();
             var installPath = GogOss.GamesInstallationPath;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
@@ -442,9 +432,14 @@ namespace GogOssLibraryNS
                 GamesBrd.Visibility = Visibility.Visible;
             }
 
-            if (games.Count <= 0)
+            var clientApi = new GogAccountClient();
+            var userLoggedIn = await clientApi.GetIsUserLoggedIn();
+            if (games.Count <= 0 || !userLoggedIn)
             {
-                InstallerWindow.Close();
+                if(!userLoggedIn)
+                {
+                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
+                }
                 return;
             }
             if (downloadSizeNumber != 0 && installSizeNumber != 0)
@@ -453,8 +448,9 @@ namespace GogOssLibraryNS
             }
             else if (games.First().downloadProperties.downloadAction != DownloadAction.Repair)
             {
-                InstallerWindow.Close();
+                InstallBtn.IsEnabled = false;
             }
+            ReloadBtn.IsEnabled = true;
         }
 
 
