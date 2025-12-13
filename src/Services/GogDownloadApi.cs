@@ -553,6 +553,10 @@ namespace GogOssLibraryNS.Services
                     using var reader = new StreamReader(content);
                     result = await reader.ReadToEndAsync();
                 }
+                if (result.IsNullOrEmpty())
+                {
+                    return depotManifest;
+                }
                 depotManifest = Serialization.FromJson<GogDepot>(result);
                 if (depotManifest.depot.files.Count > 0)
                 {
