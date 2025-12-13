@@ -13,6 +13,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -46,9 +47,9 @@ namespace GogOssLibraryNS
                 var playniteAPI = API.Instance;
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
-                    httpClient.DefaultRequestHeaders.Clear();
                     var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
-                    var response = await httpClient.GetAsync($"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
+                    var request = new HttpRequestMessage(HttpMethod.Get, $"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
+                    using var response = await httpClient.SendAsync(request);
                     if (response.IsSuccessStatusCode)
                     {
                         content = await response.Content.ReadAsStringAsync();
@@ -127,7 +128,7 @@ namespace GogOssLibraryNS
             return calculatedPaths;
         }
 
-        internal async Task UploadGameSaves(CloudFile localFile, List<CloudFile> cloudFiles, string urlPart, bool force)
+        internal async Task UploadGameSaves(CloudFile localFile, List<CloudFile> cloudFiles, string urlPart, bool force, HttpRequestHeaders requestHeaders)
         {
             var data = File.ReadAllBytes(localFile.real_file_path);
             StreamContent compressedData;
@@ -157,15 +158,21 @@ namespace GogOssLibraryNS
                 }
             }
             logger.Debug($"Uploading {localFile.real_file_path} ({localFile.name}) file... .");
-            httpClient.DefaultRequestHeaders.Remove("Accept");
-            httpClient.DefaultRequestHeaders.Remove("Etag");
-            httpClient.DefaultRequestHeaders.Remove("X-Object-Meta-LocalLastModified");
-            httpClient.DefaultRequestHeaders.Add("Etag", hash);
-            httpClient.DefaultRequestHeaders.Add("X-Object-Meta-LocalLastModified", localFile.last_modified);
             compressedData.Headers.Add("Content-Encoding", "gzip");
             try
             {
-                var uploadResponse = await httpClient.PutAsync($"https://cloudstorage.gog.com/v1/{urlPart}", compressedData);
+                var request = new HttpRequestMessage(HttpMethod.Put, $"https://cloudstorage.gog.com/v1/{urlPart}")
+                {
+                    Content = compressedData
+                };
+                foreach (var header in requestHeaders)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+                request.Headers.Remove("Accept");
+                request.Headers.Add("Etag", hash);
+                request.Headers.Add("X-Object-Meta-LocalLastModified", localFile.last_modified);
+                using var uploadResponse = await httpClient.SendAsync(request);
                 uploadResponse.EnsureSuccessStatusCode();
             }
             catch (Exception exception)
@@ -178,7 +185,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        internal async Task<bool> DownloadGameSaves(CloudFile cloudFile, List<CloudFile> localFiles, string urlPart, bool force)
+        internal async Task<bool> DownloadGameSaves(CloudFile cloudFile, List<CloudFile> localFiles, string urlPart, bool force, HttpRequestHeaders requestHeaders)
         {
             bool errorDisplayed = false;
             var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
@@ -196,10 +203,15 @@ namespace GogOssLibraryNS
                     return errorDisplayed;
                 }
             }
-            httpClient.DefaultRequestHeaders.Remove("Accept");
             try
             {
-                var downloadResponse = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{urlPart}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://cloudstorage.gog.com/v1/{urlPart}");
+                foreach (var header in requestHeaders)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+                request.Headers.Remove("Accept");
+                using var downloadResponse = await httpClient.SendAsync(request);
                 downloadResponse.EnsureSuccessStatusCode();
                 var localLastModifiedHeader = downloadResponse.Headers.GetValues("X-Object-Meta-LocalLastModified").FirstOrDefault();
                 if (localLastModifiedHeader.IsNullOrEmpty())
@@ -298,7 +310,9 @@ namespace GogOssLibraryNS
                         var tokens = gogAccountClient.LoadTokens();
                         if (tokens != null)
                         {
-                            httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                            var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
+                            var request = new HttpRequestMessage(HttpMethod.Get, $"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}");
+                            request.Headers.Add("Accept", "application/json");
                             var metaManifest = await gogDownloadApi.GetGameMetaManifest(game.GameId);
                             var urlParams = new Dictionary<string, string>
                             {
@@ -308,26 +322,25 @@ namespace GogOssLibraryNS
                                 { "refresh_token", tokens.refresh_token }
                             };
                             var tokenUrl = GogAccountClient.FormatUrl(urlParams, "https://auth.gog.com/token?");
-                            var credentialsResponse = await httpClient.GetAsync(tokenUrl);
+                            using var credentialsResponse = await httpClient.GetAsync(tokenUrl);
                             if (credentialsResponse.IsSuccessStatusCode)
                             {
                                 var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
                                 var credentialsResponseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(credentialsResponseContent);
-                                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + credentialsResponseJson.access_token);
+                                request.Headers.Add("Authorization", "Bearer " + credentialsResponseJson.access_token);
                             }
                             else
                             {
                                 logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
                             }
                             var cloudFiles = new List<CloudFile>();
-                            var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
+
                             var gogUserAgent = "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
-                            httpClient.DefaultRequestHeaders.Add("User-Agent", gogUserAgent);
-                            httpClient.DefaultRequestHeaders.Add("X-Object-Meta-User-Agent", gogUserAgent);
-                            var response = await httpClient.GetAsync($"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}");
+                            request.Headers.Add("User-Agent", gogUserAgent);
+                            request.Headers.Add("X-Object-Meta-User-Agent", gogUserAgent);
+                            using var response = await httpClient.SendAsync(request);
                             if (response.IsSuccessStatusCode)
                             {
-                                var responseHeaders = response.Headers;
                                 var content = await response.Content.ReadAsStringAsync();
                                 if (!content.IsNullOrEmpty())
                                 {
@@ -391,7 +404,7 @@ namespace GogOssLibraryNS
                                     {
                                         foreach (var localFile in localFiles.ToList())
                                         {
-                                            await UploadGameSaves(localFile, cloudFiles, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force);
+                                            await UploadGameSaves(localFile, cloudFiles, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force, request.Headers);
                                         }
                                     }
                                     break;
@@ -406,7 +419,7 @@ namespace GogOssLibraryNS
                                         var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.GameId);
                                         foreach (var cloudFile in cloudFiles)
                                         {
-                                            var result = await DownloadGameSaves(cloudFile, localFiles, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force);
+                                            var result = await DownloadGameSaves(cloudFile, localFiles, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force, request.Headers);
                                             if (result)
                                             {
                                                 errorDisplayed = true;
