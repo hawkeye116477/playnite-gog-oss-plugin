@@ -37,8 +37,16 @@ body:
     id: gogdlV
     attributes:
       label: Gogdl version
+      description: Only required up to plugin v1.1.15
     validations:
-      required: true
+      required: false
+    # - type: input
+    # id: xdeltaV
+    # attributes:
+    #   label: Xdelta 3 version
+    #   description: Only required for installing patches for updates
+    # validations:
+    #   required: false
   - type: textarea
     id: what-happened
     attributes:
