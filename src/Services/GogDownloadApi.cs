@@ -260,7 +260,7 @@ namespace GogOssLibraryNS.Services
                         }
                         catch (Exception ex)
                         {
-                            logger.Debug(ex.Message);
+                            logger.Error(ex.Message);
                             manifest.errorDisplayed = true;
                             return manifest;
                         }

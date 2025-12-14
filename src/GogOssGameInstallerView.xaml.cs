@@ -213,6 +213,7 @@ namespace GogOssLibraryNS
 
         public async Task RefreshAll()
         {
+            InstallBtn.IsEnabled = false;
             ReloadBtn.IsEnabled = false;
             var settings = GogOssLibrary.GetSettings();
             var installPath = GogOss.GamesInstallationPath;
@@ -322,7 +323,7 @@ namespace GogOssLibraryNS
             if (MultiInstallData.Count == 1)
             {
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == MultiInstallData[0].gameID);
-                if (wantedItem.downloadItemType == DownloadItemType.Game)
+                if (MultiInstallData[0].downloadItemType == DownloadItemType.Game)
                 {
                     builds = await gogDownloadApi.GetProductBuilds(MultiInstallData[0].gameID);
                     if (!builds.errorDisplayed)
