@@ -448,15 +448,14 @@ namespace GogOssLibraryNS
                 {
                     playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
                 }
-                return;
+                if (games.Count <= 0)
+                {
+                    InstallerWindow.Close();
+                }
             }
             if (downloadSizeNumber != 0 && installSizeNumber != 0)
             {
                 InstallBtn.IsEnabled = true;
-            }
-            else if (games.First().downloadProperties.downloadAction != DownloadAction.Repair)
-            {
-                InstallBtn.IsEnabled = false;
             }
             ReloadBtn.IsEnabled = true;
         }
