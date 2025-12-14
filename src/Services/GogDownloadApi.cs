@@ -242,28 +242,29 @@ namespace GogOssLibraryNS.Services
                         cacheInfoFileName = $"{gameId}_build{newBuildId}.json";
                         cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
 
-                        using var response = await Client.GetAsync(selectedBuild.link);
-                        Stream content = null;
-                        if (response.IsSuccessStatusCode)
+                        var result = "";
+                        try
                         {
-                            content = await response.Content.ReadAsStreamAsync();
+                            using var response = await Client.GetAsync(selectedBuild.link);
+                            response.EnsureSuccessStatusCode();
+                            using var content = await response.Content.ReadAsStreamAsync();
+                            if (selectedBuild.generation >= 2)
+                            {
+                                result = await Helpers.DecompressZlib(content);
+                            }
+                            else
+                            {
+                                using var reader = new StreamReader(content);
+                                result = await reader.ReadToEndAsync();
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
+                            logger.Debug(ex.Message);
                             manifest.errorDisplayed = true;
                             return manifest;
                         }
-
-                        var result = "";
-                        if (selectedBuild.generation >= 2)
-                        {
-                            result = await Helpers.DecompressZlib(content);
-                        }
-                        else
-                        {
-                            using var reader = new StreamReader(content);
-                            result = await reader.ReadToEndAsync();
-                        }
+                       
                         var gogAccountClient = new GogAccountClient();
                         if (!string.IsNullOrWhiteSpace(result))
                         {
@@ -538,12 +539,22 @@ namespace GogOssLibraryNS.Services
                 {
                     fullUrl = $"{url}/{manifest}.json";
                 }
-                Stream content;
+
+                var result = "";
                 try
                 {
                     using var response = await Client.GetAsync(fullUrl);
                     response.EnsureSuccessStatusCode();
-                    content = await response.Content.ReadAsStreamAsync();
+                    using Stream content = await response.Content.ReadAsStreamAsync();
+                    if (version == 2)
+                    {
+                        result = await Helpers.DecompressZlib(content);
+                    }
+                    else
+                    {
+                        using var reader = new StreamReader(content);
+                        result = await reader.ReadToEndAsync();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -551,16 +562,6 @@ namespace GogOssLibraryNS.Services
                     return depotManifest;
                 }
 
-                var result = "";
-                if (version == 2)
-                {
-                    result = await Helpers.DecompressZlib(content);
-                }
-                else
-                {
-                    using var reader = new StreamReader(content);
-                    result = await reader.ReadToEndAsync();
-                }
                 if (result.IsNullOrEmpty())
                 {
                     return depotManifest;
@@ -751,31 +752,35 @@ namespace GogOssLibraryNS.Services
                     {
                         var jsonResponse = Serialization.FromJson<Dictionary<string, string>>(content);
                         var manifestUrl = jsonResponse["repository_manifest"];
+                        string manifestResult = "";
                         if (!manifestUrl.IsNullOrEmpty())
                         {
-                            using var manifestResponse = await Client.GetAsync(manifestUrl);
-                            Stream manifestContent = null;
-                            if (response.IsSuccessStatusCode)
+                            try
                             {
-                                manifestContent = await manifestResponse.Content.ReadAsStreamAsync();
+                                using var manifestResponse = await Client.GetAsync(manifestUrl, HttpCompletionOption.ResponseHeadersRead);
+                                manifestResponse.EnsureSuccessStatusCode();
+                                using var manifestContent = await manifestResponse.Content.ReadAsStreamAsync();
+
+                                if (manifestContent != null)
+                                {
+                                    manifestResult = await Helpers.DecompressZlib(manifestContent);
+                                }
                             }
-                            else
+
+                            catch (Exception ex) 
                             {
                                 logger.Error("An error occured while dowloading depends manifest");
                             }
-                            if (!Directory.Exists(cacheInfoPath))
+
+                            if (!manifestResult.IsNullOrWhiteSpace() && Serialization.TryFromJson(manifestResult, out manifest))
                             {
-                                Directory.CreateDirectory(cacheInfoPath);
-                            }
-                            var manifestResult = await Helpers.DecompressZlib(manifestContent);
-                            if (!manifestResult.IsNullOrWhiteSpace())
-                            {
-                                if (Serialization.TryFromJson(manifestResult, out manifest))
+                                if (manifest != null)
                                 {
-                                    if (manifest != null)
-                                    {
-                                        correctJson = true;
-                                    }
+                                    correctJson = true;
+                                }
+                                if (!Directory.Exists(cacheInfoPath))
+                                {
+                                    Directory.CreateDirectory(cacheInfoPath);
                                 }
                                 FileSystem.WriteStringToFileSafe(cacheInfoFile, manifestResult);
                             }
@@ -847,10 +852,10 @@ namespace GogOssLibraryNS.Services
                         var jsonResponse = Serialization.FromJson<PatchResponse>(content);
                         if (!jsonResponse.link.IsNullOrEmpty())
                         {
-                            using var finalResponse = await Client.GetAsync(jsonResponse.link);
+                            using var finalResponse = await Client.GetAsync(jsonResponse.link, HttpCompletionOption.ResponseHeadersRead);
                             if (finalResponse.IsSuccessStatusCode)
                             {
-                                Stream metaContent = await finalResponse.Content.ReadAsStreamAsync();
+                                using Stream metaContent = await finalResponse.Content.ReadAsStreamAsync();
                                 var result = await Helpers.DecompressZlib(metaContent);
                                 if (!result.IsNullOrWhiteSpace())
                                 {

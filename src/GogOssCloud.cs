@@ -239,7 +239,7 @@ namespace GogOssLibraryNS
                 }
 
                 logger.Debug($"Downloading {cloudFile.name} ({cloudFile.real_file_path}) file... .");
-                var downloadStream = await downloadResponse.Content.ReadAsStreamAsync();
+                using var downloadStream = await downloadResponse.Content.ReadAsStreamAsync();
                 var neededDirectory = Path.GetDirectoryName(cloudFile.real_file_path);
                 if (!Directory.Exists(neededDirectory))
                 {
