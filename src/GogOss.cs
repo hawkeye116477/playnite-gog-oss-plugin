@@ -483,7 +483,6 @@ namespace GogOssLibraryNS
                 };
                 depotHashes.Add(taskData.gameID, dependHashes);
             }
-
             var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
 
             GogDepot.Depot bigDepot = new();

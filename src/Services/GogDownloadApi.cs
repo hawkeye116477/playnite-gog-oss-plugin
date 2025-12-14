@@ -29,7 +29,15 @@ namespace GogOssLibraryNS.Services
 
         public async Task<GogBuildsData> GetProductBuilds(DownloadManagerData.Download downloadInfo, bool forceRefreshCache = false)
         {
-            return await GetProductBuilds(downloadInfo.gameID, downloadInfo.downloadProperties.os, forceRefreshCache);
+            if (downloadInfo.downloadItemType == DownloadItemType.Game)
+            {
+                return await GetProductBuilds(downloadInfo.gameID, downloadInfo.downloadProperties.os, forceRefreshCache);
+            }
+            else
+            {
+                return new GogBuildsData();
+            }
+            
         }
 
         public async Task<GogBuildsData> GetProductBuilds(string gameId, string platform = "windows", bool forceRefreshCache = false)
@@ -107,7 +115,7 @@ namespace GogOssLibraryNS.Services
                 }
                 catch (Exception ex)
                 {
-                    logger.Error($"[GOG OSS] An error occurred while downloading {gameId} builds info: {ex}.");
+                    logger.Error(ex, $"[GOG OSS] An error occurred while downloading {gameId} builds info:");
                     newBuildsInfoContent.errorDisplayed = true;
                 }
             }
@@ -592,11 +600,13 @@ namespace GogOssLibraryNS.Services
             }
             foreach (var productId in productIds)
             {
+                var clonedTaskData = Serialization.GetClone(taskData);
                 var dlcData = new DownloadManagerData.Download
                 {
                     gameID = productId
                 };
-                dlcData.downloadProperties = taskData.downloadProperties;
+                dlcData.downloadProperties = clonedTaskData.downloadProperties;
+                dlcData.downloadItemType = clonedTaskData.downloadItemType;
                 var securelinks = await GetSecureLinks(dlcData, isPatch);
                 if (securelinks.Count > 0)
                 {

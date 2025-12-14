@@ -243,17 +243,21 @@ namespace GogOssLibraryNS
             var gogDownloadApi = new GogDownloadApi();
             foreach (var installData in MultiInstallData.ToList())
             {
-                builds = await gogDownloadApi.GetProductBuilds(installData.gameID);
-                if (builds.errorDisplayed || builds.installable == false)
+                if (installData.downloadItemType == DownloadItemType.Game)
                 {
-                    if (builds.installable == false)
+                    builds = await gogDownloadApi.GetProductBuilds(installData.gameID);
+                    if (builds.errorDisplayed || builds.installable == false)
                     {
-                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOssGameNotInstallable, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)installData.name, ["url"] = (FluentString)"https://gog.com/account " }));
+                        if (builds.installable == false)
+                        {
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOssGameNotInstallable, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)installData.name, ["url"] = (FluentString)"https://gog.com/account " }));
+                        }
+                        gamesListShouldBeDisplayed = true;
+                        MultiInstallData.Remove(installData);
+                        continue;
                     }
-                    gamesListShouldBeDisplayed = true;
-                    MultiInstallData.Remove(installData);
-                    continue;
                 }
+                
                 if (installedAppList.ContainsKey(installData.gameID))
                 {
                     var installedGame = installedAppList[installData.gameID];
@@ -318,41 +322,44 @@ namespace GogOssLibraryNS
             if (MultiInstallData.Count == 1)
             {
                 var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == MultiInstallData[0].gameID);
-                builds = await gogDownloadApi.GetProductBuilds(MultiInstallData[0].gameID);
-                if (!builds.errorDisplayed)
+                if (wantedItem.downloadItemType == DownloadItemType.Game)
                 {
-                    singleGameInstallData = MultiInstallData[0];
-                    var betaChannels = new Dictionary<string, string>();
-                    if (builds.available_branches.Count > 1)
+                    builds = await gogDownloadApi.GetProductBuilds(MultiInstallData[0].gameID);
+                    if (!builds.errorDisplayed)
                     {
-                        foreach (var branch in builds.available_branches)
+                        singleGameInstallData = MultiInstallData[0];
+                        var betaChannels = new Dictionary<string, string>();
+                        if (builds.available_branches.Count > 1)
                         {
-                            if (branch == "")
+                            foreach (var branch in builds.available_branches)
                             {
-                                betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                                if (branch == "")
+                                {
+                                    betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                                }
+                                else
+                                {
+                                    betaChannels.Add(branch, branch);
+                                }
                             }
-                            else
+                            if (betaChannels.Count > 0)
                             {
-                                betaChannels.Add(branch, branch);
+                                BetaChannelCBo.ItemsSource = betaChannels;
+                                var selectedBetaChannel = "disabled";
+                                if (!singleGameInstallData.downloadProperties.betaChannel.IsNullOrEmpty() && builds.available_branches.Contains(singleGameInstallData.downloadProperties.betaChannel))
+                                {
+                                    selectedBetaChannel = singleGameInstallData.downloadProperties.betaChannel;
+                                }
+                                BetaChannelCBo.SelectedValue = selectedBetaChannel;
+                                BetaChannelSP.Visibility = Visibility.Visible;
                             }
                         }
-                        if (betaChannels.Count > 0)
-                        {
-                            BetaChannelCBo.ItemsSource = betaChannels;
-                            var selectedBetaChannel = "disabled";
-                            if (!singleGameInstallData.downloadProperties.betaChannel.IsNullOrEmpty() && builds.available_branches.Contains(singleGameInstallData.downloadProperties.betaChannel))
-                            {
-                                selectedBetaChannel = singleGameInstallData.downloadProperties.betaChannel;
-                            }
-                            BetaChannelCBo.SelectedValue = selectedBetaChannel;
-                            BetaChannelSP.Visibility = Visibility.Visible;
-                        }
+                        await RefreshVersions();
                     }
-                    await RefreshVersions();
-                }
-                else
-                {
-                    MultiInstallData.Remove(MultiInstallData[0]);
+                    else
+                    {
+                        MultiInstallData.Remove(MultiInstallData[0]);
+                    }
                 }
             }
 
