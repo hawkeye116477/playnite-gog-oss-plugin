@@ -14,7 +14,7 @@ namespace GogOssLibraryNS
 
         public RetryHandler(HttpMessageHandler innerHandler) : base(innerHandler) { }
 
-        public RetryHandler(HttpMessageHandler innerHandler, int maxRetries, int baseDelayMs = 500) : base(innerHandler)
+        public RetryHandler(HttpMessageHandler innerHandler, int maxRetries, int baseDelayMs) : base(innerHandler)
         {
             _maxRetries = maxRetries;
             _baseDelayMs = baseDelayMs;
