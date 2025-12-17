@@ -37,7 +37,6 @@ namespace GogOssLibraryNS.Services
             {
                 return new GogBuildsData();
             }
-            
         }
 
         public async Task<GogBuildsData> GetProductBuilds(string gameId, string platform = "windows", bool forceRefreshCache = false)
@@ -264,7 +263,7 @@ namespace GogOssLibraryNS.Services
                             manifest.errorDisplayed = true;
                             return manifest;
                         }
-                       
+
                         var gogAccountClient = new GogAccountClient();
                         if (!string.IsNullOrWhiteSpace(result))
                         {
@@ -767,7 +766,7 @@ namespace GogOssLibraryNS.Services
                                 }
                             }
 
-                            catch (Exception ex) 
+                            catch (Exception ex)
                             {
                                 logger.Error("An error occured while dowloading depends manifest");
                             }
@@ -965,5 +964,46 @@ namespace GogOssLibraryNS.Services
             }
             return manifest;
         }
+
+        public async Task<ComponentManifest> GetComponentManifest(ComponentChoice component, string platform = "windows")
+        {
+            ComponentManifest componentManifest = new();
+            var componentValue = component switch
+            {
+                ComponentChoice.Web => "desktop-galaxy-client",
+                ComponentChoice.Overlay => "desktop-galaxy-overlay",
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            var result = "";
+            try
+            {
+                var url = $"https://cfg.gog.com/{componentValue}/7/master/files-{platform}.json";
+                using var response = await Client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                result = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.Message);
+                return componentManifest;
+            }
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                componentManifest = Serialization.FromJson<ComponentManifest>(result);
+                if (component == ComponentChoice.Web)
+                {
+                    foreach (var file in componentManifest.files.ToList())
+                    {
+                        if (!file.path.StartsWith("web"))
+                        {
+                            componentManifest.files.Remove(file);
+                        }
+                    }
+                }
+            }
+            return componentManifest;
+        }
+
     }
 }

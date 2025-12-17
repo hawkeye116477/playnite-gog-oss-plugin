@@ -101,9 +101,11 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="LocalizationKeys.cs" />
     <Compile Include="MemoryLimiter.cs" />
+    <Compile Include="Models\ComponentManifest.cs" />
     <Compile Include="Models\GogBuildsData.cs" />
     <Compile Include="Models\GogDepot.cs" />
     <Compile Include="Models\LibraryGameDetailsResponse.cs" />
+    <Compile Include="Models\OverlayInstalled.cs" />
     <Compile Include="Models\PatchResponse.cs" />
     <Compile Include="Models\GogOwned.cs" />
     <Compile Include="Models\GogSecureLinks.cs" />
@@ -314,6 +316,7 @@
     </Compile>
     <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\web\Downloader.cs">
       <Link>Shared\Playnite\Downloader.cs</Link>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\common\web\HttpDownloader.cs">
       <Link>Shared\Playnite\HttpDownloader.cs</Link>

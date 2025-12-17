@@ -1,6 +1,7 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
 using Linguini.Shared.Types.Bundle;
 using Playnite.Common;
@@ -57,6 +58,22 @@ namespace GogOssLibraryNS
             {
                 MigrateGogBtn.IsEnabled = true;
                 MigrateRevertGogBtn.IsEnabled = true;
+            }
+
+            var overlayInstalledFilePath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "overlay_installed.json");
+            if (File.Exists(overlayInstalledFilePath))
+            {
+                var overlayFileContent = File.ReadAllText(overlayInstalledFilePath);
+                if (!overlayFileContent.IsNullOrWhiteSpace())
+                {
+                    if (Serialization.TryFromJson<OverlayInstalled>(overlayFileContent, out var newOverlayJson))
+                    {
+                       if (Directory.Exists(newOverlayJson.install_path))
+                       {
+                            OverlayInstallBtn.Visibility = Visibility.Collapsed;
+                       }
+                    }
+                }
             }
 
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
@@ -451,6 +468,46 @@ namespace GogOssLibraryNS
                     }
                 }
             }, globalProgressOptions);
+        }
+
+        private void OverlayInstallBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Comet.IsInstalled)
+            {
+                var playniteAPI = API.Instance;
+                var options = new List<MessageBoxOption>
+                {
+                    new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame)),
+                    new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel)),
+                };
+                var cometFluentArgs = new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Comet" };
+                var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, cometFluentArgs), "GOG OSS library integration", MessageBoxImage.Information, options);
+                if (result == options[0])
+                {
+                    Playnite.Commands.GlobalCommands.NavigateUrl("https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Installation-of-needed-tools#comet-needed-for-leaderboards-multiplayer-and-achievements");
+                }
+            }
+
+            var window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+            {
+                ShowMaximizeButton = false
+            });
+            var overlayFluentArgs = new Dictionary<string, IFluentType> { ["overlayName"] = (FluentString)"Galaxy" };
+            var overlayFullName = LocalizationManager.Instance.GetString(LOC.CommonOverlay, overlayFluentArgs);
+            window.Title = overlayFullName;
+            var installProperties = new DownloadProperties { downloadAction = DownloadAction.Install, os = "windows" };
+            var installData = new DownloadManagerData.Download { name = overlayFullName, gameID = "galaxy-overlay", downloadProperties = installProperties, downloadItemType = DownloadItemType.Overlay };
+            var installDataList = new List<DownloadManagerData.Download>
+            {
+                installData
+            };
+            window.DataContext = installDataList;
+            window.Content = new GogOssGameInstallerView();
+            window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+            window.SizeToContent = SizeToContent.Height;
+            window.Width = 600;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            window.ShowDialog();
         }
     }
 }

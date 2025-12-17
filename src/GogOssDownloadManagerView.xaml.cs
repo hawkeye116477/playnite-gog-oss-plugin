@@ -48,11 +48,8 @@ namespace GogOssLibraryNS
         public DownloadManagerData downloadManagerData;
         public SidebarItem gogPanel = GogOssLibrary.GetPanel();
         public bool downloadsChanged = false;
-        public static readonly HttpClientHandler handler = new HttpClientHandler
-        {
-            AutomaticDecompression = DecompressionMethods.None,
-        };
-        private static readonly HttpClient client = new HttpClient(handler);
+        private static readonly RetryHandler retryHandler = new(new HttpClientHandler());
+        private static readonly HttpClient client = new HttpClient(retryHandler);
         public GogDownloadApi gogDownloadApi = new GogDownloadApi();
         public IProgress<ProgressData> progress { get; set; }
         private long resumeInitialDiskBytes = 0;
@@ -230,15 +227,481 @@ namespace GogOssLibraryNS
             await DoNextJobInQueue();
         }
 
-        private async Task DownloadFilesAsync(CancellationToken token,
-                                              GogDepot.Depot bigDepot,
-                                              string fullInstallPath,
-                                              GogSecureLinks allSecureLinks,
-                                              int maxParallel,
-                                              int bufferSize = 512 * 1024,
-                                              long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
-                                              int maxRetries = 3,
-                                              string preferredCdn = "")
+        private async Task RentAndUsePool(int size, Func<byte[], Task> action)
+        {
+            var buffer = ArrayPool<byte>.Shared.Rent(size);
+            try
+            {
+                await action(buffer).ConfigureAwait(false);
+            }
+            finally
+            {
+                try
+                {
+                    ArrayPool<byte>.Shared.Return(buffer);
+                }
+                catch { }
+            }
+        }
+
+        private async Task DownloadNonGames(CancellationToken token,
+                                            GogDepot.Depot bigDepot,
+                                            string fullInstallPath,
+                                            int maxParallel,
+                                            DownloadItemType downloadItemType,
+                                            int bufferSize = 512 * 1024,
+                                            long maxMemoryBytes = 1L * 1024 * 1024 * 1024)
+        {
+            // STEP 0: Initial Setup
+            ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
+
+            client.DefaultRequestHeaders.Clear();
+            client.DefaultRequestHeaders.Add("User-Agent", GogDownloadApi.UserAgent);
+
+            using var downloadSemaphore = new SemaphoreSlim(maxParallel);
+            using var memoryLimiter = new MemoryLimiter(maxMemoryBytes);
+            var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
+
+            // Producer-consumer channel
+            var channel = Channel.CreateUnbounded<(string filePath, long length, string tempFilePath, long allocatedBytes, bool isCompressed, string hash, byte[] chunkBuffer)>(
+                );
+
+            var jobs = new HashSet<(string filePath, long size, string url, string hash)>();
+
+            long totalCompressedSize = 0;
+            long initialNetworkBytesLocal = 0;
+            var fileExpectedSizes = new ConcurrentDictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+
+            var tempDir = Path.Combine(fullInstallPath, ".Downloader_temp");
+            if (!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+            }
+
+            var resumeState = new ResumeState();
+            string resumeStatePath = Path.Combine(tempDir, "resume-state.json");
+            resumeState.Load(resumeStatePath);
+
+            //
+            // STEP 1: JOB CREATION
+            //
+            foreach (var file in bigDepot.files)
+            {
+                var depotFilePath = file.path.TrimStart('/', '\\');
+                var filePath = Path.Combine(fullInstallPath, depotFilePath);
+                var targetDirectory = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(targetDirectory))
+                {
+                    Directory.CreateDirectory(targetDirectory);
+                }
+                writeSemaphores.TryAdd(depotFilePath, new SemaphoreSlim(1));
+
+                long expectedFileSize = file.size;
+                totalCompressedSize += expectedFileSize;
+
+                if (!resumeState.IsCompleted(filePath, file.hash))
+                {
+                    jobs.Add((depotFilePath, file.size, file.url, file.hash));
+                }
+                else
+                {
+                    initialNetworkBytesLocal += expectedFileSize;
+                }
+
+                fileExpectedSizes.TryAdd(depotFilePath, expectedFileSize);
+            }
+
+            jobs = jobs.OrderBy(job => job.size).ToHashSet();
+
+            Interlocked.Exchange(ref resumeInitialNetworkBytes, initialNetworkBytesLocal);
+
+            long totalNetworkBytes = initialNetworkBytesLocal;
+
+            int activeDownloaders = 0, activeDiskers = 0;
+            bool isFinalReport = false;
+
+            void ReportProgress()
+            {
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                progress?.Report(new ProgressData
+                {
+                    TotalBytes = totalCompressedSize,
+                    TotalCompressedBytes = totalCompressedSize,
+                    NetworkBytes = Interlocked.Read(ref totalNetworkBytes),
+                    DiskBytes = Interlocked.Read(ref totalNetworkBytes),
+                    ActiveDownloadWorkers = activeDownloaders,
+                    ActiveDiskWorkers = activeDiskers,
+                    FinalReport = isFinalReport
+                });
+            }
+
+            ReportProgress();
+
+            //
+            // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
+            //
+            var downloadTasks = jobs.Select(job => Task.Run(async () =>
+            {
+                bool slotAcquired = false;
+                long allocatedBytes = 0;
+                byte[] chunkBuffer = null;
+                string tempFilePath = null;
+
+                try
+                {
+                    await downloadSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    slotAcquired = true;
+                    Interlocked.Increment(ref activeDownloaders);
+                    ReportProgress();
+
+                    long compressedSize = job.size;
+                    bool memoryReserved = false;
+
+                    bool isCompressed = false;
+                    if (downloadItemType == DownloadItemType.Overlay)
+                    {
+                        isCompressed = true;
+                    }
+                    try
+                    {
+                        if (!memoryReserved && allocatedBytes == 0)
+                        {
+                            memoryReserved = memoryLimiter.TryReserve(compressedSize);
+                            if (memoryReserved)
+                            {
+                                allocatedBytes = compressedSize;
+                            }
+                        }
+                        using var request = new HttpRequestMessage(HttpMethod.Get, job.url);
+                        long resumeStartByte = 0;
+
+                        if (downloadItemType == DownloadItemType.Overlay && job.url.Contains(".zip"))
+                        {
+                            tempFilePath = Path.Combine(tempDir, job.filePath + ".zip");
+                        }
+                        if (File.Exists(tempFilePath))
+                        {
+                            resumeStartByte = new FileInfo(tempFilePath).Length;
+                            if (resumeStartByte >= compressedSize)
+                            {
+                                await channel.Writer.WriteAsync((job.filePath, resumeStartByte, tempFilePath, compressedSize, isCompressed, job.hash, null), token).ConfigureAwait(false);
+                                return;
+                            }
+                            else if (resumeStartByte > 0)
+                            {
+                                request.Headers.Range = new System.Net.Http.Headers.RangeHeaderValue(resumeStartByte, compressedSize - 1);
+                            }
+                        }
+                        var tempFileDir = Path.GetDirectoryName(tempFilePath);
+                        if (!string.IsNullOrEmpty(tempFileDir))
+                        {
+                            Directory.CreateDirectory(tempFileDir);
+                        }
+                        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                        response.EnsureSuccessStatusCode();
+                        if (memoryReserved)
+                        {
+                            chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
+
+                            using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                            using var progressStream = new ProgressStream.ProgressStream(networkStream,
+                                new Progress<int>(bytesRead =>
+                                {
+                                    Interlocked.Add(ref totalNetworkBytes, bytesRead);
+                                    ReportProgress();
+                                }), null);
+
+                            int offset = 0;
+                            int read;
+                            while ((read = await progressStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
+                            {
+                                offset += read;
+                            }
+
+                            await channel.Writer.WriteAsync((job.filePath, offset, tempFilePath, allocatedBytes, isCompressed, job.hash, chunkBuffer), token).ConfigureAwait(false);
+                            chunkBuffer = null;
+                            allocatedBytes = 0;
+                            memoryReserved = false;
+                            return;
+                        }
+                        else
+                        {
+                            await RentAndUsePool(bufferSize, async buffer =>
+                            {
+                                using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                                using var progressStream = new ProgressStream.ProgressStream(networkStream,
+                                    new Progress<int>(bytesRead =>
+                                    {
+                                        Interlocked.Add(ref totalNetworkBytes, bytesRead);
+                                        ReportProgress();
+                                    }), null);
+
+                                FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
+                                using var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous);
+
+                                await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
+                                await tempFs.FlushAsync(token).ConfigureAwait(false);
+                                long actualFileSize = tempFs.Length;
+
+                                await channel.Writer.WriteAsync((job.filePath, actualFileSize, tempFilePath, 0, isCompressed, job.hash, chunkBuffer), token).ConfigureAwait(false);
+                            }).ConfigureAwait(false);
+                            tempFilePath = null;
+                            return;
+                        }
+
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (ObjectDisposedException ex) when (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException("Download canceled (stream closed)", ex, token);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error($"Failed to download file {job.filePath}: {ex}.");
+                        if (chunkBuffer != null)
+                        {
+                            try
+                            {
+                                ArrayPool<byte>.Shared.Return(chunkBuffer);
+                            }
+                            catch { }
+                            chunkBuffer = null;
+                        }
+
+                        if (memoryReserved && allocatedBytes > 0)
+                        {
+                            try
+                            {
+                                memoryLimiter.Release(allocatedBytes);
+                            }
+                            catch { }
+                            allocatedBytes = 0;
+                            memoryReserved = false;
+                        }
+                        tempFilePath = null;
+                    }
+                }
+                finally
+                {
+                    try
+                    {
+                        if (allocatedBytes > 0)
+                        {
+                            memoryLimiter.Release(allocatedBytes);
+                        }
+                        if (chunkBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(chunkBuffer);
+                        }
+                        if (slotAcquired)
+                        {
+                            downloadSemaphore.Release();
+                        }
+                        Interlocked.Decrement(ref activeDownloaders);
+                    }
+                    catch { }
+                    ReportProgress();
+                }
+            }, token)).ToList();
+
+
+            //
+            // STEP 3: Consumer – Writer (Decompress and Write to File)
+            //
+            int ioWorkerCount = Math.Min(maxParallel, Environment.ProcessorCount * 2);
+            var ioWorkers = Enumerable.Range(0, ioWorkerCount).Select(_ => Task.Run(async () =>
+            {
+                await RentAndUsePool(bufferSize, async consumerBuffer =>
+                {
+                    while (await channel.Reader.WaitToReadAsync(token).ConfigureAwait(false))
+                    {
+                        while (channel.Reader.TryRead(out var item))
+                        {
+                            var fileWriteSemaphore = writeSemaphores[item.filePath];
+                            await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
+                            Interlocked.Increment(ref activeDiskers);
+
+                            try
+                            {
+                                Stream sourceStream;
+                                if (item.chunkBuffer == null)
+                                {
+                                    sourceStream = new FileStream(item.tempFilePath!, FileMode.Open, FileAccess.Read,
+                                                                     FileShare.None, bufferSize,
+                                                                     FileOptions.SequentialScan | FileOptions.DeleteOnClose);
+                                }
+                                else
+                                {
+                                    sourceStream = new MemoryStream(item.chunkBuffer, 0, (int)item.length, writable: false);
+                                }
+
+
+                                var finalPath = Path.Combine(fullInstallPath, item.filePath);
+                                using (sourceStream)
+                                using (var outFs = new FileStream(finalPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
+                                {
+                                    int bytesRead;
+                                    long totalWritten = 0;
+                                    if (item.isCompressed)
+                                    {
+                                        logger.Debug($"Uncompressing {item.tempFilePath}");
+                                        using (var zip = SharpCompress.Archives.Zip.ZipArchive.Open(sourceStream))
+                                        {
+                                            var entry = zip.Entries.FirstOrDefault(e => !e.IsDirectory);
+                                            if (entry != null)
+                                            {
+                                                using (var entryStream = entry.OpenEntryStream())
+                                                {
+                                                    await entryStream.CopyToAsync(outFs, bufferSize, token).ConfigureAwait(false);
+                                                }
+                                            }
+                                            ReportProgress();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        while ((bytesRead = await sourceStream.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
+                                        {
+                                            await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
+                                            ReportProgress();
+                                            totalWritten += bytesRead;
+                                        }
+                                    }
+                                    if (!item.isCompressed && fileExpectedSizes.TryGetValue(item.filePath, out long expectedSize))
+                                    {
+                                        if (outFs.Length != expectedSize)
+                                        {
+                                            outFs.SetLength(expectedSize);
+                                        }
+                                    }
+                                    resumeState.MarkCompleted(finalPath, item.hash);
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                throw;
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error($"Error occurred during writing to file {item.filePath}: {ex.Message}");
+                                throw;
+                            }
+                            finally
+                            {
+                                try
+                                {
+                                    fileWriteSemaphore.Release();
+                                }
+                                catch { }
+
+                                try
+                                {
+                                    if (item.chunkBuffer != null)
+                                    {
+                                        ArrayPool<byte>.Shared.Return(item.chunkBuffer);
+                                    }
+                                    if (item.allocatedBytes > 0)
+                                    {
+                                        memoryLimiter.Release(item.allocatedBytes);
+                                    }
+                                }
+                                catch { }
+
+                                Interlocked.Decrement(ref activeDiskers);
+                                ReportProgress();
+                            }
+                        }
+                    }
+                }).ConfigureAwait(false);
+            }, token)).ToList();
+
+
+            try
+            {
+                await Task.WhenAll(downloadTasks).ConfigureAwait(false);
+            }
+            finally
+            {
+                channel.Writer.TryComplete();
+                try
+                {
+                    await Task.WhenAll(ioWorkers).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
+                {
+
+                }
+                try
+                {
+                    resumeState.Save(resumeStatePath);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            token.ThrowIfCancellationRequested();
+
+            //
+            // STEP 4: Cleanup
+            //
+            foreach (var s in writeSemaphores.Values)
+            {
+                try
+                {
+                    s.Dispose();
+                }
+                catch { }
+            }
+
+            try
+            {
+                isFinalReport = true;
+                ReportProgress();
+
+                if (Directory.Exists(tempDir))
+                {
+                    if (!token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            Directory.Delete(tempDir, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Warn($"Failed to recursively delete temporary directory {tempDir} after successful download: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        logger.Info($"Download was canceled. Retaining temporary directory: {tempDir} for resume.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"An error occurred during final cleanup: {ex.Message}");
+            }
+        }
+
+
+        private async Task DownloadGamesAndDepends(CancellationToken token,
+                                                   GogDepot.Depot bigDepot,
+                                                   string fullInstallPath,
+                                                   GogSecureLinks allSecureLinks,
+                                                   int maxParallel,
+                                                   int bufferSize = 512 * 1024,
+                                                   long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
+                                                   int maxRetries = 3,
+                                                   string preferredCdn = "")
         {
             // STEP 0: Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
@@ -583,24 +1046,6 @@ namespace GogOssLibraryNS
             bool isFinalReport = false;
 
             ReportProgress();
-
-            async Task RentAndUseAsync(int size, Func<byte[], Task> action)
-            {
-                var buffer = ArrayPool<byte>.Shared.Rent(size);
-                try
-                {
-                    await action(buffer).ConfigureAwait(false);
-                }
-                finally
-                {
-                    try
-                    {
-                        ArrayPool<byte>.Shared.Return(buffer);
-                    }
-                    catch { }
-                }
-            }
-
             void ReportProgress()
             {
                 if (token.IsCancellationRequested)
@@ -777,7 +1222,7 @@ namespace GogOssLibraryNS
                                 }
                                 else
                                 {
-                                    await RentAndUseAsync(bufferSize, async buffer =>
+                                    await RentAndUsePool(bufferSize, async buffer =>
                                     {
                                         using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                                         using var progressStream = new ProgressStream.ProgressStream(networkStream,
@@ -886,7 +1331,7 @@ namespace GogOssLibraryNS
             int ioWorkerCount = Math.Min(maxParallel, Environment.ProcessorCount * 2);
             var ioWorkers = Enumerable.Range(0, ioWorkerCount).Select(_ => Task.Run(async () =>
             {
-                await RentAndUseAsync(bufferSize, async consumerBuffer =>
+                await RentAndUsePool(bufferSize, async consumerBuffer =>
                 {
                     while (await channel.Reader.WaitToReadAsync(token).ConfigureAwait(false))
                     {
@@ -1071,7 +1516,7 @@ namespace GogOssLibraryNS
                                     long expectedSize = (long)sfcRef.size;
                                     long remaining = expectedSize;
 
-                                    await RentAndUseAsync(bufferSize, async consumerBuffer =>
+                                    await RentAndUsePool(bufferSize, async consumerBuffer =>
                                     {
                                         while (remaining > 0)
                                         {
@@ -1364,7 +1809,6 @@ namespace GogOssLibraryNS
                 }
             }, tempReporterCts.Token);
 
-            var installCommand = new List<string>();
             var settings = GogOssLibrary.GetSettings();
             var gameID = taskData.gameID;
             var downloadProperties = taskData.downloadProperties;
@@ -1379,7 +1823,11 @@ namespace GogOssLibraryNS
                 mainSecureLinks = new(),
                 inGameDependsSecureLinks = new()
             };
-            allSecureLinks.mainSecureLinks = await gogDownloadApi.GetSecureLinksForAllProducts(taskData);
+
+            if (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency)
+            {
+                allSecureLinks.mainSecureLinks = await gogDownloadApi.GetSecureLinksForAllProducts(taskData);
+            }
 
             var bigDepot = await GogOss.CreateNewBigDepot(taskData);
             var dependFoundInDepot = bigDepot.items.FirstOrDefault(i => !i.redistTargetDir.IsNullOrEmpty());
@@ -1408,7 +1856,7 @@ namespace GogOssLibraryNS
 
             bool foundPatch = false;
             GogDepot.Depot patchesDepot = new();
-            if (taskData.downloadProperties.downloadAction == DownloadAction.Update && Xdelta.IsInstalled)
+            if (taskData.downloadProperties.downloadAction == DownloadAction.Update && Xdelta.IsInstalled && taskData.downloadItemType == DownloadItemType.Game)
             {
                 var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
@@ -1509,7 +1957,12 @@ namespace GogOssLibraryNS
 
                 Parallel.ForEach(allGameFiles, options, gameFile =>
                 {
-                    string relativePath = RelativePath.Get(taskData.fullInstallPath, gameFile);
+                    var newGameFile = gameFile;
+                    if (taskData.downloadItemType == DownloadItemType.Overlay)
+                    {
+                        newGameFile = gameFile + ".zip";
+                    }
+                    string relativePath = RelativePath.Get(taskData.fullInstallPath, newGameFile);
                     if (oldItemsMap.ContainsKey(relativePath) && !newItemsMap.ContainsKey(relativePath))
                     {
                         if (File.Exists(gameFile))
@@ -1520,7 +1973,6 @@ namespace GogOssLibraryNS
                 });
             }
 
-            // Verify and repair files
             if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
             {
                 if (File.Exists(resumeStatePath))
@@ -1538,10 +1990,24 @@ namespace GogOssLibraryNS
             DescriptionTB.Text = "";
 
 
-            // Stop continuing if no links
-            if (allSecureLinks.mainSecureLinks.Count == 0 ||
-                (foundPatch && allSecureLinks.patchSecureLinks.Count == 0) ||
-                (dependFoundInDepot != null && allSecureLinks.inGameDependsSecureLinks.Count == 0))
+            bool stopContinue = false;
+            // Stop continuing if no links or files
+            if (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency)
+            {
+                if (allSecureLinks.mainSecureLinks.Count == 0
+                    || (foundPatch && allSecureLinks.patchSecureLinks.Count == 0)
+                    || (dependFoundInDepot != null && allSecureLinks.inGameDependsSecureLinks.Count == 0))
+                {
+                    stopContinue = true;
+                }
+            }
+
+            if (bigDepot.files.Count == 0 && bigDepot.items.Count == 0)
+            {
+                stopContinue = true;
+            }
+
+            if (stopContinue)
             {
                 taskData.status = DownloadStatus.Error;
                 downloadsChanged = true;
@@ -1549,7 +2015,7 @@ namespace GogOssLibraryNS
                 return;
             }
 
-
+            // Verify and repair files
             if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
@@ -1559,7 +2025,6 @@ namespace GogOssLibraryNS
 
                     if (countFiles > 0)
                     {
-                        taskData.status = DownloadStatus.Running;
                         DescriptionTB.Text = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
                         int verifiedFiles = 0;
                         long totalBytesRead = 0;
@@ -1574,6 +2039,7 @@ namespace GogOssLibraryNS
 
                             var patchesMap = patchesDepot.items.Where(p => !string.IsNullOrEmpty(p.path_source))
                                                                .ToDictionary(p => p.path_source, p => p);
+
                             var perFileProgress = new Progress<int>(bytes =>
                             {
                                 Interlocked.Add(ref totalBytesRead, bytes);
@@ -1633,7 +2099,12 @@ namespace GogOssLibraryNS
 
                                         try
                                         {
-                                            string relativePath = RelativePath.Get(taskData.fullInstallPath, file);
+                                            var newFile = file;
+                                            if (taskData.downloadItemType == DownloadItemType.Overlay)
+                                            {
+                                                newFile = file + ".zip";
+                                            }
+                                            string relativePath = RelativePath.Get(taskData.fullInstallPath, newFile);
 
                                             if (patchesDepot.items.Count > 0)
                                             {
@@ -1864,26 +2335,33 @@ namespace GogOssLibraryNS
                 }
 
                 logger.Debug($"Downloading {taskData.name} ({taskData.gameID}) to {taskData.downloadProperties.installPath} ...");
-                await DownloadFilesAsync(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
-
-                var installedAppList = GogOssLibrary.GetInstalledAppList();
-                var installedGameInfo = new Installed
+                if (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency)
                 {
-                    build_id = downloadProperties.buildId,
-                    version = downloadProperties.version,
-                    title = gameTitle,
-                    platform = downloadProperties.os,
-                    install_path = taskData.fullInstallPath,
-                    language = downloadProperties.language,
-                    installed_DLCs = downloadProperties.extraContent
-                };
-                if (installedAppList.ContainsKey(gameID))
-                {
-                    installedAppList.Remove(gameID);
+                    await DownloadGamesAndDepends(linkedCTS.Token, bigDepot, taskData.fullInstallPath, allSecureLinks, downloadProperties.maxWorkers, preferredCdn: preferredCdnString);
                 }
+                else
+                {
+                    await DownloadNonGames(linkedCTS.Token, bigDepot, taskData.fullInstallPath, downloadProperties.maxWorkers, taskData.downloadItemType);
+                }
+
 
                 if (taskData.downloadItemType == DownloadItemType.Game)
                 {
+                    var installedAppList = GogOssLibrary.GetInstalledAppList();
+                    var installedGameInfo = new Installed
+                    {
+                        build_id = downloadProperties.buildId,
+                        version = downloadProperties.version,
+                        title = gameTitle,
+                        platform = downloadProperties.os,
+                        install_path = taskData.fullInstallPath,
+                        language = downloadProperties.language,
+                        installed_DLCs = downloadProperties.extraContent
+                    };
+                    if (installedAppList.ContainsKey(gameID))
+                    {
+                        installedAppList.Remove(gameID);
+                    }
                     var dependencies = installedGameInfo.Dependencies;
                     if (taskData.depends.Count > 0)
                     {
@@ -1912,10 +2390,29 @@ namespace GogOssLibraryNS
                         File.Delete(installedDepotFile);
                     }
                     File.WriteAllText(installedDepotFile, originalDepotJson);
+                    GogOss.AddToHeroicInstalledList(installedGameInfo, gameID, taskData.installSizeNumber);
+                    GogOssLibrary.Instance.installedAppListModified = true;
                 }
-
-                GogOssLibrary.Instance.installedAppListModified = true;
-                GogOss.AddToHeroicInstalledList(installedGameInfo, gameID, taskData.installSizeNumber);
+                else if (taskData.downloadItemType == DownloadItemType.Overlay)
+                {
+                    var overlayInstalledInfo = new OverlayInstalled()
+                    {
+                        install_path = taskData.fullInstallPath,
+                        platform = downloadProperties.os,
+                        overlay_version = bigDepot.overlayVersion,
+                        web_version = bigDepot.webVersion
+                    };
+                    var installedDepotPath = Path.Combine(overlayInstalledInfo.install_path, ".manifest_oss");
+                    Directory.CreateDirectory(installedDepotPath);
+                    var installedDepotFile = Path.Combine(installedDepotPath, "bigDepot.json");
+                    if (File.Exists(installedDepotFile))
+                    {
+                        File.Delete(installedDepotFile);
+                    }
+                    File.WriteAllText(installedDepotFile, originalDepotJson);
+                    var overlayInstalledFilePath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "overlay_installed.json");
+                    File.WriteAllText(overlayInstalledFilePath, Serialization.ToJson(overlayInstalledInfo, true));
+                }
 
                 taskData.status = DownloadStatus.Completed;
                 taskData.progress = 100.0;
@@ -1945,7 +2442,7 @@ namespace GogOssLibraryNS
             {
                 if (ex is not OperationCanceledException)
                 {
-                    logger.Error(ex.Message);
+                    logger.Error(ex, "");
                     taskData.status = DownloadStatus.Error;
                 }
             }

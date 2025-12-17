@@ -24,7 +24,6 @@ namespace GogOssLibraryNS
     {
         private ILogger logger = LogManager.GetLogger();
         private IPlayniteAPI playniteAPI = API.Instance;
-        public string installCommand;
         public double downloadSizeNumber;
         public double installSizeNumber;
         public long availableFreeSpace;
@@ -119,10 +118,14 @@ namespace GogOssLibraryNS
                     {
                         installData.fullInstallPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", gameId);
                     }
-                    else
+                    else if (installData.downloadItemType == DownloadItemType.Game)
                     {
                         manifest = await gogDownloadApi.GetGameMetaManifest(installData);
                         installData.fullInstallPath = Path.Combine(installPath, manifest.installDirectory);
+                    }
+                    else if (installData.downloadItemType == DownloadItemType.Overlay)
+                    {
+                        installData.fullInstallPath = Path.Combine(installPath, ".galaxy-overlay");
                     }
                     if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.CommonPermissionError))
                     {
@@ -232,97 +235,102 @@ namespace GogOssLibraryNS
 
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
-            var depends = new List<string>
+            var depends = new List<string>();
+            if (MultiInstallData.Count != 1 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
             {
-                "ISI"
-            };
+                depends.Add("ISI");
+            }
+
             bool gamesListShouldBeDisplayed = false;
             var redistInstallPath = GogOss.DependenciesInstallationPath;
 
             var installedAppList = GogOssLibrary.GetInstalledAppList();
 
             var gogDownloadApi = new GogDownloadApi();
-            foreach (var installData in MultiInstallData.ToList())
+
+            if (MultiInstallData.Count != 1 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
             {
-                if (installData.downloadItemType == DownloadItemType.Game)
+                foreach (var installData in MultiInstallData.ToList())
                 {
-                    builds = await gogDownloadApi.GetProductBuilds(installData.gameID);
-                    if (builds.errorDisplayed || builds.installable == false)
+                    if (installData.downloadItemType == DownloadItemType.Game)
                     {
-                        if (builds.installable == false)
+                        builds = await gogDownloadApi.GetProductBuilds(installData.gameID);
+                        if (builds.errorDisplayed || builds.installable == false)
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOssGameNotInstallable, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)installData.name, ["url"] = (FluentString)"https://gog.com/account " }));
-                        }
-                        gamesListShouldBeDisplayed = true;
-                        MultiInstallData.Remove(installData);
-                        continue;
-                    }
-                }
-                
-                if (installedAppList.ContainsKey(installData.gameID))
-                {
-                    var installedGame = installedAppList[installData.gameID];
-                    if (installData.downloadProperties.downloadAction == DownloadAction.Repair)
-                    {
-                        installData.downloadProperties.version = installedGame.version;
-                        installData.downloadProperties.buildId = installedGame.build_id;
-                    }
-                    installData.downloadProperties.language = installedGame.language;
-                    installData.downloadProperties.extraContent = installedGame.installed_DLCs;
-                }
-                manifest = await gogDownloadApi.GetGameMetaManifest(installData);
-                if (manifest.dependencies.Count > 0)
-                {
-                    installData.depends = manifest.dependencies;
-                    if (manifest.version == 1)
-                    {
-                        foreach (var dependv1 in manifest.depots)
-                        {
-                            if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
+                            if (builds.installable == false)
                             {
-                                installData.depends.Add(dependv1.redist);
+                                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.GogOssGameNotInstallable, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)installData.name, ["url"] = (FluentString)"https://gog.com/account " }));
+                            }
+                            gamesListShouldBeDisplayed = true;
+                            MultiInstallData.Remove(installData);
+                            continue;
+                        }
+                    }
+
+                    if (installedAppList.ContainsKey(installData.gameID))
+                    {
+                        var installedGame = installedAppList[installData.gameID];
+                        if (installData.downloadProperties.downloadAction == DownloadAction.Repair)
+                        {
+                            installData.downloadProperties.version = installedGame.version;
+                            installData.downloadProperties.buildId = installedGame.build_id;
+                        }
+                        installData.downloadProperties.language = installedGame.language;
+                        installData.downloadProperties.extraContent = installedGame.installed_DLCs;
+                    }
+                    manifest = await gogDownloadApi.GetGameMetaManifest(installData);
+                    if (manifest.dependencies.Count > 0)
+                    {
+                        installData.depends = manifest.dependencies;
+                        if (manifest.version == 1)
+                        {
+                            foreach (var dependv1 in manifest.depots)
+                            {
+                                if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
+                                {
+                                    installData.depends.Add(dependv1.redist);
+                                }
                             }
                         }
+                        foreach (var depend in manifest.dependencies)
+                        {
+                            depends.AddMissing(depend);
+                        }
                     }
-                    foreach (var depend in manifest.dependencies)
+                    RefreshLanguages(installData);
+                    if (installData.downloadProperties.buildId.IsNullOrEmpty())
                     {
-                        depends.AddMissing(depend);
+                        installData.downloadProperties.buildId = manifest.buildId;
+                        installData.downloadProperties.version = manifest.versionName;
                     }
-                }
-                RefreshLanguages(installData);
-                if (installData.downloadProperties.buildId.IsNullOrEmpty())
-                {
-                    installData.downloadProperties.buildId = manifest.buildId;
-                    installData.downloadProperties.version = manifest.versionName;
-                }
-                if (manifest.dlcs.Count > 1 && settings.DownloadAllDlcs && installData.downloadProperties.extraContent.Count == 0)
-                {
-                    foreach (var dlc in manifest.dlcs)
+                    if (manifest.dlcs.Count > 1 && settings.DownloadAllDlcs && installData.downloadProperties.extraContent.Count == 0)
                     {
-                        installData.downloadProperties.extraContent.Add(dlc.Key);
+                        foreach (var dlc in manifest.dlcs)
+                        {
+                            installData.downloadProperties.extraContent.Add(dlc.Key);
+                        }
                     }
-                }
-                var gameSize = await GogOss.CalculateGameSize(installData);
-                installData.downloadSizeNumber = gameSize.download_size;
-                installData.installSizeNumber = gameSize.disk_size;
-                var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
-                if (wantedItem != null)
-                {
-                    if (wantedItem.status == DownloadStatus.Completed)
+                    var gameSize = await GogOss.CalculateGameSize(installData);
+                    installData.downloadSizeNumber = gameSize.download_size;
+                    installData.installSizeNumber = gameSize.disk_size;
+                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
+                    if (wantedItem != null)
                     {
-                        downloadManager.downloadManagerData.downloads.Remove(wantedItem);
-                    }
-                    else
-                    {
-                        downloadItemsAlreadyAdded.Add(installData.name);
-                        MultiInstallData.Remove(installData);
+                        if (wantedItem.status == DownloadStatus.Completed)
+                        {
+                            downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                        }
+                        else
+                        {
+                            downloadItemsAlreadyAdded.Add(installData.name);
+                            MultiInstallData.Remove(installData);
+                        }
                     }
                 }
             }
 
             if (MultiInstallData.Count == 1)
             {
-                var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == MultiInstallData[0].gameID);
                 if (MultiInstallData[0].downloadItemType == DownloadItemType.Game)
                 {
                     builds = await gogDownloadApi.GetProductBuilds(MultiInstallData[0].gameID);
@@ -362,19 +370,36 @@ namespace GogOssLibraryNS
                         MultiInstallData.Remove(MultiInstallData[0]);
                     }
                 }
-            }
-
-            var notCompletedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status != DownloadStatus.Completed);
-            if (notCompletedDownloads.Count() > 0)
-            {
-                foreach (var notCompletedDownload in notCompletedDownloads)
+                if (MultiInstallData[0].downloadItemType == DownloadItemType.Overlay)
                 {
-                    var notCompletedDownloadManifest = await gogDownloadApi.GetGameMetaManifest(notCompletedDownload);
-                    if (notCompletedDownloadManifest.dependencies.Count > 0)
+                    var overlayInstallData = MultiInstallData[0];
+                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == overlayInstallData.gameID);
+                    if (wantedItem != null)
                     {
-                        foreach (var depend in notCompletedDownloadManifest.dependencies)
+                        if (wantedItem.status == DownloadStatus.Completed)
                         {
-                            depends.AddMissing(depend);
+                            downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                        }
+                        else
+                        {
+                            downloadItemsAlreadyAdded.Add(overlayInstallData.name);
+                            MultiInstallData.Remove(overlayInstallData);
+                        }
+                    }
+                    else
+                    {
+                        var overlayManifest = await GogOss.GetOverlayManifest();
+                        if (overlayManifest != null && overlayManifest.files.Count > 0)
+                        {
+                            foreach (var file in overlayManifest.files)
+                            {
+                                overlayInstallData.downloadSizeNumber += file.size;
+                                overlayInstallData.installSizeNumber += file.size;
+                            }
+                        }
+                        else
+                        {
+                            MultiInstallData.Remove(overlayInstallData);
                         }
                     }
                 }
@@ -433,22 +458,22 @@ namespace GogOssLibraryNS
                 playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAddedCombined, ["count"] = (FluentNumber)downloadItemsAlreadyAdded.Count }), "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game).ToList();
-            GamesLB.ItemsSource = games;
-            if ((games.Count > 1 && singleGameInstallData == null) || gamesListShouldBeDisplayed)
+            var apps = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game || i.downloadItemType == DownloadItemType.Overlay).ToList();
+            GamesLB.ItemsSource = apps;
+            if ((apps.Count > 1 && singleGameInstallData == null) || gamesListShouldBeDisplayed)
             {
                 GamesBrd.Visibility = Visibility.Visible;
             }
 
             var clientApi = new GogAccountClient();
             var userLoggedIn = await clientApi.GetIsUserLoggedIn();
-            if (games.Count <= 0 || !userLoggedIn)
+            if (apps.Count <= 0 || !userLoggedIn)
             {
-                if(!userLoggedIn)
+                if (!userLoggedIn)
                 {
                     playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameInstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoginRequired) }));
                 }
-                if (games.Count <= 0)
+                if (apps.Count <= 0)
                 {
                     InstallerWindow.Close();
                 }

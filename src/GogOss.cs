@@ -474,7 +474,7 @@ namespace GogOssLibraryNS
             {
                 depotHashes = await gogDownloadApi.GetNeededDepotManifestHashes(taskData);
             }
-            else
+            else if (taskData.downloadItemType == DownloadItemType.Dependency)
             {
                 var dependManifest = await GogDownloadApi.GetRedistInfo(taskData.gameID);
                 var dependHashes = new List<string>
@@ -483,15 +483,21 @@ namespace GogOssLibraryNS
                 };
                 depotHashes.Add(taskData.gameID, dependHashes);
             }
-            var metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
 
             GogDepot.Depot bigDepot = new();
+            var metaManifest = new GogGameMetaManifest();
+            if (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency)
+            {
+                metaManifest = await gogDownloadApi.GetGameMetaManifest(taskData);
+            }
+
             bigDepot.version = metaManifest.version;
+
             foreach (var depotHash in depotHashes)
             {
                 foreach (var singleDepotHash in depotHash.Value)
                 {
-                    var depotManifest = await gogDownloadApi.GetDepotInfo(singleDepotHash, taskData, metaManifest.version);
+                    var depotManifest = await gogDownloadApi.GetDepotInfo(singleDepotHash, taskData, bigDepot.version);
                     if (depotManifest.depot.items.Count > 0)
                     {
                         foreach (var depotItem in depotManifest.depot.items)
@@ -520,7 +526,7 @@ namespace GogOssLibraryNS
                 }
             }
 
-            if (metaManifest.version == 1)
+            if (bigDepot.version == 1 && (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency))
             {
                 foreach (var depot in metaManifest.product.depots)
                 {
@@ -548,6 +554,10 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+            }
+            else if (taskData.downloadItemType == DownloadItemType.Overlay)
+            {
+                bigDepot = await GetOverlayManifest();
             }
             return bigDepot;
         }
@@ -590,6 +600,76 @@ namespace GogOssLibraryNS
                     File.WriteAllText(heroicInstalledPath, strConf);
                 }
             }
+        }
+
+        public static async Task<GogDepot.Depot> GetOverlayManifest()
+        {
+            var depotManifest = new GogDepot.Depot();
+            bool correctJson = false;
+
+            var cacheInfoFileName = $"galaxy-overlay.json";
+            var cachePath = GogOssLibrary.Instance.GetCachePath("overlay");
+            var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
+            if (File.Exists(cacheInfoFile))
+            {
+                if (File.GetLastWriteTime(cacheInfoFile) < DateTime.Now.AddDays(-7))
+                {
+                    File.Delete(cacheInfoFile);
+                }
+            }
+            if (File.Exists(cacheInfoFile))
+            {
+                var content = File.ReadAllText(cacheInfoFile);
+                if (!string.IsNullOrWhiteSpace(content) && Serialization.TryFromJson(content, out GogDepot.Depot newManifest))
+                {
+                    if (newManifest != null)
+                    {
+                        correctJson = true;
+                        depotManifest = newManifest;
+                    }
+                }
+            }
+
+            if (!correctJson)
+            {
+                List<ComponentChoice> components = new();
+                components.Add(ComponentChoice.Web);
+                components.Add(ComponentChoice.Overlay);
+                var gogDownloadApi = new GogDownloadApi();
+                foreach (var component in components)
+                {
+                    var componentManifest = await gogDownloadApi.GetComponentManifest(component);
+                    if (component == ComponentChoice.Overlay)
+                    {
+                        depotManifest.overlayVersion = componentManifest.version;
+                    }
+                    if (component == ComponentChoice.Web)
+                    {
+                        depotManifest.webVersion = componentManifest.version;
+                    }
+                    foreach (var file in componentManifest.files)
+                    {
+                        var depotFile = new GogDepot.DepotFile
+                        {
+                            hash = file.hash,
+                            path = file.path,
+                            product_id = "galaxy-overlay",
+                            size = file.size,
+                            url = $"{componentManifest.baseURI}/{file.resource}"
+                        };
+                        depotManifest.files.Add(depotFile);
+                    }
+                }
+                if (depotManifest != null)
+                {
+                    if (!Directory.Exists(cachePath))
+                    {
+                        Directory.CreateDirectory(cachePath);
+                    }
+                    File.WriteAllText(cacheInfoFile, Serialization.ToJson(depotManifest));
+                }
+            }
+            return depotManifest;
         }
     }
 }

@@ -110,6 +110,10 @@ namespace System
         /// </summary>
         public const string CommonManualSyncSaves = "common-manual-sync-saves";
         /// <summary>
+        /// {$overlayName} Overlay
+        /// </summary>
+        public const string CommonOverlay = "common-overlay";
+        /// <summary>
         /// Download all DLCs
         /// </summary>
         public const string CommonDownloadAllDlcs = "common-download-all-dlcs";

@@ -16,6 +16,8 @@ namespace GogOssLibraryNS.Models
             public Dictionary<string, Smallfilescontainer> sfcContainersByHash { get; set; } = new();
             public List<DepotFile> files { get; set; } = new();
             public int version { get; set; }
+            public string overlayVersion { get; set; }
+            public string webVersion { get; set; }
         }
 
         public class Item
