@@ -48,7 +48,15 @@ namespace GogOssLibraryNS
             var langInEnglish = "";
             if (!shortLang.IsNullOrEmpty())
             {
-                langInEnglish = new CultureInfo(shortLang).EnglishName;
+                try
+                {
+                    langInEnglish = new CultureInfo(shortLang).EnglishName;
+                }
+                catch
+                {
+                    logger.Warn($"Unrecognized language: {shortLang}.");
+                    langInEnglish = shortLang;
+                }
             }
             else
             {
@@ -96,7 +104,7 @@ namespace GogOssLibraryNS
             }
             else if (metaManifest.scriptInterpreter)
             {
-                var isiInstallPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", "ISI");
+                var isiInstallPath = Path.Combine(DependenciesInstallationPath, "__redist", "ISI");
                 if (isiInstallPath != "" && Directory.Exists(isiInstallPath))
                 {
                     foreach (var product in metaManifest.products)
