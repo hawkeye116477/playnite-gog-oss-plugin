@@ -236,7 +236,7 @@ namespace GogOssLibraryNS
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
             var depends = new List<string>();
-            if (MultiInstallData.Count != 1 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
+            if (MultiInstallData.Count > 0 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
             {
                 depends.Add("ISI");
             }
@@ -248,7 +248,7 @@ namespace GogOssLibraryNS
 
             var gogDownloadApi = new GogDownloadApi();
 
-            if (MultiInstallData.Count != 1 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
+            if (MultiInstallData.Count > 0 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
             {
                 foreach (var installData in MultiInstallData.ToList())
                 {
