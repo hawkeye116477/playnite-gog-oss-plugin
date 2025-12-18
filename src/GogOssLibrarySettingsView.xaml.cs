@@ -452,7 +452,7 @@ namespace GogOssLibraryNS
                         a.CurrentProgressValue = gamesToMigrate.Count() + 1;
                         if (migratedGames.Count > 0)
                         {
-                            playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationCompleted), LocalizationManager.Instance.GetString(LOC.CommonMigrateGamesOriginal), MessageBoxButton.OK, MessageBoxImage.Information);
+                            playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationCompleted), LocalizationManager.Instance.GetString(LOC.CommonRevertMigrateGames), MessageBoxButton.OK, MessageBoxImage.Information);
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG OSS to GOG.");
                         }
                         if (migratedGames.Count == 0 && notImportedGames.Count == 0)
