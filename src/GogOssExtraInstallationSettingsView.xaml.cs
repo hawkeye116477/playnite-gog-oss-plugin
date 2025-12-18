@@ -17,6 +17,7 @@ namespace GogOssLibraryNS
     /// </summary>
     public partial class GogOssExtraInstallationSettingsView : UserControl
     {
+        private ILogger logger = LogManager.GetLogger();
         public GogDownloadApi gogDownloadApi = new();
         public GogOssExtraInstallationSettingsView()
         {
@@ -121,7 +122,19 @@ namespace GogOssLibraryNS
                 var gameLanguages = new Dictionary<string, string>();
                 foreach (var language in languages)
                 {
-                    gameLanguages.Add(language, new CultureInfo(language).NativeName);
+                    var nativeLanguageName = language;
+                    if (manifest.version > 1)
+                    {
+                        try
+                        {
+                            nativeLanguageName = new CultureInfo(language).NativeName;
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Warn(ex, $"Unrecognized language: {language}");
+                        }
+                    }
+                    gameLanguages.Add(language, nativeLanguageName);
                 }
                 gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 if (!ChosenGame.downloadProperties.language.IsNullOrEmpty() && gameLanguages.ContainsKey(ChosenGame.downloadProperties.language))
