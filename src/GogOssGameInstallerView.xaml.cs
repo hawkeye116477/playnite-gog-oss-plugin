@@ -489,6 +489,7 @@ namespace GogOssLibraryNS
         private Dictionary<string, string> RefreshLanguages(DownloadManagerData.Download installData)
         {
             var currentPlayniteLanguage = playniteAPI.ApplicationSettings.Language.Replace("_", "-");
+            var currentPlayniteLanguageNativeName = new CultureInfo(currentPlayniteLanguage).NativeName;
             var languages = manifest.languages;
             var selectedLanguage = "";
             var gameLanguages = new Dictionary<string, string>();
@@ -517,14 +518,14 @@ namespace GogOssLibraryNS
                 }
                 else
                 {
-                    if (gameLanguages.ContainsKey(currentPlayniteLanguage))
+                    if (gameLanguages.ContainsKey(currentPlayniteLanguage) || gameLanguages.ContainsKey(currentPlayniteLanguageNativeName))
                     {
                         selectedLanguage = currentPlayniteLanguage;
                     }
                     else
                     {
                         currentPlayniteLanguage = currentPlayniteLanguage.Substring(0, currentPlayniteLanguage.IndexOf("-"));
-                        if (gameLanguages.ContainsKey(currentPlayniteLanguage))
+                        if (gameLanguages.ContainsKey(currentPlayniteLanguage) || gameLanguages.ContainsKey(currentPlayniteLanguageNativeName))
                         {
                             selectedLanguage = currentPlayniteLanguage;
                         }
