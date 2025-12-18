@@ -52,9 +52,9 @@ namespace GogOssLibraryNS
                 {
                     langInEnglish = new CultureInfo(shortLang).EnglishName;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    logger.Warn($"Unrecognized language: {shortLang}.");
+                    logger.Warn(ex, $"Unrecognized language: {shortLang}.");
                     langInEnglish = shortLang;
                 }
             }
