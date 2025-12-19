@@ -446,8 +446,35 @@ namespace GogOssLibraryNS.Services
                 {
                     chosenlanguage = metaManifest.languages.First();
                 }
+                if (chosenlanguage == null)
+                {
+                    chosenlanguage = "";
+                }
 
-                if (depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
+                if (depot.languages.Count > 0)
+                {
+                    if (depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
+                    {
+                        var manifestHash = depot.manifest;
+                        if (metaManifest.version == 2 && productIds.Contains(depot.productId))
+                        {
+                            if (!depotHashes.ContainsKey(depot.productId))
+                            {
+                                depotHashes.Add(depot.productId, new List<string>());
+                            }
+                            depotHashes[depot.productId].Add(manifestHash);
+                        }
+                        else if (metaManifest.version == 1 && depot.gameIDs.Any(sgame => productIds.Contains(sgame)))
+                        {
+                            if (!depotHashes.ContainsKey(depot.gameIDs[0]))
+                            {
+                                depotHashes.Add(depot.gameIDs[0], new List<string>());
+                            }
+                            depotHashes[depot.gameIDs[0]].Add(manifestHash);
+                        }
+                    }
+                }
+                else
                 {
                     var manifestHash = depot.manifest;
                     if (metaManifest.version == 2 && productIds.Contains(depot.productId))
