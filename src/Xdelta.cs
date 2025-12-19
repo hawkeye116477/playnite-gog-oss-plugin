@@ -18,10 +18,10 @@ namespace GogOssLibraryNS
                                             .SelectMany(pathEntry => xdeltaExes.Select(xdeltaExe => Path.Combine(pathEntry.Trim(), xdeltaExe)))
                                             .FirstOrDefault(File.Exists);
 
-                var launcherPath = "";
+                var xdeltaPath = "";
                 if (string.IsNullOrWhiteSpace(envPath) == false)
                 {
-                    launcherPath = envPath;
+                    xdeltaPath = envPath;
                 }
                 else
                 {
@@ -30,36 +30,36 @@ namespace GogOssLibraryNS
                     {
                         pf64 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                     }
-                    launcherPath = Path.Combine(pf64, "GOG OSS", "xdelta3.exe");
-                    if (!File.Exists(launcherPath))
+                    xdeltaPath = Path.Combine(pf64, "GOG OSS", "xdelta3.exe");
+                    if (!File.Exists(xdeltaPath))
                     {
                         var playniteAPI = API.Instance;
                         if (playniteAPI.ApplicationInfo.IsPortable)
                         {
-                            launcherPath = Path.Combine(playniteAPI.Paths.ApplicationPath, "GOG OSS", "xdelta3.exe");
+                            xdeltaPath = Path.Combine(playniteAPI.Paths.ApplicationPath, "GOG OSS", "xdelta3.exe");
                         }
                     }
                 }
                 var savedSettings = GogOssLibrary.GetSettings();
                 if (savedSettings != null)
                 {
-                    var savedLauncherPath = savedSettings.SelectedCometPath;
+                    var savedXdeltaPath = savedSettings.SelectedXdeltaPath;
                     var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
-                    if (savedLauncherPath != "")
+                    if (savedXdeltaPath != "")
                     {
-                        if (savedLauncherPath.Contains(playniteDirectoryVariable))
+                        if (savedXdeltaPath.Contains(playniteDirectoryVariable))
                         {
                             var playniteAPI = API.Instance;
-                            savedLauncherPath = savedLauncherPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+                            savedXdeltaPath = savedXdeltaPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
                         }
-                        launcherPath = savedLauncherPath;
+                        xdeltaPath = savedXdeltaPath;
                     }
                 }
-                if (!File.Exists(launcherPath))
+                if (!File.Exists(xdeltaPath))
                 {
-                    launcherPath = "";
+                    xdeltaPath = "";
                 }
-                return launcherPath;
+                return xdeltaPath;
             }
         }
 
