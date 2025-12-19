@@ -348,7 +348,7 @@ namespace GogOssLibraryNS
                                 request.Headers.Add("User-Agent", GogOssCloud.UserAgent);
                                 try
                                 {
-                                    var response = await httpClient.SendAsync(request);
+                                    using var response = await httpClient.SendAsync(request);
                                     response.EnsureSuccessStatusCode();
                                 }
                                 catch (Exception ex)
