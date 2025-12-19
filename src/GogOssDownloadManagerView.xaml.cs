@@ -299,6 +299,16 @@ namespace GogOssLibraryNS
                 long expectedFileSize = file.size;
                 totalCompressedSize += expectedFileSize;
 
+                if (expectedFileSize == 0)
+                {
+                    if (!File.Exists(filePath) || new FileInfo(filePath).Length != 0)
+                    {
+                        File.WriteAllBytes(filePath, Array.Empty<byte>());
+                    }
+                    fileExpectedSizes.TryAdd(filePath, 0);
+                    continue;
+                }
+
                 if (!resumeState.IsCompleted(filePath, file.hash))
                 {
                     jobs.Add((depotFilePath, file.size, file.url, file.hash));
@@ -790,6 +800,17 @@ namespace GogOssLibraryNS
                     writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
 
                     long expectedFileSize = file.size;
+
+                    if (expectedFileSize == 0)
+                    {
+                        if (!File.Exists(filePath) || new FileInfo(filePath).Length != 0)
+                        {
+                            File.WriteAllBytes(filePath, Array.Empty<byte>());
+                        }
+                        fileExpectedSizes.TryAdd(filePath, 0);
+                        continue;
+                    }
+
                     long currentFileSize = File.Exists(filePath) ? new FileInfo(filePath).Length : 0;
 
                     totalSize += expectedFileSize;
@@ -956,6 +977,17 @@ namespace GogOssLibraryNS
                     }
 
                     long expectedFileSize = depot.sfcRef != null && shouldDownloadSfc ? (long)depot.sfcRef.size : depot.chunks.Sum(c => (long)c.size);
+
+                    if (expectedFileSize == 0)
+                    {
+                        if (!File.Exists(filePath) || new FileInfo(filePath).Length != 0)
+                        {
+                            File.WriteAllBytes(filePath, Array.Empty<byte>());
+                        }
+                        fileExpectedSizes.TryAdd(filePath, 0);
+                        continue;
+                    }
+
                     long expectedFileCompressedSize = depot.sfcRef != null && shouldDownloadSfc ? 0 : depot.chunks.Sum(c => (long)c.compressedSize);
 
                     totalSize += expectedFileSize;
@@ -2014,7 +2046,7 @@ namespace GogOssLibraryNS
             }
 
             // Verify and repair files
-            if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath))
+            if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath) && taskData.downloadItemType != DownloadItemType.Overlay)
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
                 {
@@ -2029,10 +2061,10 @@ namespace GogOssLibraryNS
 
                         if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
                         {
-                            var itemsMap = bigDepot.items.Where(i => !string.IsNullOrEmpty(i.path))
+                            var itemsMap = bigDepot.items.Where(i => !string.IsNullOrEmpty(i.path) && i.chunks?.Sum(c => (long)c.size) > 0)
                                                          .ToDictionary(i => i.path, i => i);
 
-                            var filesMap = bigDepot.files.Where(f => !string.IsNullOrEmpty(f.path))
+                            var filesMap = bigDepot.files.Where(f => !string.IsNullOrEmpty(f.path) && f.size > 0)
                                                          .ToDictionary(f => f.path, f => f);
 
                             var patchesMap = patchesDepot.items.Where(p => !string.IsNullOrEmpty(p.path_source))
@@ -2098,10 +2130,6 @@ namespace GogOssLibraryNS
                                         try
                                         {
                                             var newFile = file;
-                                            if (taskData.downloadItemType == DownloadItemType.Overlay)
-                                            {
-                                                newFile = file + ".zip";
-                                            }
                                             string relativePath = RelativePath.Get(taskData.fullInstallPath, newFile);
 
                                             if (patchesDepot.items.Count > 0)
