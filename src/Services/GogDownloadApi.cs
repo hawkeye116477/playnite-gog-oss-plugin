@@ -442,7 +442,7 @@ namespace GogOssLibraryNS.Services
             foreach (var depot in depots)
             {
                 var chosenlanguage = taskData.downloadProperties.language;
-                if (string.IsNullOrEmpty(chosenlanguage))
+                if (string.IsNullOrEmpty(chosenlanguage) && metaManifest.languages.Count > 0)
                 {
                     chosenlanguage = metaManifest.languages.First();
                 }
