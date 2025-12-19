@@ -344,7 +344,7 @@ namespace GogOssLibraryNS
                                 {
                                     Content = content
                                 };
-                                request.Headers.Add("Authorization", "Bearer " + tokens.access_token);
+                                request.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
                                 request.Headers.Add("User-Agent", GogOssCloud.UserAgent);
                                 try
                                 {

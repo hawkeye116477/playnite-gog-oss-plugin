@@ -335,7 +335,7 @@ namespace GogOssLibraryNS
                             {
                                 var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
                                 var credentialsResponseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(credentialsResponseContent);
-                                request.Headers.Add("Authorization", "Bearer " + credentialsResponseJson.access_token);
+                                request.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
                             }
                             else
                             {

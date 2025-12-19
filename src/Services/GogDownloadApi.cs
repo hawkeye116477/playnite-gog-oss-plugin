@@ -653,7 +653,7 @@ namespace GogOssLibraryNS.Services
                 try
                 {
                     var request = new HttpRequestMessage(HttpMethod.Get, url);
-                    request.Headers.Add("Authorization", "Bearer " + tokens.access_token);
+                    request.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
                     using var response = await Client.SendAsync(request);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();

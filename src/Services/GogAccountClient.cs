@@ -372,7 +372,7 @@ namespace GogOssLibraryNS.Services
             {
                 var tokens = LoadTokens();
                 var request = new HttpRequestMessage(HttpMethod.Get, @"https://embed.gog.com/user/data/games");
-                request.Headers.Add("Authorization", "Bearer " + tokens.access_token);
+                request.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
                 request.Headers.Add("User-Agent", GogDownloadApi.UserAgent);
                 using var response = await httpClient.SendAsync(request);
                 if (response.IsSuccessStatusCode)
