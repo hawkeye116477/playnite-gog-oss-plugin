@@ -969,7 +969,15 @@ namespace GogOssLibraryNS
                         isRedist = true;
                     }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                    if (depot.type == "DepotDirectory")
+                    {
+                        Directory.CreateDirectory(filePath);
+                        continue;
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                    }
 
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
