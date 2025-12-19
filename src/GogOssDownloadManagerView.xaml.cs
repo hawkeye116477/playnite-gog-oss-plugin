@@ -976,6 +976,11 @@ namespace GogOssLibraryNS
                     }
                     else
                     {
+                        var knownTypes = new List<string> { "DepotDirectory", "DepotFile", "DepotDiff" };
+                        if (!knownTypes.Contains(depot.type))
+                        {
+                            logger.Warn($"Depot type {depot.type} isn't supported. Please report that.");
+                        }
                         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
                     }
 

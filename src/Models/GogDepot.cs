@@ -23,6 +23,7 @@ namespace GogOssLibraryNS.Models
         public class Item
         {
             public string path { get; set; } = "";
+            public string target { get; set; } = "";
             public List<Chunk> chunks { get; set; } = new List<Chunk>();
             public string type { get; set; } = "";
             public List<string> flags { get; set; }
