@@ -183,7 +183,6 @@ namespace GogOssLibraryNS
                     }
                     else
                     {
-                        
                         playniteAPI.Dialogs.ShowMessage($"{LocalizationManager.Instance.GetString(LOC.CommonUninstallError, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)notUninstalledGamesCombined, ["count"] = (FluentNumber)notUninstalledGames.Count })} {LocalizationManager.Instance.GetString(LOC.CommonCheckLog)}");
                     }
                 }
@@ -212,6 +211,8 @@ namespace GogOssLibraryNS
         public GogOssLibrarySettings globalSettings = GogOssLibrary.GetSettings();
         private IPlayniteAPI playniteAPI = API.Instance;
         public GogOssCloud gogOssCloud = new GogOssCloud();
+        private static readonly RetryHandler retryHandler = new(new HttpClientHandler());
+        public static readonly HttpClient httpClient = new(retryHandler);
 
         public GogOssPlayController(Game game) : base(game)
         {
@@ -321,41 +322,46 @@ namespace GogOssLibraryNS
                     playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                     {
                         a.IsIndeterminate = true;
-                        using (var httpClient = new HttpClient())
+                        var gogAccountClient = new GogAccountClient();
+                        var accountInfo = await gogAccountClient.GetAccountInfo();
+                        if (accountInfo.isLoggedIn)
                         {
-                            httpClient.DefaultRequestHeaders.Clear();
-                            var gogAccountClient = new GogAccountClient();
-                            var accountInfo = await gogAccountClient.GetAccountInfo();
-                            if (accountInfo.isLoggedIn)
+                            var tokens = gogAccountClient.LoadTokens();
+                            var uri = $"https://gameplay.gog.com/games/{Game.GameId}/users/{tokens.user_id}/sessions";
+                            PlaytimePayload playtimePayload = new PlaytimePayload();
+                            DateTimeOffset now = DateTime.UtcNow;
+                            var totalSeconds = sessionLength;
+                            var startTime = now.AddSeconds(-(double)totalSeconds);
+                            playtimePayload.session_date = startTime.ToUnixTimeSeconds();
+                            TimeSpan totalTimeSpan = TimeSpan.FromSeconds(totalSeconds);
+                            playtimePayload.time = totalTimeSpan.Minutes;
+                            var playtimeJson = Serialization.ToJson(playtimePayload);
+                            var content = new StringContent(playtimeJson, Encoding.UTF8, "application/json");
+                            a.CurrentProgressValue = 1;
+                            if (playtimePayload.time > 0)
                             {
-                                var tokens = gogAccountClient.LoadTokens();
-                                httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokens.access_token);
-                                var uri = $"https://gameplay.gog.com/games/{Game.GameId}/users/{tokens.user_id}/sessions";
-                                PlaytimePayload playtimePayload = new PlaytimePayload();
-                                DateTimeOffset now = DateTime.UtcNow;
-                                var totalSeconds = sessionLength;
-                                var startTime = now.AddSeconds(-(double)totalSeconds);
-                                playtimePayload.session_date = startTime.ToUnixTimeSeconds();
-                                TimeSpan totalTimeSpan = TimeSpan.FromSeconds(totalSeconds);
-                                playtimePayload.time = totalTimeSpan.Minutes;
-                                var playtimeJson = Serialization.ToJson(playtimePayload);
-                                var content = new StringContent(playtimeJson, Encoding.UTF8, "application/json");
-                                a.CurrentProgressValue = 1;
-                                if (playtimePayload.time > 0)
+                                var request = new HttpRequestMessage(HttpMethod.Post, uri)
                                 {
-                                    var result = await httpClient.PostAsync(uri, content);
-                                    if (!result.IsSuccessStatusCode)
-                                    {
-                                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonUploadPlaytimeError, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }));
-                                        logger.Error($"An error occured during uploading playtime to the cloud. Status code: {result.StatusCode}.");
-                                    }
+                                    Content = content
+                                };
+                                request.Headers.Add("Authorization", "Bearer " + tokens.access_token);
+                                request.Headers.Add("User-Agent", GogOssCloud.UserAgent);
+                                try
+                                {
+                                    var response = await httpClient.SendAsync(request);
+                                    response.EnsureSuccessStatusCode();
+                                }
+                                catch (Exception ex)
+                                {
+                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonUploadPlaytimeError, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }));
+                                    logger.Error(ex, $"An error occured during uploading playtime to the cloud.");
                                 }
                             }
-                            else
-                            {
-                                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyGogNotLoggedInError), "");
-                                logger.Error($"Can't upload playtime, because user is not authenticated.");
-                            }
+                        }
+                        else
+                        {
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyGogNotLoggedInError), "");
+                            logger.Error($"Can't upload playtime, because user is not authenticated.");
                         }
                     }, globalProgressOptions);
                 }
