@@ -1172,7 +1172,6 @@ namespace GogOssLibraryNS
                     if (preferredCdn != "")
                     {
                         var preferredLink = availableCdns.FirstOrDefault(l => l.endpoint_name.Contains(preferredCdn.ToLower()));
-
                         if (!preferredLink.formatted_url.IsNullOrEmpty())
                         {
                             availableCdns.Remove(preferredLink);
@@ -1919,14 +1918,14 @@ namespace GogOssLibraryNS
                             {
                                 productIds.AddRange(taskData.downloadProperties.extraContent);
                             }
+                            var chosenlanguage = taskData.downloadProperties.language;
+                            if (string.IsNullOrEmpty(chosenlanguage))
+                            {
+                                chosenlanguage = patchManifest.languages.FirstOrDefault();
+                            }
                             foreach (var depot in patchManifest.depots)
                             {
-                                var chosenlanguage = taskData.downloadProperties.language;
-                                if (string.IsNullOrEmpty(chosenlanguage))
-                                {
-                                    chosenlanguage = patchManifest.languages.First();
-                                }
-                                if (depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
+                                if (depot.languages.Count == 0 || depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
                                 {
                                     if (productIds.Contains(depot.productId))
                                     {
@@ -2163,7 +2162,10 @@ namespace GogOssLibraryNS
                                                         patchesDepot.items.Remove(searchedItem);
                                                         GogDepot.Item bigDepotItem = bigDepot.items.FirstOrDefault(i =>
                                                         i.path == searchedItem.path_source);
-                                                        patchesDepot.items.Add(bigDepotItem);
+                                                        if (bigDepotItem != null)
+                                                        {
+                                                            patchesDepot.items.Add(bigDepotItem);
+                                                        }
                                                     }
                                                 }
                                             }

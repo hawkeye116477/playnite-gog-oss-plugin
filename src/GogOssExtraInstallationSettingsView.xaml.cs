@@ -102,7 +102,7 @@ namespace GogOssLibraryNS
                 {
                     selectedVersion = gameVersions.FirstOrDefault().Key;
                 }
-                GameVersionCBo.SelectedItem = gameVersions.First(i => i.Key == selectedVersion);
+                GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault(i => i.Key == selectedVersion);
                 manifest = await gogDownloadApi.GetGameMetaManifest(ChosenGame);
                 if (gameVersions.Count > 1)
                 {

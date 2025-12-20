@@ -439,42 +439,14 @@ namespace GogOssLibraryNS.Services
                 productIds.AddRange(taskData.downloadProperties.extraContent);
             }
 
+            var chosenlanguage = taskData.downloadProperties.language;
+            if (string.IsNullOrEmpty(chosenlanguage) && metaManifest.languages.Count > 0)
+            {
+                chosenlanguage = metaManifest.languages.FirstOrDefault();
+            }
             foreach (var depot in depots)
             {
-                var chosenlanguage = taskData.downloadProperties.language;
-                if (string.IsNullOrEmpty(chosenlanguage) && metaManifest.languages.Count > 0)
-                {
-                    chosenlanguage = metaManifest.languages.First();
-                }
-                if (chosenlanguage == null)
-                {
-                    chosenlanguage = "";
-                }
-
-                if (depot.languages.Count > 0)
-                {
-                    if (depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
-                    {
-                        var manifestHash = depot.manifest;
-                        if (metaManifest.version == 2 && productIds.Contains(depot.productId))
-                        {
-                            if (!depotHashes.ContainsKey(depot.productId))
-                            {
-                                depotHashes.Add(depot.productId, new List<string>());
-                            }
-                            depotHashes[depot.productId].Add(manifestHash);
-                        }
-                        else if (metaManifest.version == 1 && depot.gameIDs.Any(sgame => productIds.Contains(sgame)))
-                        {
-                            if (!depotHashes.ContainsKey(depot.gameIDs[0]))
-                            {
-                                depotHashes.Add(depot.gameIDs[0], new List<string>());
-                            }
-                            depotHashes[depot.gameIDs[0]].Add(manifestHash);
-                        }
-                    }
-                }
-                else
+                if (depot.languages.Count == 0 || depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
                 {
                     var manifestHash = depot.manifest;
                     if (metaManifest.version == 2 && productIds.Contains(depot.productId))

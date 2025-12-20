@@ -650,7 +650,7 @@ namespace GogOssLibraryNS
                 {
                     selectedVersion = gameVersions.FirstOrDefault().Key;
                 }
-                GameVersionCBo.SelectedItem = gameVersions.First(i => i.Key == selectedVersion);
+                GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault(i => i.Key == selectedVersion);
                 if (gameVersions.Count > 1)
                 {
                     VersionSP.Visibility = Visibility.Visible;
