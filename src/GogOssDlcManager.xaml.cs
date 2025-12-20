@@ -290,6 +290,8 @@ namespace GogOssLibraryNS
 
         private async void GogOssDlcManagerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var settings = GogOssLibrary.GetSettings();
+            MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             Game = DataContext as Game;
             GameId = Game.GameId;
             var playniteAPI = API.Instance;
@@ -373,8 +375,6 @@ namespace GogOssLibraryNS
                         AfterInstallingTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
                     }
                 }
-                var settings = GogOssLibrary.GetSettings();
-                MaxWorkersNI.Value = settings.MaxWorkers.ToString();
                 if (InstalledDlcsLB.Items.Count == 0)
                 {
                     InstalledDlcsSP.Visibility = Visibility.Collapsed;

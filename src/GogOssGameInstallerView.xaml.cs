@@ -32,6 +32,7 @@ namespace GogOssLibraryNS
         private bool checkedByUser = true;
         public DownloadManagerData.Download singleGameInstallData;
         public GogBuildsData builds;
+        public string installPath;
 
         public GogOssGameInstallerView()
         {
@@ -197,6 +198,16 @@ namespace GogOssLibraryNS
 
         private async void GogOssGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var settings = GogOssLibrary.GetSettings();
+            installPath = GogOss.GamesInstallationPath;
+            var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+            if (installPath.Contains(playniteDirectoryVariable))
+            {
+                installPath = installPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+            }
+            SelectedGamePathTxt.Text = installPath;
+            MaxWorkersNI.MaxValue = GogOss.MaxMaxWorkers;
+            MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             CommonHelpers.SetControlBackground(this);
             if (MultiInstallData.First().downloadProperties.downloadAction == DownloadAction.Repair)
             {
@@ -206,7 +217,6 @@ namespace GogOssLibraryNS
                 AfterInstallingSP.Visibility = Visibility.Collapsed;
             }
             await RefreshAll();
-            var settings = GogOssLibrary.GetSettings();
             var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game);
             if (settings.UnattendedInstall && (games.First().downloadProperties.downloadAction == DownloadAction.Install))
             {
@@ -218,17 +228,8 @@ namespace GogOssLibraryNS
         {
             InstallBtn.IsEnabled = false;
             ReloadBtn.IsEnabled = false;
-            var settings = GogOssLibrary.GetSettings();
-            var installPath = GogOss.GamesInstallationPath;
-            var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
-            if (installPath.Contains(playniteDirectoryVariable))
-            {
-                installPath = installPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
-            }
-            SelectedGamePathTxt.Text = installPath;
+            
             UpdateSpaceInfo(installPath);
-            MaxWorkersNI.MaxValue = GogOss.MaxMaxWorkers;
-            MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             var downloadItemsAlreadyAdded = new List<string>();
             downloadSizeNumber = 0;
             installSizeNumber = 0;
