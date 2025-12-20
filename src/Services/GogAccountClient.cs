@@ -1,4 +1,5 @@
-﻿using GogOssLibraryNS.Models;
+﻿using CommonPlugin;
+using GogOssLibraryNS.Models;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;

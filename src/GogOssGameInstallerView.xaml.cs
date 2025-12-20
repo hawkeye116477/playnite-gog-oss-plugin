@@ -226,6 +226,7 @@ namespace GogOssLibraryNS
 
         public async Task RefreshAll()
         {
+            var settings = GogOssLibrary.GetSettings();
             InstallBtn.IsEnabled = false;
             ReloadBtn.IsEnabled = false;
             
