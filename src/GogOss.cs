@@ -434,6 +434,21 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static string ExtrasInstallationPath
+        {
+            get
+            {
+                var installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "GameExtras");
+                var playniteAPI = API.Instance;
+                if (playniteAPI.ApplicationInfo.IsPortable)
+                {
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    installPath = Path.Combine(playniteDirectoryVariable, "GameExtras");
+                }
+                return installPath;
+            }
+        }
+
         public static async Task<GogDepot.Depot> GetInstalledBigDepot(Installed installedInfo, string gameId)
         {
             GogDepot.Depot bigDepot = new();
@@ -566,7 +581,67 @@ namespace GogOssLibraryNS
             {
                 bigDepot = await GetOverlayManifest();
             }
+            else if (taskData.downloadItemType == DownloadItemType.Extra)
+            {
+                var extrasManifest = await GetExtras(taskData.gameID.Split('_')[0]);
+                var extraId = taskData.gameID.Split('_')[1];
+                var matchingExtra = extrasManifest.FirstOrDefault(e => e.ManualUrl.Contains(extraId));
+                var file = new GogDepot.DepotFile
+                {
+                    product_id = taskData.gameID,
+                    size = (long)taskData.downloadSizeNumber,
+                    url = $"https://www.gog.com{matchingExtra.ManualUrl}",
+                    path = "/"
+                };
+                bigDepot.files.Add(file);
+            }
             return bigDepot;
+        }
+
+        public static async Task <List<Extra>> GetExtras(string gameId)
+        {
+            List<Extra> gogExtras = new();
+            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
+            LibraryGameDetailsResponse gameDetailsInfo = new();
+            var extrasDir = Path.Combine(dataDir, "cache", "extras");
+            var extrasFilePath = Path.Combine(extrasDir, $"{gameId}.json");
+            Directory.CreateDirectory(extrasDir);
+            bool correctJson = false;
+            if (File.Exists(extrasFilePath))
+            {
+                var extrasFileContent = File.ReadAllText(extrasFilePath);
+                if (extrasFileContent != null)
+                {
+                    if (Serialization.TryFromJson(extrasFileContent, out LibraryGameDetailsResponse newGameDetailsInfo))
+                    {
+                        if (!newGameDetailsInfo.Title.IsNullOrEmpty())
+                        {
+                            gameDetailsInfo = newGameDetailsInfo;
+                            correctJson = true;
+                        }
+                    }
+                }
+            }
+            if (!correctJson)
+            {
+                var gogApi = new GogAccountClient();
+                gameDetailsInfo = await gogApi.GetOwnedGameDetails(gameId);
+                if (!gameDetailsInfo.Title.IsNullOrEmpty())
+                {
+                    correctJson = true;
+                    File.WriteAllText(extrasFilePath, Serialization.ToJson(gameDetailsInfo));
+                }
+            }
+            gogExtras = gameDetailsInfo.Extras;
+            var dlcs = gameDetailsInfo.Dlcs;
+            if (dlcs.Count > 0)
+            {
+                foreach (var dlc in dlcs)
+                {
+                    gogExtras.AddRange(dlc.Extras);
+                }
+            }
+            return gogExtras;
         }
 
         public static void AddToHeroicInstalledList(Installed installedInfo, string gameId, double installSize = 0)

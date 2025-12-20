@@ -4,6 +4,7 @@
     {
         Game,
         Dependency,
-        Overlay
+        Overlay,
+        Extra
     }
 }

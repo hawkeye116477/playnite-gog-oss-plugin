@@ -22,6 +22,23 @@
         <Style TargetType="TabControl" BasedOn="{StaticResource HawkeyeTabControlStyle}" />
     </UserControl.Resources>
     <DockPanel Margin="10,5,0,5">
+        <StackPanel DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" DockPanel.Dock="Top" x:Name="TopADSP">
+                <Button x:Name="DownloadBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteDownloadLabel}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xef07; {0}"  Margin="0,0,8,0" IsEnabled="False" Click="DownloadBtn_Click" />
+                <Button x:Name="SelectAllExtrasBtn" Content="{common:Localize Key={x:Static system:LOC.CommonCheckAllContent}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xeed9; {0}" Margin="0,0,8,0" Click="SelectAllExtrasBtn_Click"/>
+                <Button x:Name="ReloadABtn" Content="{common:Localize Key={x:Static system:LOC.CommonReload}}" ContentStringFormat="&#xefd1; {0}" FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,0" IsEnabled="False" Click="ReloadABtn_Click" />
+                <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
+                    FontFamily="{DynamicResource FontIcoFont}" Name="CancelBtn" IsCancel="True" />
+            </StackPanel>
+            <Separator Margin="0,5"/>
+            <DockPanel Margin="0,0,0,5" Name="FolderDP">
+                <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteGameInstallDirTitle}}" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
+                <Button DockPanel.Dock="Right" Padding="5" Margin="5 0 0 0" Content="&#xec5b;"
+                    Name="ChooseExtrasPathBtn" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" Click="ChooseExtrasPathBtn_Click" />
+                <TextBox Name="SelectedExtrasPathTxt" Text="" VerticalAlignment="Center" Margin="0" />
+            </DockPanel>
+        </StackPanel>
+
         <Grid DockPanel.Dock="Bottom" Margin="0,5,0,0" x:Name="BottomADGrd">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -37,16 +54,20 @@
                 <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonDownloadSize}}" HorizontalAlignment="Left" VerticalAlignment="Center" />
                 <TextBlock x:Name="DownloadSizeTB" Text="0 B" VerticalAlignment="Top" Margin="5,0,5,0" />
             </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5" Grid.Row="1" Grid.Column="1">
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.CommonSpaceAvailable}}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
+                    Margin="5,0,5,0" Name="SpaceTB" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"  Grid.Row="2" Grid.Column="1" Name="AfterInstallingSP">
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.CommonAfterInstalling}}" Margin="0,0,0,0" />
+                <TextBlock VerticalAlignment="Top" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}"
+                    Margin="5,0,5,0" Name="AfterInstallingTB" />
+            </StackPanel>
         </Grid>
 
         <StackPanel DockPanel.Dock="Top">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" DockPanel.Dock="Top" x:Name="TopADSP">
-                <Button x:Name="DownloadBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteDownloadLabel}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xef07; {0}"  Margin="0,0,8,0" IsEnabled="False" Click="DownloadBtn_Click" />
-                <Button x:Name="ReloadABtn" Content="{common:Localize Key={x:Static system:LOC.CommonReload}}" ContentStringFormat="&#xefd1; {0}" FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,0" IsEnabled="False" Click="ReloadABtn_Click" />
-                <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
-                    FontFamily="{DynamicResource FontIcoFont}" Name="CancelBtn" Click="CancelBtn_Click" />
-            </StackPanel>
-            <ListBox BorderThickness="0" Name="AvailableExtrasLB" SelectionMode="Multiple" Margin="0,5" SelectionChanged="AvailableExtrasLB_SelectionChanged">
+            <ListBox BorderThickness="0" Name="AvailableExtrasLB" SelectionMode="Multiple" Margin="0,5" SelectionChanged="AvailableExtrasLB_SelectionChanged" MaxHeight="400" ScrollViewer.CanContentScroll="True">
                 <ListBox.Resources>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Template">
@@ -62,9 +83,5 @@
             <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteLoadingLabel}}" Margin="0,5,0,0"  Visibility="Collapsed" Name="LoadingATB" />
             <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNoAvailableExtras}}" Margin="0,5,0,0"  Visibility="Collapsed" Name="NoExtrasATB" />
         </StackPanel>
-
-
-
-
     </DockPanel>
 </UserControl>

@@ -41,7 +41,7 @@ namespace GogOssLibraryNS.Models
         public class DepotFile
         {
             public long offset { get; set; }
-            public string hash { get; set; }
+            public string hash { get; set; } = "0";
             public string url { get; set; }
             public string path { get; set; } = "";
             public long size { get; set; }

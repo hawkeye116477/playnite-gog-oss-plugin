@@ -9,10 +9,10 @@ using GogOssLibraryNS.Models;
 using Playnite.SDK.Data;
 using Playnite.SDK;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Playnite.Common;
+using CommonPlugin.Enums;
 
 namespace GogOssLibraryNS
 {
@@ -23,17 +23,44 @@ namespace GogOssLibraryNS
     {
         private Game Game;
         private IPlayniteAPI playniteAPI = API.Instance;
+        public Window GogOssExtrasManagerWindow => Window.GetWindow(this);
+        public long availableFreeSpace;
+        public double downloadSizeNumber;
 
         public GogOssExtrasManager()
         {
             InitializeComponent();
         }
 
-        private async void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            downloadSizeNumber = 0;
+            SelectedExtrasPathTxt.Text = GogOss.ExtrasInstallationPath;
+            UpdateSpaceInfo(GogOss.ExtrasInstallationPath);
             Game = DataContext as Game;
             CommonHelpers.SetControlBackground(this);
             await RefreshAll();
+        }
+
+        private void UpdateSpaceInfo(string path)
+        {
+            DriveInfo dDrive = new DriveInfo(path);
+            if (dDrive.IsReady)
+            {
+                availableFreeSpace = dDrive.AvailableFreeSpace;
+                SpaceTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
+            }
+            UpdateAfterInstallingSize();
+        }
+
+        private void UpdateAfterInstallingSize()
+        {
+            double afterInstallSizeNumber = (double)(availableFreeSpace - downloadSizeNumber);
+            if (afterInstallSizeNumber < 0)
+            {
+                afterInstallSizeNumber = 0;
+            }
+            AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
         private async Task RefreshAll()
@@ -44,46 +71,16 @@ namespace GogOssLibraryNS
             LoadingATB.Visibility = Visibility.Visible;
             NoExtrasATB.Visibility = Visibility.Collapsed;
 
-            var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
-            LibraryGameDetailsResponse gameDetailsInfo = new();
-            var extrasDir = Path.Combine(dataDir, "cache", "extras");
-            var extrasFilePath = Path.Combine(extrasDir, $"{Game.GameId}.json");
-            Directory.CreateDirectory(extrasDir);
-            bool correctJson = false;
-            if (File.Exists(extrasFilePath))
-            {
-                var extrasFileContent = File.ReadAllText(extrasFilePath);
-                if (extrasFileContent != null)
-                {
-                    if (Serialization.TryFromJson(extrasFileContent, out LibraryGameDetailsResponse newGameDetailsInfo))
-                    {
-                        gameDetailsInfo = newGameDetailsInfo;
-                        correctJson = true;
-                    }
-                }
-            }
-            if (!correctJson)
-            {
-                var gogApi = new GogAccountClient();
-                gameDetailsInfo = await gogApi.GetOwnedGameDetails(Game.GameId);
-                File.WriteAllText(extrasFilePath, Serialization.ToJson(gameDetailsInfo));
-            }
-
-            var gogExtras = gameDetailsInfo.Extras;
+            var gogExtras = await GogOss.GetExtras(Game.GameId);
             if (gogExtras.Count > 0)
             {
-                var dlcs = gameDetailsInfo.Dlcs;
-                if (dlcs.Count > 0)
-                {
-                    foreach (var dlc in dlcs)
-                    {
-                        gogExtras.AddRange(dlc.Extras);
-                    }
-                }
                 foreach (var extra in gogExtras)
                 {
                     extra.Name = char.ToUpper(extra.Name[0]) + extra.Name[1..];
                 }
+            }
+            if (gogExtras.Count > 0)
+            {
                 AvailableExtrasLB.ItemsSource = gogExtras;
                 AvailableExtrasLB.Visibility = Visibility.Visible;
                 BottomADGrd.Visibility = Visibility.Visible;
@@ -106,8 +103,10 @@ namespace GogOssLibraryNS
                 var selectedItemSize = Helpers.StringSizeToBytes(selectedItem.Size);
                 fullDownloadSize += selectedItemSize;
             }
+            downloadSizeNumber = fullDownloadSize;
             var downloadSize = CommonHelpers.FormatSize(fullDownloadSize);
             DownloadSizeTB.Text = downloadSize;
+            UpdateAfterInstallingSize();
         }
 
         private async void ReloadABtn_Click(object sender, RoutedEventArgs e)
@@ -130,21 +129,98 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void DownloadBtn_Click(object sender, RoutedEventArgs e)
+        private async void DownloadBtn_Click(object sender, RoutedEventArgs e)
         {
             if (AvailableExtrasLB.SelectedItems.Count > 0)
             {
                 var selectedItems = AvailableExtrasLB.SelectedItems.Cast<Extra>().ToList();
+                var settings = GogOssLibrary.GetSettings();
+                int maxWorkers = settings.MaxWorkers;
+
+                GogOssExtrasManagerWindow.Close();
+                GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
+
+                var newInstallPath = SelectedExtrasPathTxt.Text;
+                if (newInstallPath == "")
+                {
+                    newInstallPath = GogOss.ExtrasInstallationPath;
+                }
+                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                if (newInstallPath.Contains(playniteDirectoryVariable))
+                {
+                    newInstallPath = newInstallPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
+                }
+
+                var tasks = new List<DownloadManagerData.Download>();
+                var gogDownloadApi = new GogDownloadApi();
+                var gameInstallData = new DownloadManagerData.Download
+                {
+                    gameID = Game.GameId,
+                    name = $"{Game.Name.RemoveTrademarks()}",
+                };
+
+                var gameManifest = await gogDownloadApi.GetGameMetaManifest(gameInstallData);
                 foreach (var selectedItem in selectedItems)
                 {
-                    ProcessStarter.StartUrl($"https://www.gog.com{selectedItem.ManualUrl}");
+                    var downloadTaskId = $"{Game.GameId}_{Regex.Match(selectedItem.ManualUrl, @"\d+$").Value}";
+                    var downloadTask = new DownloadManagerData.Download
+                    {
+                        gameID = downloadTaskId,
+                        name = $"{Game.Name.RemoveTrademarks()} - {selectedItem.Name.RemoveTrademarks()}",
+                        downloadSizeNumber = Helpers.StringSizeToBytes(selectedItem.Size),
+                        downloadItemType = Enums.DownloadItemType.Extra,
+                        fullInstallPath = Path.Combine(newInstallPath, $"{gameManifest.installDirectory}_Extras")
+                    };
+                    downloadTask.downloadProperties = new DownloadProperties()
+                    {
+                        maxWorkers = maxWorkers,
+                        installPath = newInstallPath
+                    };
+                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == downloadTaskId);
+                    if (wantedItem != null)
+                    {
+                        if (wantedItem.status != DownloadStatus.Running)
+                        {
+                            downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                            downloadManager.downloadsChanged = true;
+                            wantedItem = null;
+                        }
+                    }
+                    if (wantedItem == null)
+                    {
+                        tasks.Add(downloadTask);
+                    }
+                }
+                if (tasks.Count > 0)
+                {
+                    await downloadManager.EnqueueMultipleJobs(tasks);
                 }
             }
         }
 
-        private void CancelBtn_Click(object sender, RoutedEventArgs e)
+        private void ChooseExtrasPathBtn_Click(object sender, RoutedEventArgs e)
         {
-            Window.GetWindow(this).Close();
+            var path = playniteAPI.Dialogs.SelectFolder();
+            if (path != "")
+            {
+                SelectedExtrasPathTxt.Text = path;
+                UpdateSpaceInfo(path);
+            }
+        }
+
+        private void SelectAllExtrasBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (AvailableExtrasLB.Items.Count > 0)
+            {
+                if (AvailableExtrasLB.Items.Count == AvailableExtrasLB.SelectedItems.Count)
+                {
+                    AvailableExtrasLB.UnselectAll();
+                }
+                else
+                {
+                    AvailableExtrasLB.SelectAll();
+                }
+            }
         }
     }
 }

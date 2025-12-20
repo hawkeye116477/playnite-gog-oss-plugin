@@ -294,7 +294,10 @@ namespace GogOssLibraryNS
                 {
                     Directory.CreateDirectory(targetDirectory);
                 }
-                writeSemaphores.TryAdd(depotFilePath, new SemaphoreSlim(1));
+                if (downloadItemType != DownloadItemType.Extra)
+                {
+                    writeSemaphores.TryAdd(depotFilePath, new SemaphoreSlim(1));
+                }
 
                 long expectedFileSize = file.size;
                 totalCompressedSize += expectedFileSize;
@@ -376,6 +379,7 @@ namespace GogOssLibraryNS
                     {
                         isCompressed = true;
                     }
+                    string effectiveFilePath = job.filePath;
                     try
                     {
                         if (!memoryReserved && allocatedBytes == 0)
@@ -386,13 +390,51 @@ namespace GogOssLibraryNS
                                 allocatedBytes = compressedSize;
                             }
                         }
-                        using var request = new HttpRequestMessage(HttpMethod.Get, job.url);
+
                         long resumeStartByte = 0;
+
+                        var gogAccountClient = new GogAccountClient();
+
+                        var tokens = new TokenResponse.TokenResponsePart();
+                        if (await gogAccountClient.GetIsUserLoggedIn())
+                        {
+                            tokens = gogAccountClient.LoadTokens();
+                        }
+
+                        if (downloadItemType == DownloadItemType.Extra)
+                        {
+                            using var headRequest = new HttpRequestMessage(HttpMethod.Head, job.url);
+                            headRequest.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
+                            using var headResponse = await client.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                            headResponse.EnsureSuccessStatusCode();
+                            var contentDisposition = headResponse.Content.Headers.ContentDisposition;
+                            var serverFileName =
+                                contentDisposition?.FileNameStar ??
+                                contentDisposition?.FileName;
+                            if (serverFileName.IsNullOrEmpty())
+                            {
+                                var finalUrl = headResponse.RequestMessage.RequestUri;
+                                serverFileName = Path.GetFileName(finalUrl.LocalPath);
+                            }
+                            if (!string.IsNullOrWhiteSpace(serverFileName))
+                            {
+                                effectiveFilePath = Path.Combine(job.filePath, serverFileName.Trim('"'));
+                            }
+                            writeSemaphores.TryAdd(effectiveFilePath, new SemaphoreSlim(1));
+                        }
 
                         if (downloadItemType == DownloadItemType.Overlay && job.url.Contains(".zip"))
                         {
                             tempFilePath = Path.Combine(tempDir, job.filePath + ".zip");
                         }
+                        else
+                        {
+                            tempFilePath = Path.Combine(tempDir, effectiveFilePath);
+                        }
+
+                        using var request = new HttpRequestMessage(HttpMethod.Get, job.url);
+                        request.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
+
                         if (File.Exists(tempFilePath))
                         {
                             resumeStartByte = new FileInfo(tempFilePath).Length;
@@ -411,8 +453,10 @@ namespace GogOssLibraryNS
                         {
                             Directory.CreateDirectory(tempFileDir);
                         }
+
                         using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                         response.EnsureSuccessStatusCode();
+
                         if (memoryReserved)
                         {
                             chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
@@ -432,7 +476,7 @@ namespace GogOssLibraryNS
                                 offset += read;
                             }
 
-                            await channel.Writer.WriteAsync((job.filePath, offset, tempFilePath, allocatedBytes, isCompressed, job.hash, chunkBuffer), token).ConfigureAwait(false);
+                            await channel.Writer.WriteAsync((effectiveFilePath, offset, tempFilePath, allocatedBytes, isCompressed, job.hash, chunkBuffer), token).ConfigureAwait(false);
                             chunkBuffer = null;
                             allocatedBytes = 0;
                             return;
@@ -460,7 +504,7 @@ namespace GogOssLibraryNS
                                 }
                             }).ConfigureAwait(false);
 
-                            await channel.Writer.WriteAsync((job.filePath, actualFileSize, tempFilePath, 0, isCompressed, job.hash, chunkBuffer), token).ConfigureAwait(false);
+                            await channel.Writer.WriteAsync((effectiveFilePath, actualFileSize, tempFilePath, 0, isCompressed, job.hash, chunkBuffer), token).ConfigureAwait(false);
                         }
                         return;
                     }
@@ -474,7 +518,7 @@ namespace GogOssLibraryNS
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex, $"Failed to download file {job.filePath}.");
+                        logger.Error(ex, $"Failed to download file {effectiveFilePath}.");
                         if (chunkBuffer != null)
                         {
                             try
@@ -551,7 +595,6 @@ namespace GogOssLibraryNS
                                 {
                                     sourceStream = new MemoryStream(item.chunkBuffer, 0, (int)item.length, writable: false);
                                 }
-
 
                                 var finalPath = Path.Combine(fullInstallPath, item.filePath);
                                 using (sourceStream)
@@ -2058,7 +2101,7 @@ namespace GogOssLibraryNS
             }
 
             // Verify and repair files
-            if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath) && taskData.downloadItemType != DownloadItemType.Overlay)
+            if (Directory.Exists(taskData.fullInstallPath) && !File.Exists(resumeStatePath) && taskData.downloadItemType == DownloadItemType.Game)
             {
                 if (taskData.downloadProperties.downloadAction != DownloadAction.Install)
                 {
