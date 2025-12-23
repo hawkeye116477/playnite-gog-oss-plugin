@@ -1,6 +1,3 @@
-This project includes third-party software:
-
-----------------------------------------------------------------------------------------
 Playnite / Playnite.SDK - https://github.com/JosefNemec/Playnite
 MIT License
 Copyright (c) 2020 Josef Nemec
@@ -222,3 +219,8 @@ express Statement of Purpose.
     party to this document and has no duty or obligation with respect to
     this CC0 or use of the Work.
 
+
+----------------------------------------------------------------------------------------
+galaxy-helper - https://github.com/imLinguin/galaxy-helper
+MIT License
+Copyright (c) 2025 Paweł Lidwin 
