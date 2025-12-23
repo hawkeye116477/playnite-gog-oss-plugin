@@ -153,7 +153,10 @@
         <TabItem Header="{common:Localize Key={x:Static system:LOC.CommonOverlay},Args='overlayName=Galaxy'}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
-                    <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}" Margin="5,0,0,0" Name="OverlayInstallBtn"  HorizontalAlignment="Left" Click="OverlayInstallBtn_Click"></Button>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}" Margin="5,0,0,0" Name="OverlayInstallBtn"  HorizontalAlignment="Left" Click="OverlayInstallBtn_Click"></Button>
+                        <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteUninstallGame}}" Margin="8,0,0,0" Name="OverlayUninstallBtn" HorizontalAlignment="Left" Click="OverlayUninstallBtn_Click"></Button>
+                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </TabItem>

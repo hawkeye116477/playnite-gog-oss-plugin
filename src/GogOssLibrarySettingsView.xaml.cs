@@ -63,6 +63,12 @@ namespace GogOssLibraryNS
             if (GalaxyOverlay.IsInstalled)
             {
                 OverlayInstallBtn.Visibility = Visibility.Collapsed;
+                OverlayUninstallBtn.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                OverlayInstallBtn.Visibility = Visibility.Visible;
+                OverlayUninstallBtn.Visibility = Visibility.Collapsed;
             }
 
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
@@ -497,6 +503,53 @@ namespace GogOssLibraryNS
             window.Width = 600;
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.ShowDialog();
+        }
+
+        private void OverlayUninstallBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var playniteAPI = API.Instance;
+            var overlayName = LocalizationManager.Instance.GetString(LOC.CommonOverlay, new Dictionary<string, IFluentType> { ["overlayName"] = (FluentString)"Galaxy" });
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame), LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)overlayName }), LocalizationManager.Instance.GetString(LOC.CommonRemoveGameLaunchSettings), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result.Result)
+            {
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
+                bool uninstalled = false;
+   
+                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                {
+                    a.IsIndeterminate = false;
+                    a.ProgressMaxValue = 1;
+                    a.CurrentProgressValue = 0;
+                    try
+                    {
+                        var overlayInfo = GalaxyOverlay.GetInstalledInfo();
+                        var overlayInstallPath = overlayInfo.install_path;
+                        if (Directory.Exists(overlayInstallPath))
+                        {
+                            Directory.Delete(overlayInstallPath, true);
+                        }
+                        var overlayInstalledFilePath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "overlay_installed.json");
+                        if (File.Exists(overlayInstalledFilePath))
+                        {
+                            File.Delete(overlayInstalledFilePath);
+                        }
+                        uninstalled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "An error occured during uninstalling Galaxy Overlay");
+                        uninstalled = false;
+                    }
+                    a.CurrentProgressValue = 1;
+                }, globalProgressOptions);
+
+                if (uninstalled)
+                {
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonUninstallSuccess, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)overlayName }));
+                }
+                OverlayUninstallBtn.Visibility = Visibility.Collapsed;
+                OverlayInstallBtn.Visibility = Visibility.Visible;
+            }
         }
     }
 }
