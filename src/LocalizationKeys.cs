@@ -114,6 +114,10 @@ namespace System
         /// </summary>
         public const string CommonOverlay = "common-overlay";
         /// <summary>
+        /// Cloud and other services
+        /// </summary>
+        public const string CommonCloudAndOther = "common-cloud-and-other";
+        /// <summary>
         /// Download all DLCs
         /// </summary>
         public const string CommonDownloadAllDlcs = "common-download-all-dlcs";

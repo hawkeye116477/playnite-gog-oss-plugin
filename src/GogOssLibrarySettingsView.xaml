@@ -81,19 +81,6 @@
                         </StackPanel>
                         <CheckBox Content="{common:Localize Key={x:Static system:LOC.CommonAutoUpdate}}" Margin="0,0,0,10" Name="AutoUpdateGamesChk" IsChecked="{Binding Settings.AutoUpdateGames}"></CheckBox>
                     </StackPanel>
-                    <StackPanel Margin="0,15,0,0">
-                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonCloud}}" FontSize="18"
-                        Margin="0,0,0,2" />
-                        <Separator Margin="0,0,0,10" />
-                        <CheckBox DockPanel.Dock="Top"
-                    Margin="0,0,0,10"
-                    IsChecked="{Binding Settings.SyncPlaytime}"
-                    Content="{common:Localize Key={x:Static system:LOC.CommonSyncPlaytime}}" Name="SyncPlaytimeChk" />
-                        <CheckBox DockPanel.Dock="Top"
-                    Margin="0"
-                    IsChecked="{Binding Settings.SyncGameSaves}"
-                    Content="{common:Localize Key={x:Static system:LOC.CommonSyncGameSaves}}" Name="SyncGameSavesChk" Click="SyncGameSavesChk_Click" />
-                    </StackPanel>
                 </StackPanel>
             </ScrollViewer>
         </TabItem>
@@ -150,12 +137,27 @@
                 </StackPanel>
             </ScrollViewer>
         </TabItem>
-        <TabItem Header="{common:Localize Key={x:Static system:LOC.CommonOverlay},Args='overlayName=Galaxy'}">
+        <TabItem Header="{common:Localize Key={x:Static system:LOC.CommonCloudAndOther}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="20">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}" Margin="5,0,0,0" Name="OverlayInstallBtn"  HorizontalAlignment="Left" Click="OverlayInstallBtn_Click"></Button>
-                        <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteUninstallGame}}" Margin="8,0,0,0" Name="OverlayUninstallBtn" HorizontalAlignment="Left" Click="OverlayUninstallBtn_Click"></Button>
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonCloud}}" FontSize="18"
+                        Margin="0,0,0,2" />
+                        <Separator Margin="0,0,0,10" />
+                        <CheckBox Margin="0,0,0,10" IsChecked="{Binding Settings.SyncPlaytime}" Content="{common:Localize Key={x:Static system:LOC.CommonSyncPlaytime}}" Name="SyncPlaytimeChk" />
+                        <CheckBox DockPanel.Dock="Top" Margin="0,0,0,5" IsChecked="{Binding Settings.SyncGameSaves}"
+                                  Content="{common:Localize Key={x:Static system:LOC.CommonSyncGameSaves}}" 
+                                  Name="SyncGameSavesChk" Click="SyncGameSavesChk_Click" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonOverlay},Args='overlayName=Galaxy'}" FontSize="18"
+                        Margin="0,0,0,2" />
+                        <Separator Margin="0,0,0,10" />
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}" Margin="5,0,0,0" Name="OverlayInstallBtn"  HorizontalAlignment="Left" Click="OverlayInstallBtn_Click"></Button>
+                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteUninstallGame}}" Margin="8,0,0,0" Name="OverlayUninstallBtn" HorizontalAlignment="Left" Click="OverlayUninstallBtn_Click"></Button>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
