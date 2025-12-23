@@ -133,6 +133,7 @@
     <Compile Include="Models\TokenResponse.cs" />
     <Compile Include="Models\UpdateInfo.cs" />
     <Compile Include="GogOssLibrarySettingsViewModel.cs" />
+    <Compile Include="GalaxyOverlay.cs" />
     <Compile Include="ReplaceExtensions.cs" />
     <Compile Include="ResumeState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -224,6 +225,14 @@
     <None Include="Resources\gogicon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\third_party\gog_protocols_generated\GalaxyProtocolsCommunicationService.cs">
+      <Link>Shared\GeneratedGogProtocols\GalaxyProtocolsCommunicationService.cs</Link>
+    </Compile>
+    <Compile Include="..\third_party\gog_protocols_generated\GogProtocolsPb.cs">
+      <Link>Shared\GeneratedGogProtocols\GogProtocolsPb.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup Label="compileInclude3p">
     <Compile Include="..\third_party\PlayniteExtensions\PlayniteRepo\source\playnite\WindowsNotifyIconManager.cs">
@@ -426,6 +435,9 @@
     </PackageReference>
     <PackageReference Include="ByteSize">
       <Version>2.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Protobuf">
+      <Version>3.33.2</Version>
     </PackageReference>
     <PackageReference Include="IndexRange">
       <Version>1.0.2</Version>

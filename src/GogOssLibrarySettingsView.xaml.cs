@@ -60,20 +60,9 @@ namespace GogOssLibraryNS
                 MigrateRevertGogBtn.IsEnabled = true;
             }
 
-            var overlayInstalledFilePath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "overlay_installed.json");
-            if (File.Exists(overlayInstalledFilePath))
+            if (GalaxyOverlay.IsInstalled)
             {
-                var overlayFileContent = File.ReadAllText(overlayInstalledFilePath);
-                if (!overlayFileContent.IsNullOrWhiteSpace())
-                {
-                    if (Serialization.TryFromJson<OverlayInstalled>(overlayFileContent, out var newOverlayJson))
-                    {
-                       if (Directory.Exists(newOverlayJson.install_path))
-                       {
-                            OverlayInstallBtn.Visibility = Visibility.Collapsed;
-                       }
-                    }
-                }
+                OverlayInstallBtn.Visibility = Visibility.Collapsed;
             }
 
             var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
