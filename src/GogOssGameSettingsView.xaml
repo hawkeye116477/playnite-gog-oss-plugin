@@ -83,14 +83,14 @@
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonSavePath}}" Grid.Column="0" Grid.Row="1" 
-                               Margin="0,0,10,5" VerticalAlignment="Center" HorizontalAlignment="Left" IsEnabled="{Binding ElementName=AutoSyncSavesChk, Path=IsChecked}"/>
-                            <TextBox x:Name="SelectedSavePathTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Stretch" IsEnabled="{Binding ElementName=AutoSyncSavesChk, Path=IsChecked}"/>
+                               Margin="0,0,10,5" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBox x:Name="SelectedSavePathTxt" Grid.Row="1" Grid.Column="1" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                             <Button Name="ChooseSavePathBtn"
                                 Margin="5,0,0,5" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Grid.Row="1" Grid.Column="2"
-                                ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" VerticalAlignment="Center" Click="ChooseSavePathBtn_Click" IsEnabled="{Binding ElementName=AutoSyncSavesChk, Path=IsChecked}"/>
+                                ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" VerticalAlignment="Center" Click="ChooseSavePathBtn_Click"/>
                             <Button Name="CalculatePathBtn" Margin="8,0,0,5" Grid.Row="1" Grid.Column="3" 
                                 VerticalAlignment="Center" HorizontalAlignment="Left" 
-                                Content="&#xef85;" ToolTip="{common:Localize Key={x:Static system:LOC.CommonCalculatePath}}" FontFamily="{DynamicResource FontIcoFont}" Click="CalculatePathBtn_Click" IsEnabled="{Binding ElementName=AutoSyncSavesChk, Path=IsChecked}"/>
+                                Content="&#xef85;" ToolTip="{common:Localize Key={x:Static system:LOC.CommonCalculatePath}}" FontFamily="{DynamicResource FontIcoFont}" Click="CalculatePathBtn_Click"/>
                         </Grid>
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonManualSyncSaves}}" FontSize="15" Margin="0,10,10,2" VerticalAlignment="Center"/>
                         <Separator Margin="0,0,0,10" />
