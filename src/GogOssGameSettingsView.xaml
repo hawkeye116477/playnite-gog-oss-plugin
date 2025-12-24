@@ -40,15 +40,18 @@
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
                             <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
                         <CheckBox Grid.Column="0" Grid.Row="0"
                             Content="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupport}}" Margin="0,0,0,10" x:Name="EnableCometSupportChk" IsEnabled="False" />
                         <CheckBox Grid.Column="0" Grid.Row="1"
+                            Content="{common:Localize Key={x:Static system:LOC.GogOssEnableOverlay}}" Margin="0,0,0,10" x:Name="EnableOverlayChk" IsEnabled="{Binding IsChecked, ElementName=EnableCometSupportChk}" />
+                        <CheckBox Grid.Column="0" Grid.Row="2"
                             Content="{common:Localize Key={x:Static system:LOC.CommonDisableGameUpdateChecking}}" Margin="0,0,0,10" x:Name="DisableGameUpdateCheckingChk" />
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonStartupArguments}}" Grid.Column="0"
-                            Grid.Row="2" Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                            Grid.Row="3" Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <TextBox x:Name="StartupArgumentsTxt"
-                            Grid.Column="1" Grid.Row="2" Margin="0,0,0,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+                            Grid.Column="1" Grid.Row="3" Margin="0,0,0,5" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonAlternativeExe}}" Grid.Column="0" Grid.Row="4"
                                Margin="0,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Left">
                         </TextBlock>

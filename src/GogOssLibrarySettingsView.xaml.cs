@@ -162,6 +162,15 @@ namespace GogOssLibraryNS
             {
                 SyncPlaytimeChk.IsEnabled = false;
             }
+
+            var notificationPositionOptions = new Dictionary<string, string>
+            {
+                { "top_left", LocalizationManager.Instance.GetString(LOC.GogOssTopLeft) },
+                { "top_right", LocalizationManager.Instance.GetString(LOC.GogOssTopRight) },
+                { "bottom_left", LocalizationManager.Instance.GetString(LOC.GogOssBottomLeft) },
+                { "bottom_right", LocalizationManager.Instance.GetString(LOC.GogOssBottomRight) },
+            };
+            NotificationPositionCBo.ItemsSource = notificationPositionOptions;
         }
 
 
@@ -550,6 +559,11 @@ namespace GogOssLibraryNS
                 OverlayUninstallBtn.Visibility = Visibility.Collapsed;
                 OverlayInstallBtn.Visibility = Visibility.Visible;
             }
+        }
+
+        private void OverlayUpdateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO
         }
     }
 }

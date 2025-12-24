@@ -57,7 +57,7 @@
                     <Button Content="{common:Localize Key={x:Static system:LOC.CommonRevertMigrateGames}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,15,0,0" Name="MigrateRevertGogBtn" IsEnabled="False" Click="MigrateRevertGogBtn_Click" ToolTip="GOG OSS => GOG"></Button>
 
                     <CheckBox IsChecked="{Binding Settings.EnableCometSupport}" DockPanel.Dock="Top" Margin="0,15,0,0"
-                  Content="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupport}}" ToolTip="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupportToolTip}}"/>
+                  Content="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupport}}" ToolTip="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupportToolTip}}" Name="EnableCometSupportChk"/>
                     <CheckBox IsChecked="{Binding Settings.UseVerticalCovers}" DockPanel.Dock="Top"
                   Content="{common:Localize Key={x:Static system:LOC.GogOssUseVerticalCovers}}" Margin="0,10,0,0"/>
 
@@ -145,18 +145,54 @@
                         Margin="0,0,0,2" />
                         <Separator Margin="0,0,0,10" />
                         <CheckBox Margin="0,0,0,10" IsChecked="{Binding Settings.SyncPlaytime}" Content="{common:Localize Key={x:Static system:LOC.CommonSyncPlaytime}}" Name="SyncPlaytimeChk" />
-                        <CheckBox DockPanel.Dock="Top" Margin="0,0,0,5" IsChecked="{Binding Settings.SyncGameSaves}"
+                        <CheckBox Margin="0,0,0,5" IsChecked="{Binding Settings.SyncGameSaves}"
                                   Content="{common:Localize Key={x:Static system:LOC.CommonSyncGameSaves}}" 
                                   Name="SyncGameSavesChk" Click="SyncGameSavesChk_Click" />
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,0,10">
+                    <StackPanel Margin="0,10">
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonOverlay},Args='overlayName=Galaxy'}" FontSize="18"
                         Margin="0,0,0,2" />
                         <Separator Margin="0,0,0,10" />
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}" Margin="5,0,0,0" Name="OverlayInstallBtn"  HorizontalAlignment="Left" Click="OverlayInstallBtn_Click"></Button>
-                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteUninstallGame}}" Margin="8,0,0,0" Name="OverlayUninstallBtn" HorizontalAlignment="Left" Click="OverlayUninstallBtn_Click"></Button>
+                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteInstallGame}}" Margin="0,0,8,0" Name="OverlayInstallBtn"  HorizontalAlignment="Left" Click="OverlayInstallBtn_Click"></Button>
+                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteUninstallGame}}" Margin="0,0,8,0" Name="OverlayUninstallBtn" HorizontalAlignment="Left" Click="OverlayUninstallBtn_Click"></Button>
+                            <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCheckForUpdates}}" Margin="8,0,0,0" Name="OverlayUpdateBtn" HorizontalAlignment="Left" Click="OverlayUpdateBtn_Click" Visibility="Collapsed"></Button>
+                        </StackPanel>
+                        <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssEnableOverlay}}" Margin="0,10,0,0" IsChecked="{Binding Settings.EnableOverlay}" IsEnabled="{Binding IsChecked, ElementName=EnableCometSupportChk}" Name="EnableOverlayChk"></CheckBox>
+                        <StackPanel Margin="0,10,0,0" IsEnabled="{Binding IsChecked, ElementName=EnableOverlayChk}">
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotifyAbout}}" Margin="0" FontSize="14"/>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyNewMessage}}" 
+                                      Margin="0,5,0,0" Name="NotifyNewMessageChk"
+                                      IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Chat.Enabled}"></CheckBox>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyFriendInvite}}" 
+                                      Margin="0,5,0,0" Name="NotifyFriendInviteChk"
+                                      IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Friend_invite.Enabled}"></CheckBox>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyGameInvite}}" 
+                                      Margin="0,5,0,0" Name="NotifyGameInviteChk"
+                                      IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Game_invite.Enabled}"></CheckBox>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyFriendOnline}}" 
+                                      Margin="0,5,0,0" Name="NotifyFriendOnlineChk" 
+                                      IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Friend_invite.Enabled}"></CheckBox>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyFriendStartsGame}}" 
+                                      Margin="0,5,0,0" Name="NotifyFriendStartsGameChk"
+                                      IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Friend_game_start.Enabled}"></CheckBox>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifySound}}" 
+                                  Margin="0,15,0,0" Name="NotifySoundChk" IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Chat.Sound}">
+                            </CheckBox>
+                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal" IsEnabled="{Binding IsChecked,ElementName=NotifySoundChk}">
+                                <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotificationVolume}}" Margin="0"  VerticalAlignment="Center"/>
+                                <Slider Margin="10,0,0,0"  Minimum="0" Maximum="100" Width="200" 
+                                    TickFrequency="5" VerticalAlignment="Center" Name="VolumeSli" 
+                                    Value="{Binding GalaxyOverlaySettings.Overlay.Notification_Volume}">
+                                </Slider>
+                                <TextBlock Text="{Binding ElementName=VolumeSli, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Left" Margin="5,0,0,0" Name="VolumeTxt"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                                <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotificationPosition}}" Margin="0,0,10,0"  VerticalAlignment="Center"/>
+                                <ComboBox x:Name="NotificationPositionCBo" SelectedValue="{Binding GalaxyOverlaySettings.Overlay.Position}" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalAlignment="Center"></ComboBox>
+                            </StackPanel>
+
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

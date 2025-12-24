@@ -285,7 +285,13 @@ namespace GogOssLibraryNS
                             {
                                 case StartedCommandEvent started:
                                     cometProcessId = started.ProcessId;
-                                    if (GalaxyOverlay.IsInstalled)
+
+                                    bool overlayEnabled = globalSettings.EnableOverlay;
+                                    if (gameSettings.EnableOverlay != null)
+                                    {
+                                        overlayEnabled = (bool)gameSettings.EnableOverlay;
+                                    }
+                                    if (overlayEnabled && GalaxyOverlay.IsInstalled)
                                     {
                                         var overlayInstalledInfo = GalaxyOverlay.GetInstalledInfo();
                                         var overlayInstallPath = overlayInstalledInfo.install_path;

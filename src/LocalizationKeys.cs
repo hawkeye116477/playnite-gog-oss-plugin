@@ -38,6 +38,62 @@ namespace System
         /// </summary>
         public const string GogOssNoAvailableExtras = "gog-oss-no-available-extras";
         /// <summary>
+        /// Notify when:
+        /// </summary>
+        public const string GogOssNotifyAbout = "gog-oss-notify-about";
+        /// <summary>
+        /// someone sends a new message
+        /// </summary>
+        public const string GogOssNotifyNewMessage = "gog-oss-notify-new-message";
+        /// <summary>
+        /// someone sends a friend invitation
+        /// </summary>
+        public const string GogOssNotifyFriendInvite = "gog-oss-notify-friend-invite";
+        /// <summary>
+        /// someone sends invitation to a game
+        /// </summary>
+        public const string GogOssNotifyGameInvite = "gog-oss-notify-game-invite";
+        /// <summary>
+        /// a friend comes online
+        /// </summary>
+        public const string GogOssNotifyFriendOnline = "gog-oss-notify-friend-online";
+        /// <summary>
+        /// a friend starts a game
+        /// </summary>
+        public const string GogOssNotifyFriendStartsGame = "gog-oss-notify-friend-starts-game";
+        /// <summary>
+        /// Play sound for notifications
+        /// </summary>
+        public const string GogOssNotifySound = "gog-oss-notify-sound";
+        /// <summary>
+        /// Sounds volume
+        /// </summary>
+        public const string GogOssNotificationVolume = "gog-oss-notification-volume";
+        /// <summary>
+        /// Position of notifications
+        /// </summary>
+        public const string GogOssNotificationPosition = "gog-oss-notification-position";
+        /// <summary>
+        /// Top left
+        /// </summary>
+        public const string GogOssTopLeft = "gog-oss-top-left";
+        /// <summary>
+        /// Top right
+        /// </summary>
+        public const string GogOssTopRight = "gog-oss-top-right";
+        /// <summary>
+        /// Bottom left
+        /// </summary>
+        public const string GogOssBottomLeft = "gog-oss-bottom-left";
+        /// <summary>
+        /// Bottom right
+        /// </summary>
+        public const string GogOssBottomRight = "gog-oss-bottom-right";
+        /// <summary>
+        /// Enable Galaxy Overlay
+        /// </summary>
+        public const string GogOssEnableOverlay = "gog-oss-enable-overlay";
+        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";

@@ -10,6 +10,7 @@ namespace GogOssLibraryNS.Models
         public bool? AutoSyncPlaytime { get; set; }
         public List<string> StartupArguments { get; set; } = new List<string>();
         public bool? EnableCometSupport { get; set; }
+        public bool? EnableOverlay { get; set; }
         public string OverrideExe { get; set; } = "";
         public long LastCloudSavesDownloadAttempt { get; set; } = 0;
     }

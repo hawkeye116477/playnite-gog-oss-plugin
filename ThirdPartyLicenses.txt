@@ -224,3 +224,10 @@ express Statement of Purpose.
 galaxy-helper - https://github.com/imLinguin/galaxy-helper
 MIT License
 Copyright (c) 2025 Paweł Lidwin 
+
+
+----------------------------------------------------------------------------------------
+Tomlet - https://github.com/SamboyCoding/Tomlet
+MIT License
+Copyright (c) 2021 Sam Byass
+

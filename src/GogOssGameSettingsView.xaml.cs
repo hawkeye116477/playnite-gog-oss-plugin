@@ -85,6 +85,10 @@ namespace GogOssLibraryNS
             {
                 newGameSettings.AutoSyncPlaytime = AutoSyncPlaytimeChk.IsChecked;
             }
+            if (EnableOverlayChk.IsChecked != globalSettings.EnableOverlay)
+            {
+                newGameSettings.EnableOverlay = EnableOverlayChk.IsChecked;
+            }
             var gameSettingsFile = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{GameID}.json");
             if (newGameSettings.GetType().GetProperties().Any(p => p.GetValue(newGameSettings) != null) || File.Exists(gameSettingsFile))
             {
@@ -139,10 +143,15 @@ namespace GogOssLibraryNS
             AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
             AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
             EnableCometSupportChk.IsChecked = globalSettings.EnableCometSupport;
+            EnableOverlayChk.IsChecked = globalSettings.EnableOverlay;
             gameSettings = LoadGameSettings(GameID);
             if (gameSettings.EnableCometSupport != null)
             {
                 EnableCometSupportChk.IsChecked = gameSettings.EnableCometSupport;
+            }
+            if (gameSettings.EnableOverlay != null)
+            {
+                EnableOverlayChk.IsChecked = gameSettings.EnableOverlay;
             }
             if (gameSettings.DisableGameVersionCheck != null)
             {

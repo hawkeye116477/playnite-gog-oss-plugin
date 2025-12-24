@@ -2,6 +2,11 @@
 using Playnite.SDK;
 using GogOssLibraryNS.Enums;
 using CommonPlugin.Enums;
+using System.IO;
+using System;
+using Playnite.SDK.Data;
+using Tomlet;
+using Tomlet.Attributes;
 
 namespace GogOssLibraryNS
 {
@@ -34,12 +39,62 @@ namespace GogOssLibraryNS
         public long NextRemovingCompletedDownloadsTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
         public GogCdn PreferredCdn { get; set; } = GogCdn.Fastly;
+        public bool EnableOverlay { get; set; } = true;
     }
+
+
+    public class GalaxyOverlaySettings
+    {
+        [TomlDoNotInlineObject]
+        public OverlaySettings Overlay { get; set; } = new();
+
+        public class OverlaySettings
+        {
+            public int Notification_Volume { get; set; } = 50;
+            public string Position { get; set; } = "bottom_right";
+            public Notifications Notifications { get; set; } = new();
+        }
+
+        public class Notifications
+        {
+            public NotificationSettings Chat { get; set; } = new();
+            public NotificationSettings Friend_online { get; set; } = new();
+            public NotificationSettings Friend_invite { get; set; } = new();
+            public NotificationSettings Friend_game_start { get; set; } = new();
+            public NotificationSettings Game_invite { get; set; } = new();
+        }
+
+        [TomlDoNotInlineObject]
+        public class NotificationSettings
+        {
+            public bool Enabled { get; set; } = true;
+            public bool Sound { get; set; } = false;
+        }
+    }
+
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {
+        public GalaxyOverlaySettings GalaxyOverlaySettings { get; set; }
         public GogOssLibrarySettingsViewModel(GogOssLibrary library, IPlayniteAPI api) : base(library, api)
         {
             Settings = LoadSavedSettings() ?? new GogOssLibrarySettings();
+            GalaxyOverlaySettings = new GalaxyOverlaySettings();
+            var overlayConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "comet", "config.toml");
+            if (File.Exists(overlayConfigFilePath))
+            {
+                var content = File.ReadAllText(overlayConfigFilePath);
+                if (!content.IsNullOrEmpty())
+                {
+                    try
+                    {
+                        GalaxyOverlaySettings = TomletMain.To<GalaxyOverlaySettings>(content);
+                    }
+                    catch
+                    {
+                        GalaxyOverlaySettings = new GalaxyOverlaySettings();
+                    }
+                }
+            }
         }
 
         public Dictionary<string, string> Languages { get; } = new Dictionary<string, string>
@@ -98,6 +153,14 @@ namespace GogOssLibraryNS
                     Settings.NextCometUpdateTime = 0;
                 }
             }
+
+            var overlayConfigDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "comet");
+            var overlayConfigFilePath = Path.Combine(overlayConfigDirectory, "config.toml");
+            if (!Directory.Exists(overlayConfigDirectory))
+            {
+                Directory.CreateDirectory(overlayConfigDirectory);
+            }
+            File.WriteAllText(overlayConfigFilePath, TomletMain.TomlStringFrom(GalaxyOverlaySettings));
             base.EndEdit();
         }
     }
