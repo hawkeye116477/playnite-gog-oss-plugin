@@ -38,12 +38,12 @@
                   IsChecked="{Binding Settings.ConnectAccount}"
                   Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogSettingsConnectAccount}}" Checked="GOGConnectAccountChk_Checked"/>
 
-                    <StackPanel DockPanel.Dock="Top" Margin="40,5,5,0"
+                    <StackPanel DockPanel.Dock="Top" Margin="40,15,0,0"
                    IsEnabled="{Binding IsChecked, ElementName=GOGConnectAccountChk}">
 
                         <CheckBox DockPanel.Dock="Top" Name="GOGImportUninstalledChk"
                       IsChecked="{Binding Settings.ImportUninstalledGames}"
-                      Margin="0,10,0,0"
+                      Margin="0,0,0,0"
                       Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogSettingsImportUninstalledLabel}}"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,10">
@@ -52,14 +52,14 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonMigrateGamesOriginal}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,5,0,0" Name="MigrateGogBtn" IsEnabled="False" Click="MigrateGogBtn_Click" ToolTip="GOG => GOG OSS"></Button>
+                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonMigrateGamesOriginal}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,8,0,0" Name="MigrateGogBtn" IsEnabled="False" Click="MigrateGogBtn_Click" ToolTip="GOG => GOG OSS"></Button>
 
-                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonRevertMigrateGames}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,15,0,0" Name="MigrateRevertGogBtn" IsEnabled="False" Click="MigrateRevertGogBtn_Click" ToolTip="GOG OSS => GOG"></Button>
+                    <Button Content="{common:Localize Key={x:Static system:LOC.CommonRevertMigrateGames}, Args='originalPluginShortName=GOG'}" HorizontalAlignment="Left" Margin="0,10,0,0" Name="MigrateRevertGogBtn" IsEnabled="False" Click="MigrateRevertGogBtn_Click" ToolTip="GOG OSS => GOG"></Button>
 
                     <CheckBox IsChecked="{Binding Settings.EnableCometSupport}" DockPanel.Dock="Top" Margin="0,15,0,0"
                   Content="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupport}}" ToolTip="{common:Localize Key={x:Static system:LOC.GogOssEnableCometSupportToolTip}}" Name="EnableCometSupportChk"/>
                     <CheckBox IsChecked="{Binding Settings.UseVerticalCovers}" DockPanel.Dock="Top"
-                  Content="{common:Localize Key={x:Static system:LOC.GogOssUseVerticalCovers}}" Margin="0,10,0,0"/>
+                  Content="{common:Localize Key={x:Static system:LOC.GogOssUseVerticalCovers}}" Margin="0,8,0,0"/>
 
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                         <TextBlock VerticalAlignment="Center" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyGogMetadataLanguageLabel}}" Margin="0,0,10,0"/>
@@ -71,15 +71,15 @@
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteExtensionsUpdates}}" FontSize="18"
                         Margin="0,0,0,2" />
                         <Separator Margin="0,0,0,10" />
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonLauncherUpdatePolicy},Args='launcherName=Comet'}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                             <ComboBox Grid.Row="0" Grid.Column="1" x:Name="LauncherUpdatesCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.CometUpdatePolicy}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonGamesUpdatePolicy}}" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
                             <ComboBox Grid.Row="0" Grid.Column="1" x:Name="GamesUpdatesCBo" DisplayMemberPath="Value" SelectedValue="{Binding Settings.GamesUpdatePolicy}" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" HorizontalAlignment="Left" Margin="10,0,0,0" SelectionChanged="GamesUpdatesCBo_SelectionChanged" />
                         </StackPanel>
-                        <CheckBox Content="{common:Localize Key={x:Static system:LOC.CommonAutoUpdate}}" Margin="0,0,0,10" Name="AutoUpdateGamesChk" IsChecked="{Binding Settings.AutoUpdateGames}"></CheckBox>
+                        <CheckBox Content="{common:Localize Key={x:Static system:LOC.CommonAutoUpdate}}" Margin="0,0,0,8" Name="AutoUpdateGamesChk" IsChecked="{Binding Settings.AutoUpdateGames}"></CheckBox>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
@@ -89,16 +89,16 @@
                 <StackPanel Margin="20">
                     <CheckBox Grid.Column="0" Grid.Row="0"
                             Content="{common:Localize Key={x:Static system:LOC.CommonDisplayDownloadTaskFinishedNotifications}}"
-                            IsChecked="{Binding Settings.DisplayDownloadTaskFinishedNotifications}" Margin="0,0,0,10" />
+                            IsChecked="{Binding Settings.DisplayDownloadTaskFinishedNotifications}" Margin="0,0,0,8" />
                     <CheckBox Grid.Column="0" Grid.Row="1"
                             Content="{common:Localize Key={x:Static system:LOC.CommonDisplayDownloadSpeedInBits}}"
-                            IsChecked="{Binding Settings.DisplayDownloadSpeedInBits}" Margin="0,0,0,10" />
+                            IsChecked="{Binding Settings.DisplayDownloadSpeedInBits}" Margin="0,0,0,8" />
                     <CheckBox Grid.Column="0" Grid.Row="2"
                             Content="{common:Localize Key={x:Static system:LOC.CommonDownloadAllDlcs}}"
-                            IsChecked="{Binding Settings.DownloadAllDlcs}" Margin="0,0,0,10" />
+                            IsChecked="{Binding Settings.DownloadAllDlcs}" Margin="0,0,0,8" />
                     <CheckBox Grid.Column="0" Grid.Row="5"
                             Content="{common:Localize Key={x:Static system:LOC.CommonUnattendedInstall}}" ToolTip="{common:Localize Key={x:Static system:LOC.CommonUnattendedInstallToolTip}}"
-                            IsChecked="{Binding Settings.UnattendedInstall}" Margin="0,0,0,10" />
+                            IsChecked="{Binding Settings.UnattendedInstall}" Margin="0,0,0,8" />
                     <DockPanel Margin="0,0,0,5">
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonGamesInstallationPath}}"
                                Margin="0,0,7,0" VerticalAlignment="Center" HorizontalAlignment="Left">
@@ -144,8 +144,8 @@
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonCloud}}" FontSize="18"
                         Margin="0,0,0,2" />
                         <Separator Margin="0,0,0,10" />
-                        <CheckBox Margin="0,0,0,10" IsChecked="{Binding Settings.SyncPlaytime}" Content="{common:Localize Key={x:Static system:LOC.CommonSyncPlaytime}}" Name="SyncPlaytimeChk" />
-                        <CheckBox Margin="0,0,0,5" IsChecked="{Binding Settings.SyncGameSaves}"
+                        <CheckBox Margin="0,0,0,8" IsChecked="{Binding Settings.SyncPlaytime}" Content="{common:Localize Key={x:Static system:LOC.CommonSyncPlaytime}}" Name="SyncPlaytimeChk" />
+                        <CheckBox Margin="0,0,0,0" IsChecked="{Binding Settings.SyncGameSaves}"
                                   Content="{common:Localize Key={x:Static system:LOC.CommonSyncGameSaves}}" 
                                   Name="SyncGameSavesChk" Click="SyncGameSavesChk_Click" />
                     </StackPanel>
@@ -161,24 +161,24 @@
                         </StackPanel>
                         <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssEnableOverlay}}" Margin="0,10,0,0" IsChecked="{Binding Settings.EnableOverlay}" IsEnabled="{Binding IsChecked, ElementName=EnableCometSupportChk}" Name="EnableOverlayChk"></CheckBox>
                         <StackPanel Margin="0,10,0,0" IsEnabled="{Binding IsChecked, ElementName=EnableOverlayChk}">
-                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotifyAbout}}" Margin="0" FontSize="14"/>
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotifyAbout}}" Margin="0,0,0,8" FontSize="14"/>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyNewMessage}}" 
-                                      Margin="0,5,0,0" Name="NotifyNewMessageChk"
+                                      Margin="0,0,0,8" Name="NotifyNewMessageChk"
                                       IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Chat.Enabled}"></CheckBox>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyFriendInvite}}" 
-                                      Margin="0,5,0,0" Name="NotifyFriendInviteChk"
+                                      Margin="0,0,0,8" Name="NotifyFriendInviteChk"
                                       IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.FriendInvite.Enabled}"></CheckBox>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyGameInvite}}" 
-                                      Margin="0,5,0,0" Name="NotifyGameInviteChk"
+                                      Margin="0,0,0,8" Name="NotifyGameInviteChk"
                                       IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.GameInvite.Enabled}"></CheckBox>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyFriendOnline}}" 
-                                      Margin="0,5,0,0" Name="NotifyFriendOnlineChk" 
+                                      Margin="0,0,0,8" Name="NotifyFriendOnlineChk" 
                                       IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.FriendInvite.Enabled}"></CheckBox>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyFriendStartsGame}}" 
-                                      Margin="0,5,0,0" Name="NotifyFriendStartsGameChk"
+                                      Margin="0,0,0,8" Name="NotifyFriendStartsGameChk"
                                       IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.FriendGameStart.Enabled}"></CheckBox>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifySound}}" 
-                                  Margin="0,15,0,0" Name="NotifySoundChk" IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.MasterSound, Mode=TwoWay}">
+                                  Margin="0,10,0,0" Name="NotifySoundChk" IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.MasterSound, Mode=TwoWay}">
                             </CheckBox>
                             <StackPanel Margin="0,10,0,0" Orientation="Horizontal" IsEnabled="{Binding IsChecked,ElementName=NotifySoundChk}">
                                 <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotificationVolume}}" Margin="0"  VerticalAlignment="Center"/>
