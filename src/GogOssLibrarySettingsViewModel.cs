@@ -7,6 +7,7 @@ using System;
 using Playnite.SDK.Data;
 using Tomlet;
 using Tomlet.Attributes;
+using System.Linq;
 
 namespace GogOssLibraryNS
 {
@@ -45,29 +46,67 @@ namespace GogOssLibraryNS
 
     public class GalaxyOverlaySettings
     {
-        [TomlDoNotInlineObject]
+        [TomlProperty("overlay")]
         public OverlaySettings Overlay { get; set; } = new();
 
         public class OverlaySettings
         {
-            public int Notification_Volume { get; set; } = 50;
+            [TomlProperty("notification_volume")]
+            public int NotificationVolume { get; set; } = 50;
+
+            [TomlProperty("position")]
             public string Position { get; set; } = "bottom_right";
+
+            [TomlProperty("notifications")]
             public Notifications Notifications { get; set; } = new();
         }
 
         public class Notifications
         {
+            [TomlProperty("chat")]
             public NotificationSettings Chat { get; set; } = new();
-            public NotificationSettings Friend_online { get; set; } = new();
-            public NotificationSettings Friend_invite { get; set; } = new();
-            public NotificationSettings Friend_game_start { get; set; } = new();
-            public NotificationSettings Game_invite { get; set; } = new();
+
+            [TomlProperty("friend_online")]
+            public NotificationSettings FriendOnline { get; set; } = new();
+
+            [TomlProperty("friend_invite")]
+            public NotificationSettings FriendInvite { get; set; } = new();
+
+            [TomlProperty("friend_game_start")]
+            public NotificationSettings FriendGameStart { get; set; } = new();
+
+            [TomlProperty("game_invite")]
+            public NotificationSettings GameInvite { get; set; } = new();
+
+            [TomlNonSerialized]
+            private NotificationSettings[] AllNotifications => new[] { Chat, FriendOnline, FriendInvite, FriendGameStart, GameInvite };
+
+            [TomlNonSerialized]
+            public bool MasterSound
+            {
+                get
+                {
+                    return AllNotifications.Where(n => n.Enabled).All(n => n.Sound);
+                }
+                set
+                {
+                    foreach (var notificationType in AllNotifications)
+                    {
+                        if (notificationType.Enabled)
+                        {
+                            notificationType.Sound = value;
+                        }
+                    }
+                }
+            }
         }
 
-        [TomlDoNotInlineObject]
         public class NotificationSettings
         {
+            [TomlProperty("enabled")]
             public bool Enabled { get; set; } = true;
+
+            [TomlProperty("sound")]
             public bool Sound { get; set; } = false;
         }
     }
@@ -160,6 +199,7 @@ namespace GogOssLibraryNS
             {
                 Directory.CreateDirectory(overlayConfigDirectory);
             }
+           
             File.WriteAllText(overlayConfigFilePath, TomletMain.TomlStringFrom(GalaxyOverlaySettings));
             base.EndEdit();
         }
