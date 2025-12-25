@@ -237,12 +237,6 @@ namespace GogOssLibraryNS
 
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
-            var depends = new List<string>();
-            if (MultiInstallData.Count > 0 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
-            {
-                depends.Add("ISI");
-            }
-
             bool gamesListShouldBeDisplayed = false;
             var redistInstallPath = GogOss.DependenciesInstallationPath;
 
@@ -281,24 +275,6 @@ namespace GogOssLibraryNS
                         installData.downloadProperties.extraContent = installedGame.installed_DLCs;
                     }
                     manifest = await gogDownloadApi.GetGameMetaManifest(installData);
-                    if (manifest.dependencies.Count > 0)
-                    {
-                        installData.depends = manifest.dependencies;
-                        if (manifest.version == 1)
-                        {
-                            foreach (var dependv1 in manifest.depots)
-                            {
-                                if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
-                                {
-                                    installData.depends.Add(dependv1.redist);
-                                }
-                            }
-                        }
-                        foreach (var depend in manifest.dependencies)
-                        {
-                            depends.AddMissing(depend);
-                        }
-                    }
                     RefreshLanguages(installData);
                     if (installData.downloadProperties.buildId.IsNullOrEmpty())
                     {
@@ -402,48 +378,6 @@ namespace GogOssLibraryNS
                         else
                         {
                             MultiInstallData.Remove(overlayInstallData);
-                        }
-                    }
-                }
-            }
-
-            if (depends.Count > 0)
-            {
-                foreach (var depend in depends.ToList())
-                {
-                    var dependManifest = await GogDownloadApi.GetRedistInfo(depend);
-                    var dependInstallData = new DownloadManagerData.Download
-                    {
-                        gameID = depend,
-                        downloadItemType = DownloadItemType.Dependency,
-                        name = dependManifest.readableName
-                    };
-                    var dependDownloadPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", depend);
-                    if (Directory.Exists(dependDownloadPath))
-                    {
-                        var dependExePath = Path.Combine(GogOss.DependenciesInstallationPath, dependManifest.executable.path);
-                        if (File.Exists(dependExePath))
-                        {
-                            depends.Remove(depend);
-                            continue;
-                        }
-                    }
-                    var dependInfo = await gogDownloadApi.GetGameMetaManifest(dependInstallData);
-
-                    if (dependInfo.executable.path.IsNullOrEmpty())
-                    {
-                        depends.Remove(depend);
-                        continue;
-                    }
-                    var dependSize = await GogOss.CalculateGameSize(dependInstallData);
-                    dependInstallData.downloadSizeNumber = dependSize.download_size;
-                    dependInstallData.installSizeNumber = dependSize.disk_size;
-                    if (dependInstallData.downloadSizeNumber != 0)
-                    {
-                        var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == depend);
-                        if (wantedItem == null)
-                        {
-                            MultiInstallData.Insert(0, dependInstallData);
                         }
                     }
                 }

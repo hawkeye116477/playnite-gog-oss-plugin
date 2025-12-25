@@ -771,18 +771,7 @@ namespace GogOssLibraryNS
                         Build_id = newBuild.build_id,
                         Language = installedInfo.language,
                         ExtraContent = installedInfo.installed_DLCs,
-                        Depends = newManifest.dependencies,
                     };
-                    if (newManifest.version == 1)
-                    {
-                        foreach (var dependv1 in newManifest.depots)
-                        {
-                            if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
-                            {
-                                updateInfo.Depends.Add(dependv1.redist);
-                            }
-                        }
-                    }
                     if (!newBuild.branch.IsNullOrEmpty())
                     {
                         updateInfo.BetaChannel = newBuild.branch;
@@ -871,7 +860,6 @@ namespace GogOssLibraryNS
                                 downloadItemType = gameToUpdate.Value.DownloadItemType,
                             };
                             updateTask.fullInstallPath = gameToUpdate.Value.Install_path;
-                            updateTask.depends = gameToUpdate.Value.Depends;
                             updateTasks.Add(updateTask);
                         }
                     }
