@@ -625,7 +625,6 @@ namespace GogOssLibraryNS
                 await stream.WriteAsync(frame, 0, frame.Length);
                 await stream.FlushAsync();
                 client.Client.Shutdown(SocketShutdown.Send);
-                await Task.Delay(500);
                 return true;
             }
             catch (Exception ex)
