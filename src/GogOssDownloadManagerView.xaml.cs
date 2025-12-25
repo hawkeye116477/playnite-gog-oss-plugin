@@ -258,6 +258,13 @@ namespace GogOssLibraryNS
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
 
+            var gogAccountClient = new GogAccountClient();
+            var tokens = new TokenResponse.TokenResponsePart();
+            if (downloadItemType == DownloadItemType.Extra && await gogAccountClient.GetIsUserLoggedIn())
+            {
+                tokens = gogAccountClient.LoadTokens();
+            }
+
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var memoryLimiter = new MemoryLimiter(maxMemoryBytes);
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
@@ -393,14 +400,6 @@ namespace GogOssLibraryNS
 
                         long resumeStartByte = 0;
 
-                        var gogAccountClient = new GogAccountClient();
-
-                        var tokens = new TokenResponse.TokenResponsePart();
-                        if (await gogAccountClient.GetIsUserLoggedIn())
-                        {
-                            tokens = gogAccountClient.LoadTokens();
-                        }
-
                         if (downloadItemType == DownloadItemType.Extra)
                         {
                             using var headRequest = new HttpRequestMessage(HttpMethod.Head, job.url);
@@ -518,7 +517,6 @@ namespace GogOssLibraryNS
                     }
                     catch (Exception ex)
                     {
-                        logger.Error(ex, $"Failed to download file {effectiveFilePath}.");
                         if (chunkBuffer != null)
                         {
                             try
@@ -540,6 +538,7 @@ namespace GogOssLibraryNS
                             memoryReserved = false;
                         }
                         tempFilePath = null;
+                        throw new Exception($"Failed to download file {effectiveFilePath}.", ex);
                     }
                 }
                 finally
