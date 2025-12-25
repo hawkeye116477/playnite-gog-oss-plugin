@@ -773,6 +773,16 @@ namespace GogOssLibraryNS
                         ExtraContent = installedInfo.installed_DLCs,
                         Depends = newManifest.dependencies,
                     };
+                    if (newManifest.version == 1)
+                    {
+                        foreach (var dependv1 in newManifest.depots)
+                        {
+                            if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
+                            {
+                                updateInfo.Depends.Add(dependv1.redist);
+                            }
+                        }
+                    }
                     if (!newBuild.branch.IsNullOrEmpty())
                     {
                         updateInfo.BetaChannel = newBuild.branch;
