@@ -1,5 +1,17 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.4.0
+    RequiredApiVersion: 6.14.0
+    ReleaseDate: 2025-12-25
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.4.0/GogOssLibrary_1_4_0.pext
+    Changelog:
+      - Added experimental support for Galaxy Overlay
+      - Integrated Extras Manager with Download Manager (folder is GameExtras instead
+        of Games)
+      - Moved cloud settings to new tab ("Cloud and other services")
+      - Prevented possible crashes in very rare crashes
+      - Fixed disposing install controller by using new SDK method
+      - Happy Holidays!
   - Version: 1.3.3
     RequiredApiVersion: 6.4.0
     ReleaseDate: 2025-12-20
