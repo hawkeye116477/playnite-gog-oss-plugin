@@ -2131,6 +2131,9 @@ namespace GogOssLibraryNS
                         dependInstallData.downloadProperties.os = taskData.downloadProperties.os;
                         dependInstallData.downloadProperties.installPath = GogOss.DependenciesInstallationPath;
                         dependInstallData.fullInstallPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", depend);
+                        DateTimeOffset now = DateTime.UtcNow;
+                        dependInstallData.status = DownloadStatus.Queued;
+                        dependInstallData.addedTime = now.ToUnixTimeSeconds();
 
                         if (dependInstallData.downloadSizeNumber != 0)
                         {
