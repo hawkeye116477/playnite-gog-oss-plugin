@@ -224,6 +224,10 @@ namespace GogOssLibraryNS
                 MaxWorkersNI.IsEnabled = false;
                 SaveBtn.IsEnabled = false;
             }
+            if (wantedItem.downloadItemType == Enums.DownloadItemType.Dependency)
+            {
+                FolderDP.IsEnabled = false;
+            }
         }
 
         private async Task RefreshVersions()

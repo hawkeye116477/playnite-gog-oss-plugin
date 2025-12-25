@@ -60,7 +60,7 @@
             <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsGeneralLabel}}">
                 <StackPanel Margin="10,5">
                     <StackPanel>
-                        <DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5">
+                        <DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5" x:Name="FolderDP">
                             <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteGameInstallDirTitle}}" VerticalAlignment="Center" Margin="0,0,10,0" />
                             <Button DockPanel.Dock="Right" Padding="5" Margin="5 0 0 0" Content="&#xec5b;"
                                 Name="ChooseGamePathBtn" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" Click="ChooseGamePathBtn_Click" />
