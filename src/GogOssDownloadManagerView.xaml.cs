@@ -2105,7 +2105,7 @@ namespace GogOssLibraryNS
                             gameID = depend,
                             downloadItemType = DownloadItemType.Dependency,
                             name = dependManifest.readableName,
-                            status = DownloadStatus.Queued
+                            status = DownloadStatus.Queued,
                         };
                         var dependDownloadPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", depend);
                         if (Directory.Exists(dependDownloadPath))
@@ -2126,7 +2126,12 @@ namespace GogOssLibraryNS
                         var dependSize = await GogOss.CalculateGameSize(dependInstallData);
                         dependInstallData.downloadSizeNumber = dependSize.download_size;
                         dependInstallData.installSizeNumber = dependSize.disk_size;
-                       
+                        dependInstallData.downloadProperties = new();
+                        dependInstallData.downloadProperties.maxWorkers = taskData.downloadProperties.maxWorkers;
+                        dependInstallData.downloadProperties.os = taskData.downloadProperties.os;
+                        dependInstallData.downloadProperties.installPath = GogOss.DependenciesInstallationPath;
+                        dependInstallData.fullInstallPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", depend);
+
                         if (dependInstallData.downloadSizeNumber != 0)
                         {
                             var wantedDependItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == depend);

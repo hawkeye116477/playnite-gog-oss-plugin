@@ -93,7 +93,6 @@ namespace GogOssLibraryNS
                 installPath = installPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
             }
 
-            var redistInstallPath = GogOss.DependenciesInstallationPath;
             InstallerWindow.Close();
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
             var downloadTasks = new List<DownloadManagerData.Download>();
@@ -106,20 +105,9 @@ namespace GogOssLibraryNS
                 {
                     if (installData.downloadProperties.installPath.IsNullOrEmpty())
                     {
-                        if (installData.downloadItemType == DownloadItemType.Dependency)
-                        {
-                            installData.downloadProperties.installPath = redistInstallPath;
-                        }
-                        else
-                        {
-                            installData.downloadProperties.installPath = installPath;
-                        }
+                       installData.downloadProperties.installPath = installPath;
                     }
-                    if (installData.downloadItemType == DownloadItemType.Dependency)
-                    {
-                        installData.fullInstallPath = Path.Combine(GogOss.DependenciesInstallationPath, "__redist", gameId);
-                    }
-                    else if (installData.downloadItemType == DownloadItemType.Game)
+                    if (installData.downloadItemType == DownloadItemType.Game)
                     {
                         manifest = await gogDownloadApi.GetGameMetaManifest(installData);
                         installData.fullInstallPath = Path.Combine(installPath, manifest.installDirectory);
@@ -238,7 +226,6 @@ namespace GogOssLibraryNS
             GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
             bool gamesListShouldBeDisplayed = false;
-            var redistInstallPath = GogOss.DependenciesInstallationPath;
 
             var installedAppList = GogOssLibrary.GetInstalledAppList();
 
