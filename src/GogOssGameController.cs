@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,10 +13,8 @@ using CliWrap;
 using CliWrap.EventStream;
 using CommonPlugin;
 using CommonPlugin.Enums;
-using Galaxy.Protocols.CommunicationService;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
-using Google.Protobuf;
 using Linguini.Shared.Types.Bundle;
 using Playnite.Common;
 using Playnite.SDK;
@@ -298,7 +293,9 @@ namespace GogOssLibraryNS
                                         var overlayExe = Path.Combine(overlayInstallPath, "overlay", "GalaxyOverlay.exe");
                                         if (File.Exists(overlayExe))
                                         {
-                                            var notifyCometSuccess = await NotifyComet(gameProcessId);
+                                            var galaxyOverlay = new GalaxyOverlay();
+                                            galaxyOverlay.CreateNeededDirectories();
+                                            var notifyCometSuccess = await galaxyOverlay.NotifyComet(gameProcessId);
                                             if (notifyCometSuccess)
                                             {
                                                 var screenshotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots", Game.Name);
@@ -323,7 +320,9 @@ namespace GogOssLibraryNS
                                                 var overlayProcess = ProcessStarter.StartProcess(overlayExe, overlayCmd.Arguments, Path.Combine(overlayInstallPath, "overlay"));
                                                 if (overlayProcess != null)
                                                 {
-                                                    await InitAndForwardPipes(gameProcessId, overlayProcess, watcherToken.Token);
+                                                    _ = Task.Run(() =>
+                                                            galaxyOverlay.InitAndForwardPipes(gameProcessId, overlayProcess, watcherToken.Token)
+                                                    );
                                                 }
                                             }
                                         }
@@ -592,112 +591,7 @@ namespace GogOssLibraryNS
                 }
             });
         }
-        public async Task<bool> NotifyComet(int gameProcessId)
-        {
-            try
-            {
-                var client = new TcpClient();
-                await client.ConnectAsync("127.0.0.1", 9977);
 
-                var request = new StartGameSessionRequest
-                {
-                    GamePid = (uint)gameProcessId,
-                    OverlaySupport = StartGameSessionRequest.Types.OverlaySupport.Enabled,
-                };
-                byte[] payload = request.ToByteArray();
-
-                var header = new Gog.Protocols.Pb.Header
-                {
-                    Size = (uint)payload.Length,
-                    Oseq = 1,
-                    Type = (uint)MessageType.StartGameSessionRequest,
-                    Sort = (uint)MessageSort.MessageSort
-                };
-                var headerBytes = header.ToByteArray();
-
-                byte[] frame = new byte[2 + headerBytes.Length + payload.Length];
-                BinaryPrimitives.WriteUInt16BigEndian(frame.AsSpan(0, 2), (ushort)headerBytes.Length);
-
-                Buffer.BlockCopy(headerBytes, 0, frame, 2, headerBytes.Length);
-                Buffer.BlockCopy(payload, 0, frame, 2 + headerBytes.Length, payload.Length);
-
-                NetworkStream stream = client.GetStream();
-                await stream.WriteAsync(frame, 0, frame.Length);
-                await stream.FlushAsync();
-                client.Client.Shutdown(SocketShutdown.Send);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "Failed to notify Comet");
-                return false;
-            }
-
-        }
-
-        public async Task InitAndForwardPipes(int gamePid, Process overlayProcess, CancellationToken cancellationToken, int maxRetries = 10)
-        {
-            string pipeName = $"Galaxy-{gamePid}-CommunicationService-Overlay";
-
-            using var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1,
-                PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-
-            bool connected = false;
-            for (int i = 0; i < maxRetries; i++)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                try
-                {
-                    logger.Debug($"Waiting for overlay connection (try {i + 1}/{maxRetries})...");
-                    await pipe.WaitForConnectionAsync(cancellationToken);
-                    connected = true;
-                    break;
-                }
-                catch (OperationCanceledException)
-                {
-                    logger.Warn("Pipe connection cancelled.");
-                    return;
-                }
-                catch
-                {
-                    await Task.Delay(1000, cancellationToken);
-                }
-            }
-
-            if (!connected)
-            {
-                logger.Error("Failed to connect overlay to pipe.");
-                return;
-            }
-
-            logger.Debug("Overlay connected to pipe.");
-
-            byte[] buffer = new byte[1024];
-            while (!overlayProcess.HasExited && pipe.IsConnected)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                int bytesRead;
-                try
-                {
-                    bytesRead = await pipe.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                }
-                catch (OperationCanceledException)
-                {
-                    logger.Warn("Forwarding cancelled.");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Error while reading from pipe.");
-                    break;
-                }
-                if (bytesRead <= 0)
-                {
-                    await Task.Delay(100, cancellationToken);
-                }
-            }
-            logger.Debug("Overlay exited or pipe closed.");
-        }
     }
 
     public class GogOssUpdateController
