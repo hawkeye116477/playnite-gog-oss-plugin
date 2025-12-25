@@ -1,6 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
+﻿
 using System.Collections.Generic;
-
 namespace GogOssLibraryNS.Models
 {
     public class Installed
