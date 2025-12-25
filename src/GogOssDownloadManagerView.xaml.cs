@@ -2137,10 +2137,11 @@ namespace GogOssLibraryNS
 
                         if (dependInstallData.downloadSizeNumber != 0)
                         {
+                            var mainTaskIndex = downloadManagerData.downloads.IndexOf(downloadManagerData.downloads.FirstOrDefault(item => item.gameID == taskData.gameID));
                             var wantedDependItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == depend);
                             if (wantedDependItem == null)
                             {
-                                downloadManagerData.downloads.Insert(0, dependInstallData);
+                                downloadManagerData.downloads.Insert(mainTaskIndex, dependInstallData);
                                 addedDepend = true;
                             }
                         }
