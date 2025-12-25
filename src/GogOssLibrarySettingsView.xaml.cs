@@ -524,7 +524,7 @@ namespace GogOssLibraryNS
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
                 bool uninstalled = false;
 
-                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                playniteAPI.Dialogs.ActivateGlobalProgress((a) =>
                 {
                     a.IsIndeterminate = false;
                     a.ProgressMaxValue = 1;

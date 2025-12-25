@@ -767,7 +767,7 @@ namespace GogOssLibraryNS.Services
 
                             catch (Exception ex)
                             {
-                                logger.Error("An error occured while dowloading depends manifest");
+                                logger.Error(ex, "An error occured while dowloading depends manifest");
                             }
 
                             if (!manifestResult.IsNullOrWhiteSpace() && Serialization.TryFromJson(manifestResult, out manifest))
