@@ -523,7 +523,7 @@ namespace GogOssLibraryNS
             {
                 GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
                 bool uninstalled = false;
-   
+
                 playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
                 {
                     a.IsIndeterminate = false;
@@ -563,7 +563,59 @@ namespace GogOssLibraryNS
 
         private void OverlayUpdateBtn_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            var appsToUpdate = new Dictionary<string, UpdateInfo>();
+            GlobalProgressOptions updateCheckProgressOptions = new(LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates), false) 
+            { IsIndeterminate = true };
+            playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+            {
+                try
+                {
+                    var overlayInstalledInfo = GalaxyOverlay.GetInstalledInfo();
+                    var oldOverlayVersion = overlayInstalledInfo.overlay_version;
+                    var oldWebVersion = overlayInstalledInfo.web_version;
+                    var overlayManifest = await GogOss.GetOverlayManifest();
+                    if (oldOverlayVersion != overlayManifest.overlayVersion || oldWebVersion != overlayManifest.webVersion)
+                    {
+                        double downloadSizeNumber = 0;
+                        foreach (var file in overlayManifest.files)
+                        {
+                            downloadSizeNumber += file.size;
+                        }
+                        var updateInfo = new UpdateInfo
+                        {
+                            Os = overlayInstalledInfo.platform,
+                            Install_path = overlayInstalledInfo.install_path,
+                            Version = overlayManifest.overlayVersion,
+                            Download_size = downloadSizeNumber,
+                            DownloadItemType = DownloadItemType.Overlay
+                        };
+                        appsToUpdate.Add("galaxy-overlay", updateInfo);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "An error occured during checking for overlay update");
+                }
+            }, updateCheckProgressOptions);
+            if (appsToUpdate.Count > 0)
+            {
+                Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                {
+                    ShowMaximizeButton = false,
+                });
+                window.DataContext = appsToUpdate;
+                window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
+                window.Content = new GogOssUpdaterView();
+                window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+                window.SizeToContent = SizeToContent.WidthAndHeight;
+                window.MinWidth = 600;
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                window.ShowDialog();
+            }
+            else
+            {
+                playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
+            }
         }
     }
 }

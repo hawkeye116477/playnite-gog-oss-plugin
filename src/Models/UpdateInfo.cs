@@ -1,8 +1,5 @@
-﻿using System;
+﻿using GogOssLibraryNS.Enums;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GogOssLibraryNS.Models
 {
@@ -21,5 +18,6 @@ namespace GogOssLibraryNS.Models
         public string Os { get; set; } = "windows";
         public List<string> Depends { get; set; } = new List<string>();
         public string BetaChannel { get; set; } = "";
+        public DownloadItemType DownloadItemType { get; set; } = DownloadItemType.Game;
     }
 }
