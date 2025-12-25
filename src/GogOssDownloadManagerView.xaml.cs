@@ -2096,6 +2096,7 @@ namespace GogOssLibraryNS
                 }
                 if (depends.Count > 0)
                 {
+                    bool addedDepend = false;
                     foreach (var depend in depends.ToList())
                     {
                         var dependManifest = await GogDownloadApi.GetRedistInfo(depend);
@@ -2125,16 +2126,21 @@ namespace GogOssLibraryNS
                         var dependSize = await GogOss.CalculateGameSize(dependInstallData);
                         dependInstallData.downloadSizeNumber = dependSize.download_size;
                         dependInstallData.installSizeNumber = dependSize.disk_size;
+                       
                         if (dependInstallData.downloadSizeNumber != 0)
                         {
                             var wantedDependItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == depend);
                             if (wantedDependItem == null)
                             {
                                 downloadManagerData.downloads.Insert(0, dependInstallData);
+                                addedDepend = true;
                             }
                         }
                     }
-                    SaveData();
+                    if (addedDepend)
+                    {
+                        SaveData();
+                    }
                 }
             }
             tempReporterCts.Cancel();
