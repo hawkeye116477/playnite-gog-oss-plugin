@@ -53,10 +53,11 @@ namespace GogOssLibraryNS
         public void CreateNeededDirectories()
         {
             string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string gogDataPath = Path.Combine(programDataPath, "GOG.com", "Galaxy");
             var neededDirs = new List<string>
             {
-                Path.Combine(programDataPath, "logs"),
-                Path.Combine(programDataPath, "webcache")
+                Path.Combine(gogDataPath, "logs"),
+                Path.Combine(gogDataPath, "webcache")
             };
             foreach (var neededDir in neededDirs)
             {
