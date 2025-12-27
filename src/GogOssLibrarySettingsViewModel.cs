@@ -40,7 +40,8 @@ namespace GogOssLibraryNS
         public long NextRemovingCompletedDownloadsTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
         public GogCdn PreferredCdn { get; set; } = GogCdn.Fastly;
-        public bool EnableOverlay { get; set; } = false;
+        public bool EnableOverlay { get; set; } = true;
+        public bool EnableOverlayCurtain = true;
     }
 
 

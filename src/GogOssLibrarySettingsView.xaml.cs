@@ -171,6 +171,12 @@ namespace GogOssLibraryNS
                 { "bottom_right", LocalizationManager.Instance.GetString(LOC.GogOssBottomRight) },
             };
             NotificationPositionCBo.ItemsSource = notificationPositionOptions;
+
+            var settings = GogOssLibrary.GetSettings();
+            if (settings.EnableOverlayCurtain)
+            {
+                OverlaySP.Visibility = Visibility.Collapsed;
+            }
         }
 
 
