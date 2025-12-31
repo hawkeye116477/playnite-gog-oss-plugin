@@ -108,10 +108,7 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsAdvancedLabel}}">
-                <StackPanel Orientation="Vertical" Margin="10,5">
-                    <StackPanel>
-                        <Separator Margin="0,5,0,0" />
-                    </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="10">
                     <StackPanel Orientation="Horizontal" >
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonMaxWorkers}}" Grid.Column="0"
                                Grid.Row="3" Margin="0,0,0,5" VerticalAlignment="Center" HorizontalAlignment="Left" />

@@ -270,10 +270,10 @@ namespace GogOssLibraryNS
                         playArgs.AddRange(new[] { "--user-id", tokens.user_id });
                         playArgs.AddRange(new[] { "--username", account.username });
                         playArgs.Add("--quit");
-                        logger.Info($"Launching Comet ({Comet.ClientExecPath}).");
                         var cmd = Cli.Wrap(Comet.ClientExecPath)
                                      .WithArguments(playArgs)
-                                     .WithValidation(CommandResultValidation.None);
+                                     .WithValidation(CommandResultValidation.None)
+                                     .AddCommandToLog();
                         await foreach (var cmdEvent in cmd.ListenAsync())
                         {
                             switch (cmdEvent)
