@@ -66,9 +66,9 @@
                                 Name="ChooseGamePathBtn" FontFamily="{DynamicResource FontIcoFont}" ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" Click="ChooseGamePathBtn_Click" />
                             <TextBox Name="SelectedGamePathTxt" VerticalAlignment="Center" Margin="0" />
                         </DockPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="{common:Localize Key={x:Static system:LOC.CommonTask}}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,10,0"></TextBlock>
-                            <ComboBox Grid.Row="1" Grid.Column="1" x:Name="TaskCBo" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="Auto" />
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5" Grid.Row="1" >
+                            <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonTask}}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,10,0"></TextBlock>
+                            <ComboBox x:Name="TaskCBo" DisplayMemberPath="Value" SelectedValuePath="Key" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="Auto" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Name="LanguageSP" Visibility="Collapsed" Margin="0,0,0,5">
                             <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssLanguage}}"

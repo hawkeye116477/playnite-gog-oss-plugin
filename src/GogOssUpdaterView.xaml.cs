@@ -74,11 +74,6 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void CancelBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Window.GetWindow(this).Close();
-        }
-
         private void GogOssUpdaterUC_Loaded(object sender, RoutedEventArgs e)
         {
             CommonHelpers.SetControlBackground(this);
