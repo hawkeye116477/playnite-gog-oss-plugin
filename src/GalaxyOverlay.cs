@@ -106,7 +106,7 @@ namespace GogOssLibraryNS
                 await stream.WriteAsync(frame, 0, frame.Length);
                 await stream.FlushAsync();
                 client.Client.Shutdown(SocketShutdown.Send);
-                client.Dispose();
+               
                 return true;
             }
             catch (Exception ex)
@@ -114,72 +114,8 @@ namespace GogOssLibraryNS
                 logger.Error(ex, "Failed to notify Comet");
                 return false;
             }
-
         }
 
-        public async Task InitAndForwardPipes(int gamePid, Process overlayProcess, CancellationToken cancellationToken, int maxRetries = 10)
-        {
-            string pipeName = $"Galaxy-{gamePid}-CommunicationService-Overlay";
-
-            using var pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1,
-                PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-
-            bool connected = false;
-            for (int i = 0; i < maxRetries; i++)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                try
-                {
-                    logger.Debug($"Waiting for overlay connection (try {i + 1}/{maxRetries})...");
-                    await pipe.WaitForConnectionAsync(cancellationToken);
-                    connected = true;
-                    break;
-                }
-                catch (OperationCanceledException)
-                {
-                    logger.Warn("Pipe connection cancelled.");
-                    return;
-                }
-                catch
-                {
-                    await Task.Delay(1000, cancellationToken);
-                }
-            }
-
-            if (!connected)
-            {
-                logger.Error("Failed to connect overlay to pipe.");
-                return;
-            }
-
-            logger.Debug("Overlay connected to pipe.");
-
-            byte[] buffer = new byte[1024];
-            while (!overlayProcess.HasExited && pipe.IsConnected)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                int bytesRead;
-                try
-                {
-                    bytesRead = await pipe.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                }
-                catch (OperationCanceledException)
-                {
-                    logger.Warn("Forwarding cancelled.");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Error while reading from pipe.");
-                    break;
-                }
-                if (bytesRead <= 0)
-                {
-                    await Task.Delay(100, cancellationToken);
-                }
-            }
-            logger.Debug("Overlay exited or pipe closed.");
-        }
     }
 
 }

@@ -298,6 +298,7 @@ namespace GogOssLibraryNS
                                             var notifyCometSuccess = await galaxyOverlay.NotifyComet(gameProcessId);
                                             if (notifyCometSuccess)
                                             {
+                                                await Task.Delay(2000); // very hacky method, but seems Comet needs time...
                                                 var screenshotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots", Game.Name);
                                                 var overlayWebPath = Path.Combine(overlayInstallPath, "web", "overlay.html");
                                                 string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
@@ -317,13 +318,7 @@ namespace GogOssLibraryNS
 
                                                 var overlayCmd = Cli.Wrap(overlayExe)
                                                                     .WithArguments(overlayArgs);
-                                                var overlayProcess = ProcessStarter.StartProcess(overlayExe, overlayCmd.Arguments, Path.Combine(overlayInstallPath, "overlay"));
-                                                if (overlayProcess != null)
-                                                {
-                                                    _ = Task.Run(() =>
-                                                            galaxyOverlay.InitAndForwardPipes(gameProcessId, overlayProcess, watcherToken.Token)
-                                                    );
-                                                }
+                                                ProcessStarter.StartProcess(overlayExe, overlayCmd.Arguments, Path.Combine(overlayInstallPath, "overlay"));
                                             }
                                         }
                                     }
