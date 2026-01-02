@@ -1,5 +1,12 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.4.2
+    RequiredApiVersion: 6.14.0
+    ReleaseDate: 2026-01-02
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.4.2/GogOssLibrary_1_4_2.pext
+    Changelog:
+      - The curtain has been lifted - Galaxy Overlay is now ready
+      - Improved layout
   - Version: 1.4.1
     RequiredApiVersion: 6.14.0
     ReleaseDate: 2025-12-27
