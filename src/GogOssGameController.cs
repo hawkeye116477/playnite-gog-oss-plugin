@@ -298,7 +298,37 @@ namespace GogOssLibraryNS
                                             var notifyCometSuccess = await galaxyOverlay.NotifyComet(gameProcessId);
                                             if (notifyCometSuccess)
                                             {
-                                                await Task.Delay(2000); // very hacky method, but seems Comet needs time...
+                                                string pipeName = $"Galaxy-{gameProcessId}-CommunicationService-Overlay";
+
+                                                Stopwatch swComet = Stopwatch.StartNew();
+                                                TimeSpan timeout = TimeSpan.FromSeconds(60);
+                                                bool found = false;
+
+                                                logger.Info($"Waiting for {pipeName} pipe (timeout: {timeout.TotalSeconds}s)...");
+
+                                                int delay = 200;
+                                                while (swComet.Elapsed < timeout)
+                                                {
+                                                    if (Directory.GetFiles(@"\\.\pipe\", pipeName).Length > 0)
+                                                    {
+                                                        found = true;
+                                                        break;
+                                                    }
+                                                    await Task.Delay(delay);
+                                                    if (delay < 1000)
+                                                    {
+                                                        delay += 100;
+                                                    }
+                                                }
+                                                swComet.Stop();
+                                                if (found)
+                                                {
+                                                    logger.Info($"Pipe found after {swComet.Elapsed.TotalSeconds}s.");
+                                                }
+                                                else
+                                                {
+                                                    logger.Warn($"Pipe not found within {timeout.TotalSeconds}s. Overlay may not work.");
+                                                }
                                                 var screenshotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots", Game.Name);
                                                 var overlayWebPath = Path.Combine(overlayInstallPath, "web", "overlay.html");
                                                 string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
