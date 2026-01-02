@@ -140,10 +140,6 @@ namespace GogOssLibraryNS
             {
                 DisableGameUpdateCheckingChk.IsChecked = true;
             }
-            if (globalSettings.EnableOverlayCurtain)
-            {
-                EnableOverlayChk.Visibility = Visibility.Collapsed;
-            }
 
             AutoSyncSavesChk.IsChecked = globalSettings.SyncGameSaves;
             AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;

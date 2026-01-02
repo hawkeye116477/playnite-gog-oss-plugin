@@ -41,7 +41,6 @@ namespace GogOssLibraryNS
         public bool SyncGameSaves { get; set; } = false;
         public GogCdn PreferredCdn { get; set; } = GogCdn.Fastly;
         public bool EnableOverlay { get; set; } = true;
-        public bool EnableOverlayCurtain = true;
     }
 
 
