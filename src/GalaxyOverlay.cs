@@ -72,12 +72,11 @@ namespace GogOssLibraryNS
             }
         }
 
-
         public async Task<bool> NotifyComet(int gameProcessId)
         {
             try
             {
-                var client = new TcpClient();
+                using var client = new TcpClient();
                 await client.ConnectAsync("127.0.0.1", 9977);
 
                 var request = new StartGameSessionRequest
@@ -106,8 +105,14 @@ namespace GogOssLibraryNS
                 await stream.WriteAsync(frame, 0, frame.Length);
                 await stream.FlushAsync();
                 client.Client.Shutdown(SocketShutdown.Send);
-               
-                return true;
+
+                var buffer = new byte[16];
+                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                if (bytesRead <= 0)
+                {
+                    logger.Error("Comet closed connection before sending ACK.");
+                }
+                return bytesRead > 0;
             }
             catch (Exception ex)
             {
