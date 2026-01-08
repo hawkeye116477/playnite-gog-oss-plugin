@@ -202,7 +202,7 @@ namespace GogOssLibraryNS
 
         private void ChooseAlternativeExeBtn_Click(object sender, RoutedEventArgs e)
         {
-            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|*.exe");
+            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|*.exe", Game.InstallDirectory);
             if (file != "")
             {
                 SelectedAlternativeExeTxt.Text = file;
