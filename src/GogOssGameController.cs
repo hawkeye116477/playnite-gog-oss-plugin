@@ -122,7 +122,7 @@ namespace GogOssLibraryNS
                             catch (Exception ex)
                             {
                                 notUninstalledGames.Add(game);
-                                logger.Error(ex.Message);
+                                logger.Error(ex, $"An error occured during uninstalling {game.Name}");
                                 counter += 1;
                                 a.CurrentProgressValue = counter;
                                 continue;
