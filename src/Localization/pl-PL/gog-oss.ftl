@@ -12,6 +12,7 @@ gog-oss-notify-friend-invite = ktoś wyśle zaproszenie do znajomych
 gog-oss-notify-game-invite = ktoś wyśle zaproszenie do gry
 gog-oss-notify-friend-online = przyjaciel będzie online
 gog-oss-notify-friend-starts-game = przyjaciel rozpocznie grę
+gog-oss-notify-achievement-unlock = osiągnięcie zostanie odblokowane
 gog-oss-notify-sound = Odtwarzaj dźwięk dla powiadomień
 gog-oss-notification-volume = Głośność dźwięku
 gog-oss-notification-position = Pozycja powiadomień
