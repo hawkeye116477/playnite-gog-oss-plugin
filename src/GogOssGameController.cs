@@ -236,6 +236,32 @@ namespace GogOssLibraryNS
 
         public void BeforeGameStarting()
         {
+            List<string> processesToClose = new()
+            {
+                Path.GetFileNameWithoutExtension(Comet.ClientExecPath),
+                "GalaxyOverlay",
+                "GalaxyClient",
+                "GalaxyCommunication",
+            };
+
+            foreach (var activeProcess in Process.GetProcesses())
+            {
+                try
+                {
+                    if (processesToClose.Contains(activeProcess.ProcessName))
+                    {
+                        activeProcess.Kill();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, $"An error occured during closing {activeProcess.ProcessName} process");
+                }
+                finally
+                {
+                    activeProcess.Dispose();
+                }
+            }
             var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
             if (installedInfo.is_fully_installed == false)
             {
@@ -483,21 +509,24 @@ namespace GogOssLibraryNS
                 try
                 {
                     cometProcess = Process.GetProcessById(cometProcessId);
+                    if (cometProcess != null && !cometProcess.HasExited)
+                    {
+                        cometProcess.Kill();
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    logger.Error(ex, "An error occured during closing Comet");
                 }
-                if (cometProcess != null && !cometProcess.HasExited)
+                finally
                 {
-                    cometProcess.Kill();
+                    cometProcess.Dispose();
                 }
             }
         }
 
         public async Task LaunchGame()
         {
-            Dispose();
             if (Directory.Exists(Game.InstallDirectory))
             {
                 var task = GogOssLibrary.GetPlayTasks(Game.GameId, Game.InstallDirectory);
