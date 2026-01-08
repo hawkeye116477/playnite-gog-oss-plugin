@@ -12,6 +12,7 @@ gog-oss-notify-friend-invite = someone sends a friend invitation
 gog-oss-notify-game-invite = someone sends invitation to a game
 gog-oss-notify-friend-online = a friend comes online
 gog-oss-notify-friend-starts-game = a friend starts a game
+gog-oss-notify-achievement-unlock = an achievement is unlocked
 gog-oss-notify-sound = Play sound for notifications
 gog-oss-notification-volume = Sounds volume
 gog-oss-notification-position = Position of notifications

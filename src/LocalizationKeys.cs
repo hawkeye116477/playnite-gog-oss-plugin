@@ -62,6 +62,10 @@ namespace System
         /// </summary>
         public const string GogOssNotifyFriendStartsGame = "gog-oss-notify-friend-starts-game";
         /// <summary>
+        /// an achievement is unlocked
+        /// </summary>
+        public const string GogOssNotifyAchievementUnlock = "gog-oss-notify-achievement-unlock";
+        /// <summary>
         /// Play sound for notifications
         /// </summary>
         public const string GogOssNotifySound = "gog-oss-notify-sound";

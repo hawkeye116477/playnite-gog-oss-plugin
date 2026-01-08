@@ -128,6 +128,10 @@ namespace GogOssLibraryNS
                 {
                     troubleshootingInformation.CometVersion = cometVersion;
                     CometVersionTxt.Text = troubleshootingInformation.CometVersion;
+                    if (new Version(cometVersion) <= new Version(0, 3, 2))
+                    {
+                        NotifyAchievementChk.Visibility = Visibility.Collapsed;
+                    }
                 }
                 CometBinaryTxt.Text = troubleshootingInformation.CometBinary;
             }

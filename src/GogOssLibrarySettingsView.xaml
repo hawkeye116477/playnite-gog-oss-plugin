@@ -163,6 +163,9 @@
                         <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssEnableOverlay}}" Margin="0,10,0,0" IsChecked="{Binding Settings.EnableOverlay}" IsEnabled="{Binding IsChecked, ElementName=EnableCometSupportChk}" Name="EnableOverlayChk"></CheckBox>
                         <StackPanel Margin="0,10,0,0" IsEnabled="{Binding IsChecked, ElementName=EnableOverlayChk}">
                             <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssNotifyAbout}}" Margin="0,0,0,8" FontSize="14"/>
+                            <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyAchievementUnlock}}" 
+                                      Margin="0,0,0,8" Name="NotifyAchievementChk"
+                                      IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Achievements.Enabled}"></CheckBox>
                             <CheckBox Content="{common:Localize Key={x:Static system:LOC.GogOssNotifyNewMessage}}" 
                                       Margin="0,0,0,8" Name="NotifyNewMessageChk"
                                       IsChecked="{Binding GalaxyOverlaySettings.Overlay.Notifications.Chat.Enabled}"></CheckBox>

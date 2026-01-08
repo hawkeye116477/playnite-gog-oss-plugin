@@ -63,6 +63,9 @@ namespace GogOssLibraryNS
 
         public class Notifications
         {
+            [TomlProperty("achievements")]
+            public NotificationSettings Achievements { get; set; } = new();
+
             [TomlProperty("chat")]
             public NotificationSettings Chat { get; set; } = new();
 
@@ -79,7 +82,7 @@ namespace GogOssLibraryNS
             public NotificationSettings GameInvite { get; set; } = new();
 
             [TomlNonSerialized]
-            private NotificationSettings[] AllNotifications => new[] { Chat, FriendOnline, FriendInvite, FriendGameStart, GameInvite };
+            private NotificationSettings[] AllNotifications => new[] { Achievements, Chat, FriendOnline, FriendInvite, FriendGameStart, GameInvite };
 
             [TomlNonSerialized]
             public bool MasterSound
