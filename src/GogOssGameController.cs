@@ -259,7 +259,7 @@ namespace GogOssLibraryNS
                 }
                 finally
                 {
-                    activeProcess.Dispose();
+                    activeProcess?.Dispose();
                 }
             }
             var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
@@ -520,7 +520,7 @@ namespace GogOssLibraryNS
                 }
                 finally
                 {
-                    cometProcess.Dispose();
+                    cometProcess?.Dispose();
                 }
             }
         }
