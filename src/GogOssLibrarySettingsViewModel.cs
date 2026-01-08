@@ -110,7 +110,7 @@ namespace GogOssLibraryNS
             public bool Enabled { get; set; } = true;
 
             [TomlProperty("sound")]
-            public bool Sound { get; set; } = false;
+            public bool Sound { get; set; } = true;
         }
     }
 

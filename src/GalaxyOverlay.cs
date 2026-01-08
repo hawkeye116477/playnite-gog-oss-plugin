@@ -6,11 +6,8 @@ using Playnite.SDK.Data;
 using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GogOssLibraryNS
