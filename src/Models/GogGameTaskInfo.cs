@@ -23,6 +23,8 @@ namespace GogOssLibraryNS.Models
             public string arguments;
             public string link;
             public string name;
+            public string category = "";
+            public bool isHidden = false;
 
             public GameAction ConvertToGenericTask(string installDirectory)
             {

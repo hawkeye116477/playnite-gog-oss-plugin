@@ -199,6 +199,7 @@ namespace GogOssLibraryNS
         private CancellationTokenSource watcherToken;
         public int cometProcessId;
         public int gameProcessId;
+        public int primaryProcessId;
         public bool cometSupportEnabled = false;
         public GameSettings gameSettings;
         public GogOssLibrarySettings globalSettings = GogOssLibrary.GetSettings();
@@ -257,6 +258,50 @@ namespace GogOssLibraryNS
             }
             if (cometSupportEnabled && Comet.IsInstalled)
             {
+                // Find game process id, cuz primary process may be launcher
+                var infoManifest = GogOss.GetGogGameInfo(Game.GameId, Game.InstallDirectory);
+                if (infoManifest.playTasks.Count > 0)
+                {
+                    bool hasLauncher = infoManifest.playTasks.Where(a => a.isPrimary && a.category == "launcher").Count() > 0;
+                    if (!hasLauncher)
+                    {
+                        gameProcessId = primaryProcessId;
+                    }
+                    else
+                    {
+                        var gameExeTasks = infoManifest.playTasks.Where(a => a.category == "game" && (a.isPrimary || a.isHidden));
+                        if (gameExeTasks.Count() == 0)
+                        {
+                            logger.Warn("This game has launcher, but can't find game process id, so using launcher process id");
+                            gameProcessId = primaryProcessId;
+                        }
+                        else
+                        {
+                            var gameExeNames = gameExeTasks.Select(a => Path.GetFileNameWithoutExtension(a.path)).ToList();
+                            while (gameProcessId == 0)
+                            {
+                                try
+                                {
+                                    foreach (var proc in Process.GetProcesses())
+                                    {
+                                        if (gameExeNames.Contains(proc.ProcessName))
+                                        {
+                                            gameProcessId = proc.Id;
+                                            logger.Debug($"Found game process id: {gameProcessId}");
+                                            break;
+                                        }
+                                    }
+                                    await Task.Delay(1000);
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.Debug(ex, "An error occured during searching for game process id");
+                                }
+                            }
+                        }
+                    }
+                }
+
                 var gogAccountClient = new GogAccountClient();
                 var account = await gogAccountClient.GetAccountInfo();
                 if (account.isLoggedIn)
@@ -494,11 +539,11 @@ namespace GogOssLibraryNS
                         logger.Error($"Working directory {workingDir} doesn't exists.");
                         workingDir = Game.InstallDirectory;
                     }
-                    var gameProcess = ProcessStarter.StartProcess(gameExeFullPath, cmd.Arguments, workingDir);
-                    InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = gameProcess.Id });
-                    var monitor = new MonitorProcessTree(gameProcess.Id);
+                    var primaryProcess = ProcessStarter.StartProcess(gameExeFullPath, cmd.Arguments, workingDir);
+                    InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = primaryProcess.Id });
+                    var monitor = new MonitorProcessTree(primaryProcess.Id);
                     StartTracking(() => monitor.IsProcessTreeRunning());
-                    gameProcessId = gameProcess.Id;
+                    primaryProcessId = primaryProcess.Id;
                     await AfterGameStarting();
                 }
                 else

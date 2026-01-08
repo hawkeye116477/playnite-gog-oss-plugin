@@ -180,7 +180,7 @@ namespace GogOssLibraryNS
             try
             {
                 var otherTasks = new List<GameAction>();
-                foreach (var task in gameTaskData.playTasks.Where(a => !a.isPrimary))
+                foreach (var task in gameTaskData.playTasks.Where(a => !a.isPrimary && !a.isHidden))
                 {
                     otherTasks.Add(task.ConvertToGenericTask(installDir));
                 }
