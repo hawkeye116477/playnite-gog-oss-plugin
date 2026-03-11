@@ -1931,7 +1931,10 @@ namespace GogOssLibraryNS
                 {
                     if (dependsSecureLinks.Count > 0)
                     {
-                        allSecureLinks.inGameDependsSecureLinks.Add("redist_v2", dependsSecureLinks);
+                        if (!allSecureLinks.inGameDependsSecureLinks.ContainsKey("redist_v2"))
+                        {
+                            allSecureLinks.inGameDependsSecureLinks.Add("redist_v2", dependsSecureLinks);
+                        }
                     }
                 }
             }

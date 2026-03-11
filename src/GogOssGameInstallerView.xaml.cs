@@ -309,11 +309,17 @@ namespace GogOssLibraryNS
                             {
                                 if (branch == "")
                                 {
-                                    betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                                    if (!betaChannels.ContainsKey("disabled"))
+                                    {
+                                        betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                                    } 
                                 }
                                 else
                                 {
-                                    betaChannels.Add(branch, branch);
+                                    if (!betaChannels.ContainsKey(branch))
+                                    {
+                                        betaChannels.Add(branch, branch);
+                                    }
                                 }
                             }
                             if (betaChannels.Count > 0)
@@ -432,7 +438,10 @@ namespace GogOssLibraryNS
                             logger.Warn(ex, $"Unrecognized language: {language}");
                         }
                     }
-                    gameLanguages.Add(language, nativeLanguageName);
+                    if (!gameLanguages.ContainsKey(language))
+                    {
+                        gameLanguages.Add(language, nativeLanguageName);
+                    } 
                 }
                 gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 if (!installData.downloadProperties.language.IsNullOrEmpty() && gameLanguages.ContainsKey(installData.downloadProperties.language))
@@ -564,7 +573,10 @@ namespace GogOssLibraryNS
                         {
                             buildId = build.build_id;
                         }
-                        gameVersions.Add(buildId, versionName);
+                        if (!gameVersions.ContainsKey(buildId))
+                        {
+                            gameVersions.Add(buildId, versionName);
+                        }
                     }
                 }
                 GameVersionCBo.ItemsSource = gameVersions;

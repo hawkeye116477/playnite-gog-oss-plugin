@@ -503,7 +503,10 @@ namespace GogOssLibraryNS
                 {
                     dependManifest.manifest
                 };
-                depotHashes.Add(taskData.gameID, dependHashes);
+                if (!depotHashes.ContainsKey(taskData.gameID))
+                {
+                    depotHashes.Add(taskData.gameID, dependHashes);
+                }
             }
 
             GogDepot.Depot bigDepot = new();
@@ -535,7 +538,10 @@ namespace GogOssLibraryNS
                     if (depotManifest.depot.smallFilesContainer?.chunks.Count > 0)
                     {
                         depotManifest.depot.smallFilesContainer.product_id = depotHash.Key;
-                        bigDepot.sfcContainersByHash.Add(singleDepotHash, depotManifest.depot.smallFilesContainer);
+                        if (!bigDepot.sfcContainersByHash.ContainsKey(singleDepotHash))
+                        {
+                            bigDepot.sfcContainersByHash.Add(singleDepotHash, depotManifest.depot.smallFilesContainer);
+                        }
                     }
                     if (depotManifest.depot.files.Count > 0)
                     {
