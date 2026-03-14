@@ -12,6 +12,7 @@ gog-oss-notify-friend-invite = 收到好友伸请
 gog-oss-notify-game-invite = 收到游戏邀请
 gog-oss-notify-friend-online = 朋友上线
 gog-oss-notify-friend-starts-game = 朋友开始游戏
+gog-oss-notify-achievement-unlock = 解锁成就
 gog-oss-notify-sound = 播放提示音
 gog-oss-notification-volume = 提示音音量
 gog-oss-notification-position = 通知的位置
