@@ -5,6 +5,7 @@
         Game,
         Dependency,
         Overlay,
-        Extra
+        Extra,
+        Tools
     }
 }

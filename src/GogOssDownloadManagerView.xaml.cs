@@ -400,10 +400,13 @@ namespace GogOssLibraryNS
 
                         long resumeStartByte = 0;
 
-                        if (downloadItemType == DownloadItemType.Extra)
+                        if (downloadItemType is DownloadItemType.Extra or DownloadItemType.Tools)
                         {
                             using var headRequest = new HttpRequestMessage(HttpMethod.Head, job.url);
-                            headRequest.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
+                            if (downloadItemType == DownloadItemType.Extra)
+                            {
+                                headRequest.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
+                            }
                             using var headResponse = await client.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                             headResponse.EnsureSuccessStatusCode();
                             var contentDisposition = headResponse.Content.Headers.ContentDisposition;
@@ -2028,36 +2031,39 @@ namespace GogOssLibraryNS
             if (Directory.Exists(taskData.fullInstallPath) && !foundPatch && taskData.downloadProperties.downloadAction == DownloadAction.Update && !File.Exists(resumeStatePath))
             {
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
-                var oldBigDepot = await GogOss.GetInstalledBigDepot(installedAppList[gameID], gameID);
-
-                var allGameFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories);
-
-                var newItemsMap = bigDepot.items
-                    .Where(i => !string.IsNullOrEmpty(i.path))
-                    .ToDictionary(i => i.path, i => i);
-
-                var oldItemsMap = oldBigDepot.items
-                    .Where(i => !string.IsNullOrEmpty(i.path))
-                    .ToDictionary(i => i.path, i => i);
-
-                var options = new ParallelOptions { MaxDegreeOfParallelism = CommonHelpers.CpuThreadsNumber - 1 };
-
-                Parallel.ForEach(allGameFiles, options, gameFile =>
+                if (installedAppList.ContainsKey(gameID))
                 {
-                    var newGameFile = gameFile;
-                    if (taskData.downloadItemType == DownloadItemType.Overlay)
+                    var oldBigDepot = await GogOss.GetInstalledBigDepot(installedAppList[gameID], gameID);
+
+                    var allGameFiles = Directory.EnumerateFiles(taskData.fullInstallPath, "*.*", SearchOption.AllDirectories);
+
+                    var newItemsMap = bigDepot.items
+                        .Where(i => !string.IsNullOrEmpty(i.path))
+                        .ToDictionary(i => i.path, i => i);
+
+                    var oldItemsMap = oldBigDepot.items
+                        .Where(i => !string.IsNullOrEmpty(i.path))
+                        .ToDictionary(i => i.path, i => i);
+
+                    var options = new ParallelOptions { MaxDegreeOfParallelism = CommonHelpers.CpuThreadsNumber - 1 };
+
+                    Parallel.ForEach(allGameFiles, options, gameFile =>
                     {
-                        newGameFile = gameFile + ".zip";
-                    }
-                    string relativePath = RelativePath.Get(taskData.fullInstallPath, newGameFile);
-                    if (oldItemsMap.ContainsKey(relativePath) && !newItemsMap.ContainsKey(relativePath))
-                    {
-                        if (File.Exists(gameFile))
+                        var newGameFile = gameFile;
+                        if (taskData.downloadItemType == DownloadItemType.Overlay)
                         {
-                            File.Delete(gameFile);
+                            newGameFile = gameFile + ".zip";
                         }
-                    }
-                });
+                        string relativePath = RelativePath.Get(taskData.fullInstallPath, newGameFile);
+                        if (oldItemsMap.ContainsKey(relativePath) && !newItemsMap.ContainsKey(relativePath))
+                        {
+                            if (File.Exists(gameFile))
+                            {
+                                File.Delete(gameFile);
+                            }
+                        }
+                    });
+                }
             }
 
             if (taskData.downloadProperties.downloadAction == DownloadAction.Repair)
@@ -2182,6 +2188,7 @@ namespace GogOssLibraryNS
 
             if (stopContinue)
             {
+                logger.Error("No files to download.");
                 taskData.status = DownloadStatus.Error;
                 downloadsChanged = true;
                 await DoNextJobInQueue();
