@@ -530,8 +530,8 @@ namespace GogOssLibraryNS
                                 var finalPath = Path.Combine(fullInstallPath, item.filePath);
                                 if (item.isCompressed)
                                 {
-                                    var tempExtractedPath = Path.Combine(Path.GetDirectoryName(item.tempFilePath), $"GogOSS_Extracted_{item.hash}");
-                                    Directory.CreateDirectory(tempExtractedPath);
+                                    var tempExtractedPath = Path.Combine(tempDir, item.filePath);
+                                    Directory.CreateDirectory(Path.GetDirectoryName(tempExtractedPath));
                                     using (var outFs = new FileStream(tempExtractedPath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
                                     {
                                         using Stream sourceStream = new FileStream(item.tempFilePath!, FileMode.Open,
@@ -561,6 +561,7 @@ namespace GogOssLibraryNS
                                     {
                                         logger.Warn(ex, $"Couldn't delete original zip file {item.tempFilePath} after extraction.");
                                     }
+                                    item.tempFilePath = tempExtractedPath;
                                 }
 
                                 if (!CommonHelpers.IsDirectoryWritable(Path.GetFileName(Path.GetDirectoryName(finalPath))))
