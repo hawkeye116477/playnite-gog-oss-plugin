@@ -194,51 +194,37 @@ namespace GogOssLibraryNS
                 var newVersion = versionInfoContent.Tag_name.Replace("v", "");
                 if (troubleshootingInformation.CometVersion != newVersion)
                 {
-                    var options = new List<MessageBoxOption>
+                    var newAsset = versionInfoContent.Assets.FirstOrDefault(
+                        a => a.Browser_download_url == $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe");
+                    if (newAsset != null)
                     {
-                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.CommonViewChangelog)),
-                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame)),
-                        new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel)),
-                    };
-                    var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNewVersionAvailable, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)"Comet", ["appVersion"] = (FluentString)newVersion }), LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdaterWindowTitle), MessageBoxImage.Information, options);
-                    if (result == options[0])
-                    {
-                        var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{newVersion}";
-                        Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
-                    }
-                    else if (result == options[1])
-                    {
-                        var newAsset = versionInfoContent.Assets.FirstOrDefault(a => a.Browser_download_url == $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe");
-                        if (newAsset != null)
+                        var appsToUpdate = new Dictionary<string, UpdateInfo>();
+                        var appTitle = "Comet";
+                        var updateInfo = new UpdateInfo
                         {
-                            var appsToUpdate = new Dictionary<string, UpdateInfo>();
-                            var appTitle = "Comet";
-                            var updateInfo = new UpdateInfo
+                            Install_path = Path.GetDirectoryName(Comet.ClientInstallationPath),
+                            Version = newVersion,
+                            Download_size = newAsset.Size,
+                            Disk_size = newAsset.Size,
+                            DownloadItemType = DownloadItemType.Tools,
+                            Title = appTitle,
+                            Title_for_updater = $"{appTitle} {newVersion}",
+                        };
+                        appsToUpdate.Add("comet", updateInfo);
+                        if (appsToUpdate.Count > 0)
+                        {
+                            Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
                             {
-                                Install_path = Path.GetDirectoryName(Comet.ClientInstallationPath),
-                                Version = newVersion,
-                                Download_size = newAsset.Size,
-                                Disk_size = newAsset.Size,
-                                DownloadItemType = DownloadItemType.Tools,
-                                Title = appTitle,
-                                Title_for_updater = $"{appTitle} {newVersion}",
-                            };
-                            appsToUpdate.Add("comet", updateInfo);
-                            if (appsToUpdate.Count > 0)
-                            {
-                                Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
-                                {
-                                    ShowMaximizeButton = false,
-                                });
-                                window.DataContext = appsToUpdate;
-                                window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
-                                window.Content = new GogOssUpdaterView();
-                                window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
-                                window.SizeToContent = SizeToContent.WidthAndHeight;
-                                window.MinWidth = 600;
-                                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                                window.ShowDialog();
-                            }
+                                ShowMaximizeButton = false,
+                            });
+                            window.DataContext = appsToUpdate;
+                            window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
+                            window.Content = new GogOssUpdaterView();
+                            window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+                            window.SizeToContent = SizeToContent.WidthAndHeight;
+                            window.MinWidth = 600;
+                            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                            window.ShowDialog();
                         }
                     }
                 }
@@ -612,7 +598,7 @@ namespace GogOssLibraryNS
         private void OverlayUpdateBtn_Click(object sender, RoutedEventArgs e)
         {
             var appsToUpdate = new Dictionary<string, UpdateInfo>();
-            GlobalProgressOptions updateCheckProgressOptions = new(LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates), false) 
+            GlobalProgressOptions updateCheckProgressOptions = new(LocalizationManager.Instance.GetString(LOC.CommonCheckingForUpdates), false)
             { IsIndeterminate = true };
             playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
             {

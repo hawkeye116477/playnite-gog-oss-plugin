@@ -610,15 +610,18 @@ namespace GogOssLibraryNS
                     {
                         var assetUrl = $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe";
                         var newAsset = versionInfoContent.Assets.FirstOrDefault(a => a.Browser_download_url == assetUrl);
-                        var file = new GogDepot.DepotFile
+                        if (newAsset != null)
                         {
-                            product_id = taskData.gameID,
-                            size = (long)taskData.downloadSizeNumber,
-                            url = assetUrl,
-                            hash = newAsset.Digest.Replace("sha256:", ""),
-                            path = "/"
-                        };
-                        bigDepot.files.Add(file);
+                            var file = new GogDepot.DepotFile
+                            {
+                                product_id = taskData.gameID,
+                                size = (long)taskData.downloadSizeNumber,
+                                url = assetUrl,
+                                hash = newAsset.Digest.Replace("sha256:", ""),
+                                path = "/"
+                            };
+                            bigDepot.files.Add(file);
+                        }
                     }
                 }
             }

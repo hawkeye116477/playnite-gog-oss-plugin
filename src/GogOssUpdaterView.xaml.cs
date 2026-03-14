@@ -83,6 +83,21 @@ namespace GogOssLibraryNS
             var settings = GogOssLibrary.GetSettings();
             MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
+            var isToolExists = UpdatesList.Any(u => u.Value.DownloadItemType == Enums.DownloadItemType.Tools);
+            if (isToolExists)
+            {
+                ViewChangelogBtn.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void ViewChangelogBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedOptions = UpdatesLB.SelectedItems.Cast<KeyValuePair<string, UpdateInfo>>().ToList();
+            if (selectedOptions[0].Key == "comet")
+            {
+                var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{selectedOptions[0].Value.Version}";
+                Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
+            }
         }
     }
 }
