@@ -143,6 +143,8 @@ namespace GogOssLibraryNS
                 CometBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, cometFluentArgs);
                 CheckForCometUpdatesBtn.IsEnabled = false;
                 OpenCometBinaryBtn.IsEnabled = false;
+                EnableCometSupportChk.IsEnabled = false;
+                CometUpdatesSP.IsEnabled = false;
             }
 
             if (!Xdelta.IsInstalled)
@@ -175,6 +177,12 @@ namespace GogOssLibraryNS
                 { "bottom_right", LocalizationManager.Instance.GetString(LOC.GogOssBottomRight) },
             };
             NotificationPositionCBo.ItemsSource = notificationPositionOptions;
+            if (!GalaxyOverlay.IsInstalled || !Comet.IsInstalled)
+            {
+                EnableOverlayChk.IsEnabled = false;
+                OverlaySettingsSP.IsEnabled = false;
+                OverlayUpdateBtn.Visibility = Visibility.Hidden;
+            }
         }
 
 
