@@ -100,7 +100,7 @@ namespace GogOssLibraryNS
             double fullDownloadSize = 0;
             foreach (var selectedItem in selectedItems)
             {
-                var selectedItemSize = Helpers.StringSizeToBytes(selectedItem.Size);
+                var selectedItemSize = Helpers.StringSizeToBytes(selectedItem.Size.Replace("B", "iB"));
                 fullDownloadSize += selectedItemSize;
             }
             downloadSizeNumber = fullDownloadSize;

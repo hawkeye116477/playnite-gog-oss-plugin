@@ -411,6 +411,11 @@ namespace GogOssLibraryNS
                                 var finalUrl = headResponse.RequestMessage.RequestUri;
                                 serverFileName = Path.GetFileName(finalUrl.LocalPath);
                             }
+                            if (downloadItemType is DownloadItemType.Extra && headResponse.Content.Headers.ContentLength.HasValue)
+                            {
+                                long contentSize = headResponse.Content.Headers.ContentLength.Value;
+                                totalCompressedSize = contentSize;
+                            }
                             if (!string.IsNullOrWhiteSpace(serverFileName))
                             {
                                 effectiveFilePath = Path.Combine(job.filePath, serverFileName.Trim('"'));
