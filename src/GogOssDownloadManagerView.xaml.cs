@@ -750,10 +750,10 @@ namespace GogOssLibraryNS
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
             // Producer-consumer channel
-            var channel = Channel.CreateUnbounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, bool isRedist, bool isCompressed, string chunkId)>(
+            var channel = Channel.CreateUnbounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, DepotFileType depotFileType, bool isCompressed, string chunkId)>(
                 );
 
-            var jobs = new HashSet<(string filePath, long offset, GogDepot.Chunk chunk, bool isRedist, string productId)>();
+            var jobs = new HashSet<(string filePath, long offset, GogDepot.Chunk chunk, DepotFileType depotFileType, string productId)>();
 
             long totalSize = 0;
             long totalCompressedSize = 0;
@@ -783,7 +783,7 @@ namespace GogOssLibraryNS
                 {
                     var depotFilePath = file.path.TrimStart('/', '\\');
                     var filePath = Path.Combine(fullInstallPath, depotFilePath);
-                    bool isRedist = false;
+                    DepotFileType depotFileType = DepotFileType.Game;
 
                     if (file.support)
                     {
@@ -828,7 +828,7 @@ namespace GogOssLibraryNS
                     };
                     if (currentFileSize != expectedFileSize && !resumeState.IsCompleted(filePath, v1Chunk.compressedMd5))
                     {
-                        jobs.Add((filePath, 0, v1Chunk, isRedist, file.product_id));
+                        jobs.Add((filePath, 0, v1Chunk, depotFileType, file.product_id));
                     }
                     else
                     {
@@ -882,6 +882,7 @@ namespace GogOssLibraryNS
                 //
                 if (shouldDownloadSfc)
                 {
+                    DepotFileType depotFileType = DepotFileType.Game;
                     foreach (var kvp in bigDepot.sfcContainersByHash.Where(kvp => sfcHashesToDownload.Contains(kvp.Key)))
                     {
                         string depotHash = kvp.Key;
@@ -910,7 +911,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = sfcPos;
                                 if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((sfcFilePath, sfcPos, chunk, false, kvp.Value.product_id));
+                                    jobs.Add((sfcFilePath, sfcPos, chunk, depotFileType, kvp.Value.product_id));
                                 }
                             }
                             else if (sfcPos + chunkSize <= currentSfcSize)
@@ -923,7 +924,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = sfcPos;
                                 if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((sfcFilePath, sfcPos, chunk, false, kvp.Value.product_id));
+                                    jobs.Add((sfcFilePath, sfcPos, chunk, depotFileType, kvp.Value.product_id));
                                 }
                                 else
                                 {
@@ -947,7 +948,7 @@ namespace GogOssLibraryNS
                 foreach (var depot in allDepotItems)
                 {
                     depot.path = depot.path.TrimStart('/', '\\');
-                    bool isRedist = false;
+                    DepotFileType depotFileType = DepotFileType.Game;
 
                     string filePath;
                     if (string.Equals(depot.type ?? "", "DepotDiff", StringComparison.OrdinalIgnoreCase))
@@ -969,7 +970,7 @@ namespace GogOssLibraryNS
                     if (depot.redistTargetDir != "")
                     {
                         filePath = Path.Combine(fullInstallPath, depot.path);
-                        isRedist = true;
+                        depotFileType = DepotFileType.Redist;
                     }
 
                     if (depot.type == "DepotDirectory")
@@ -983,6 +984,10 @@ namespace GogOssLibraryNS
                         if (!knownTypes.Contains(depot.type))
                         {
                             logger.Warn($"Depot type {depot.type} isn't supported. Please report that.");
+                        }
+                        else if (depot.type == "DepotDiff")
+                        {
+                            depotFileType = DepotFileType.Patch;
                         }
                         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
                     }
@@ -1049,7 +1054,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = pos;
                                 if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((filePath, pos, chunk, isRedist, depot.product_id));
+                                    jobs.Add((filePath, pos, chunk, depotFileType, depot.product_id));
                                 }
                                 else
                                 {
@@ -1067,7 +1072,7 @@ namespace GogOssLibraryNS
                                 chunk.offset = pos;
                                 if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
                                 {
-                                    jobs.Add((filePath, pos, chunk, isRedist, depot.product_id));
+                                    jobs.Add((filePath, pos, chunk, depotFileType, depot.product_id));
                                 }
                                 else
                                 {
@@ -1146,16 +1151,15 @@ namespace GogOssLibraryNS
                     long compressedSize = (long)chunk.compressedSize;
 
                     bool isV1 = bigDepot.version == 1;
-                    bool isCompressed = !isV1 || job.isRedist;
+                    bool isCompressed = !isV1 || job.depotFileType == DepotFileType.Redist;
 
-                    bool isPatchFile = Path.GetFileName(job.filePath).IndexOf(".patch", StringComparison.OrdinalIgnoreCase) >= 0;
                     var currentSecureLinksDict = new Dictionary<string, List<GogSecureLinks.FinalUrl>>();
 
-                    if (isPatchFile)
+                    if (job.depotFileType == DepotFileType.Patch)
                     {
                         currentSecureLinksDict = patchesLinks;
                     }
-                    else if (job.isRedist)
+                    else if (job.depotFileType == DepotFileType.Redist)
                     {
                         currentSecureLinksDict = dependencyLinks;
                     }
@@ -1164,7 +1168,7 @@ namespace GogOssLibraryNS
                         currentSecureLinksDict = secureLinks;
                     }
                     var productId = job.productId;
-                    if (job.isRedist)
+                    if (job.depotFileType == DepotFileType.Redist)
                     {
                         productId = "redist_v2";
                     }
@@ -1198,7 +1202,7 @@ namespace GogOssLibraryNS
                             }
 
                             string url;
-                            if (isV1 && !job.isRedist)
+                            if (isV1 && job.depotFileType != DepotFileType.Redist)
                             {
                                 url = currentSecureLink.formatted_url.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
                             }
@@ -1226,7 +1230,7 @@ namespace GogOssLibraryNS
                                     resumeStartByte = new FileInfo(tempFilePath).Length;
                                     if (resumeStartByte >= compressedSize)
                                     {
-                                        await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
+                                        await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.depotFileType, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
                                         tempFilePath = null;
                                         return;
                                     }
@@ -1266,7 +1270,7 @@ namespace GogOssLibraryNS
                                     offset += read;
                                 }
 
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.isRedist, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
+                                await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.depotFileType, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
 
                                 chunkBuffer = null;
                                 allocatedBytes = 0;
@@ -1292,7 +1296,7 @@ namespace GogOssLibraryNS
                                         await tempFs.FlushAsync(token).ConfigureAwait(false);
                                     }
                                 }).ConfigureAwait(false);
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.isRedist, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
+                                await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.depotFileType, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
                             }
 
                             return;
