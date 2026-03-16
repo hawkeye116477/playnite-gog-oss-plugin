@@ -1,5 +1,13 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.5.1
+    RequiredApiVersion: 6.14.0
+    ReleaseDate: 2026-03-16
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.5.1/GogOssLibrary_1_5_1.pext
+    Changelog:
+      - Fixed problems with downloading some games
+      - Restored progress bar on GOG OSS panel button
+      - Moved game depends entries into correct place
   - Version: 1.5.0
     RequiredApiVersion: 6.14.0
     ReleaseDate: 2026-03-15
