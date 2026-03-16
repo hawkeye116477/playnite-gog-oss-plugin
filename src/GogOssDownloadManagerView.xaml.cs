@@ -2111,7 +2111,7 @@ namespace GogOssLibraryNS
                             var wantedDependItem = downloadManagerData.downloads.FirstOrDefault(item => item.gameID == depend);
                             if (wantedDependItem == null)
                             {
-                                downloadManagerData.downloads.Insert(mainTaskIndex, dependInstallData);
+                                downloadManagerData.downloads.Insert(mainTaskIndex + 1, dependInstallData);
                                 addedDepend = true;
                             }
                         }
@@ -2432,7 +2432,9 @@ namespace GogOssLibraryNS
                 var item = downloadManagerData.downloads.FirstOrDefault(x => x.gameID == gameID);
                 if (item != null)
                 {
-                    item.progress = p.TotalBytes > 0 ? (double)p.DiskBytes / p.TotalBytes * 100 : 0;
+                    var currentPercentProgress = p.TotalBytes > 0 ? (double)p.DiskBytes / p.TotalBytes * 100 : 0;
+                    item.progress = currentPercentProgress;
+                    gogPanel.ProgressValue = currentPercentProgress;
                     if (item.status != DownloadStatus.Running)
                     {
                         item.status = DownloadStatus.Running;
@@ -2557,6 +2559,7 @@ namespace GogOssLibraryNS
 
                 taskData.status = DownloadStatus.Completed;
                 taskData.progress = 100.0;
+                gogPanel.ProgressValue = 100.0;
                 DateTimeOffset now = DateTime.UtcNow;
                 taskData.completedTime = now.ToUnixTimeSeconds();
                 if (settings.DisplayDownloadTaskFinishedNotifications)
