@@ -2515,7 +2515,6 @@ namespace GogOssLibraryNS
                         File.Delete(installedDepotFile);
                     }
                     File.WriteAllText(installedDepotFile, originalDepotJson);
-                    GogOss.AddToHeroicInstalledList(installedGameInfo, gameID, wantedUnifiedTask.installSizeBytes);
                     GogOssLibrary.Instance.installedAppListModified = true;
                 }
                 else if (matchingPluginTask.downloadItemType == DownloadItemType.Overlay)

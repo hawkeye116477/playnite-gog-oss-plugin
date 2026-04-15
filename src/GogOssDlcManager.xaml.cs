@@ -226,7 +226,6 @@ namespace GogOssLibraryNS
                             }
                             installedAppList.Add(GameId, installedInfo);
                             GogOssLibrary.Instance.installedAppListModified = true;
-                            GogOss.AddToHeroicInstalledList(installedInfo, GameId);     
                         }
                     }, globalProgressOptions);
                     foreach (var selectedKey in selectedKeys)

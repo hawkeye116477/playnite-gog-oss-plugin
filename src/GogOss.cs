@@ -674,46 +674,6 @@ namespace GogOssLibraryNS
             return gogExtras;
         }
 
-        public static void AddToHeroicInstalledList(Installed installedInfo, string gameId, double installSize = 0)
-        {
-            var heroicInstalledPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "heroic", "gog_store", "installed.json");
-            if (File.Exists(heroicInstalledPath))
-            {
-                var heroicInstalledContent = FileSystem.ReadFileAsStringSafe(heroicInstalledPath);
-                if (!heroicInstalledContent.IsNullOrWhiteSpace())
-                {
-                    if (installSize == 0)
-                    {
-                        foreach (var file in Directory.GetFiles(installedInfo.install_path, "*", SearchOption.AllDirectories))
-                        {
-                            installSize += new FileInfo(file).Length;
-                        }
-                    }
-                    var heroicInstallInfo = new HeroicInstalled.HeroicInstalledSingle
-                    {
-                        appName = gameId,
-                        build_id = installedInfo.build_id,
-                        title = installedInfo.title,
-                        version = installedInfo.version,
-                        platform = installedInfo.platform,
-                        install_path = installedInfo.install_path,
-                        language = installedInfo.language,
-                        installed_DLCs = installedInfo.installed_DLCs,
-                        install_size = CommonPlugin.CommonHelpers.FormatSize(installSize)
-                    };
-                    var heroicInstalledJson = Serialization.FromJson<HeroicInstalled>(heroicInstalledContent);
-                    var wantedHeroicItem = heroicInstalledJson.installed.FirstOrDefault(i => i.appName == gameId);
-                    if (wantedHeroicItem != null)
-                    {
-                        heroicInstalledJson.installed.Remove(wantedHeroicItem);
-                    }
-                    heroicInstalledJson.installed.Add(heroicInstallInfo);
-                    var strConf = Serialization.ToJson(heroicInstalledJson, true);
-                    File.WriteAllText(heroicInstalledPath, strConf);
-                }
-            }
-        }
-
         public static async Task<GogDepot.Depot> GetOverlayManifest()
         {
             var depotManifest = new GogDepot.Depot();
