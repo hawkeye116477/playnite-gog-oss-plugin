@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filter aktif
-third-party-playnite-filters = Filter
 third-party-playnite-game-install-error = Gagal menginstal game: { $var0 }
 third-party-playnite-game-uninstall-error = Gagal menguninstall game: { $var0 }
 third-party-playnite-disabled-title = Dinonaktifkan
 third-party-playnite-version-label = Versi
-third-party-playnite-install-size-label = Besar Instalasi
-third-party-playnite-added-label = Ditambahkan
 third-party-playnite-ok-label = OK
 third-party-playnite-save-label = Simpan
 third-party-playnite-cancel-label = Batal
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Mengunduh…
 third-party-playnite-loading-label = Memuat...
 third-party-playnite-download-label = Unduh
 third-party-playnite-progress-metadata = Mendownload metadata...
-third-party-playnite-menu-restart-system = Restart Sistem
-third-party-playnite-menu-shutdown-system = Matikan Sistem
-third-party-playnite-menu-suspend-system = Suspend System
-third-party-playnite-menu-hibernate-system = Hibernasikan Sistem
 third-party-playnite-settings-label = Pengaturan
 third-party-playnite-settings-general-label = Umum
 third-party-playnite-settings-advanced-label = Opsi Lanjut
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Bersihkan Cache?
 third-party-playnite-settings-playtime-import-mode-never = Tidak pernah
 third-party-playnite-login-required = Login dibutuhkan
 third-party-playnite-executable-title = File program (file .exe/.sh/.bat, dll..)
-third-party-playnite-game-name-title = Nama
 third-party-playnite-game-install-dir-title = Direktori Instalasi
 third-party-playnite-library-import-error = Gagal mengimpor game dari { $var0 }
 third-party-playnite-metadata-download-error = Gagal mendownload metadata: { $var0 }
-third-party-playnite-download-error = Download Error
 third-party-playnite-uninstalling = Menguninstal
-third-party-playnite-do-nothing = Diamkan aplikasi
 third-party-playnite-close = Tutup aplikasi
 third-party-playnite-updater-window-title = Update Tersedia
 third-party-playnite-updater-install-update = Install Update
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Periksa Pembaruan
 third-party-playnite-update-check-fail-message = Gagal memeriksa pembaruan.
 third-party-playnite-install-game = Instal
 third-party-playnite-uninstall-game = Uninstal
-third-party-playnite-dont-show-again-title = Jangan Tampilkan Lagi
 third-party-playnite-common-links-forum = Forum
 third-party-playnite-common-links-store-page = Laman Toko
 third-party-playnite-extensions-updates = Pembaruan

@@ -575,14 +575,6 @@ namespace System
         /// </summary>
         public const string CommonPathNotExistsError = "common-path-not-exists-error";
         /// <summary>
-        /// Filter Active
-        /// </summary>
-        public const string ThirdPartyPlayniteFilterActiveLabel = "third-party-playnite-filter-active-label";
-        /// <summary>
-        /// Filters
-        /// </summary>
-        public const string ThirdPartyPlayniteFilters = "third-party-playnite-filters";
-        /// <summary>
         /// Cannot install game: {$var0}
         /// </summary>
         public const string ThirdPartyPlayniteGameInstallError = "third-party-playnite-game-install-error";
@@ -598,14 +590,6 @@ namespace System
         /// Version
         /// </summary>
         public const string ThirdPartyPlayniteVersionLabel = "third-party-playnite-version-label";
-        /// <summary>
-        /// Install Size
-        /// </summary>
-        public const string ThirdPartyPlayniteInstallSizeLabel = "third-party-playnite-install-size-label";
-        /// <summary>
-        /// Added
-        /// </summary>
-        public const string ThirdPartyPlayniteAddedLabel = "third-party-playnite-added-label";
         /// <summary>
         /// OK
         /// </summary>
@@ -643,22 +627,6 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteProgressMetadata = "third-party-playnite-progress-metadata";
         /// <summary>
-        /// Restart System
-        /// </summary>
-        public const string ThirdPartyPlayniteMenuRestartSystem = "third-party-playnite-menu-restart-system";
-        /// <summary>
-        /// Turn Off System
-        /// </summary>
-        public const string ThirdPartyPlayniteMenuShutdownSystem = "third-party-playnite-menu-shutdown-system";
-        /// <summary>
-        /// Suspend System
-        /// </summary>
-        public const string ThirdPartyPlayniteMenuSuspendSystem = "third-party-playnite-menu-suspend-system";
-        /// <summary>
-        /// Hibernate System
-        /// </summary>
-        public const string ThirdPartyPlayniteMenuHibernateSystem = "third-party-playnite-menu-hibernate-system";
-        /// <summary>
         /// Settings
         /// </summary>
         public const string ThirdPartyPlayniteSettingsLabel = "third-party-playnite-settings-label";
@@ -687,10 +655,6 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteExecutableTitle = "third-party-playnite-executable-title";
         /// <summary>
-        /// Name
-        /// </summary>
-        public const string ThirdPartyPlayniteGameNameTitle = "third-party-playnite-game-name-title";
-        /// <summary>
         /// Installation Folder
         /// </summary>
         public const string ThirdPartyPlayniteGameInstallDirTitle = "third-party-playnite-game-install-dir-title";
@@ -703,17 +667,9 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteMetadataDownloadError = "third-party-playnite-metadata-download-error";
         /// <summary>
-        /// Download Error
-        /// </summary>
-        public const string ThirdPartyPlayniteDownloadError = "third-party-playnite-download-error";
-        /// <summary>
         /// Uninstalling
         /// </summary>
         public const string ThirdPartyPlayniteUninstalling = "third-party-playnite-uninstalling";
-        /// <summary>
-        /// Do nothing
-        /// </summary>
-        public const string ThirdPartyPlayniteDoNothing = "third-party-playnite-do-nothing";
         /// <summary>
         /// Close
         /// </summary>
@@ -742,10 +698,6 @@ namespace System
         /// Uninstall
         /// </summary>
         public const string ThirdPartyPlayniteUninstallGame = "third-party-playnite-uninstall-game";
-        /// <summary>
-        /// Don't Show Again
-        /// </summary>
-        public const string ThirdPartyPlayniteDontShowAgainTitle = "third-party-playnite-dont-show-again-title";
         /// <summary>
         /// Forum
         /// </summary>

@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filtro activo
-third-party-playnite-filters = Filtros
 third-party-playnite-game-install-error = No se puede instalar el juego: { $var0 }
 third-party-playnite-game-uninstall-error = No se puede desinstalar el juego: { $var0 }
 third-party-playnite-disabled-title = Deshabilitado
 third-party-playnite-version-label = Versión
-third-party-playnite-install-size-label = Tamaño de instalación
-third-party-playnite-added-label = Añadido
 third-party-playnite-ok-label = OK
 third-party-playnite-save-label = Guardar
 third-party-playnite-cancel-label = Cancelar
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Descargando…
 third-party-playnite-loading-label = Cargando…
 third-party-playnite-download-label = Descargar
 third-party-playnite-progress-metadata = Descargando metadatos…
-third-party-playnite-menu-restart-system = Reiniciar el sistema
-third-party-playnite-menu-shutdown-system = Apagar el sistema
-third-party-playnite-menu-suspend-system = Suspender el sistema
-third-party-playnite-menu-hibernate-system = Hibernar el sistema
 third-party-playnite-settings-label = Configuración
 third-party-playnite-settings-general-label = General
 third-party-playnite-settings-advanced-label = Avanzado
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = ¿Limpiar cache?
 third-party-playnite-settings-playtime-import-mode-never = Nunca
 third-party-playnite-login-required = Autenticación requerida
 third-party-playnite-executable-title = Ejecutable
-third-party-playnite-game-name-title = Nombre
 third-party-playnite-game-install-dir-title = Directorio de instalación
 third-party-playnite-library-import-error = Error al importar los juegos de { $var0 }.
 third-party-playnite-metadata-download-error = Error al descargar los metadatos: { $var0 }
-third-party-playnite-download-error = Error de Descarga
 third-party-playnite-uninstalling = Desinstalando
-third-party-playnite-do-nothing = No hacer nada
 third-party-playnite-close = Cerrar
 third-party-playnite-updater-window-title = Actualización Disponible
 third-party-playnite-updater-install-update = Instalar Actualización
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Comprobar actualizaciones
 third-party-playnite-update-check-fail-message = Error al comprobar actualizaciones.
 third-party-playnite-install-game = Instalar
 third-party-playnite-uninstall-game = Desinstalar
-third-party-playnite-dont-show-again-title = No mostrar de nuevo
 third-party-playnite-common-links-forum = Foro
 third-party-playnite-common-links-store-page = Página de la tienda
 third-party-playnite-extensions-updates = Actualizaciones

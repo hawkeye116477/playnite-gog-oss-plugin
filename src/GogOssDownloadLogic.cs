@@ -156,13 +156,43 @@ namespace GogOssLibraryNS
             }
         }
 
-        public async Task AddTasks(List<DownloadManagerData.Download> downloadTasks)
+        public async Task AddTasks(List<DownloadManagerData.Download> downloadTasks, bool silently = false)
         {
             var unifiedTasks = new List<UnifiedDownload>();
             UnifiedDownloadManagerApi unifiedDownloadManagerApi = new();
             var allDownloads = unifiedDownloadManagerApi.GetAllDownloads();
+            List<string> downloadItemsAlreadyAdded = new();
             foreach (var downloadTask in downloadTasks)
             {
+                bool completedDownload = true;
+                var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(downloadTask.gameID, GogOssLibrary.Instance.Id.ToString());
+                if (wantedUnifiedItem != null)
+                {
+                    if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
+                    {
+                        completedDownload = false;
+                    }
+                }
+                if (completedDownload)
+                {
+                    var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == downloadTask.gameID);
+                    if (wantedPluginItem != null)
+                    {
+                        GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
+                        wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == downloadTask.gameID);
+                    }
+                    if (wantedUnifiedItem != null)
+                    {
+                        unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
+                        wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(downloadTask.gameID, GogOssLibrary.Instance.Id.ToString());
+                    }
+                }
+                if (wantedUnifiedItem != null)
+                {
+                    downloadItemsAlreadyAdded.Add(wantedUnifiedItem.name);
+                    continue;
+                }
+
                 // Search for depends
                 var matchingPluginTask = downloadTask;
                 if (matchingPluginTask.downloadItemType == DownloadItemType.Game && matchingPluginTask.depends.Count == 0)
@@ -267,9 +297,22 @@ namespace GogOssLibraryNS
                 };
                 unifiedTasks.Add(unifiedTask);
             }
-           
+
             await unifiedDownloadManagerApi.AddTasks(unifiedTasks);
             GogOssLibrary.Instance.SaveDownloadData();
+
+            if (!silently)
+            {
+                if (downloadItemsAlreadyAdded.Count > 0)
+                {
+                    string downloadItemsAlreadyAddedCombined = downloadItemsAlreadyAdded[0];
+                    if (downloadItemsAlreadyAdded.Count > 1)
+                    {
+                        downloadItemsAlreadyAddedCombined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
+                    }
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAddedCombined, ["count"] = (FluentNumber)downloadItemsAlreadyAdded.Count }), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
 
         private async Task DownloadNonGames(CancellationToken token,
@@ -2496,6 +2539,7 @@ namespace GogOssLibraryNS
                     File.WriteAllText(overlayInstalledFilePath, Serialization.ToJson(overlayInstalledInfo, true));
                 }
 
+                wantedUnifiedTask.activity = "";
                 wantedUnifiedTask.status = UnifiedDownloadStatus.Completed;
                 wantedUnifiedTask.progress = 100.0;
                 DateTimeOffset now = DateTime.UtcNow;
@@ -2507,6 +2551,7 @@ namespace GogOssLibraryNS
                 {
                     logger.Error(ex, "");
                     wantedUnifiedTask.status = UnifiedDownloadStatus.Error;
+                    wantedUnifiedTask.activity = "";
                 }
             }
             finally

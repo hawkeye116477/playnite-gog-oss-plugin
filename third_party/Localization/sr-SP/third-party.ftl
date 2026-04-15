@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Филтер активан
-third-party-playnite-filters = Филтери
 third-party-playnite-game-install-error = Не може да се инсталира игра: { $var0 }
 third-party-playnite-game-uninstall-error = Не може да се деинсталира игра: { $var0 }
 third-party-playnite-disabled-title = Онемогућено
 third-party-playnite-version-label = Верзија
-third-party-playnite-install-size-label = Величина инсталације
-third-party-playnite-added-label = Додато
 third-party-playnite-ok-label = ОК
 third-party-playnite-save-label = Сачувај
 third-party-playnite-cancel-label = Откажи
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Преузимање…
 third-party-playnite-loading-label = Учитавање...
 third-party-playnite-download-label = Преузми
 third-party-playnite-progress-metadata = Преузимање метаподатака…
-third-party-playnite-menu-restart-system = Рестартуј систем
-third-party-playnite-menu-shutdown-system = Искључи систем
-third-party-playnite-menu-suspend-system = Суспендуј систем
-third-party-playnite-menu-hibernate-system = Хибернирај систем
 third-party-playnite-settings-label = Подешавања
 third-party-playnite-settings-general-label = Опште
 third-party-playnite-settings-advanced-label = Напредно
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Очисти кеширане 
 third-party-playnite-settings-playtime-import-mode-never = Никад
 third-party-playnite-login-required = Потребна је провера
 third-party-playnite-executable-title = Покретни фајл
-third-party-playnite-game-name-title = Назив
 third-party-playnite-game-install-dir-title = Инсталациони директоријум
 third-party-playnite-library-import-error = Неуспешно увођење игара из { $var0 }.
 third-party-playnite-metadata-download-error = Неуспело преузимање метаподатака: { $var0 }
-third-party-playnite-download-error = Грешка приликом преузимања
 third-party-playnite-uninstalling = Деинсталирање
-third-party-playnite-do-nothing = Не ради ништа
 third-party-playnite-close = Затвори
 third-party-playnite-updater-window-title = Доступно је ажурирање
 third-party-playnite-updater-install-update = Преузми и инсталирај ажурирање
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Провери да ли постоје
 third-party-playnite-update-check-fail-message = Неуспешна провера нових ажурирања.
 third-party-playnite-install-game = Инсталирај
 third-party-playnite-uninstall-game = Деинсталирај
-third-party-playnite-dont-show-again-title = Не приказуј поново
 third-party-playnite-common-links-forum = Форум
 third-party-playnite-common-links-store-page = Страница у продавници
 third-party-playnite-extensions-updates = Ажурирања

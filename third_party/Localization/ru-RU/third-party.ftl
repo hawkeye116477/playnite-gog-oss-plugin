@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Фильтр активен
-third-party-playnite-filters = Фильтры
 third-party-playnite-game-install-error = Не удалось установить игру: { $var0 }
 third-party-playnite-game-uninstall-error = Не удалось удалить игру: { $var0 }
 third-party-playnite-disabled-title = Откл.
 third-party-playnite-version-label = Версия
-third-party-playnite-install-size-label = Размер игры
-third-party-playnite-added-label = Добавлено
 third-party-playnite-ok-label = Окей
 third-party-playnite-save-label = Сохранить
 third-party-playnite-cancel-label = Отменить
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Скачивание…
 third-party-playnite-loading-label = Загрузка…
 third-party-playnite-download-label = Скачать
 third-party-playnite-progress-metadata = Загружаем метаданные...
-third-party-playnite-menu-restart-system = Перезагрузка
-third-party-playnite-menu-shutdown-system = Завершение работы
-third-party-playnite-menu-suspend-system = Спящий режим
-third-party-playnite-menu-hibernate-system = Гибернация
 third-party-playnite-settings-label = Настройки
 third-party-playnite-settings-general-label = Основные
 third-party-playnite-settings-advanced-label = Расширенные
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Очистить кэш?
 third-party-playnite-settings-playtime-import-mode-never = Никогда
 third-party-playnite-login-required = Требуется авторизация
 third-party-playnite-executable-title = Исполняемый файл
-third-party-playnite-game-name-title = Название игры
 third-party-playnite-game-install-dir-title = Путь установки
 third-party-playnite-library-import-error = Не удалось импортировать игры из { $var0 }.
 third-party-playnite-metadata-download-error = Не удалось скачать метаданные: { $var0 }
-third-party-playnite-download-error = Ошибка загрузки
 third-party-playnite-uninstalling = Удаление
-third-party-playnite-do-nothing = Ничего не делать
 third-party-playnite-close = Закрыть
 third-party-playnite-updater-window-title = Вышла новая версия
 third-party-playnite-updater-install-update = Скачать и обновить
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Проверить наличие об�
 third-party-playnite-update-check-fail-message = Не удалось проверить наличие новой версии.
 third-party-playnite-install-game = Установить
 third-party-playnite-uninstall-game = Удалить с устройства
-third-party-playnite-dont-show-again-title = Больше не показывать
 third-party-playnite-common-links-forum = Форум
 third-party-playnite-common-links-store-page = Страница в магазине
 third-party-playnite-extensions-updates = Обновления

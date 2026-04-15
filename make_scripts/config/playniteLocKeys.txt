@@ -17,20 +17,9 @@ LOCGameInstallDirTitle
 LOCVersionLabel
 LOCMetadataDownloadError
 LOCLoginRequired
-LOCDoNothing
-LOCMenuShutdownSystem
-LOCMenuRestartSystem
-LOCMenuHibernateSystem
-LOCMenuSuspendSystem
 LOCDisabledTitle
 LOCGameInstallError
 LOCDownloadingLabel
-LOCFilterActiveLabel
-LOCFilters
-LOCGameNameTitle
-LOCInstallSizeLabel
-LOCAddedLabel
-LOCDontShowAgainTitle
 LOCYesLabel
 LOCNoLabel
 LOCUninstallGame
@@ -48,5 +37,4 @@ LOCLibraryImportError
 LOCCommonLinksForum
 LOCCommonLinksStorePage
 LOCGameUninstallError
-LOCDownloadError
 LOCDownloadLabel

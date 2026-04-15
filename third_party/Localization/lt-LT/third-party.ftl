@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filtras aktyvus
-third-party-playnite-filters = Filtrai
 third-party-playnite-game-install-error = Nepavyko įrašyti žaidimo: { $var0 }
 third-party-playnite-game-uninstall-error = Nepavyko ištrinti žaidimo: { $var0 }
 third-party-playnite-disabled-title = Išjungta
 third-party-playnite-version-label = Versija
-third-party-playnite-install-size-label = Įdiegtas dydis
-third-party-playnite-added-label = Pridėta
 third-party-playnite-ok-label = Gerai
 third-party-playnite-save-label = Išsaugoti
 third-party-playnite-cancel-label = Atšaukti
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Siunčiama…
 third-party-playnite-loading-label = Kraunama...
 third-party-playnite-download-label = Atsisiųsti
 third-party-playnite-progress-metadata = Siunčiami metaduomenys…
-third-party-playnite-menu-restart-system = Perkrauti sistemą
-third-party-playnite-menu-shutdown-system = Išjungti sistemą
-third-party-playnite-menu-suspend-system = Užmigdyti sistemą
-third-party-playnite-menu-hibernate-system = Sistemą užmigdyti įrašius
 third-party-playnite-settings-label = Nustatymai
 third-party-playnite-settings-general-label = Bendri
 third-party-playnite-settings-advanced-label = Išplėstiniai
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Išvalyti Talpyklą?
 third-party-playnite-settings-playtime-import-mode-never = Niekada
 third-party-playnite-login-required = Reikalinga autentifikacija
 third-party-playnite-executable-title = Programinis failas
-third-party-playnite-game-name-title = Pavadinimas
 third-party-playnite-game-install-dir-title = Žaidimo direktorija
 third-party-playnite-library-import-error = Importuoti žaidimus iš { $var0 }.
 third-party-playnite-metadata-download-error = Nepavyko atsisiųsti metadata: { $var0 }
-third-party-playnite-download-error = Atsiuntimo klaida
 third-party-playnite-uninstalling = Išdiegti
-third-party-playnite-do-nothing = Nieko nedaryti
 third-party-playnite-close = Uždaryti
 third-party-playnite-updater-window-title = Galimas atnaujinimas
 third-party-playnite-updater-install-update = Įrašyti atnaujinimą
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Tikrinti, ar yra atnaujinimų
 third-party-playnite-update-check-fail-message = Nepavyko patikrinti ar yra naujinimų.
 third-party-playnite-install-game = Įrašyti
 third-party-playnite-uninstall-game = Ištrinti
-third-party-playnite-dont-show-again-title = Daugiau neberodyti
 third-party-playnite-common-links-forum = Forumas
 third-party-playnite-common-links-store-page = Parduotuvės tinklalapis
 third-party-playnite-extensions-updates = Atnaujinimai

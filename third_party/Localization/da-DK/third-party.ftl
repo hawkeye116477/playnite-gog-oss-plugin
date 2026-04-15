@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filter aktivt
-third-party-playnite-filters = Filtre
 third-party-playnite-game-install-error = Kan ikke installere spil: { $var0 }
 third-party-playnite-game-uninstall-error = Kan ikke afinstallere spil: { $var0 }
 third-party-playnite-disabled-title = Deaktiveret
 third-party-playnite-version-label = Version
-third-party-playnite-install-size-label = Installationsstørrelse
-third-party-playnite-added-label = Tilføjet
 third-party-playnite-ok-label = OK
 third-party-playnite-save-label = Gem
 third-party-playnite-cancel-label = Annullér
@@ -21,19 +17,13 @@ third-party-playnite-downloading-label = Downloader…
 third-party-playnite-loading-label = Indlæser…
 third-party-playnite-download-label = Download
 third-party-playnite-progress-metadata = Henter metadata...
-third-party-playnite-menu-restart-system = Genstart System
-third-party-playnite-menu-shutdown-system = Sluk Systemet
-third-party-playnite-menu-suspend-system = Suspendér Systemet
-third-party-playnite-menu-hibernate-system = Dvaletilstand
 third-party-playnite-settings-label = Indstillinger
 third-party-playnite-settings-general-label = Generelt
 third-party-playnite-settings-advanced-label = Avanceret
 third-party-playnite-settings-clear-cache-title = Ryd cache?
 third-party-playnite-login-required = Godkendelse krævet
 third-party-playnite-executable-title = Eksekverings-fil
-third-party-playnite-game-name-title = Navn
 third-party-playnite-uninstalling = Afinstallerer
-third-party-playnite-do-nothing = Gør ingenting
 third-party-playnite-close = Luk
 third-party-playnite-install-game = Installér
 third-party-playnite-uninstall-game = Afinstaller

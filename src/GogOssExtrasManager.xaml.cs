@@ -169,6 +169,8 @@ namespace GogOssLibraryNS
 
                 var gameManifest = await gogDownloadApi.GetGameMetaManifest(gameInstallData);
                 var unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
+
+                var downloadItemsAlreadyAdded = new List<string>();
                 foreach (var selectedItem in selectedItems)
                 {
                     var downloadTaskId = $"{Game.GameId}_{Regex.Match(selectedItem.ManualUrl, @"\d+$").Value}";
@@ -185,35 +187,11 @@ namespace GogOssLibraryNS
                         maxWorkers = maxWorkers,
                         installPath = newInstallPath
                     };
-                    var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(downloadTaskId, GogOssLibrary.Instance.Id.ToString());
-                    bool completedDownload = true;
-                    var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == downloadTaskId);
-                    if (completedDownload)
-                    {
-                        if (wantedPluginItem != null)
-                        {
-                            GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
-                            wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == downloadTaskId);
-                        }
-                        if (wantedUnifiedItem != null)
-                        {
-                            unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
-                            wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(downloadTaskId, GogOssLibrary.Instance.Id.ToString());
-                        }
-                    }
-
-                    if (wantedUnifiedItem != null || wantedPluginItem != null)
-                    {
-                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)wantedUnifiedItem.name }), "", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    else
-                    {
-                        tasks.Add(downloadTask);
-                    }
+                    tasks.Add(downloadTask);
                 }
+                var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
                 if (tasks.Count > 0)
                 {
-                    var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
                     await downloadLogic.AddTasks(tasks);
                 }
             }

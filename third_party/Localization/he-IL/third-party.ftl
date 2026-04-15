@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = סינון פעיל
-third-party-playnite-filters = מסננים
 third-party-playnite-game-install-error = לא ניתן להתקין את המשחק: { $var0 }
 third-party-playnite-game-uninstall-error = לא ניתן להסיר את המשחק: { $var0 }
 third-party-playnite-disabled-title = כבוי
 third-party-playnite-version-label = גירסה
-third-party-playnite-install-size-label = גודל ההתקנה
-third-party-playnite-added-label = נוסף
 third-party-playnite-ok-label = אישור
 third-party-playnite-save-label = שמור
 third-party-playnite-cancel-label = ביטול
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = מוריד…
 third-party-playnite-loading-label = טוען…
 third-party-playnite-download-label = הורדה
 third-party-playnite-progress-metadata = מוריד נתונים…
-third-party-playnite-menu-restart-system = איתחול מערכת
-third-party-playnite-menu-shutdown-system = כבה מערכת
-third-party-playnite-menu-suspend-system = השהה מערכת
-third-party-playnite-menu-hibernate-system = מצב שינה
 third-party-playnite-settings-label = הגדרות
 third-party-playnite-settings-general-label = כללי
 third-party-playnite-settings-advanced-label = מתקדם
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = לנקות מטמון?
 third-party-playnite-settings-playtime-import-mode-never = אף פעם
 third-party-playnite-login-required = נדרש אימות
 third-party-playnite-executable-title = ניתן להרצה
-third-party-playnite-game-name-title = שם
 third-party-playnite-game-install-dir-title = תיקיית התקנה
 third-party-playnite-library-import-error = נכשל ביבוא משחקים מ { $var0 }.
 third-party-playnite-metadata-download-error = נכשלה הורדת נתונים: { $var0 }
-third-party-playnite-download-error = שגיאת הורדה
 third-party-playnite-uninstalling = מסיר התקנה
-third-party-playnite-do-nothing = אל תעשה דבר
 third-party-playnite-close = סגור
 third-party-playnite-updater-window-title = עדכון זמין
 third-party-playnite-updater-install-update = הורד והתקן עדכון
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = חפש עדכונים
 third-party-playnite-update-check-fail-message = נכשל בחיפוש גרסה חדשה.
 third-party-playnite-install-game = התקן
 third-party-playnite-uninstall-game = הסר התקנה
-third-party-playnite-dont-show-again-title = אל תציג שוב
 third-party-playnite-common-links-forum = פורום
 third-party-playnite-common-links-store-page = דף חנות
 third-party-playnite-extensions-updates = עדכונים

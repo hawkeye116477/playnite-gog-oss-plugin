@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filtret aktivt
-third-party-playnite-filters = Filter
 third-party-playnite-game-install-error = Kan inte installera spel: { $var0 }
 third-party-playnite-game-uninstall-error = Kan inte avinstallera spel: { $var0 }
 third-party-playnite-disabled-title = AV
 third-party-playnite-version-label = Version
-third-party-playnite-install-size-label = Installerad storlek
-third-party-playnite-added-label = Tillagd
 third-party-playnite-ok-label = Ok
 third-party-playnite-save-label = Spara
 third-party-playnite-cancel-label = Avbryt
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Laddar ner…
 third-party-playnite-loading-label = Laddar…
 third-party-playnite-download-label = Ladda ner
 third-party-playnite-progress-metadata = Hämtar metadata…
-third-party-playnite-menu-restart-system = Starta om systemet
-third-party-playnite-menu-shutdown-system = Stäng ner systemet
-third-party-playnite-menu-suspend-system = Sätt systemet i viloläge
-third-party-playnite-menu-hibernate-system = Viloläge
 third-party-playnite-settings-label = Inställningar
 third-party-playnite-settings-general-label = Allmänt
 third-party-playnite-settings-advanced-label = Avancerat
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Rensa Cache?
 third-party-playnite-settings-playtime-import-mode-never = Aldrig
 third-party-playnite-login-required = Autentisering krävs
 third-party-playnite-executable-title = Kör fil
-third-party-playnite-game-name-title = Titel
 third-party-playnite-game-install-dir-title = Installationskatalog
 third-party-playnite-library-import-error = Misslyckades med att importera spel från { $var0 }.
 third-party-playnite-metadata-download-error = Det gick inte att hämta metadata: { $var0 }
-third-party-playnite-download-error = Hämtings fel
 third-party-playnite-uninstalling = Avinstallerar
-third-party-playnite-do-nothing = Gör inget
 third-party-playnite-close = Stäng
 third-party-playnite-updater-window-title = Uppdatering tillgänglig
 third-party-playnite-updater-install-update = Installera uppdatering
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Sök efter uppdateringar
 third-party-playnite-update-check-fail-message = Misslyckades med att söka efter en ny version.
 third-party-playnite-install-game = Installera
 third-party-playnite-uninstall-game = Avinstallera
-third-party-playnite-dont-show-again-title = Visa Inte Igen
 third-party-playnite-common-links-forum = Forum
 third-party-playnite-common-links-store-page = Butikssida
 third-party-playnite-extensions-updates = Uppdateringar

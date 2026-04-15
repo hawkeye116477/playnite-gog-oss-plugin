@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Bộ lọc đang được sử dụng
-third-party-playnite-filters = Bộ lọc
 third-party-playnite-game-install-error = Không thể cài đặt trò chơi: { $var0 }
 third-party-playnite-game-uninstall-error = Không thể gỡ cài đặt trò chơi: { $var0 }
 third-party-playnite-disabled-title = Đã tắt
 third-party-playnite-version-label = Phiên bản
-third-party-playnite-install-size-label = Dung Lượng Cài Đặt
-third-party-playnite-added-label = Đã thêm vào.
 third-party-playnite-ok-label = OK
 third-party-playnite-save-label = Lưu
 third-party-playnite-cancel-label = Hủy bỏ
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Đang tải xuống…
 third-party-playnite-loading-label = Đang tải…
 third-party-playnite-download-label = Tải xuống
 third-party-playnite-progress-metadata = Đang tải xuống Siêu dữ liệu...
-third-party-playnite-menu-restart-system = Khởi động lại hệ thống
-third-party-playnite-menu-shutdown-system = Tắt hệ thống
-third-party-playnite-menu-suspend-system = Ngưng hệ thống
-third-party-playnite-menu-hibernate-system = Chế độ ngủ đông
 third-party-playnite-settings-label = Cài đặt
 third-party-playnite-settings-general-label = Cài đặt chung
 third-party-playnite-settings-advanced-label = Nâng cao
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Xóa bộ nhớ cache?
 third-party-playnite-settings-playtime-import-mode-never = Không bao giờ
 third-party-playnite-login-required = Yêu cầu xác thực
 third-party-playnite-executable-title = Thực hiện
-third-party-playnite-game-name-title = Tên
 third-party-playnite-game-install-dir-title = Thư mục cài đặt cửa hàng
 third-party-playnite-library-import-error = Không thể nhập trò chơi từ { $var0 }.
 third-party-playnite-metadata-download-error = Không tải xuống được siêu dữ liệu: { $var0 }
-third-party-playnite-download-error = Lỗi Tải Xuống
 third-party-playnite-uninstalling = Gỡ cài đặt
-third-party-playnite-do-nothing = Không làm gì cả
 third-party-playnite-close = Đóng cửa sổ
 third-party-playnite-updater-window-title = Bản cập nhật có sẵn
 third-party-playnite-updater-install-update = Tải xuống và cài đặt bản cập nhật
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Kiểm Tra Cập Nhật
 third-party-playnite-update-check-fail-message = Không thể kiểm tra phiên bản mới.
 third-party-playnite-install-game = Cài đặt
 third-party-playnite-uninstall-game = Gỡ cài đặt
-third-party-playnite-dont-show-again-title = Không hiện thị lại
 third-party-playnite-common-links-forum = Diễn đàn
 third-party-playnite-common-links-store-page = Trang cửa hàng
 third-party-playnite-extensions-updates = Cập nhật

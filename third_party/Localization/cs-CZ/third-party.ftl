@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filtr Aktivován
-third-party-playnite-filters = Filtry
 third-party-playnite-game-install-error = Nelze nainstalovat hru: { $var0 }
 third-party-playnite-game-uninstall-error = Nelze odinstalovat hru: { $var0 }
 third-party-playnite-disabled-title = Zakázáno
 third-party-playnite-version-label = Verze
-third-party-playnite-install-size-label = Velikost instalace
-third-party-playnite-added-label = Přidáno
 third-party-playnite-ok-label = OK
 third-party-playnite-save-label = Uložit
 third-party-playnite-cancel-label = Zrušit
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Stahování…
 third-party-playnite-loading-label = Načítání…
 third-party-playnite-download-label = Stáhnout
 third-party-playnite-progress-metadata = Stahují se metadata…
-third-party-playnite-menu-restart-system = Restartovat Systém
-third-party-playnite-menu-shutdown-system = Vypnout Systém
-third-party-playnite-menu-suspend-system = Uspat Systém
-third-party-playnite-menu-hibernate-system = Hibernovat Systém
 third-party-playnite-settings-label = Nastavení
 third-party-playnite-settings-general-label = Obecné
 third-party-playnite-settings-advanced-label = Pokročilé
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Vyčistit Mezipaměť?
 third-party-playnite-settings-playtime-import-mode-never = Nikdy
 third-party-playnite-login-required = Vyžaduje se přihlášení
 third-party-playnite-executable-title = Spustitelný soubor
-third-party-playnite-game-name-title = Jméno
 third-party-playnite-game-install-dir-title = Instalační Adresář
 third-party-playnite-library-import-error = Nepodařilo se importovat hry z { $var0 }.
 third-party-playnite-metadata-download-error = Selhalo stahování metadat: { $var0 }
-third-party-playnite-download-error = Chyba při Stahování
 third-party-playnite-uninstalling = Probíhá odinstalace
-third-party-playnite-do-nothing = Nedělat nic
 third-party-playnite-close = Zavřít
 third-party-playnite-updater-window-title = Dostupná Aktualizace
 third-party-playnite-updater-install-update = Stáhnout a Nainstalovat Aktualizaci
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Zkontrolovat Aktualizace
 third-party-playnite-update-check-fail-message = Nepodařilo se zkontrolovat aktualizace.
 third-party-playnite-install-game = Instalovat
 third-party-playnite-uninstall-game = Odinstalovat
-third-party-playnite-dont-show-again-title = Příště Nezobrazovat
 third-party-playnite-common-links-forum = Fórum
 third-party-playnite-common-links-store-page = Stránka v obchodě
 third-party-playnite-extensions-updates = Aktualizace

@@ -791,7 +791,6 @@ namespace GogOssLibraryNS
 
         public async Task UpdateGame(Dictionary<string, UpdateInfo> gamesToUpdate, string gameTitle = "", bool silently = false, DownloadProperties downloadProperties = null)
         {
-            var unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
             var updateTasks = new List<DownloadManagerData.Download>();
             if (gamesToUpdate.Count > 0)
             {
@@ -803,79 +802,45 @@ namespace GogOssLibraryNS
                         var playniteApi = API.Instance;
                         playniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdates", LocalizationManager.Instance.GetString(LOC.CommonGamesUpdatesUnderway), NotificationType.Info));
                     }
+                    var settings = GogOssLibrary.GetSettings();
                     foreach (var gameToUpdate in gamesToUpdate)
                     {
-                        bool completedDownload = true;
-                        var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(gameToUpdate.Key, GogOssLibrary.Instance.Id.ToString());
-                        if (wantedUnifiedItem != null)
+                        DownloadProperties newDownloadProperties = new()
                         {
-                            if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
-                            {
-                                completedDownload = false;
-                            }
-                        }
-                        if (completedDownload)
+                            downloadAction = DownloadAction.Update,
+                            maxWorkers = settings.MaxWorkers,
+                        };
+                        if (downloadProperties != null)
                         {
-                            var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == gameToUpdate.Key);
-                            if (wantedPluginItem != null)
-                            {
-                                GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
-                                wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == gameToUpdate.Key);
-                            }
-                            if (wantedUnifiedItem != null)
-                            {
-                                unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
-                                wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(gameToUpdate.Key, GogOssLibrary.Instance.Id.ToString());
-                            }
+                            newDownloadProperties = Serialization.GetClone(downloadProperties);
                         }
-
-                        if (wantedUnifiedItem != null)
+                        newDownloadProperties.buildId = gameToUpdate.Value.Build_id;
+                        newDownloadProperties.version = gameToUpdate.Value.Version;
+                        newDownloadProperties.language = gameToUpdate.Value.Language;
+                        newDownloadProperties.extraContent = gameToUpdate.Value.ExtraContent;
+                        newDownloadProperties.os = gameToUpdate.Value.Os;
+                        newDownloadProperties.installPath = gameToUpdate.Value.Install_path;
+                        if (!gameToUpdate.Value.BetaChannel.IsNullOrEmpty())
                         {
-                            if (!silently)
-                            {
-                                playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)wantedUnifiedItem.name }), "", MessageBoxButton.OK, MessageBoxImage.Error);
-                            }
+                            newDownloadProperties.betaChannel = gameToUpdate.Value.BetaChannel;
                         }
-                        else
+                        var updateTask = new DownloadManagerData.Download
                         {
-                            var settings = GogOssLibrary.GetSettings();
-                            DownloadProperties newDownloadProperties = new()
-                            {
-                                downloadAction = DownloadAction.Update,
-                                maxWorkers = settings.MaxWorkers,
-                            };
-                            if (downloadProperties != null)
-                            {
-                                newDownloadProperties = Serialization.GetClone(downloadProperties);
-                            }
-                            newDownloadProperties.buildId = gameToUpdate.Value.Build_id;
-                            newDownloadProperties.version = gameToUpdate.Value.Version;
-                            newDownloadProperties.language = gameToUpdate.Value.Language;
-                            newDownloadProperties.extraContent = gameToUpdate.Value.ExtraContent;
-                            newDownloadProperties.os = gameToUpdate.Value.Os;
-                            newDownloadProperties.installPath = gameToUpdate.Value.Install_path;
-                            if (!gameToUpdate.Value.BetaChannel.IsNullOrEmpty())
-                            {
-                                newDownloadProperties.betaChannel = gameToUpdate.Value.BetaChannel;
-                            }
-                            var updateTask = new DownloadManagerData.Download
-                            {
-                                gameID = gameToUpdate.Key,
-                                name = gameToUpdate.Value.Title,
-                                downloadSizeNumber = gameToUpdate.Value.Download_size,
-                                installSizeNumber = gameToUpdate.Value.Disk_size,
-                                downloadProperties = newDownloadProperties,
-                                downloadItemType = gameToUpdate.Value.DownloadItemType,
-                            };
-                            updateTask.downloadProperties.installPath = Directory.GetParent(gameToUpdate.Value.Install_path).FullName;
-                            updateTask.fullInstallPath = gameToUpdate.Value.Install_path;
-                            updateTasks.Add(updateTask);
-                        }
+                            gameID = gameToUpdate.Key,
+                            name = gameToUpdate.Value.Title,
+                            downloadSizeNumber = gameToUpdate.Value.Download_size,
+                            installSizeNumber = gameToUpdate.Value.Disk_size,
+                            downloadProperties = newDownloadProperties,
+                            downloadItemType = gameToUpdate.Value.DownloadItemType,
+                        };
+                        updateTask.downloadProperties.installPath = Directory.GetParent(gameToUpdate.Value.Install_path).FullName;
+                        updateTask.fullInstallPath = gameToUpdate.Value.Install_path;
+                        updateTasks.Add(updateTask);
                     }
+                    var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
                     if (updateTasks.Count > 0)
                     {
-                        var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
-                        await downloadLogic.AddTasks(updateTasks);
+                        await downloadLogic.AddTasks(updateTasks, silently);
                     }
                 }
             }

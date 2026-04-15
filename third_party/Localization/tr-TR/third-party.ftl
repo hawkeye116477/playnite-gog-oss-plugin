@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filtre Etkin
-third-party-playnite-filters = Filtreler
 third-party-playnite-game-install-error = Oyun kurulamıyor: { $var0 }
 third-party-playnite-game-uninstall-error = Oyun kaldırılamıyor: { $var0 }
 third-party-playnite-disabled-title = Devre dışı
 third-party-playnite-version-label = Sürüm
-third-party-playnite-install-size-label = Kurulu Boyut
-third-party-playnite-added-label = Eklenme
 third-party-playnite-ok-label = TAMAM
 third-party-playnite-save-label = Kaydet
 third-party-playnite-cancel-label = İptal
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = İndiriliyor…
 third-party-playnite-loading-label = Yükleniyor…
 third-party-playnite-download-label = İndir
 third-party-playnite-progress-metadata = Üst veriler indiriliyor…
-third-party-playnite-menu-restart-system = Sistemi Yeniden Başlat
-third-party-playnite-menu-shutdown-system = Sistemi Kapat
-third-party-playnite-menu-suspend-system = Sistemi Askıya Al
-third-party-playnite-menu-hibernate-system = Sistemi Hazırda Beklet
 third-party-playnite-settings-label = Ayarlar
 third-party-playnite-settings-general-label = Genel
 third-party-playnite-settings-advanced-label = Gelişmiş
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Önbelleği Temizle?
 third-party-playnite-settings-playtime-import-mode-never = Asla
 third-party-playnite-login-required = Doğrulama gerekli
 third-party-playnite-executable-title = Uygulama
-third-party-playnite-game-name-title = İsim
 third-party-playnite-game-install-dir-title = Kurulum Klasörü
 third-party-playnite-library-import-error = { $var0 } konumundan oyun içe aktarılamadı.
 third-party-playnite-metadata-download-error = Üst veriler indirilemedi: { $var0 }
-third-party-playnite-download-error = İndirme Hatası
 third-party-playnite-uninstalling = Kaldırılıyor
-third-party-playnite-do-nothing = Hiçbir şey yapma
 third-party-playnite-close = Kapat
 third-party-playnite-updater-window-title = Güncelleme Mevcut
 third-party-playnite-updater-install-update = Güncellemeyi İndir ve Kur
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Güncelleştirmeleri Denetle
 third-party-playnite-update-check-fail-message = Yeni sürüm kontrol edilemedi.
 third-party-playnite-install-game = Kur
 third-party-playnite-uninstall-game = Kurulumu Kaldır
-third-party-playnite-dont-show-again-title = Bir Daha Gösterme
 third-party-playnite-common-links-forum = Forum
 third-party-playnite-common-links-store-page = Mağaza Sayfası
 third-party-playnite-extensions-updates = Güncellemeler

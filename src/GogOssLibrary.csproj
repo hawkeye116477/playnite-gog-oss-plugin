@@ -88,7 +88,6 @@
     <Compile Include="GogOssLibrarySettingsView.xaml.cs">
       <DependentUpon>GogOssLibrarySettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GogOssMessagesSettings.cs" />
     <Compile Include="GogOssTroubleshootingInformation.cs" />
     <Compile Include="Enums\DownloadItemType.cs" />
     <Compile Include="GOGMetadataProvider.cs" />

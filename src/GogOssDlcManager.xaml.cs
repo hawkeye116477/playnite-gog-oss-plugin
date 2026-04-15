@@ -80,35 +80,6 @@ namespace GogOssLibraryNS
 
                 if (tasks.Count > 0)
                 {
-                    bool completedDownload = true;
-                    var unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
-                    var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(Game.GameId, GogOssLibrary.Instance.Id.ToString());
-                    if (wantedUnifiedItem != null)
-                    {
-                        if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
-                        {
-                            completedDownload = false;
-                        }
-                    }
-                    if (completedDownload)
-                    {
-                        var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == Game.GameId);
-                        if (wantedPluginItem != null)
-                        {
-                            GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
-                            wantedPluginItem = null;
-                        }
-                        if (wantedUnifiedItem != null)
-                        {
-                            unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
-                            wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(Game.GameId, GogOssLibrary.Instance.Id.ToString());
-                        }
-                    }
-
-                    if (wantedUnifiedItem != null)
-                    {
-                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)wantedUnifiedItem.name }), "", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
                     var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
                     await downloadLogic.AddTasks(tasks);
                 }

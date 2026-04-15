@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filter Actief
-third-party-playnite-filters = Filters
 third-party-playnite-game-install-error = Kan het spel niet installeren: { $var0 }
 third-party-playnite-game-uninstall-error = Kan het spel niet deïnstalleren: { $var0 }
 third-party-playnite-disabled-title = Uitgeschakeld
 third-party-playnite-version-label = Versie
-third-party-playnite-install-size-label = Installatiegrootte
-third-party-playnite-added-label = Toegevoegd
 third-party-playnite-ok-label = Oké
 third-party-playnite-save-label = Opslaan
 third-party-playnite-cancel-label = Annuleren
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Downloaden…
 third-party-playnite-loading-label = Laden…
 third-party-playnite-download-label = Download
 third-party-playnite-progress-metadata = Metadata aan het downloaden…
-third-party-playnite-menu-restart-system = Opnieuw opstarten
-third-party-playnite-menu-shutdown-system = Systeem uitschakelen
-third-party-playnite-menu-suspend-system = Systeem Onderbreken
-third-party-playnite-menu-hibernate-system = Systeem in slaapstand zetten
 third-party-playnite-settings-label = Instellingen
 third-party-playnite-settings-general-label = Algemeen
 third-party-playnite-settings-advanced-label = Geavanceerd
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Leeg Cache?
 third-party-playnite-settings-playtime-import-mode-never = Nooit
 third-party-playnite-login-required = Authenticatie nodig
 third-party-playnite-executable-title = Uitvoerbaar bestand
-third-party-playnite-game-name-title = Naam
 third-party-playnite-game-install-dir-title = Installatie Map
 third-party-playnite-library-import-error = Kan geen spellen importeren van { $var0 }.
 third-party-playnite-metadata-download-error = Downloaden van metadata mislukt: { $var0 }
-third-party-playnite-download-error = Download Fout
 third-party-playnite-uninstalling = Aan het deinstalleren
-third-party-playnite-do-nothing = Doe niets
 third-party-playnite-close = Sluiten
 third-party-playnite-updater-window-title = Update Beschikbaar
 third-party-playnite-updater-install-update = Installeer Update
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Controleer op updates
 third-party-playnite-update-check-fail-message = Controleren op nieuwe versie mislukt.
 third-party-playnite-install-game = Installeer
 third-party-playnite-uninstall-game = Deïnstalleer
-third-party-playnite-dont-show-again-title = Niet Opnieuw Weergeven
 third-party-playnite-common-links-forum = Forum
 third-party-playnite-common-links-store-page = Winkel pagina
 third-party-playnite-extensions-updates = Updates

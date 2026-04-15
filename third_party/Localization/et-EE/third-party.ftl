@@ -4,14 +4,10 @@
 ### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
-third-party-playnite-filter-active-label = Filter aktiivne
-third-party-playnite-filters = Filtrid
 third-party-playnite-game-install-error = Ei saa installida mängu: { $var0 }
 third-party-playnite-game-uninstall-error = Ei saa desinstallida mängu: { $var0 }
 third-party-playnite-disabled-title = Keelatud
 third-party-playnite-version-label = Versioon
-third-party-playnite-install-size-label = Installi suurus
-third-party-playnite-added-label = Lisatud
 third-party-playnite-ok-label = OK
 third-party-playnite-save-label = Salvesta
 third-party-playnite-cancel-label = Tühista
@@ -21,10 +17,6 @@ third-party-playnite-downloading-label = Allalaadimine…
 third-party-playnite-loading-label = Laadimine…
 third-party-playnite-download-label = Laadi alla
 third-party-playnite-progress-metadata = Metaandmete allalaadimine…
-third-party-playnite-menu-restart-system = Taaskäivita süsteem
-third-party-playnite-menu-shutdown-system = Lülita süsteem välja
-third-party-playnite-menu-suspend-system = Peata süsteem
-third-party-playnite-menu-hibernate-system = Pane süsteem talveunne
 third-party-playnite-settings-label = Seaded
 third-party-playnite-settings-general-label = Üldine
 third-party-playnite-settings-advanced-label = Täpsem
@@ -32,13 +24,10 @@ third-party-playnite-settings-clear-cache-title = Tühjenda vahemälu?
 third-party-playnite-settings-playtime-import-mode-never = Mitte kunagi
 third-party-playnite-login-required = Autentimine vajalik
 third-party-playnite-executable-title = Täitmisprogramm
-third-party-playnite-game-name-title = Nimi
 third-party-playnite-game-install-dir-title = Paigalduse asukoht
 third-party-playnite-library-import-error = Ei saanud importida mänge kohast { $var0 }.
 third-party-playnite-metadata-download-error = Metaandmete allalaadimine ebaõnnestus: { $var0 }
-third-party-playnite-download-error = Allalaadimise viga
 third-party-playnite-uninstalling = Desinstallimine
-third-party-playnite-do-nothing = Ära tee midagi
 third-party-playnite-close = Sulge
 third-party-playnite-updater-window-title = Värskendus on saadaval
 third-party-playnite-updater-install-update = Laadi alla ja paigalda värskendus
@@ -46,7 +35,6 @@ third-party-playnite-check-for-updates = Otsi värskendusi
 third-party-playnite-update-check-fail-message = Uue versiooni olemasolu kontroll ebaõnnestus.
 third-party-playnite-install-game = Paigalda
 third-party-playnite-uninstall-game = Desinstalli
-third-party-playnite-dont-show-again-title = Ära enam näita
 third-party-playnite-common-links-forum = Foorum
 third-party-playnite-common-links-store-page = Poeleht
 third-party-playnite-extensions-updates = Värskendused
