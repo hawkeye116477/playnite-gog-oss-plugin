@@ -301,7 +301,7 @@ namespace GogOssLibraryNS
             await unifiedDownloadManagerApi.AddTasks(unifiedTasks);
             GogOssLibrary.Instance.SaveDownloadData();
 
-            if (!silently)
+            if (!silently && unifiedTasks.Count == 0)
             {
                 if (downloadItemsAlreadyAdded.Count > 0)
                 {
@@ -310,7 +310,7 @@ namespace GogOssLibraryNS
                     {
                         downloadItemsAlreadyAddedCombined = string.Join(", ", downloadItemsAlreadyAdded.Select(item => item.ToString()));
                     }
-                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAddedCombined, ["count"] = (FluentNumber)downloadItemsAlreadyAdded.Count }), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)downloadItemsAlreadyAddedCombined, ["count"] = (FluentNumber)downloadItemsAlreadyAdded.Count, ["pluginShortName"] = (FluentString)"Unified Download Manager" }), "", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
