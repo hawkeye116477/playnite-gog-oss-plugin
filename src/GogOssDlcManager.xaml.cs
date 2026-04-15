@@ -308,6 +308,12 @@ namespace GogOssLibraryNS
 
         private async void GogOssDlcManagerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var isUdmInstalled = GogOssDownloadLogic.CheckIfUdmInstalled();
+            if (!isUdmInstalled)
+            {
+                Window.GetWindow(this).Close();
+                return;
+            }
             var settings = GogOssLibrary.GetSettings();
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
             Game = DataContext as Game;

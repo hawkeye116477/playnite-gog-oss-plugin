@@ -216,6 +216,12 @@ namespace GogOssLibraryNS
 
         private async void GogOssGameInstallerUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var isUdmInstalled = GogOssDownloadLogic.CheckIfUdmInstalled();
+            if (!isUdmInstalled)
+            {
+                Window.GetWindow(this).Close();
+                return;
+            }
             var settings = GogOssLibrary.GetSettings();
             installPath = GogOss.GamesInstallationPath;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();

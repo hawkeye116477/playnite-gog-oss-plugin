@@ -4,6 +4,7 @@ using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
+using Linguini.Shared.Types.Bundle;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
@@ -91,6 +92,25 @@ namespace GogOssLibraryNS
             }
         }
 
+        public static bool CheckIfUdmInstalled()
+        {
+            var playniteAPI = API.Instance;
+            bool installed = playniteAPI.Addons.Plugins.Any(plugin => plugin.Id.Equals(UnifiedDownloadManagerSharedProperties.Id));
+            if (!installed)
+            {
+                var options = new List<MessageBoxOption>
+                {
+                    new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame)),
+                    new MessageBoxOption(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteOkLabel)),
+                };
+                var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Unified Download Manager" }), "GOG OSS library integration", MessageBoxImage.Information, options);
+                if (result == options[0])
+                {
+                    Playnite.Commands.GlobalCommands.NavigateUrl("playnite://playnite/installaddon/UnifiedDownloadManager");
+                }
+            }
+            return installed;
+        }
 
         public Task OnRemoveDownloadEntry(UnifiedDownload downloadTask)
         {

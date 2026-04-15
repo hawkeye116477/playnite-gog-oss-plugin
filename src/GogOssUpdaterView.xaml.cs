@@ -76,6 +76,12 @@ namespace GogOssLibraryNS
 
         private void GogOssUpdaterUC_Loaded(object sender, RoutedEventArgs e)
         {
+            var isUdmInstalled = GogOssDownloadLogic.CheckIfUdmInstalled();
+            if (!isUdmInstalled)
+            {
+                Window.GetWindow(this).Close();
+                return;
+            }
             CommonHelpers.SetControlBackground(this);
             UpdatesLB.ItemsSource = UpdatesList;
             UpdatesLB.Visibility = Visibility.Visible;

@@ -37,6 +37,12 @@ namespace GogOssLibraryNS
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            var isUdmInstalled = GogOssDownloadLogic.CheckIfUdmInstalled();
+            if (!isUdmInstalled)
+            {
+                Window.GetWindow(this).Close();
+                return;
+            }
             downloadSizeNumber = 0;
             SelectedExtrasPathTxt.Text = GogOss.ExtrasInstallationPath;
             UpdateSpaceInfo(GogOss.ExtrasInstallationPath);
