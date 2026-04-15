@@ -11,6 +11,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using UnifiedDownloadManagerApiNS;
+using UnifiedDownloadManagerApiNS.Models;
 
 namespace GogOssLibraryNS
 {
@@ -31,21 +33,11 @@ namespace GogOssLibraryNS
         public GogOssDownloadPropertiesView()
         {
             InitializeComponent();
-            LoadSavedData();
-        }
-
-        private DownloadManagerData LoadSavedData()
-        {
-            var downloadManager = GogOssLibrary.GetGogOssDownloadManager();
-            downloadManagerData = downloadManager.downloadManagerData;
-            return downloadManagerData;
         }
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            var downloadManager = GogOssLibrary.GetGogOssDownloadManager();
-            var previouslySelected = downloadManager.DownloadsDG.SelectedIndex;
-            var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == SelectedDownload.gameID);
+            var wantedItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == SelectedDownload.gameID);
             var installPath = SelectedGamePathTxt.Text;
             var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
             if (installPath.Contains(playniteDirectoryVariable))
@@ -59,8 +51,9 @@ namespace GogOssLibraryNS
             wantedItem.downloadProperties.installPath = installPath;
             wantedItem.downloadProperties.downloadAction = (DownloadAction)TaskCBo.SelectedValue;
             wantedItem.downloadProperties.maxWorkers = int.Parse(MaxWorkersNI.Value);
-
-            if (wantedItem.status == DownloadStatus.Canceled)
+            UnifiedDownloadManagerApi unifiedDownloadManagerApi = new();
+            var wantedUnifiedTask = unifiedDownloadManagerApi.GetTask(wantedItem.gameID, GogOssLibrary.Instance.Id.ToString());
+            if (wantedUnifiedTask.status == UnifiedDownloadStatus.Canceled)
             {
                 wantedItem.downloadProperties.betaChannel = selectedBetaChannel;
                 wantedItem.downloadProperties.buildId = gameInfo.build_id;
@@ -68,21 +61,10 @@ namespace GogOssLibraryNS
                 wantedItem.downloadProperties.language = gameInfo.language;
                 wantedItem.downloadProperties.extraContent = gameInfo.installed_DLCs;
                 var gameSize = await GogOss.CalculateGameSize(SelectedDownload.gameID, gameInfo);
-                wantedItem.downloadSizeNumber = gameSize.download_size;
-                wantedItem.installSizeNumber = gameSize.disk_size;
+                wantedUnifiedTask.downloadSizeBytes = gameSize.download_size;
+                wantedUnifiedTask.installSizeBytes = gameSize.disk_size;
             }
-
-            for (int i = 0; i < downloadManager.downloadManagerData.downloads.Count; i++)
-            {
-                if (downloadManager.downloadManagerData.downloads[i].gameID == wantedItem.gameID)
-                {
-                    downloadManager.downloadManagerData.downloads[i] = wantedItem;
-                    break;
-                }
-            }
-
-            downloadManager.DownloadsDG.SelectedIndex = previouslySelected;
-            downloadManager.downloadsChanged = true;
+            GogOssLibrary.Instance.SaveDownloadData();
             Window.GetWindow(this).Close();
         }
 

@@ -25,19 +25,14 @@ namespace GogOssLibraryNS
         public int MaxWorkers { get; set; } = 0;
         public bool UnattendedInstall { get; set; } = false;
         public bool DownloadAllDlcs { get; set; } = false;
-        public bool DisplayDownloadSpeedInBits { get; set; } = false;
-        public bool DisplayDownloadTaskFinishedNotifications { get; set; } = true;
-        public DownloadCompleteAction DoActionAfterDownloadComplete { get; set; } = DownloadCompleteAction.Nothing;
         public UpdatePolicy GamesUpdatePolicy { get; set; } = UpdatePolicy.Month;
         public long NextGamesUpdateTime { get; set; } = 0;
         public bool AutoUpdateGames { get; set; } = false;
         public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
         public long NextCometUpdateTime { get; set; } = 0;
         public bool SyncPlaytime { get; set; } = GogOss.DefaultPlaytimeSyncEnabled;
-        public ClearCacheTime AutoRemoveCompletedDownloads { get; set; } = ClearCacheTime.Never;
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
         public long NextClearingTime { get; set; } = 0;
-        public long NextRemovingCompletedDownloadsTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
         public GogCdn PreferredCdn { get; set; } = GogCdn.Fastly;
         public bool EnableOverlay { get; set; } = true;
@@ -160,17 +155,6 @@ namespace GogOssLibraryNS
                 else
                 {
                     Settings.NextClearingTime = 0;
-                }
-            }
-            if (EditingClone.AutoRemoveCompletedDownloads != Settings.AutoRemoveCompletedDownloads)
-            {
-                if (Settings.AutoRemoveCompletedDownloads != ClearCacheTime.Never)
-                {
-                    Settings.NextRemovingCompletedDownloadsTime = GogOssLibrary.GetNextClearingTime(Settings.AutoRemoveCompletedDownloads);
-                }
-                else
-                {
-                    Settings.NextRemovingCompletedDownloadsTime = 0;
                 }
             }
             if (EditingClone.GamesUpdatePolicy != Settings.GamesUpdatePolicy)

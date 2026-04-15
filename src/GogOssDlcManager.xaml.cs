@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using UnifiedDownloadManagerApiNS;
+using UnifiedDownloadManagerApiNS.Models;
 
 namespace GogOssLibraryNS
 {
@@ -46,7 +48,6 @@ namespace GogOssLibraryNS
                     maxWorkers = int.Parse(MaxWorkersNI.Value);
                 }
                 DlcManagerWindow.Close();
-                GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
 
                 var tasks = new List<DownloadManagerData.Download>();
                 var downloadTask = new DownloadManagerData.Download
@@ -75,24 +76,41 @@ namespace GogOssLibraryNS
                 var dlcsSize = await CalculateDlcsSize();
                 downloadTask.downloadSizeNumber = dlcsSize.download_size;
                 downloadTask.installSizeNumber = dlcsSize.disk_size;
-
                 tasks.Add(downloadTask);
+
                 if (tasks.Count > 0)
                 {
-                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == Game.GameId);
-                    if (wantedItem != null)
+                    bool completedDownload = true;
+                    var unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
+                    var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(Game.GameId, GogOssLibrary.Instance.Id.ToString());
+                    if (wantedUnifiedItem != null)
                     {
-                        if (wantedItem.status != DownloadStatus.Running)
+                        if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
                         {
-                            downloadManager.downloadManagerData.downloads.Remove(wantedItem);
-                            downloadManager.downloadsChanged = true;
-                            wantedItem = null;
+                            completedDownload = false;
                         }
                     }
-                    if (wantedItem == null)
+                    if (completedDownload)
                     {
-                        await downloadManager.EnqueueMultipleJobs(tasks);
+                        var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == Game.GameId);
+                        if (wantedPluginItem != null)
+                        {
+                            GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
+                            wantedPluginItem = null;
+                        }
+                        if (wantedUnifiedItem != null)
+                        {
+                            unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
+                            wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(Game.GameId, GogOssLibrary.Instance.Id.ToString());
+                        }
                     }
+
+                    if (wantedUnifiedItem != null)
+                    {
+                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonDownloadAlreadyExists, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)wantedUnifiedItem.name }), "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
+                    await downloadLogic.AddTasks(tasks);
                 }
             }
         }

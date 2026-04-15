@@ -246,14 +246,6 @@ namespace System
         /// </summary>
         public const string CommonDownloadSettings = "common-download-settings";
         /// <summary>
-        /// Display desktop notifications about finished tasks
-        /// </summary>
-        public const string CommonDisplayDownloadTaskFinishedNotifications = "common-display-download-task-finished-notifications";
-        /// <summary>
-        /// Display download speed in bits per second
-        /// </summary>
-        public const string CommonDisplayDownloadSpeedInBits = "common-display-download-speed-in-bits";
-        /// <summary>
         /// Enable unattended installation mode
         /// </summary>
         public const string CommonUnattendedInstall = "common-unattended-install";
@@ -274,30 +266,6 @@ namespace System
         /// </summary>
         public const string CommonConnectionTimeout = "common-connection-timeout";
         /// <summary>
-        /// Action after download is complete
-        /// </summary>
-        public const string CommonAfterDownloadComplete = "common-after-download-complete";
-        /// <summary>
-        /// Automatically remove completed downloads from list
-        /// </summary>
-        public const string CommonAutoRemoveCompletedDownloads = "common-auto-remove-completed-downloads";
-        /// <summary>
-        /// System will be turned off soon...
-        /// </summary>
-        public const string CommonSystemShutdownCountdown = "common-system-shutdown-countdown";
-        /// <summary>
-        /// System will be restarted soon...
-        /// </summary>
-        public const string CommonSystemRestartCountdown = "common-system-restart-countdown";
-        /// <summary>
-        /// System will be hibernated soon...
-        /// </summary>
-        public const string CommonSystemHibernateCountdown = "common-system-hibernate-countdown";
-        /// <summary>
-        /// System will be suspended soon...
-        /// </summary>
-        public const string CommonSystemSuspendCountdown = "common-system-suspend-countdown";
-        /// <summary>
         /// Space Available:
         /// </summary>
         public const string CommonSpaceAvailable = "common-space-available";
@@ -305,26 +273,6 @@ namespace System
         /// After Installing:
         /// </summary>
         public const string CommonAfterInstalling = "common-after-installing";
-        /// <summary>
-        /// Downloaded
-        /// </summary>
-        public const string CommonDownloaded = "common-downloaded";
-        /// <summary>
-        /// ETA:
-        /// </summary>
-        public const string CommonEta = "common-eta";
-        /// <summary>
-        /// Download Speed:
-        /// </summary>
-        public const string CommonDownloadSpeed = "common-download-speed";
-        /// <summary>
-        /// Disk Usage:
-        /// </summary>
-        public const string CommonDiskSpeed = "common-disk-speed";
-        /// <summary>
-        /// Elapsed:
-        /// </summary>
-        public const string CommonElapsed = "common-elapsed";
         /// <summary>
         /// Verifying...
         /// </summary>
@@ -350,30 +298,6 @@ namespace System
         /// </summary>
         public const string CommonFinishingRepair = "common-finishing-repair";
         /// <summary>
-        /// Pause
-        /// </summary>
-        public const string CommonPauseDownload = "common-pause-download";
-        /// <summary>
-        /// Resume
-        /// </summary>
-        public const string CommonResumeDownload = "common-resume-download";
-        /// <summary>
-        /// Paused
-        /// </summary>
-        public const string CommonDownloadPaused = "common-download-paused";
-        /// <summary>
-        /// Installation finished. Have fun.
-        /// </summary>
-        public const string CommonInstallationFinished = "common-installation-finished";
-        /// <summary>
-        /// Update finished. Have fun.
-        /// </summary>
-        public const string CommonUpdateFinished = "common-update-finished";
-        /// <summary>
-        /// Repair finished. Have fun.
-        /// </summary>
-        public const string CommonRepairFinished = "common-repair-finished";
-        /// <summary>
         /// An error occurred while syncing {$gameTitle} game saves to the cloud.
         /// </summary>
         public const string CommonSyncError = "common-sync-error";
@@ -389,78 +313,6 @@ namespace System
         /// Import finished. Have fun.
         /// </summary>
         public const string CommonImportFinished = "common-import-finished";
-        /// <summary>
-        /// Download Manager
-        /// </summary>
-        public const string CommonDownloadManager = "common-download-manager";
-        /// <summary>
-        /// Status
-        /// </summary>
-        public const string CommonDownloadStatus = "common-download-status";
-        /// <summary>
-        /// Progress
-        /// </summary>
-        public const string CommonProgress = "common-progress";
-        /// <summary>
-        /// Completed
-        /// </summary>
-        public const string CommonDownloadCompletedColumn = "common-download-completed-column";
-        /// <summary>
-        /// Queued
-        /// </summary>
-        public const string CommonDownloadQueued = "common-download-queued";
-        /// <summary>
-        /// Running
-        /// </summary>
-        public const string CommonDownloadRunning = "common-download-running";
-        /// <summary>
-        /// Canceled
-        /// </summary>
-        public const string CommonDownloadCanceled = "common-download-canceled";
-        /// <summary>
-        /// Completed
-        /// </summary>
-        public const string CommonDownloadCompleted = "common-download-completed";
-        /// <summary>
-        /// Remove entry
-        /// </summary>
-        public const string CommonRemoveEntry = "common-remove-entry";
-        /// <summary>
-        /// Are you sure you want to remove {$entryName} from list?
-        /// </summary>
-        public const string CommonRemoveEntryConfirm = "common-remove-entry-confirm";
-        /// <summary>
-        /// Move entry to top
-        /// </summary>
-        public const string CommonMoveEntryTop = "common-move-entry-top";
-        /// <summary>
-        /// Move entry up
-        /// </summary>
-        public const string CommonMoveEntryUp = "common-move-entry-up";
-        /// <summary>
-        /// Move entry down
-        /// </summary>
-        public const string CommonMoveEntryDown = "common-move-entry-down";
-        /// <summary>
-        /// Move entry to bottom
-        /// </summary>
-        public const string CommonMoveEntryBottom = "common-move-entry-bottom";
-        /// <summary>
-        /// Remove completed downloads
-        /// </summary>
-        public const string CommonRemoveCompletedDownloads = "common-remove-completed-downloads";
-        /// <summary>
-        /// Are you sure you want to remove all completed downloads from list?
-        /// </summary>
-        public const string CommonRemoveCompletedDownloadsConfirm = "common-remove-completed-downloads-confirm";
-        /// <summary>
-        /// Are you sure you want to remove selected entries from list?
-        /// </summary>
-        public const string CommonRemoveSelectedEntriesConfirm = "common-remove-selected-entries-confirm";
-        /// <summary>
-        /// Select all entries
-        /// </summary>
-        public const string CommonSelectAllEntries = "common-select-all-entries";
         /// <summary>
         /// Repair
         /// </summary>
@@ -482,18 +334,6 @@ namespace System
         /// </summary>
         public const string CommonAutoClearCache = "common-auto-clear-cache";
         /// <summary>
-        /// Once a month
-        /// </summary>
-        public const string CommonOnceAMonth = "common-once-a-month";
-        /// <summary>
-        /// Once every 3 months
-        /// </summary>
-        public const string CommonOnceEvery3Months = "common-once-every3-months";
-        /// <summary>
-        /// Once every 6 months
-        /// </summary>
-        public const string CommonOnceEvery6Months = "common-once-every6-months";
-        /// <summary>
         /// Are you sure you want to clear cache?
         /// </summary>
         public const string CommonClearCacheConfirm = "common-clear-cache-confirm";
@@ -501,18 +341,6 @@ namespace System
         /// Check the log files for more information.
         /// </summary>
         public const string CommonCheckLog = "common-check-log";
-        /// <summary>
-        /// Edit entry properties
-        /// </summary>
-        public const string CommonEditSelectedDownloadProperties = "common-edit-selected-download-properties";
-        /// <summary>
-        /// Open download directory
-        /// </summary>
-        public const string CommonOpenDownloadDirectory = "common-open-download-directory";
-        /// <summary>
-        /// The specified path does not exist.
-        /// </summary>
-        public const string CommonPathNotExistsError = "common-path-not-exists-error";
         /// <summary>
         /// Task
         /// </summary>
@@ -685,10 +513,6 @@ namespace System
         /// </summary>
         public const string CommonPanel = "common-panel";
         /// <summary>
-        /// The download will start soon. You can see its status by accessing {$pluginShortName} Panel via Menu =&gt; View or sidebar.
-        /// </summary>
-        public const string CommonDownloadManagerWhatsUp = "common-download-manager-whats-up";
-        /// <summary>
         /// {$count ->}<br/>
 		/// one: {$appName} is already in the download list. You can see status of the download by accessing {$pluginShortName} Panel via Menu =&gt; View or sidebar.<br/>
 		/// other: Following games are already in the download list: {$appName}. You can see status of the download by accessing {$pluginShortName} Panel via Menu =&gt; View or sidebar.
@@ -730,6 +554,26 @@ namespace System
         /// Are you sure you want to reload data? That may cause earthquake near {$updatesSourceName} servers.
         /// </summary>
         public const string CommonReloadConfirm = "common-reload-confirm";
+        /// <summary>
+        /// Migrating data... Please wait.
+        /// </summary>
+        public const string CommonMigratingData = "common-migrating-data";
+        /// <summary>
+        /// Once a month
+        /// </summary>
+        public const string CommonOnceAMonth = "common-once-a-month";
+        /// <summary>
+        /// Once every 3 months
+        /// </summary>
+        public const string CommonOnceEvery3Months = "common-once-every3-months";
+        /// <summary>
+        /// Once every 6 months
+        /// </summary>
+        public const string CommonOnceEvery6Months = "common-once-every6-months";
+        /// <summary>
+        /// The specified path does not exist.
+        /// </summary>
+        public const string CommonPathNotExistsError = "common-path-not-exists-error";
         /// <summary>
         /// Filter Active
         /// </summary>

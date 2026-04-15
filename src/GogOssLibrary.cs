@@ -12,26 +12,30 @@ using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using UnifiedDownloadManagerApiNS;
+using UnifiedDownloadManagerApiNS.Interfaces;
+using UnifiedDownloadManagerApiNS.Models;
 
 namespace GogOssLibraryNS
 {
     [LoadPlugin]
-    public class GogOssLibrary : LibraryPluginBase<GogOssLibrarySettingsViewModel>
+    public class GogOssLibrary : LibraryPluginBase<GogOssLibrarySettingsViewModel>, IUnifiedDownloadProvider
     {
         private static readonly ILogger logger = LogManager.GetLogger();
         public static GogOssLibrary Instance { get; set; }
-        private GogOssDownloadManagerView GogOssDownloadManagerView;
-        private SidebarItem downloadManagerSidebarItem;
         public Dictionary<string, Installed> installedAppList { get; set; }
         public bool installedAppListModified { get; set; } = false;
         public CommonHelpers commonHelpers { get; set; }
+
         public GogDownloadApi gogDownloadApi = new();
+        public IUnifiedDownloadLogic UnifiedDownloadLogic { get; set; }
+        public DownloadManagerData pluginDownloadData { get; set; }
 
         public GogOssLibrary(IPlayniteAPI api) : base(
             "GOG OSS",
@@ -47,29 +51,117 @@ namespace GogOssLibraryNS
             SettingsViewModel = new GogOssLibrarySettingsViewModel(this, api);
             LoadExtraLocalization();
             commonHelpers.LoadNeededResources();
-            GogOssDownloadManagerView = new GogOssDownloadManagerView();
+            UnifiedDownloadLogic = new GogOssDownloadLogic();
+            pluginDownloadData = LoadSavedDownloadData();
         }
 
-        public static SidebarItem GetPanel()
+        public DownloadManagerData LoadSavedDownloadData()
         {
-            if (Instance.downloadManagerSidebarItem == null)
+            var dataDir = Instance.GetPluginUserDataPath();
+            var dataFile = Path.Combine(dataDir, "downloads.json");
+            bool correctJson = false;
+            if (File.Exists(dataFile))
             {
-                Instance.downloadManagerSidebarItem = new SidebarItem
+                var content = FileSystem.ReadFileAsStringSafe(dataFile);
+                if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out DownloadManagerData newPluginDownloadData))
                 {
-                    Title = LocalizationManager.Instance.GetString(LOC.CommonPanel),
-                    Icon = GogOss.Icon,
-                    Type = SiderbarItemType.View,
-                    Opened = () => GetGogOssDownloadManager(),
-                    ProgressValue = 0,
-                    ProgressMaximum = 100,
+                    if (newPluginDownloadData != null && newPluginDownloadData.downloads != null)
+                    {
+                        correctJson = true;
+                        pluginDownloadData = newPluginDownloadData;
+                    }
+                }
+            }
+            if (!correctJson)
+            {
+                pluginDownloadData = new DownloadManagerData
+                {
+                    downloads = new ObservableCollection<DownloadManagerData.Download>()
                 };
             }
-            return Instance.downloadManagerSidebarItem;
+            return pluginDownloadData;
         }
 
-        public static GogOssDownloadManagerView GetGogOssDownloadManager()
+        public void SaveDownloadData()
         {
-            return Instance.GogOssDownloadManagerView;
+            commonHelpers.SaveJsonSettingsToFile(pluginDownloadData, "", "downloads", true);
+        }
+
+        public void MigrateOldDownloadData()
+        {
+            var oldPluginDownloadDataForMigration = new OldDownloadManagerData();
+            var dataDir = Instance.GetPluginUserDataPath();
+            var oldDataFile = Path.Combine(dataDir, "downloadManager.json");
+            var oldDataBackupFile = Path.Combine(dataDir, "downloadManager.json.migrated");
+
+            bool udmInstalled = PlayniteApi.Addons.Plugins.Any(plugin => plugin.Id.Equals(UnifiedDownloadManagerSharedProperties.Id));
+            if (File.Exists(oldDataFile) && udmInstalled)
+            {
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonMigratingData), false) { IsIndeterminate = true };
+                PlayniteApi.Dialogs.ActivateGlobalProgress(async (a) =>
+                {
+                    await PlayniteApi.MainView.UIDispatcher.InvokeAsync(async () =>
+                    {
+                        logger.Debug("Migrating old downloads data...");
+                        var content = FileSystem.ReadFileAsStringSafe(oldDataFile);
+                        if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out OldDownloadManagerData oldPluginDownloadData))
+                        {
+                            if (oldPluginDownloadData != null && oldPluginDownloadData.downloads != null)
+                            {
+                                oldPluginDownloadDataForMigration = oldPluginDownloadData;
+                            }
+                        }
+                        var downloadLogic = (GogOssDownloadLogic)Instance.UnifiedDownloadLogic;
+                        var oldData = oldPluginDownloadDataForMigration.downloads.ToList();
+                        var unifiedTasks = new List<UnifiedDownload>();
+                        foreach (var oldDownload in oldData)
+                        {
+                            if (oldDownload.status == DownloadStatus.Running || oldDownload.status == DownloadStatus.Queued)
+                            {
+                                oldDownload.status = DownloadStatus.Paused;
+                            }
+                            var newPluginTask = new DownloadManagerData.Download
+                            {
+                                addedTime = oldDownload.addedTime,
+                                completedTime = oldDownload.completedTime,
+                                downloadedNumber = oldDownload.downloadedNumber,
+                                downloadProperties = Serialization.GetClone(oldDownload.downloadProperties),
+                                downloadSizeNumber = oldDownload.downloadSizeNumber,
+                                downloadItemType = oldDownload.downloadItemType,
+                                fullInstallPath = oldDownload.fullInstallPath,
+                                gameID = oldDownload.gameID,
+                                installSizeNumber = oldDownload.installSizeNumber,
+                                name = oldDownload.name,
+                                progress = oldDownload.progress,
+                                status = oldDownload.status,
+                                depends = oldDownload.depends,
+                            };
+                            Instance.pluginDownloadData.downloads.Add(newPluginTask);
+                            var unifiedTask = new UnifiedDownload
+                            {
+                                gameID = oldDownload.gameID,
+                                name = oldDownload.name,
+                                downloadSizeBytes = oldDownload.downloadSizeNumber,
+                                installSizeBytes = oldDownload.installSizeNumber,
+                                fullInstallPath = oldDownload.fullInstallPath,
+                                pluginId = Instance.Id.ToString(),
+                                sourceName = "GOG",
+                                addedTime = oldDownload.addedTime,
+                            };
+                            unifiedTask.status = (UnifiedDownloadStatus)oldDownload.status;
+                            unifiedTask.progress = oldDownload.progress;
+                            unifiedTask.downloadedBytes = oldDownload.downloadedNumber;
+                            unifiedTask.completedTime = oldDownload.completedTime;
+                            unifiedTasks.Add(unifiedTask);
+                        }
+                        UnifiedDownloadManagerApi unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
+                        await unifiedDownloadManagerApi.AddTasks(unifiedTasks);
+                        Instance.SaveDownloadData();
+                        File.Move(oldDataFile, oldDataBackupFile);
+                        logger.Debug("Migration done.");
+                    });
+                }, globalProgressOptions);
+            }
         }
 
         public override IEnumerable<InstallController> GetInstallActions(GetInstallActionsArgs args)
@@ -460,13 +552,9 @@ namespace GogOssLibraryNS
             return cacheDir;
         }
 
-        public override IEnumerable<SidebarItem> GetSidebarItems()
-        {
-            yield return downloadManagerSidebarItem;
-        }
-
         public override async void OnApplicationStarted(OnApplicationStartedEventArgs args)
         {
+            MigrateOldDownloadData();
             var globalSettings = GetSettings();
             if (globalSettings != null)
             {
@@ -558,42 +646,14 @@ namespace GogOssLibraryNS
 
         public override void OnApplicationStopped(OnApplicationStoppedEventArgs args)
         {
-            StopDownloadManager();
             if (installedAppList != null && installedAppListModified)
             {
                 var commonHelpers = Instance.commonHelpers;
                 commonHelpers.SaveJsonSettingsToFile(installedAppList, "", "installed", true);
             }
-            GogOssDownloadManagerView downloadManager = GetGogOssDownloadManager();
             var settings = GetSettings();
             if (settings != null)
             {
-                if (settings.AutoRemoveCompletedDownloads != ClearCacheTime.Never)
-                {
-                    var nextRemovingCompletedDownloadsTime = settings.NextRemovingCompletedDownloadsTime;
-                    if (nextRemovingCompletedDownloadsTime != 0)
-                    {
-                        DateTimeOffset now = DateTime.UtcNow;
-                        if (now.ToUnixTimeSeconds() >= nextRemovingCompletedDownloadsTime)
-                        {
-                            foreach (var downloadItem in downloadManager.downloadManagerData.downloads.ToList())
-                            {
-                                if (downloadItem.status == DownloadStatus.Completed)
-                                {
-                                    downloadManager.downloadManagerData.downloads.Remove(downloadItem);
-                                    downloadManager.downloadsChanged = true;
-                                }
-                            }
-                            settings.NextRemovingCompletedDownloadsTime = GetNextClearingTime(settings.AutoRemoveCompletedDownloads);
-                            SavePluginSettings(settings);
-                        }
-                    }
-                    else
-                    {
-                        settings.NextRemovingCompletedDownloadsTime = GetNextClearingTime(settings.AutoRemoveCompletedDownloads);
-                        SavePluginSettings(settings);
-                    }
-                }
                 if (settings.AutoClearCache != ClearCacheTime.Never)
                 {
                     var nextClearingTime = settings.NextClearingTime;
@@ -613,29 +673,8 @@ namespace GogOssLibraryNS
                         SavePluginSettings(settings);
                     }
                 }
-                downloadManager.SaveData();
             }
-        }
-
-        public bool StopDownloadManager()
-        {
-            GogOssDownloadManagerView downloadManager = GetGogOssDownloadManager();
-            var runningAndQueuedDownloads = downloadManager.downloadManagerData.downloads.Where(i => i.status == DownloadStatus.Running
-                                                                                                     || i.status == DownloadStatus.Queued).ToList();
-            if (runningAndQueuedDownloads.Count > 0)
-            {
-                foreach (var download in runningAndQueuedDownloads)
-                {
-                    if (download.status == DownloadStatus.Running)
-                    {
-                        downloadManager.gracefulInstallerCTS?.Cancel();
-                        downloadManager.gracefulInstallerCTS?.Dispose();
-                    }
-                    download.status = DownloadStatus.Paused;
-                }
-                downloadManager.SaveData();
-            }
-            return true;
+            SaveDownloadData();
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
@@ -1030,28 +1069,6 @@ namespace GogOssLibraryNS
                     }
                 }
             };
-
-            if (PlayniteApi.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
-            {
-                yield return new MainMenuItem
-                {
-                    Description = LocalizationManager.Instance.GetString(LOC.CommonDownloadManager),
-                    MenuSection = $"@{Instance.Name}",
-                    Icon = "InstallIcon",
-                    Action = (args) =>
-                    {
-                        Window window = PlayniteApi.Dialogs.CreateWindow(new WindowCreationOptions
-                        {
-                            ShowMaximizeButton = true,
-                        });
-                        window.Title = $"{LocalizationManager.Instance.GetString(LOC.CommonPanel)}";
-                        window.Content = GetGogOssDownloadManager();
-                        window.Owner = PlayniteApi.Dialogs.GetCurrentAppWindow();
-                        window.SizeToContent = SizeToContent.WidthAndHeight;
-                        window.ShowDialog();
-                    }
-                };
-            }
 
             yield return new MainMenuItem
             {

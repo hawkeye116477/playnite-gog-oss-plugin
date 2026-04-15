@@ -71,16 +71,6 @@ namespace GogOssLibraryNS
                 OverlayUninstallBtn.Visibility = Visibility.Collapsed;
             }
 
-            var downloadCompleteActions = new Dictionary<DownloadCompleteAction, string>
-            {
-                { DownloadCompleteAction.Nothing, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDoNothing) },
-                { DownloadCompleteAction.ShutDown, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMenuShutdownSystem) },
-                { DownloadCompleteAction.Reboot, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMenuRestartSystem) },
-                { DownloadCompleteAction.Hibernate, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMenuHibernateSystem) },
-                { DownloadCompleteAction.Sleep, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteMenuSuspendSystem) },
-            };
-            AfterDownloadCompleteCBo.ItemsSource = downloadCompleteActions;
-
             var updatePolicyOptions = new Dictionary<UpdatePolicy, string>
             {
                 { UpdatePolicy.PlayniteLaunch, LocalizationManager.Instance.GetString(LOC.CommonCheckUpdatesEveryPlayniteStartup) },
@@ -115,7 +105,6 @@ namespace GogOssLibraryNS
                 { ClearCacheTime.Never, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteSettingsPlaytimeImportModeNever) }
             };
             AutoClearCacheCBo.ItemsSource = autoClearOptions;
-            AutoRemoveCompletedDownloadsCBo.ItemsSource = autoClearOptions;
 
             var preferredCdnActions = PreferredCdn.GetCdnDict();
             PreferredCdnCBo.ItemsSource = preferredCdnActions;

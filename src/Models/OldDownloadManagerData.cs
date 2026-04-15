@@ -1,12 +1,11 @@
 ﻿using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
-using Playnite.SDK.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace GogOssLibraryNS.Models
 {
-    public class DownloadManagerData
+    public class OldDownloadManagerData
     {
         public ObservableCollection<Download> downloads { get; set; }
 
@@ -17,7 +16,6 @@ namespace GogOssLibraryNS.Models
             public string fullInstallPath { get; set; }
 
             private double _downloadSizeNumber;
-            [DontSerialize]
             public double downloadSizeNumber
             {
                 get => _downloadSizeNumber;
@@ -25,18 +23,15 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _installSizeNumber;
-            [DontSerialize]
             public double installSizeNumber
             {
                 get => _installSizeNumber;
                 set => SetValue(ref _installSizeNumber, value);
             }
 
-            [DontSerialize]
             public long addedTime { get; set; }
 
             private long _completedTime;
-            [DontSerialize]
             public long completedTime
             {
                 get => _completedTime;
@@ -44,7 +39,6 @@ namespace GogOssLibraryNS.Models
             }
 
             private DownloadStatus _status;
-            [DontSerialize]
             public DownloadStatus status
             {
                 get => _status;
@@ -52,7 +46,6 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _progress;
-            [DontSerialize]
             public double progress
             {
                 get => _progress;
@@ -60,7 +53,6 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _downloadedNumber;
-            [DontSerialize]
             public double downloadedNumber
             {
                 get => _downloadedNumber;
@@ -70,18 +62,5 @@ namespace GogOssLibraryNS.Models
             public DownloadProperties downloadProperties { get; set; } = new DownloadProperties();
             public List<string> depends { get; set; } = new List<string>();
         }
-    }
-
-    public class DownloadProperties : ObservableObject
-    {
-        public string installPath { get; set; } = "";
-        public DownloadAction downloadAction { get; set; }
-        public int maxWorkers { get; set; }
-        public List<string> extraContent { get; set; } = new List<string>();
-        public string language { get; set; } = "";
-        public string buildId { get; set; } = "";
-        public string version { get; set; } = "";
-        public string betaChannel { get; set; } = "disabled";
-        public string os { get; set; } = "windows";
     }
 }

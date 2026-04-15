@@ -14,6 +14,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using UnifiedDownloadManagerApiNS;
+using UnifiedDownloadManagerApiNS.Models;
 
 namespace GogOssLibraryNS
 {
@@ -80,6 +82,7 @@ namespace GogOssLibraryNS
 
         public async Task StartTask(DownloadAction downloadAction)
         {
+            var unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
             var gogDownloadApi = new GogDownloadApi();
             var settings = GogOssLibrary.GetSettings();
             var installPath = SelectedGamePathTxt.Text;
@@ -94,14 +97,40 @@ namespace GogOssLibraryNS
             }
 
             InstallerWindow.Close();
-            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
             var downloadTasks = new List<DownloadManagerData.Download>();
             var downloadItemsAlreadyAdded = new List<string>();
             foreach (var installData in MultiInstallData)
             {
+                if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.CommonPermissionError))
+                {
+                    continue;
+                }
                 var gameId = installData.gameID;
-                var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == gameId);
-                if (wantedItem == null)
+                bool completedDownload = true;
+                var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == gameId);
+                var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(gameId, GogOssLibrary.Instance.Id.ToString());
+                if (wantedUnifiedItem != null)
+                {
+                    if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
+                    {
+                        completedDownload = false;
+                    }
+                }
+                if (completedDownload)
+                {
+                    if (wantedPluginItem != null)
+                    {
+                        GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
+                        wantedPluginItem = null;
+                    }
+                    if (wantedUnifiedItem != null)
+                    {
+                        unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
+                        wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(gameId, GogOssLibrary.Instance.Id.ToString());
+                    }
+                }
+
+                if (wantedUnifiedItem == null)
                 {
                     if (installData.downloadProperties.installPath.IsNullOrEmpty())
                     {
@@ -116,13 +145,13 @@ namespace GogOssLibraryNS
                     {
                         installData.fullInstallPath = Path.Combine(installPath, ".galaxy-overlay");
                     }
-                    if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.CommonPermissionError))
-                    {
-                        continue;
-                    }
                     var downloadProperties = GetDownloadProperties(installData, downloadAction);
                     installData.downloadProperties = downloadProperties;
                     downloadTasks.Add(installData);
+                }
+                else
+                {
+                    downloadItemsAlreadyAdded.Add(installData.gameID);
                 }
             }
             if (downloadItemsAlreadyAdded.Count > 0)
@@ -136,7 +165,8 @@ namespace GogOssLibraryNS
             }
             if (downloadTasks.Count > 0)
             {
-                await downloadManager.EnqueueMultipleJobs(downloadTasks);
+                var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
+                await downloadLogic.AddTasks(downloadTasks);
             }
         }
 
@@ -223,13 +253,12 @@ namespace GogOssLibraryNS
             downloadSizeNumber = 0;
             installSizeNumber = 0;
 
-            GogOssDownloadManagerView downloadManager = GogOssLibrary.GetGogOssDownloadManager();
-
             bool gamesListShouldBeDisplayed = false;
 
             var installedAppList = GogOssLibrary.GetInstalledAppList();
 
             var gogDownloadApi = new GogDownloadApi();
+            var unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
 
             if (MultiInstallData.Count > 0 && MultiInstallData[0].downloadItemType != DownloadItemType.Overlay)
             {
@@ -278,18 +307,34 @@ namespace GogOssLibraryNS
                     var gameSize = await GogOss.CalculateGameSize(installData);
                     installData.downloadSizeNumber = gameSize.download_size;
                     installData.installSizeNumber = gameSize.disk_size;
-                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
-                    if (wantedItem != null)
+
+                    bool completedDownload = true;
+                    var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == installData.gameID);
+                    var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(installData.gameID, GogOssLibrary.Instance.Id.ToString());
+                    if (wantedUnifiedItem != null)
                     {
-                        if (wantedItem.status == DownloadStatus.Completed)
+                        if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
                         {
-                            downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                            completedDownload = false;
                         }
-                        else
+                    }
+                    if (completedDownload)
+                    {
+                        if (wantedPluginItem != null)
                         {
-                            downloadItemsAlreadyAdded.Add(installData.name);
-                            MultiInstallData.Remove(installData);
+                            GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
+                            wantedPluginItem = null;
                         }
+                        if (wantedUnifiedItem != null)
+                        {
+                            unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
+                            wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(installData.gameID, GogOssLibrary.Instance.Id.ToString());
+                        }
+                    }
+                    if (wantedUnifiedItem != null)
+                    {
+                        downloadItemsAlreadyAdded.Add(installData.name);
+                        MultiInstallData.Remove(installData);
                     }
                 }
             }
@@ -344,18 +389,34 @@ namespace GogOssLibraryNS
                 if (MultiInstallData[0].downloadItemType == DownloadItemType.Overlay)
                 {
                     var overlayInstallData = MultiInstallData[0];
-                    var wantedItem = downloadManager.downloadManagerData.downloads.FirstOrDefault(item => item.gameID == overlayInstallData.gameID);
-                    if (wantedItem != null)
+
+                    bool completedDownload = true;
+                    var wantedPluginItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == overlayInstallData.gameID);
+                    var wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(overlayInstallData.gameID, GogOssLibrary.Instance.Id.ToString());
+                    if (wantedUnifiedItem != null)
                     {
-                        if (wantedItem.status == DownloadStatus.Completed)
+                        if (wantedUnifiedItem.status != UnifiedDownloadStatus.Completed)
                         {
-                            downloadManager.downloadManagerData.downloads.Remove(wantedItem);
+                            completedDownload = false;
                         }
-                        else
+                    }
+                    if (completedDownload)
+                    {
+                        if (wantedPluginItem != null)
                         {
-                            downloadItemsAlreadyAdded.Add(overlayInstallData.name);
-                            MultiInstallData.Remove(overlayInstallData);
+                            GogOssLibrary.Instance.pluginDownloadData.downloads.Remove(wantedPluginItem);
+                            wantedPluginItem = null;
                         }
+                        if (wantedUnifiedItem != null)
+                        {
+                            unifiedDownloadManagerApi.RemoveTask(wantedUnifiedItem);
+                            wantedUnifiedItem = unifiedDownloadManagerApi.GetTask(overlayInstallData.gameID, GogOssLibrary.Instance.Id.ToString());
+                        }
+                    }
+                    if (wantedUnifiedItem != null)
+                    {
+                        downloadItemsAlreadyAdded.Add(overlayInstallData.name);
+                        MultiInstallData.Remove(overlayInstallData);
                     }
                     else
                     {
