@@ -47,7 +47,8 @@ namespace GogOssLibraryNS
             {
                 string[] cometExes = { "comet-x86_64-pc-windows-msvc.exe", "comet.exe" };
                 string envPath = Environment.GetEnvironmentVariable("PATH")
-                                            .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                            .Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                                            .Where(p => p.IndexOfAny(Path.GetInvalidPathChars()) < 0)
                                             .SelectMany(pathEntry => cometExes.Select(nileExe => Path.Combine(pathEntry.Trim(), nileExe)))
                                             .FirstOrDefault(File.Exists);
 
