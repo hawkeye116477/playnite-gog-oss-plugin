@@ -11,9 +11,11 @@ body:
     attributes:
       label: Prerequisites
       options:
-        - label: I've looked through [existing issues](https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues) to make sure that this bug hasn't been reported before.
+        - label: I've looked through [existing issues](https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues?q=is%3Aissue) to make sure that this bug hasn't been reported before.
           required: true
         - label: I've read the [GitHub Community Guidelines](https://docs.github.com/en/github/site-policy/github-community-guidelines) and know netiquette.
+          required: true
+        - label: I've checked `Plugin settings => Troubleshooting information` section
           required: true
   - type: input
     id: playniteV
@@ -33,13 +35,6 @@ body:
       label: Comet version
     validations:
       required: true
-  - type: input
-    id: gogdlV
-    attributes:
-      label: Gogdl version
-      description: Only required up to plugin v1.1.15
-    validations:
-      required: false
     # - type: input
     # id: xdeltaV
     # attributes:
