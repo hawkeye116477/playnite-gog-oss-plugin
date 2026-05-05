@@ -1244,13 +1244,12 @@ namespace GogOssLibraryNS
                         productId = "redist_v2";
                     }
                     var currentSecureLinks = currentSecureLinksDict[productId];
-
                     var availableCdns = new List<GogSecureLinks.FinalUrl>(currentSecureLinks);
 
                     if (preferredCdn != "")
                     {
-                        var preferredLink = availableCdns.FirstOrDefault(l => l.endpoint_name.Contains(preferredCdn.ToLower()));
-                        if (!preferredLink.formatted_url.IsNullOrEmpty())
+                        var preferredLink = availableCdns.FirstOrDefault(l => l.endpoint_name.Equals(preferredCdn, StringComparison.OrdinalIgnoreCase));
+                        if (preferredLink != null && !preferredLink.formatted_url.IsNullOrEmpty())
                         {
                             availableCdns.Remove(preferredLink);
                             availableCdns.Insert(0, preferredLink);
