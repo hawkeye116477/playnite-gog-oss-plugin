@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = Ainult käsitsi
 third-party-playnite-option-once-a-day = Kord päevas
 third-party-playnite-option-once-a-week = Kord nädalas
 third-party-playnite-open = Ava
+third-party-playnite-automatic = Automaatne
 third-party-gog-settings-import-installed-label = Impordi paigaldatud mängud
 third-party-gog-settings-import-uninstalled-label = Impordi paigaldamata mängud
 third-party-gog-settings-connect-account = Ühenda konto

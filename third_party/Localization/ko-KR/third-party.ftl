@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = 수동으로만
 third-party-playnite-option-once-a-day = 하루에 한 번
 third-party-playnite-option-once-a-week = 일주일에 한 번
 third-party-playnite-open = 열기
+third-party-playnite-automatic = 자동
 third-party-gog-settings-import-installed-label = 설치된 게임 가져오기
 third-party-gog-settings-import-uninstalled-label = 설치되지 않은 게임 가져오기
 third-party-gog-settings-connect-account = 계정 연결

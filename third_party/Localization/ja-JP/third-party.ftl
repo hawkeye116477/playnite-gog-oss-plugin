@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = 手動のみ
 third-party-playnite-option-once-a-day = 1日に1回
 third-party-playnite-option-once-a-week = 週に1回
 third-party-playnite-open = 開く
+third-party-playnite-automatic = 自動
 third-party-gog-settings-import-installed-label = インストール済みのゲームをインポート
 third-party-gog-settings-import-uninstalled-label = インストールされていないゲームをインポート
 third-party-gog-settings-connect-account = アカウントに接続

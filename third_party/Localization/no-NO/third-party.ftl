@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = Bare manuelt
 third-party-playnite-option-once-a-day = En gang om dagen
 third-party-playnite-option-once-a-week = En gang i uken
 third-party-playnite-open = Åpne
+third-party-playnite-automatic = Automatisk
 third-party-gog-settings-import-installed-label = Importer installerte spill
 third-party-gog-settings-import-uninstalled-label = Importer spill som ikke er installert
 third-party-gog-settings-connect-account = Tilknytt konto

@@ -735,6 +735,10 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteOpen = "third-party-playnite-open";
         /// <summary>
+        /// Automatic
+        /// </summary>
+        public const string ThirdPartyPlayniteAutomatic = "third-party-playnite-automatic";
+        /// <summary>
         /// Import installed games
         /// </summary>
         public const string ThirdPartyGogSettingsImportInstalledLabel = "third-party-gog-settings-import-installed-label";

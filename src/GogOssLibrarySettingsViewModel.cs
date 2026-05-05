@@ -34,7 +34,7 @@ namespace GogOssLibraryNS
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
         public long NextClearingTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
-        public GogCdn PreferredCdn { get; set; } = GogCdn.Fastly;
+        public GogCdn PreferredCdn { get; set; } = GogCdn.Auto;
         public bool EnableOverlay { get; set; } = true;
     }
 

@@ -2448,6 +2448,10 @@ namespace GogOssLibraryNS
                 }
                 var preferredCdn = settings.PreferredCdn;
                 var preferredCdnString = PreferredCdn.GetCdnDict()[preferredCdn];
+                if (preferredCdn == GogCdn.Auto)
+                {
+                    preferredCdnString = "";
+                }
 
                 if (downloadProperties.downloadAction != DownloadAction.Update)
                 {

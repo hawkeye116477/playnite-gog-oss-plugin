@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = Chỉ chạy thủ công
 third-party-playnite-option-once-a-day = Mỗi ngày một lần
 third-party-playnite-option-once-a-week = Mỗi tuần một lần
 third-party-playnite-open = Mở
+third-party-playnite-automatic = Tự động
 third-party-gog-settings-import-installed-label = Nhập vào các trò chơi đã được cài đặt
 third-party-gog-settings-import-uninstalled-label = Nhập vào các trò chơi chưa được cài đặt
 third-party-gog-settings-connect-account = Kết nối tài khoản

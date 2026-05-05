@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = Csak kézzel
 third-party-playnite-option-once-a-day = Naponta egyszer
 third-party-playnite-option-once-a-week = Hetente egyszer
 third-party-playnite-open = Megnyitás
+third-party-playnite-automatic = Automatikus
 third-party-gog-settings-import-installed-label = Telepített játékok importálása
 third-party-gog-settings-import-uninstalled-label = Nem telepített játékok importálása
 third-party-gog-settings-connect-account = Összekapcsolás a fiókkal

@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using CommonPlugin;
+using System;
+using System.Collections.Generic;
 
 namespace GogOssLibraryNS.Enums
 {
     public enum GogCdn
     {
         Akamai,
-        Fastly
+        Fastly,
+        Auto
     }
 
     public class PreferredCdn
@@ -16,6 +19,7 @@ namespace GogOssLibraryNS.Enums
             {
                 { GogCdn.Akamai, "Akamai" },
                 { GogCdn.Fastly, "Fastly" },
+                { GogCdn.Auto, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteAutomatic) },
             };
             return preferredCdnActions;
         }

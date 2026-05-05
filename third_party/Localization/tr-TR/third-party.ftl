@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = Sadece el ile
 third-party-playnite-option-once-a-day = Günde bir
 third-party-playnite-option-once-a-week = Haftada bir
 third-party-playnite-open = Aç
+third-party-playnite-automatic = Otomatik
 third-party-gog-settings-import-installed-label = Kurulu oyunları içeri aktar
 third-party-gog-settings-import-uninstalled-label = Kurulu olmayan oyunları içe aktar
 third-party-gog-settings-connect-account = Hesap bağla

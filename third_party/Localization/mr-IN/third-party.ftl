@@ -43,6 +43,7 @@ third-party-playnite-select-directory-tooltip = फोल्डर निवड�
 third-party-playnite-option-once-a-day = दिवसातून एकदा
 third-party-playnite-option-once-a-week = आठवड्यातून एकदा
 third-party-playnite-open = उघडा
+third-party-playnite-automatic = आपोआप
 third-party-gog-settings-import-installed-label = स्थापित असलेले गेम आयात करा
 third-party-gog-settings-import-uninstalled-label = स्थापित नसलेले गेम आयात करा
 third-party-gog-settings-connect-account = खाते कनेक्ट करा

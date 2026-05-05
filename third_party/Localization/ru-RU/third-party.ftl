@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = Только вручную
 third-party-playnite-option-once-a-day = Раз в день
 third-party-playnite-option-once-a-week = Раз в неделю
 third-party-playnite-open = Открыть
+third-party-playnite-automatic = Автоматически
 third-party-gog-settings-import-installed-label = Импортировать установленные игры
 third-party-gog-settings-import-uninstalled-label = Импортировать неустановленные игры
 third-party-gog-settings-connect-account = Подключить аккаунт

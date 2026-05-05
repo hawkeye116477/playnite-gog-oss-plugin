@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = 僅手動
 third-party-playnite-option-once-a-day = 每天一次
 third-party-playnite-option-once-a-week = 每週一次
 third-party-playnite-open = 開啟
+third-party-playnite-automatic = 自動
 third-party-gog-settings-import-installed-label = 匯入已安裝的遊戲
 third-party-gog-settings-import-uninstalled-label = 匯入未安裝遊戲
 third-party-gog-settings-connect-account = 連結帳號

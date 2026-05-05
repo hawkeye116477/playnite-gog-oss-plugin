@@ -44,6 +44,7 @@ third-party-playnite-option-only-manually = רק באופן ידני
 third-party-playnite-option-once-a-day = פעם ביום
 third-party-playnite-option-once-a-week = פעם בשבוע
 third-party-playnite-open = פתח
+third-party-playnite-automatic = אוטומטי
 third-party-gog-settings-import-installed-label = ייבא משחקים שהותקנו
 third-party-gog-settings-import-uninstalled-label = ייבא משחקים שלא הותקנו
 third-party-gog-settings-connect-account = חבר חשבון
