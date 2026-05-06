@@ -41,6 +41,15 @@ namespace GogOssLibraryNS
         public IProgress<ProgressData> progress { get; set; }
         private long resumeInitialDiskBytes = 0;
         private long resumeInitialNetworkBytes = 0;
+        public CancellationTokenSource speedReporterCts { get; set; }
+        private Stopwatch speedStopwatch { get; set; }
+        private long totalNetworkBytes;
+        private long totalDiskBytes;
+        private long totalSize;
+        private long totalCompressedSize;
+        private int activeDownloaders;
+        private int activeDiskers;
+        private bool isFinalReport;
 
         public async Task OnCancelDownload(UnifiedDownload downloadTask)
         {
@@ -315,13 +324,108 @@ namespace GogOssLibraryNS
             }
         }
 
+        private void UpdateSmoothQueue(Queue<double> queue, double rawValue, int max)
+        {
+            queue.Enqueue(rawValue);
+            if (queue.Count > max)
+            {
+                queue.Dequeue();
+            }
+        }
+
+        private void ReportProgress(CancellationToken token)
+        {
+            _ = Task.Run(async () =>
+            {
+                TimeSpan lastStopwatchElapsed = TimeSpan.Zero;
+                speedStopwatch = Stopwatch.StartNew();
+
+                int maxSamples = 15;
+                long lastNetworkBytes = Interlocked.Read(ref totalNetworkBytes);
+                long lastDiskBytes = Interlocked.Read(ref totalDiskBytes);
+                Queue<double> netSpeedSamples = new();
+                Queue<double> diskSpeedSamples = new();
+
+                while (!speedReporterCts.Token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await Task.Delay(900, speedReporterCts.Token);
+                        var elapsed = speedStopwatch.Elapsed;
+                        double dt = (elapsed - lastStopwatchElapsed).TotalSeconds;
+                        if (dt <= 0)
+                        {
+                            continue;
+                        }
+                        var diskBytes = Interlocked.Read(ref totalDiskBytes);
+                        var networkBytes = Interlocked.Read(ref totalNetworkBytes);
+
+                        double rawNetSpeed = Math.Max(0, (networkBytes - lastNetworkBytes) / dt);
+                        double rawDiskSpeed = Math.Max(0, (diskBytes - lastDiskBytes) / dt);
+
+                        UpdateSmoothQueue(netSpeedSamples, rawNetSpeed, maxSamples);
+                        UpdateSmoothQueue(diskSpeedSamples, rawDiskSpeed, maxSamples);
+
+                        double smoothNetSpeed = netSpeedSamples.Average();
+                        double smoothDiskSpeed = diskSpeedSamples.Average();
+
+                        if (rawNetSpeed <= 0)
+                        {
+                            smoothNetSpeed = 0;
+                        }
+                        if (rawDiskSpeed <= 0)
+                        {
+                            smoothDiskSpeed = 0;
+                        }
+
+                        double initialNet = resumeInitialNetworkBytes;
+                        double initialDisk = resumeInitialDiskBytes;
+
+                        double avgNetSpeed = (networkBytes - initialNet) / elapsed.TotalSeconds;
+                        double avgDiskSpeed = (diskBytes - initialDisk) / elapsed.TotalSeconds;
+
+                        double expansionRatio = networkBytes > 0 ? (double)totalSize / networkBytes : 1.0;
+
+                        double speedForEta = Math.Min(avgNetSpeed, avgDiskSpeed);
+                        double remaining = totalSize - diskBytes;
+
+                        double eta = remaining / speedForEta;
+
+                        lastStopwatchElapsed = elapsed;
+                        lastNetworkBytes = networkBytes;
+                        lastDiskBytes = diskBytes;
+
+                        progress?.Report(new ProgressData
+                        {
+                            TotalBytes = totalSize,
+                            TotalCompressedBytes = totalCompressedSize,
+                            NetworkBytes = networkBytes,
+                            DiskBytes = diskBytes,
+                            ActiveDownloadWorkers = activeDownloaders,
+                            ActiveDiskWorkers = activeDiskers,
+                            FinalReport = isFinalReport,
+                            Eta = eta,
+                            DownloadSpeed = smoothNetSpeed,
+                            DiskSpeed = smoothDiskSpeed,
+                        });
+                    }
+                    catch
+                    {
+
+                    }
+
+                }
+            }, speedReporterCts.Token);
+        }
+
+
         private async Task DownloadNonGames(CancellationToken token,
-                                    GogDepot.Depot bigDepot,
-                                    string fullInstallPath,
-                                    int maxParallel,
-                                    DownloadItemType downloadItemType,
-                                    string appId = "",
-                                    int bufferSize = 512 * 1024)
+                            GogDepot.Depot bigDepot,
+                            string fullInstallPath,
+                            int maxParallel,
+                            DownloadItemType downloadItemType,
+                            string appId = "",
+                            int bufferSize = 512 * 1024)
         {
             // STEP 0: Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
@@ -410,31 +514,13 @@ namespace GogOssLibraryNS
 
             Interlocked.Exchange(ref resumeInitialNetworkBytes, initialNetworkBytesLocal);
 
-            long totalNetworkBytes = initialNetworkBytesLocal;
+            totalNetworkBytes = initialNetworkBytesLocal;
 
-            int activeDownloaders = 0, activeDiskers = 0;
-            bool isFinalReport = false;
+            activeDownloaders = 0;
+            activeDiskers = 0;
+            isFinalReport = false;
 
-            void ReportProgress()
-            {
-                if (token.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                progress?.Report(new ProgressData
-                {
-                    TotalBytes = totalCompressedSize,
-                    TotalCompressedBytes = totalCompressedSize,
-                    NetworkBytes = Interlocked.Read(ref totalNetworkBytes),
-                    DiskBytes = Interlocked.Read(ref totalNetworkBytes),
-                    ActiveDownloadWorkers = activeDownloaders,
-                    ActiveDiskWorkers = activeDiskers,
-                    FinalReport = isFinalReport
-                });
-            }
-
-            ReportProgress();
+            ReportProgress(token);
 
             //
             // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
@@ -450,7 +536,6 @@ namespace GogOssLibraryNS
                     await downloadSemaphore.WaitAsync(token).ConfigureAwait(false);
                     slotAcquired = true;
                     Interlocked.Increment(ref activeDownloaders);
-                    ReportProgress();
 
                     long compressedSize = job.size;
 
@@ -535,7 +620,6 @@ namespace GogOssLibraryNS
                                 new Progress<int>(bytesRead =>
                                 {
                                     Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                    ReportProgress();
                                 }), null);
 
                             FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
@@ -580,7 +664,6 @@ namespace GogOssLibraryNS
                         Interlocked.Decrement(ref activeDownloaders);
                     }
                     catch { }
-                    ReportProgress();
                 }
             }, token)).ToList();
 
@@ -597,6 +680,7 @@ namespace GogOssLibraryNS
                     {
                         while (channel.Reader.TryRead(out var item))
                         {
+                            token.ThrowIfCancellationRequested();
                             var fileWriteSemaphore = writeSemaphores[item.filePath];
                             await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                             Interlocked.Increment(ref activeDiskers);
@@ -623,7 +707,6 @@ namespace GogOssLibraryNS
                                                     await entryStream.CopyToAsync(outFs, bufferSize, token).ConfigureAwait(false);
                                                 }
                                             }
-                                            ReportProgress();
                                         }
                                     }
                                     try
@@ -654,7 +737,6 @@ namespace GogOssLibraryNS
                                                          .WithArguments(roboCopyArgs);
                                     var proc = ProcessStarter.StartProcess("robocopy", roboCopyCmd.Arguments, true);
                                     proc.WaitForExit();
-                                    ReportProgress();
                                 }
                                 else
                                 {
@@ -666,7 +748,6 @@ namespace GogOssLibraryNS
                                         while ((bytesRead = await sourceStream.ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token).ConfigureAwait(false)) > 0)
                                         {
                                             await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token).ConfigureAwait(false);
-                                            ReportProgress();
                                             totalWritten += bytesRead;
                                         }
                                         if (!item.isCompressed && fileExpectedSizes.TryGetValue(item.filePath, out long expectedSize))
@@ -709,7 +790,6 @@ namespace GogOssLibraryNS
                                 }
                                 catch { }
                                 Interlocked.Decrement(ref activeDiskers);
-                                ReportProgress();
                             }
                         }
                     }
@@ -720,6 +800,11 @@ namespace GogOssLibraryNS
             try
             {
                 await Task.WhenAll(downloadTasks).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                channel.Writer.TryComplete();
+                throw;
             }
             finally
             {
@@ -759,7 +844,6 @@ namespace GogOssLibraryNS
             try
             {
                 isFinalReport = true;
-                ReportProgress();
 
                 if (Directory.Exists(tempDir))
                 {
@@ -785,7 +869,6 @@ namespace GogOssLibraryNS
                 logger.Error(ex, $"An error occurred during final cleanup.");
             }
         }
-
 
         private async Task DownloadGamesAndDepends(CancellationToken token,
                                                    GogDepot.Depot bigDepot,
@@ -826,8 +909,8 @@ namespace GogOssLibraryNS
 
             var jobs = new HashSet<(string filePath, long offset, GogDepot.Chunk chunk, DepotFileType depotFileType, string productId)>();
 
-            long totalSize = 0;
-            long totalCompressedSize = 0;
+            totalSize = 0;
+            totalCompressedSize = 0;
             long initialDiskBytesLocal = 0;
             long initialNetworkBytesLocal = 0;
 
@@ -1172,31 +1255,15 @@ namespace GogOssLibraryNS
             Interlocked.Exchange(ref resumeInitialDiskBytes, initialDiskBytesLocal);
             Interlocked.Exchange(ref resumeInitialNetworkBytes, initialNetworkBytesLocal);
 
-            long totalNetworkBytes = initialNetworkBytesLocal;
-            long totalDiskBytes = initialDiskBytesLocal;
+            totalNetworkBytes = initialNetworkBytesLocal;
+            totalDiskBytes = initialDiskBytesLocal;
 
-            int activeDownloaders = 0, activeDiskers = 0;
-            bool isFinalReport = false;
+            activeDownloaders = 0;
+            activeDiskers = 0;
+            isFinalReport = false;
 
-            ReportProgress();
-            void ReportProgress()
-            {
-                if (token.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                progress?.Report(new ProgressData
-                {
-                    TotalBytes = totalSize,
-                    TotalCompressedBytes = totalCompressedSize,
-                    NetworkBytes = Interlocked.Read(ref totalNetworkBytes),
-                    DiskBytes = Interlocked.Read(ref totalDiskBytes),
-                    ActiveDownloadWorkers = activeDownloaders,
-                    ActiveDiskWorkers = activeDiskers,
-                    FinalReport = isFinalReport
-                });
-            }
+            // Report speed
+            ReportProgress(token);
 
             //
             // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
@@ -1217,7 +1284,6 @@ namespace GogOssLibraryNS
                     await downloadSemaphore.WaitAsync(token).ConfigureAwait(false);
                     slotAcquired = true;
                     Interlocked.Increment(ref activeDownloaders);
-                    ReportProgress();
 
                     long compressedSize = (long)chunk.compressedSize;
 
@@ -1330,13 +1396,13 @@ namespace GogOssLibraryNS
                                     new Progress<int>(bytesRead =>
                                     {
                                         Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                        ReportProgress();
                                     }), null);
 
                                 int offset = 0;
                                 int read;
                                 while ((read = await progressStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     offset += read;
                                 }
 
@@ -1355,7 +1421,6 @@ namespace GogOssLibraryNS
                                         new Progress<int>(bytesRead =>
                                         {
                                             Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                            ReportProgress();
                                         }), null);
 
                                     FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
@@ -1381,6 +1446,10 @@ namespace GogOssLibraryNS
                         }
                         catch (Exception ex)
                         {
+                            if (token.IsCancellationRequested)
+                            {
+                                throw new OperationCanceledException(token);
+                            }
                             logger.Warn(ex, $"Download failed for chunk {job.chunk.compressedMd5} using {currentSecureLink.endpoint_name} CDN. Trying next CDN...");
 
                             if (chunkBuffer != null)
@@ -1429,7 +1498,6 @@ namespace GogOssLibraryNS
                         Interlocked.Decrement(ref activeDownloaders);
                     }
                     catch { }
-                    ReportProgress();
                 }
             }, token)).ToList();
 
@@ -1443,8 +1511,10 @@ namespace GogOssLibraryNS
                 {
                     while (await channel.Reader.WaitToReadAsync(token).ConfigureAwait(false))
                     {
+                        token.ThrowIfCancellationRequested();
                         while (channel.Reader.TryRead(out var item))
                         {
+                            token.ThrowIfCancellationRequested();
                             var fileWriteSemaphore = writeSemaphores[item.filePath];
                             await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                             Interlocked.Increment(ref activeDiskers);
@@ -1487,7 +1557,6 @@ namespace GogOssLibraryNS
                                                 if (!isSfcContainer)
                                                 {
                                                     Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                                    ReportProgress();
                                                 }
                                                 totalWritten += bytesRead;
                                             }
@@ -1502,7 +1571,6 @@ namespace GogOssLibraryNS
                                             if (!isSfcContainer)
                                             {
                                                 Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                                ReportProgress();
                                             }
                                             totalWritten += bytesRead;
                                         }
@@ -1560,7 +1628,6 @@ namespace GogOssLibraryNS
                                 catch { }
 
                                 Interlocked.Decrement(ref activeDiskers);
-                                ReportProgress();
                             }
                         }
                     }
@@ -1571,6 +1638,11 @@ namespace GogOssLibraryNS
             try
             {
                 await Task.WhenAll(downloadTasks).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                channel.Writer.TryComplete();
+                throw;
             }
             finally
             {
@@ -1649,7 +1721,6 @@ namespace GogOssLibraryNS
                                             await outFs.WriteAsync(consumerBuffer, 0, read, token).ConfigureAwait(false);
 
                                             Interlocked.Add(ref totalDiskBytes, read);
-                                            ReportProgress();
                                             remaining -= read;
                                         }
 
@@ -1680,7 +1751,6 @@ namespace GogOssLibraryNS
                                 }
                                 catch { }
                                 Interlocked.Decrement(ref activeDiskers);
-                                ReportProgress();
                             }
                         }));
                     }).ToList();
@@ -1718,7 +1788,6 @@ namespace GogOssLibraryNS
                                 try
                                 {
                                     await Task.Delay(500, reportingToken).ConfigureAwait(false);
-                                    ReportProgress();
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -1818,8 +1887,6 @@ namespace GogOssLibraryNS
                                         catch { }
                                         sfcExtractSemaphore.Release();
                                         targetLock.Release();
-
-                                        ReportProgress();
                                     }
                                 }, token);
 
@@ -1863,7 +1930,6 @@ namespace GogOssLibraryNS
             try
             {
                 isFinalReport = true;
-                ReportProgress();
 
                 if (Directory.Exists(tempDir))
                 {
@@ -2372,41 +2438,9 @@ namespace GogOssLibraryNS
 
             progress = new Progress<ProgressData>(p =>
             {
-                wantedUnifiedTask.downloadSizeBytes = p.TotalCompressedBytes;
-                wantedUnifiedTask.installSizeBytes = p.TotalBytes;
-                double dt = (sw.Elapsed - lastStopwatchElapsed).TotalSeconds;
-                if (dt < 1 && !p.FinalReport)
-                {
-                    return;
-                }
-
-                double rawNetSpeed = (p.NetworkBytes - lastNetworkBytes) / dt;
-                double rawDiskSpeed = (p.DiskBytes - lastDiskBytes) / dt;
-
-                rawNetSpeed = Math.Max(rawNetSpeed, 0);
-                rawDiskSpeed = Math.Max(rawDiskSpeed, 0);
-
-                lastStopwatchElapsed = sw.Elapsed;
-                lastNetworkBytes = p.NetworkBytes;
-                lastDiskBytes = p.DiskBytes;
-
-                double initialNet = resumeInitialNetworkBytes;
-                double initialDisk = resumeInitialDiskBytes;
-
-                double avgNetSpeed = (p.NetworkBytes - initialNet) / sw.Elapsed.TotalSeconds;
-                double avgDiskSpeed = (p.DiskBytes - initialDisk) / sw.Elapsed.TotalSeconds;
-
-                double expansionRatio = p.NetworkBytes > 0 ? (double)p.TotalBytes / p.NetworkBytes : 1.0;
-                double avgNetSpeedNormalized = avgNetSpeed * expansionRatio;
-
-                double speedForEta = Math.Max(Math.Min(avgNetSpeedNormalized, avgDiskSpeed), 1.0);
-                double remaining = p.TotalBytes - p.DiskBytes;
-
-                double eta = remaining > 0 ? remaining / speedForEta : 0;
-
-                wantedUnifiedTask.downloadSpeedBytes = rawNetSpeed;
-                wantedUnifiedTask.diskWriteSpeedBytes = rawDiskSpeed;
-                wantedUnifiedTask.eta = TimeSpan.FromSeconds(eta);
+                wantedUnifiedTask.downloadSpeedBytes = p.DownloadSpeed;
+                wantedUnifiedTask.diskWriteSpeedBytes = p.DiskSpeed;
+                wantedUnifiedTask.eta = TimeSpan.FromSeconds(p.Eta);
                 wantedUnifiedTask.elapsed = sw.Elapsed;
 
 
@@ -2415,10 +2449,6 @@ namespace GogOssLibraryNS
                 {
                     var currentPercentProgress = p.TotalBytes > 0 ? (double)p.DiskBytes / p.TotalBytes * 100 : 0;
                     item.progress = currentPercentProgress;
-                    if (item.status != UnifiedDownloadStatus.Running)
-                    {
-                        item.status = UnifiedDownloadStatus.Running;
-                    }
                     if (p.TotalCompressedBytes == p.NetworkBytes)
                     {
                         switch (downloadProperties.downloadAction)
@@ -2463,6 +2493,8 @@ namespace GogOssLibraryNS
                 }
 
                 logger.Debug($"Downloading {wantedUnifiedTask.name} ({wantedUnifiedTask.gameID}) to {matchingPluginTask.downloadProperties.installPath} ...");
+
+                speedReporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
                 if (matchingPluginTask.downloadItemType == DownloadItemType.Game || matchingPluginTask.downloadItemType == DownloadItemType.Dependency)
                 {
                     await DownloadGamesAndDepends(linkedCTS.Token, bigDepot, wantedUnifiedTask.fullInstallPath, allSecureLinks, maxWorkers, preferredCdn: preferredCdnString);
@@ -2558,6 +2590,10 @@ namespace GogOssLibraryNS
             }
             finally
             {
+                wantedUnifiedTask.activity = "";
+                speedStopwatch?.Stop();
+                speedReporterCts?.Cancel();
+                speedReporterCts?.Dispose();
                 sw.Stop();
             }
         }
