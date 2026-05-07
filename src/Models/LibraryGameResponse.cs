@@ -15,6 +15,7 @@ namespace GogOssLibraryNS.Models
             public string image;
             public string title;
             public string url;
+            public bool isHidden;
         }
 
         public class Stats

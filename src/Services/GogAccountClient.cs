@@ -301,7 +301,13 @@ namespace GogOssLibraryNS.Services
         public async Task<List<LibraryGameResponse>> GetOwnedGames()
         {
             var games = new List<LibraryGameResponse>();
-            var baseUrl = @"https://www.gog.com/account/getFilteredProducts?hiddenFlag=0&mediaType=1&page={0}&sortBy=title";
+            bool includeHiddenGames = GogOssLibrary.GetSettings().ImportHiddenGames;
+            var hiddenFlag = "hiddenFlag=0&";
+            if (includeHiddenGames)
+            {
+                hiddenFlag = "";
+            }
+            var baseUrl = @$"https://www.gog.com/account/getFilteredProducts?{hiddenFlag}mediaType=1&page={0}&sortBy=title";
 
             var tokens = LoadTokens();
             httpClient.DefaultRequestHeaders.Clear();
@@ -329,7 +335,8 @@ namespace GogOssLibraryNS.Services
                         id = a.id.ToString(),
                         title = a.title,
                         url = a.url,
-                        image = a.image
+                        image = a.image,
+                        isHidden = a.isHidden,
                     }
                 }));
 
@@ -349,7 +356,8 @@ namespace GogOssLibraryNS.Services
                                     id = a.id.ToString(),
                                     title = a.title,
                                     url = a.url,
-                                    image = a.image
+                                    image = a.image,
+                                    isHidden = a.isHidden,
                                 }
                             }));
                         }

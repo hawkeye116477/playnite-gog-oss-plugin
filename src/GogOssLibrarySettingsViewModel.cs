@@ -16,6 +16,7 @@ namespace GogOssLibraryNS
         public bool ImportInstalledGames { get; set; } = true;
         public bool ConnectAccount { get; set; } = false;
         public bool ImportUninstalledGames { get; set; } = false;
+        public bool ImportHiddenGames { get; set; } = false;
         public bool EnableCometSupport { get; set; } = Comet.IsInstalled;
         public bool UseVerticalCovers { get; set; } = true;
         public string Locale { get; set; } = "en";

@@ -427,7 +427,8 @@ namespace GogOssLibraryNS
                     Source = new MetadataNameProperty("GOG"),
                     GameId = game.game.id,
                     Name = game.game.title.RemoveTrademarks(),
-                    Platforms = new HashSet<MetadataProperty> { new MetadataSpecProperty("pc_windows") }
+                    Platforms = new HashSet<MetadataProperty> { new MetadataSpecProperty("pc_windows") },
+                    Hidden = game.game.isHidden
                 };
 
                 // This is a hack for inconsistent data model on GOG's side.

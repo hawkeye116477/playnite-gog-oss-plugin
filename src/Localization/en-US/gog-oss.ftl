@@ -21,3 +21,4 @@ gog-oss-top-right = Top right
 gog-oss-bottom-left = Bottom left
 gog-oss-bottom-right = Bottom right
 gog-oss-enable-overlay = Enable Galaxy Overlay
+gog-oss-import-hidden-games = Import hidden games

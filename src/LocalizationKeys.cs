@@ -98,6 +98,10 @@ namespace System
         /// </summary>
         public const string GogOssEnableOverlay = "gog-oss-enable-overlay";
         /// <summary>
+        /// Import hidden games
+        /// </summary>
+        public const string GogOssImportHiddenGames = "gog-oss-import-hidden-games";
+        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";

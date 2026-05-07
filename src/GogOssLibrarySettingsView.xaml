@@ -46,7 +46,12 @@
                       IsChecked="{Binding Settings.ImportUninstalledGames}"
                       Margin="0,0,0,0"
                       Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogSettingsImportUninstalledLabel}}"/>
-
+                        <CheckBox DockPanel.Dock="Top"
+                      IsChecked="{Binding Settings.ImportHiddenGames}"
+                      Margin="0,10,0,0"
+                      Content="{common:Localize Key={x:Static system:LOC.GogOssImportHiddenGames}}" 
+                      IsEnabled="{Binding IsChecked, ElementName=EpicImportUninstalledChk}"/>
+                        
                         <StackPanel Orientation="Horizontal" Margin="0,10">
                             <ToggleButton HorizontalAlignment="Left" Name="LoginBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogAuthenticateLabel}}" IsEnabled="False" Click="LoginBtn_Click" IsChecked="False"/>
                             <TextBlock VerticalAlignment="Center" Margin="10,5,5,5" Name="AuthStatusTB" Text="{common:Localize Key={x:Static system:LOC.ThirdPartyGogLoginChecking}}"/>
