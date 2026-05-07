@@ -447,7 +447,7 @@ namespace GogOssLibraryNS
             var channel = Channel.CreateUnbounded<(string filePath, long length, string tempFilePath, long allocatedBytes, bool isCompressed, string hash)>(
                 );
 
-            var jobs = new HashSet<(string filePath, long size, string url, string hash)>();
+            var jobs = new List<(string filePath, long size, string url, string hash)>();
 
             long totalCompressedSize = 0;
             long initialNetworkBytesLocal = 0;
@@ -510,7 +510,7 @@ namespace GogOssLibraryNS
                 fileExpectedSizes.TryAdd(depotFilePath, expectedFileSize);
             }
 
-            jobs = jobs.OrderBy(job => job.size).ToHashSet();
+            jobs = jobs.OrderBy(job => job.size).ToList();
 
             Interlocked.Exchange(ref resumeInitialNetworkBytes, initialNetworkBytesLocal);
 
@@ -525,7 +525,7 @@ namespace GogOssLibraryNS
             //
             // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
             //
-            var downloadTasks = jobs.Select(job => Task.Run(async () =>
+            var downloadTasks = jobs.Select(async job =>
             {
                 bool slotAcquired = false;
                 long allocatedBytes = 0;
@@ -665,7 +665,7 @@ namespace GogOssLibraryNS
                     }
                     catch { }
                 }
-            }, token)).ToList();
+            }).ToList();
 
 
             //
@@ -1675,7 +1675,7 @@ namespace GogOssLibraryNS
                         string containerFilePath = sfcFilePathsByHash[depotHash];
                         var orderedJobs = kvp.Value.OrderBy(job => job.sfcRef.offset).ToHashSet();
 
-                        return orderedJobs.Select(job => Task.Run(async () =>
+                        return orderedJobs.Select(async job =>
                         {
                             token.ThrowIfCancellationRequested();
                             string smallFilePath = job.filePath;
@@ -1752,7 +1752,7 @@ namespace GogOssLibraryNS
                                 catch { }
                                 Interlocked.Decrement(ref activeDiskers);
                             }
-                        }));
+                        });
                     }).ToList();
 
                 try
