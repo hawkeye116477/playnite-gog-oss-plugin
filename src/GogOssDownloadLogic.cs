@@ -49,7 +49,6 @@ namespace GogOssLibraryNS
         private long totalCompressedSize;
         private int activeDownloaders;
         private int activeDiskers;
-        private bool isFinalReport;
 
         public async Task OnCancelDownload(UnifiedDownload downloadTask)
         {
@@ -403,7 +402,6 @@ namespace GogOssLibraryNS
                             DiskBytes = diskBytes,
                             ActiveDownloadWorkers = activeDownloaders,
                             ActiveDiskWorkers = activeDiskers,
-                            FinalReport = isFinalReport,
                             Eta = eta,
                             DownloadSpeed = smoothNetSpeed,
                             DiskSpeed = smoothDiskSpeed,
@@ -427,7 +425,6 @@ namespace GogOssLibraryNS
                 DiskBytes = Interlocked.Read(ref totalDiskBytes),
                 ActiveDownloadWorkers = activeDownloaders,
                 ActiveDiskWorkers = activeDiskers,
-                FinalReport = isFinalReport,
                 Eta = 0,
                 DownloadSpeed = 0,
                 DiskSpeed = 0,
@@ -534,7 +531,6 @@ namespace GogOssLibraryNS
 
             activeDownloaders = 0;
             activeDiskers = 0;
-            isFinalReport = false;
 
             ReportProgress();
 
@@ -859,8 +855,6 @@ namespace GogOssLibraryNS
 
             try
             {
-                isFinalReport = true;
-
                 if (Directory.Exists(tempDir))
                 {
                     if (!token.IsCancellationRequested)
@@ -1275,7 +1269,6 @@ namespace GogOssLibraryNS
 
             activeDownloaders = 0;
             activeDiskers = 0;
-            isFinalReport = false;
 
             // Report speed
             ReportProgress();
@@ -1939,8 +1932,6 @@ namespace GogOssLibraryNS
 
             try
             {
-                isFinalReport = true;
-
                 if (Directory.Exists(tempDir))
                 {
                     if (!token.IsCancellationRequested)

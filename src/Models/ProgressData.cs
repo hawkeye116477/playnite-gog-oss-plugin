@@ -10,7 +10,6 @@
         public int ActiveDiskWorkers { get; set; }
         public long InitialNetworkBytes { get; set; }
         public long InitialDiskBytes { get; set; }
-        public bool FinalReport { get; set; } = false;
         public double Eta { get; set; }
         public double DownloadSpeed { get; set; }
         public double DiskSpeed { get; set; }
