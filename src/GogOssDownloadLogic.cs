@@ -333,7 +333,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void ReportProgress(CancellationToken token)
+        private void ReportProgress()
         {
             _ = Task.Run(async () =>
             {
@@ -346,9 +346,9 @@ namespace GogOssLibraryNS
                 Queue<double> netSpeedSamples = new();
                 Queue<double> diskSpeedSamples = new();
 
-                while (!speedReporterCts.Token.IsCancellationRequested)
+                try
                 {
-                    try
+                    while (!speedReporterCts.Token.IsCancellationRequested)
                     {
                         await Task.Delay(900, speedReporterCts.Token);
                         var elapsed = speedStopwatch.Elapsed;
@@ -409,13 +409,29 @@ namespace GogOssLibraryNS
                             DiskSpeed = smoothDiskSpeed,
                         });
                     }
-                    catch
-                    {
-
-                    }
+                }
+                catch
+                {
 
                 }
             }, speedReporterCts.Token);
+        }
+
+        private void DoFinalReport()
+        {
+            progress?.Report(new ProgressData
+            {
+                TotalBytes = totalSize,
+                TotalCompressedBytes = totalCompressedSize,
+                NetworkBytes = Interlocked.Read(ref totalNetworkBytes),
+                DiskBytes = Interlocked.Read(ref totalDiskBytes),
+                ActiveDownloadWorkers = activeDownloaders,
+                ActiveDiskWorkers = activeDiskers,
+                FinalReport = isFinalReport,
+                Eta = 0,
+                DownloadSpeed = 0,
+                DiskSpeed = 0,
+            });
         }
 
 
@@ -520,7 +536,7 @@ namespace GogOssLibraryNS
             activeDiskers = 0;
             isFinalReport = false;
 
-            ReportProgress(token);
+            ReportProgress();
 
             //
             // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
@@ -1262,7 +1278,7 @@ namespace GogOssLibraryNS
             isFinalReport = false;
 
             // Report speed
-            ReportProgress(token);
+            ReportProgress();
 
             //
             // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
@@ -2493,6 +2509,7 @@ namespace GogOssLibraryNS
                 {
                     await DownloadNonGames(linkedCTS.Token, bigDepot, wantedUnifiedTask.fullInstallPath, maxWorkers, matchingPluginTask.downloadItemType, matchingPluginTask.gameID);
                 }
+                DoFinalReport();
 
 
                 if (matchingPluginTask.downloadItemType == DownloadItemType.Game)
