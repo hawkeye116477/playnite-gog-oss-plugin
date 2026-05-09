@@ -13,12 +13,12 @@ namespace GogOssLibraryNS.Converters
             {
                 return string.Join(", ", list);
             }
-            return string.Empty;
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is string stringVal)
+            if (value is string stringVal && stringVal != "")
             {
                 var converted = stringVal.Split(new[] { ", " }, StringSplitOptions.None);
                 return converted.ToObservable();

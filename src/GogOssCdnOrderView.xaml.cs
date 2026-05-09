@@ -56,7 +56,6 @@ namespace GogOssLibraryNS
         {
             GlobalProgressOptions metadataProgressOptions = new(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteProgressMetadata), false);
             var playniteAPI = API.Instance;
-            ILogger logger = LogManager.GetLogger();
             playniteAPI.Dialogs.ActivateGlobalProgress((a) =>
             {
                 _ = (Application.Current.Dispatcher?.BeginInvoke((Action)async delegate
