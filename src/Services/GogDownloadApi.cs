@@ -660,7 +660,7 @@ namespace GogOssLibraryNS.Services
                     {
                         if (Serialization.TryFromJson<GogSecureLinks>(content, out var validJsonResponse))
                         {
-                            foreach (var endpoint in validJsonResponse.urls.OrderBy(e => e.priority))
+                            foreach (var endpoint in validJsonResponse.urls.OrderBy(e => e.fallback_only).ThenBy(e => e.priority))
                             {
                                 var newUrl = endpoint.url_format;
                                 if (taskData.downloadItemType == DownloadItemType.Game)
