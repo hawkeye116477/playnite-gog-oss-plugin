@@ -22,3 +22,6 @@ gog-oss-bottom-left = Bottom left
 gog-oss-bottom-right = Bottom right
 gog-oss-enable-overlay = Enable Galaxy Overlay
 gog-oss-import-hidden-games = Import hidden games
+gog-oss-cdn-order = CDN order
+gog-oss-show-all-cdns = Show all CDNs
+gog-oss-game = Game

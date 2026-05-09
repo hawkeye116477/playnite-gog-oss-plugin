@@ -37,5 +37,6 @@ third-party-playnite-uninstall-game = Deinstaliraj
 third-party-playnite-common-links-forum = Forum
 third-party-playnite-common-links-store-page = Stranica u radnji
 third-party-playnite-extensions-updates = Ažuriranja
+third-party-playnite-configure = Postavi
 third-party-playnite-select-file-tooltip = Odaberi datoteku…
 third-party-playnite-select-directory-tooltip = Odaberi mapu…

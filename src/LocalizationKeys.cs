@@ -102,6 +102,18 @@ namespace System
         /// </summary>
         public const string GogOssImportHiddenGames = "gog-oss-import-hidden-games";
         /// <summary>
+        /// CDN order
+        /// </summary>
+        public const string GogOssCdnOrder = "gog-oss-cdn-order";
+        /// <summary>
+        /// Show all CDNs
+        /// </summary>
+        public const string GogOssShowAllCdns = "gog-oss-show-all-cdns";
+        /// <summary>
+        /// Game
+        /// </summary>
+        public const string GogOssGame = "gog-oss-game";
+        /// <summary>
         /// Sync game saves to the cloud
         /// </summary>
         public const string CommonSyncGameSaves = "common-sync-game-saves";
@@ -715,6 +727,10 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteExtensionsUpdates = "third-party-playnite-extensions-updates";
         /// <summary>
+        /// Configure
+        /// </summary>
+        public const string ThirdPartyPlayniteConfigure = "third-party-playnite-configure";
+        /// <summary>
         /// Select file…
         /// </summary>
         public const string ThirdPartyPlayniteSelectFileTooltip = "third-party-playnite-select-file-tooltip";
@@ -738,10 +754,6 @@ namespace System
         /// Open
         /// </summary>
         public const string ThirdPartyPlayniteOpen = "third-party-playnite-open";
-        /// <summary>
-        /// Automatic
-        /// </summary>
-        public const string ThirdPartyPlayniteAutomatic = "third-party-playnite-automatic";
         /// <summary>
         /// Import installed games
         /// </summary>

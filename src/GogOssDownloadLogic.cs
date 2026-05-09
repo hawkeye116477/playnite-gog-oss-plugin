@@ -877,7 +877,7 @@ namespace GogOssLibraryNS
                                                    int maxParallel,
                                                    int bufferSize = 512 * 1024,
                                                    long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
-                                                   string preferredCdn = "")
+                                                   ObservableCollection<string> cdnOrder = default)
         {
             // STEP 0: Initial Setup
             ServicePointManager.DefaultConnectionLimit = Math.Max(ServicePointManager.DefaultConnectionLimit, maxParallel * 2);
@@ -1312,20 +1312,15 @@ namespace GogOssLibraryNS
                     var currentSecureLinks = currentSecureLinksDict[productId];
                     var availableCdns = new List<GogSecureLinks.FinalUrl>(currentSecureLinks);
 
-                    if (preferredCdn != "")
+                    if (cdnOrder?.Count > 0)
                     {
-                        var preferredLink = availableCdns.FirstOrDefault(l => l.endpoint_name.Equals(preferredCdn, StringComparison.OrdinalIgnoreCase));
-                        if (preferredLink != null && !preferredLink.formatted_url.IsNullOrEmpty())
-                        {
-                            availableCdns.Remove(preferredLink);
-                            availableCdns.Insert(0, preferredLink);
-                        }
+                        var cdnOrderDict = cdnOrder.Select((v, i) => (v, i)).ToDictionary(x => x.v, x => x.i);
+                        availableCdns = availableCdns.OrderBy(a => cdnOrderDict.TryGetValue(a.endpoint_name, out var i) ? i : int.MaxValue).ToList();
                     }
 
                     foreach (var currentSecureLink in availableCdns)
                     {
                         bool memoryReserved = false;
-
                         try
                         {
                             if (!memoryReserved && allocatedBytes == 0)
@@ -2476,13 +2471,7 @@ namespace GogOssLibraryNS
                 {
                     maxWorkers = CommonHelpers.CpuThreadsNumber;
                 }
-                var preferredCdn = settings.PreferredCdn;
-                var preferredCdnString = PreferredCdn.GetCdnDict()[preferredCdn];
-                if (preferredCdn == GogCdn.Auto)
-                {
-                    preferredCdnString = "";
-                }
-
+                var cdnOrder = settings.CdnOrder;
                 if (downloadProperties.downloadAction != DownloadAction.Update)
                 {
                     wantedUnifiedTask.activity = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDownloadingLabel);
@@ -2497,7 +2486,7 @@ namespace GogOssLibraryNS
                 speedReporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
                 if (matchingPluginTask.downloadItemType == DownloadItemType.Game || matchingPluginTask.downloadItemType == DownloadItemType.Dependency)
                 {
-                    await DownloadGamesAndDepends(linkedCTS.Token, bigDepot, wantedUnifiedTask.fullInstallPath, allSecureLinks, maxWorkers, preferredCdn: preferredCdnString);
+                    await DownloadGamesAndDepends(linkedCTS.Token, bigDepot, wantedUnifiedTask.fullInstallPath, allSecureLinks, maxWorkers, cdnOrder: cdnOrder);
                 }
                 else
                 {

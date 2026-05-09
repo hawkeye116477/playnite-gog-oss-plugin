@@ -38,4 +38,4 @@ LOCCommonLinksForum
 LOCCommonLinksStorePage
 LOCGameUninstallError
 LOCDownloadLabel
-LOCAutomatic
+LOCConfigure

@@ -60,10 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Comet.cs" />
+    <Compile Include="Converters\ObservableCollectionToStringConverter.cs" />
     <Compile Include="Enums\DepotFileType.cs" />
-    <Compile Include="Enums\GogCdn.cs" />
     <Compile Include="Enums\UpdatePolicy.cs" />
     <Compile Include="GogOss.cs" />
+    <Compile Include="GogOssCdnOrderView.xaml.cs">
+      <DependentUpon>GogOssCdnOrderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GogOssCloud.cs" />
     <Compile Include="GogOssDlcManager.xaml.cs">
       <DependentUpon>GogOssDlcManager.xaml</DependentUpon>
@@ -176,6 +179,10 @@
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GogOssCdnOrderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GogOssDlcManager.xaml">
       <SubType>Designer</SubType>

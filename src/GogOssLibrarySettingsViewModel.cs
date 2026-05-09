@@ -4,10 +4,10 @@ using GogOssLibraryNS.Enums;
 using CommonPlugin.Enums;
 using System.IO;
 using System;
-using Playnite.SDK.Data;
 using Tomlet;
 using Tomlet.Attributes;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace GogOssLibraryNS
 {
@@ -35,7 +35,7 @@ namespace GogOssLibraryNS
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
         public long NextClearingTime { get; set; } = 0;
         public bool SyncGameSaves { get; set; } = false;
-        public GogCdn PreferredCdn { get; set; } = GogCdn.Auto;
+        public ObservableCollection<string> CdnOrder { get; set; }
         public bool EnableOverlay { get; set; } = true;
     }
 

@@ -38,6 +38,7 @@ third-party-playnite-uninstall-game = Ištrinti
 third-party-playnite-common-links-forum = Forumas
 third-party-playnite-common-links-store-page = Parduotuvės tinklalapis
 third-party-playnite-extensions-updates = Atnaujinimai
+third-party-playnite-configure = Konfigūruoti
 third-party-playnite-select-file-tooltip = Pasirinkite failą...
 third-party-playnite-select-directory-tooltip = Pasirinkite aplanką...
 third-party-gog-settings-import-installed-label = Importuoti įdiegtus žaidimus

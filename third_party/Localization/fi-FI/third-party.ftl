@@ -37,6 +37,7 @@ third-party-playnite-uninstall-game = Poista asennus
 third-party-playnite-common-links-forum = Keskustelupalsta
 third-party-playnite-common-links-store-page = Kaupan sivu
 third-party-playnite-extensions-updates = Päivitykset
+third-party-playnite-configure = Konfiguroi
 third-party-playnite-select-file-tooltip = Valitse tiedosto…
 third-party-playnite-select-directory-tooltip = Valitse kansio...
 third-party-playnite-open = Avaa

@@ -106,9 +106,6 @@ namespace GogOssLibraryNS
             };
             AutoClearCacheCBo.ItemsSource = autoClearOptions;
 
-            var preferredCdnActions = PreferredCdn.GetCdnDict();
-            PreferredCdnCBo.ItemsSource = preferredCdnActions;
-
             troubleshootingInformation = new GogOssTroubleshootingInformation();
             if (Comet.IsInstalled)
             {
@@ -638,6 +635,27 @@ namespace GogOssLibraryNS
             else
             {
                 playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
+            }
+        }
+
+        private void CdnOrderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var cdnView = new GogOssCdnOrderView();
+
+            Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+            {
+                ShowMaximizeButton = false,
+            });
+            window.Title = $"{LocalizationManager.Instance.GetString(LOC.GogOssCdnOrder)}";
+            window.Content = cdnView;
+            window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+            window.SizeToContent = SizeToContent.WidthAndHeight;
+            window.MinWidth = 600;
+            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            bool? cdnSettingsApplied = window.ShowDialog();
+            if (cdnSettingsApplied == true)
+            {
+                CdnOrderTxt.Text = string.Join(", ", cdnView.CdnOrder);
             }
         }
     }

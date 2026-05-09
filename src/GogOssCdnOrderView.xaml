@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="GogOssLibraryNS.GogOssCdnOrderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GogOssLibraryNS"
+             xmlns:common="clr-namespace:CommonPlugin"
+             xmlns:system="clr-namespace:System"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <UserControl.Resources>
+        <FontFamily x:Key="FontIcoFont">/Fonts/icofont.ttf#icofont</FontFamily>
+        <Style TargetType="Separator" BasedOn="{StaticResource HawkeyeSeparatorStyle}" />
+        <Style TargetType="Border" BasedOn="{StaticResource HawkeyeBorderStyle}" />
+        <Style TargetType="ListBox" BasedOn="{StaticResource HawkeyeListBoxStyle}" />
+        <Style TargetType="TextBlock" BasedOn="{StaticResource HawkeyeTextBlockStyle}" />
+        <Style TargetType="Button" BasedOn="{StaticResource HawkeyeButtonStyle}" />
+        <Style TargetType="Expander" BasedOn="{StaticResource HawkeyeExpanderStyle}" />
+        <Style TargetType="TabControl" BasedOn="{StaticResource HawkeyeTabControlStyle}" />
+    </UserControl.Resources>
+    <DockPanel Margin="10,5,0,5">
+        <StackPanel DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" x:Name="TopADSP">
+                <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteOkLabel}}" ContentStringFormat="&#xec4b; {0}" FontFamily="{DynamicResource FontIcoFont}" Margin="0,0,8,0" Name="ApplyBtn" Click="ApplyBtn_Click" />
+                <Button Content="{common:Localize Key={x:Static system:LOC.GogOssShowAllCdns}}" ContentStringFormat="&#xef3e; {0}"
+                    FontFamily="{DynamicResource FontIcoFont}" Name="ShowAllBtn" Margin="0,0,8,0" IsEnabled="False" Click="ShowAllBtn_Click" />
+                <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
+                    FontFamily="{DynamicResource FontIcoFont}" Name="CancelBtn" IsCancel="True" Margin="0,0,8,0" />
+            </StackPanel>
+            <Separator Margin="0,5"/>
+            <StackPanel Orientation="Horizontal" Margin="0">
+                <TextBlock Text="{common:Localize Key={x:Static system:LOC.GogOssGame}}" Margin="0,0,8,8" VerticalAlignment="Center" HorizontalAlignment="Center" ></TextBlock>
+                <ComboBox x:Name="GameCBo" DisplayMemberPath="{Binding Name}" SelectedValuePath="{Binding GameId}" IsEditable="false" MinWidth="150" VerticalAlignment="Center" Margin="0,0,8,8" SelectionChanged="GameCBo_SelectionChanged"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Name="CdnSP">
+                <ListBox x:Name="CdnLB" SelectionChanged="CdnLB_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding }" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Margin="8,0,0,0">
+                    <Button Name="MoveUpBtn" Margin="0,0,8,8"  Content="&#xea5e;" FontFamily="{DynamicResource FontIcoFont}" IsEnabled="False" Click="MoveUpBtn_Click" />
+                    <Button Name="ClearBtn" Margin="0,0,8,8"  Content="&#xeebb;" FontFamily="{DynamicResource FontIcoFont}" IsEnabled="False" Click="ClearBtn_Click"  />
+                    <Button Name="MoveDownBtn" Margin="0,0,8,0" Content="&#xea5b;"  FontFamily="{DynamicResource FontIcoFont}" IsEnabled="False" Click="MoveDownBtn_Click" />
+                </StackPanel>
+ 
+            </StackPanel>
+
+        </StackPanel>
+    </DockPanel>
+</UserControl>
