@@ -21,3 +21,7 @@ gog-oss-top-right = Prawy górny róg
 gog-oss-bottom-left = Lewy dolny róg
 gog-oss-bottom-right = Prawy dolny róg
 gog-oss-enable-overlay = Włącz nakładkę Galaxy
+gog-oss-import-hidden-games = Importuj ukryte gry
+gog-oss-cdn-order = Kolejność CDN-ów
+gog-oss-show-all-cdns = Pokaż wszystkie CDN-y
+gog-oss-game = Gra
