@@ -52,7 +52,7 @@
                       IsChecked="{Binding Settings.ImportHiddenGames}"
                       Margin="0,10,0,0"
                       Content="{common:Localize Key={x:Static system:LOC.GogOssImportHiddenGames}}" 
-                      IsEnabled="{Binding IsChecked, ElementName=EpicImportUninstalledChk}"/>
+                      IsEnabled="{Binding IsChecked, ElementName=GOGImportUninstalledChk}"/>
 
                         <StackPanel Orientation="Horizontal" Margin="0,10">
                             <ToggleButton HorizontalAlignment="Left" Name="LoginBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyGogAuthenticateLabel}}" IsEnabled="False" Click="LoginBtn_Click" IsChecked="False"/>
