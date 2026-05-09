@@ -102,7 +102,7 @@ namespace System
         /// </summary>
         public const string GogOssImportHiddenGames = "gog-oss-import-hidden-games";
         /// <summary>
-        /// CDN order
+        /// Order of CDNs
         /// </summary>
         public const string GogOssCdnOrder = "gog-oss-cdn-order";
         /// <summary>
