@@ -2432,6 +2432,8 @@ namespace GogOssLibraryNS
 
             progress = new Progress<ProgressData>(p =>
             {
+                wantedUnifiedTask.downloadSizeBytes = p.TotalCompressedBytes;
+                wantedUnifiedTask.installSizeBytes = p.TotalBytes;
                 wantedUnifiedTask.downloadSpeedBytes = p.DownloadSpeed;
                 wantedUnifiedTask.diskWriteSpeedBytes = p.DiskSpeed;
                 wantedUnifiedTask.eta = TimeSpan.FromSeconds(p.Eta);
