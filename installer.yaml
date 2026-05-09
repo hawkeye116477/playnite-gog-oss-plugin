@@ -1,5 +1,16 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.7.0
+    RequiredApiVersion: 6.14.0
+    ReleaseDate: 2026-05-09
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.7.0/GogOssLibrary_1_7_0.pext
+    Changelog:
+      - Added possibility to import hidden games
+      - Added possibility to set CDN order/priority, which replaces setting preferred
+        CDN
+      - CDNs fallback_only option will now be taken into account
+      - Moved enabling Comet to cloud and other services section
+      - Improved reporting download progress
   - Version: 1.6.1
     RequiredApiVersion: 6.14.0
     ReleaseDate: 2026-05-05
