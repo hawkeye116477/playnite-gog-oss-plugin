@@ -907,7 +907,7 @@ namespace GogOssLibraryNS
             var channel = Channel.CreateUnbounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, DepotFileType depotFileType, bool isCompressed, string chunkId)>(
                 );
 
-            var jobs = new HashSet<(string filePath, long offset, GogDepot.Chunk chunk, DepotFileType depotFileType, string productId)>();
+            var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, DepotFileType depotFileType, string productId)>();
 
             totalSize = 0;
             totalCompressedSize = 0;
@@ -1248,8 +1248,7 @@ namespace GogOssLibraryNS
             }
 
 
-            jobs = jobs.OrderBy(job => job.offset)
-                       .ToHashSet();
+            jobs = jobs.OrderBy(job => job.offset).ToList();
 
 
             Interlocked.Exchange(ref resumeInitialDiskBytes, initialDiskBytesLocal);
@@ -1668,7 +1667,7 @@ namespace GogOssLibraryNS
                     {
                         string depotHash = kvp.Key;
                         string containerFilePath = sfcFilePathsByHash[depotHash];
-                        var orderedJobs = kvp.Value.OrderBy(job => job.sfcRef.offset).ToHashSet();
+                        var orderedJobs = kvp.Value.OrderBy(job => job.sfcRef.offset);
 
                         return orderedJobs.Select(async job =>
                         {
