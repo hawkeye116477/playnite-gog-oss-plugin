@@ -342,6 +342,11 @@ namespace GogOssLibraryNS
                 int maxSamples = 15;
                 long lastNetworkBytes = Interlocked.Read(ref totalNetworkBytes);
                 long lastDiskBytes = Interlocked.Read(ref totalDiskBytes);
+                if (lastDiskBytes == 0)
+                {
+                    lastDiskBytes = Interlocked.Read(ref totalNetworkBytes);
+                }
+
                 Queue<double> netSpeedSamples = new();
                 Queue<double> diskSpeedSamples = new();
 
@@ -356,8 +361,23 @@ namespace GogOssLibraryNS
                         {
                             continue;
                         }
+
                         var diskBytes = Interlocked.Read(ref totalDiskBytes);
                         var networkBytes = Interlocked.Read(ref totalNetworkBytes);
+
+                        double initialNet = resumeInitialNetworkBytes;
+                        double initialDisk = resumeInitialDiskBytes;
+
+                        if (totalSize == 0)
+                        {
+                            totalSize = totalCompressedSize; 
+                        }
+
+                        if (diskBytes == 0)
+                        {
+                            diskBytes = networkBytes;
+                            initialDisk = resumeInitialNetworkBytes;
+                        }
 
                         double rawNetSpeed = Math.Max(0, (networkBytes - lastNetworkBytes) / dt);
                         double rawDiskSpeed = Math.Max(0, (diskBytes - lastDiskBytes) / dt);
@@ -377,15 +397,10 @@ namespace GogOssLibraryNS
                             smoothDiskSpeed = 0;
                         }
 
-                        double initialNet = resumeInitialNetworkBytes;
-                        double initialDisk = resumeInitialDiskBytes;
-
                         double avgNetSpeed = (networkBytes - initialNet) / elapsed.TotalSeconds;
                         double avgDiskSpeed = (diskBytes - initialDisk) / elapsed.TotalSeconds;
 
-                        double expansionRatio = networkBytes > 0 ? (double)totalSize / networkBytes : 1.0;
-
-                        double speedForEta = Math.Min(avgNetSpeed, avgDiskSpeed);
+                        double speedForEta = Math.Max(1, Math.Min(avgNetSpeed, avgDiskSpeed));
                         double remaining = totalSize - diskBytes;
 
                         double eta = remaining / speedForEta;
@@ -417,12 +432,22 @@ namespace GogOssLibraryNS
 
         private void DoFinalReport()
         {
+            if (totalSize == 0)
+            {
+                totalSize = totalCompressedSize;
+            }
+            var finalNetworkBytes = Interlocked.Read(ref totalNetworkBytes);
+            var finalDiskBytes = Interlocked.Read(ref totalDiskBytes);
+            if (finalDiskBytes == 0)
+            {
+                finalDiskBytes = finalNetworkBytes;
+            }
             progress?.Report(new ProgressData
             {
                 TotalBytes = totalSize,
                 TotalCompressedBytes = totalCompressedSize,
-                NetworkBytes = Interlocked.Read(ref totalNetworkBytes),
-                DiskBytes = Interlocked.Read(ref totalDiskBytes),
+                NetworkBytes = finalNetworkBytes,
+                DiskBytes = finalDiskBytes,
                 ActiveDownloadWorkers = activeDownloaders,
                 ActiveDiskWorkers = activeDiskers,
                 Eta = 0,
@@ -462,7 +487,7 @@ namespace GogOssLibraryNS
 
             var jobs = new List<(string filePath, long size, string url, string hash)>();
 
-            long totalCompressedSize = 0;
+            totalCompressedSize = 0;
             long initialNetworkBytesLocal = 0;
             var fileExpectedSizes = new ConcurrentDictionary<string, long>(StringComparer.OrdinalIgnoreCase);
 
