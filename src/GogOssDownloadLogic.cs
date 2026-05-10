@@ -370,7 +370,7 @@ namespace GogOssLibraryNS
 
                         if (totalSize == 0)
                         {
-                            totalSize = totalCompressedSize; 
+                            totalSize = totalCompressedSize;
                         }
 
                         if (diskBytes == 0)
@@ -509,19 +509,50 @@ namespace GogOssLibraryNS
             foreach (var file in bigDepot.files)
             {
                 var depotFilePath = file.path.TrimStart('/', '\\');
+
+                if (downloadItemType is DownloadItemType.Extra or DownloadItemType.Tools)
+                {
+                    using var headRequest = new HttpRequestMessage(HttpMethod.Head, file.url);
+                    if (downloadItemType == DownloadItemType.Extra)
+                    {
+                        headRequest.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
+                    }
+                    using var headResponse = await client.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+                    headResponse.EnsureSuccessStatusCode();
+                    var contentDisposition = headResponse.Content.Headers.ContentDisposition;
+                    var serverFileName =
+                        contentDisposition?.FileNameStar ??
+                        contentDisposition?.FileName;
+                    if (serverFileName.IsNullOrEmpty())
+                    {
+                        var finalUrl = headResponse.RequestMessage.RequestUri;
+                        serverFileName = Path.GetFileName(finalUrl.LocalPath);
+                    }
+                    if (downloadItemType is DownloadItemType.Extra && headResponse.Content.Headers.ContentLength.HasValue)
+                    {
+                        long contentSize = headResponse.Content.Headers.ContentLength.Value;
+                        file.size = contentSize;
+                        totalCompressedSize += contentSize;
+                    }
+                    if (!string.IsNullOrWhiteSpace(serverFileName))
+                    {
+                        depotFilePath = serverFileName.Trim('"');
+                    }
+                }
+
                 var filePath = Path.Combine(fullInstallPath, depotFilePath);
                 var targetDirectory = Path.GetDirectoryName(filePath);
                 if (!Directory.Exists(targetDirectory))
                 {
                     Directory.CreateDirectory(targetDirectory);
                 }
-                if (downloadItemType != DownloadItemType.Extra)
-                {
-                    writeSemaphores.TryAdd(depotFilePath, new SemaphoreSlim(1));
-                }
-
+                writeSemaphores.TryAdd(depotFilePath, new SemaphoreSlim(1));
                 long expectedFileSize = file.size;
-                totalCompressedSize += expectedFileSize;
+
+                if (downloadItemType is not DownloadItemType.Extra)
+                {
+                    totalCompressedSize += expectedFileSize;
+                }
 
                 if (expectedFileSize == 0)
                 {
@@ -536,6 +567,11 @@ namespace GogOssLibraryNS
                 if (!resumeState.IsCompleted(filePath, file.hash))
                 {
                     jobs.Add((depotFilePath, file.size, file.url, file.hash));
+                    var chunkTempPath = Path.Combine(tempDir, depotFilePath);
+                    if (File.Exists(chunkTempPath))
+                    {
+                        initialNetworkBytesLocal += Math.Min(new FileInfo(chunkTempPath).Length, expectedFileSize);
+                    }
                 }
                 else
                 {
@@ -582,37 +618,6 @@ namespace GogOssLibraryNS
                     try
                     {
                         long resumeStartByte = 0;
-
-                        if (downloadItemType is DownloadItemType.Extra or DownloadItemType.Tools)
-                        {
-                            using var headRequest = new HttpRequestMessage(HttpMethod.Head, job.url);
-                            if (downloadItemType == DownloadItemType.Extra)
-                            {
-                                headRequest.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
-                            }
-                            using var headResponse = await client.SendAsync(headRequest, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
-                            headResponse.EnsureSuccessStatusCode();
-                            var contentDisposition = headResponse.Content.Headers.ContentDisposition;
-                            var serverFileName =
-                                contentDisposition?.FileNameStar ??
-                                contentDisposition?.FileName;
-                            if (serverFileName.IsNullOrEmpty())
-                            {
-                                var finalUrl = headResponse.RequestMessage.RequestUri;
-                                serverFileName = Path.GetFileName(finalUrl.LocalPath);
-                            }
-                            if (downloadItemType is DownloadItemType.Extra && headResponse.Content.Headers.ContentLength.HasValue)
-                            {
-                                long contentSize = headResponse.Content.Headers.ContentLength.Value;
-                                totalCompressedSize = contentSize;
-                            }
-                            if (!string.IsNullOrWhiteSpace(serverFileName))
-                            {
-                                effectiveFilePath = Path.Combine(job.filePath, serverFileName.Trim('"'));
-                            }
-                            writeSemaphores.TryAdd(effectiveFilePath, new SemaphoreSlim(1));
-                        }
-
                         if (downloadItemType == DownloadItemType.Overlay && job.url.Contains(".zip"))
                         {
                             tempFilePath = Path.Combine(tempDir, job.filePath + ".zip");
@@ -1982,7 +1987,7 @@ namespace GogOssLibraryNS
 
         public async Task StartDownload(UnifiedDownload downloadTask)
         {
-            UnifiedDownloadManagerApi unifiedDownloadManagerApi = new UnifiedDownloadManagerApi();
+            UnifiedDownloadManagerApi unifiedDownloadManagerApi = new();
             var matchingPluginTask = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(t => t.gameID == downloadTask.gameID);
             var wantedUnifiedTask = unifiedDownloadManagerApi.GetTask(downloadTask.gameID, GogOssLibrary.Instance.Id.ToString());
             var userCancelCTS = downloadTask.gracefulCts;
