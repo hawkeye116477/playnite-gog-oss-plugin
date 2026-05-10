@@ -430,7 +430,7 @@ namespace GogOssLibraryNS
             }, speedReporterCts.Token);
         }
 
-        private void DoFinalReport()
+        private void DoFinalReport(UnifiedDownload downloadTask, TimeSpan elapsedTs)
         {
             if (totalSize == 0)
             {
@@ -442,18 +442,15 @@ namespace GogOssLibraryNS
             {
                 finalDiskBytes = finalNetworkBytes;
             }
-            progress?.Report(new ProgressData
-            {
-                TotalBytes = totalSize,
-                TotalCompressedBytes = totalCompressedSize,
-                NetworkBytes = finalNetworkBytes,
-                DiskBytes = finalDiskBytes,
-                ActiveDownloadWorkers = activeDownloaders,
-                ActiveDiskWorkers = activeDiskers,
-                Eta = 0,
-                DownloadSpeed = 0,
-                DiskSpeed = 0,
-            });
+            downloadTask.downloadSizeBytes = totalCompressedSize;
+            downloadTask.installSizeBytes = totalSize;
+            downloadTask.downloadSpeedBytes = 0;
+            downloadTask.diskWriteSpeedBytes = 0;
+            downloadTask.eta = TimeSpan.FromSeconds(0);
+            downloadTask.elapsed = elapsedTs;
+            downloadTask.downloadedBytes = finalNetworkBytes;
+            var currentPercentProgress = totalSize > 0 ? (double)finalDiskBytes / finalNetworkBytes * 100 : 0;
+            downloadTask.progress = currentPercentProgress;
         }
 
 
@@ -2260,47 +2257,55 @@ namespace GogOssLibraryNS
 
                             var reporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
 
-                            var reporter = Task.Run(async () =>
+                            var swDelta = new Stopwatch();
+                            try
                             {
-                                long lastUiUpdate = 0;
-                                long previousBytes = 0;
-                                var swDelta = Stopwatch.StartNew();
-
-                                while (!reporterCts.Token.IsCancellationRequested)
+                                _ = Task.Run(async () =>
                                 {
-                                    try
+                                    long lastUiUpdate = 0;
+                                    long previousBytes = 0;
+                                    swDelta = Stopwatch.StartNew();
+
+                                    while (!reporterCts.Token.IsCancellationRequested)
                                     {
-                                        await Task.Delay(500, reporterCts.Token);
-
-                                        long currentBytes = Interlocked.Read(ref totalBytesRead);
-                                        long deltaBytes = currentBytes - previousBytes;
-                                        previousBytes = currentBytes;
-
-                                        double elapsedSec = swDelta.Elapsed.TotalSeconds;
-                                        swDelta.Restart();
-
-                                        long now = Stopwatch.GetTimestamp();
-
-                                        if (now - lastUiUpdate >= TimeSpan.FromMilliseconds(500).Ticks)
+                                        try
                                         {
-                                            lastUiUpdate = now;
-                                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
-                                            {
-                                                if (reporterCts.Token.IsCancellationRequested || linkedCTS.Token.IsCancellationRequested)
-                                                    return;
+                                            await Task.Delay(500, reporterCts.Token);
 
-                                                wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                                                wantedUnifiedTask.elapsed = sw.Elapsed;
-                                                wantedUnifiedTask.diskWriteSpeedBytes = deltaBytes / elapsedSec;
-                                            }));
+                                            long currentBytes = Interlocked.Read(ref totalBytesRead);
+                                            long deltaBytes = currentBytes - previousBytes;
+                                            previousBytes = currentBytes;
+
+                                            double elapsedSec = swDelta.Elapsed.TotalSeconds;
+                                            swDelta.Restart();
+
+                                            long now = Stopwatch.GetTimestamp();
+
+                                            if (now - lastUiUpdate >= TimeSpan.FromMilliseconds(500).Ticks)
+                                            {
+                                                lastUiUpdate = now;
+                                                _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
+                                                {
+                                                    wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                                    wantedUnifiedTask.elapsed = sw.Elapsed;
+                                                    wantedUnifiedTask.diskWriteSpeedBytes = deltaBytes / elapsedSec;
+                                                    double filesPerSecond = verifiedFiles / sw.Elapsed.TotalSeconds;
+                                                    double remainingFiles = countFiles - verifiedFiles;
+                                                    wantedUnifiedTask.eta = TimeSpan.FromSeconds(remainingFiles / filesPerSecond);
+                                                }));
+                                            }
+                                        }
+                                        catch (TaskCanceledException)
+                                        {
+                                            break;
                                         }
                                     }
-                                    catch (TaskCanceledException)
-                                    {
-                                        break;
-                                    }
-                                }
-                            }, reporterCts.Token);
+                                }, reporterCts.Token);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Error(ex.Message);
+                            }
 
                             try
                             {
@@ -2442,14 +2447,17 @@ namespace GogOssLibraryNS
                             finally
                             {
                                 Interlocked.Exchange(ref verifiedFiles, countFiles);
-                                reporterCts.Cancel();
-                                try
+                                swDelta?.Stop();
+                                reporterCts?.Cancel();
+                                Application.Current.Dispatcher?.Invoke(() =>
                                 {
-                                    await reporter;
-                                }
-                                catch (OperationCanceledException) { }
-                                wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                                wantedUnifiedTask.elapsed = sw.Elapsed;
+                                    wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                    wantedUnifiedTask.elapsed = sw.Elapsed;
+                                    if (verifiedFiles == countFiles)
+                                    {
+                                        wantedUnifiedTask.progress = 100.0;
+                                    }
+                                });
                             }
                         }
                     }
@@ -2464,19 +2472,16 @@ namespace GogOssLibraryNS
 
             progress = new Progress<ProgressData>(p =>
             {
-                wantedUnifiedTask.downloadSizeBytes = p.TotalCompressedBytes;
-                wantedUnifiedTask.installSizeBytes = p.TotalBytes;
-                wantedUnifiedTask.downloadSpeedBytes = p.DownloadSpeed;
-                wantedUnifiedTask.diskWriteSpeedBytes = p.DiskSpeed;
-                wantedUnifiedTask.eta = TimeSpan.FromSeconds(p.Eta);
-                wantedUnifiedTask.elapsed = sw.Elapsed;
-
-
-                var item = wantedUnifiedTask;
-                if (item != null)
+                if (wantedUnifiedTask != null)
                 {
+                    wantedUnifiedTask.downloadSizeBytes = p.TotalCompressedBytes;
+                    wantedUnifiedTask.installSizeBytes = p.TotalBytes;
+                    wantedUnifiedTask.downloadSpeedBytes = p.DownloadSpeed;
+                    wantedUnifiedTask.diskWriteSpeedBytes = p.DiskSpeed;
+                    wantedUnifiedTask.eta = TimeSpan.FromSeconds(p.Eta);
+                    wantedUnifiedTask.elapsed = sw.Elapsed;
                     var currentPercentProgress = p.TotalBytes > 0 ? (double)p.DiskBytes / p.TotalBytes * 100 : 0;
-                    item.progress = currentPercentProgress;
+                    wantedUnifiedTask.progress = currentPercentProgress;
                     if (p.TotalCompressedBytes == p.NetworkBytes)
                     {
                         switch (downloadProperties.downloadAction)
@@ -2494,7 +2499,7 @@ namespace GogOssLibraryNS
                                 break;
                         }
                     }
-                    item.downloadedBytes = p.NetworkBytes;
+                    wantedUnifiedTask.downloadedBytes = p.NetworkBytes;
                 }
             });
             try
@@ -2525,7 +2530,7 @@ namespace GogOssLibraryNS
                 {
                     await DownloadNonGames(linkedCTS.Token, bigDepot, wantedUnifiedTask.fullInstallPath, maxWorkers, matchingPluginTask.downloadItemType, matchingPluginTask.gameID);
                 }
-                DoFinalReport();
+                DoFinalReport(wantedUnifiedTask, sw.Elapsed);
 
 
                 if (matchingPluginTask.downloadItemType == DownloadItemType.Game)
