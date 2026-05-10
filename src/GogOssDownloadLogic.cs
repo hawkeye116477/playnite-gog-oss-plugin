@@ -430,7 +430,7 @@ namespace GogOssLibraryNS
             }, speedReporterCts.Token);
         }
 
-        private void DoFinalReport(UnifiedDownload downloadTask, TimeSpan elapsedTs)
+        private void DoFinalProgressReport(UnifiedDownload downloadTask, TimeSpan elapsedTs)
         {
             if (totalSize == 0)
             {
@@ -2535,7 +2535,7 @@ namespace GogOssLibraryNS
                 {
                     await DownloadNonGames(linkedCTS.Token, bigDepot, wantedUnifiedTask.fullInstallPath, maxWorkers, matchingPluginTask.downloadItemType, matchingPluginTask.gameID);
                 }
-                DoFinalReport(wantedUnifiedTask, sw.Elapsed);
+                DoFinalProgressReport(wantedUnifiedTask, sw.Elapsed);
 
 
                 if (matchingPluginTask.downloadItemType == DownloadItemType.Game)
