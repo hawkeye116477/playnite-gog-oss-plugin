@@ -46,19 +46,30 @@ namespace GogOssLibraryNS
             {
                 foreach (var branch in buildsManifest.available_branches)
                 {
-                    if (branch == null)
+                    if (branch == "")
                     {
-                        betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                        if (!betaChannels.ContainsKey("disabled"))
+                        {
+                            betaChannels.Add("disabled", LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteDisabledTitle));
+                        }
                     }
                     else
                     {
-                        betaChannels.Add(branch, branch);
+                        if (!betaChannels.ContainsKey(branch))
+                        {
+                            betaChannels.Add(branch, branch);
+                        }
                     }
                 }
                 if (betaChannels.Count > 0)
                 {
                     BetaChannelCBo.ItemsSource = betaChannels;
-                    BetaChannelCBo.SelectedValue = ChosenGame.downloadProperties.betaChannel;
+                    var selectedBetaChannel = "disabled";
+                    if (!ChosenGame.downloadProperties.betaChannel.IsNullOrEmpty() && buildsManifest.available_branches.Contains(ChosenGame.downloadProperties.betaChannel))
+                    {
+                        selectedBetaChannel = ChosenGame.downloadProperties.betaChannel;
+                    }
+                    BetaChannelCBo.SelectedValue = selectedBetaChannel;
                     BetaChannelSP.Visibility = Visibility.Visible;
                 }
             }
@@ -80,7 +91,7 @@ namespace GogOssLibraryNS
                 var chosenBranch = ChosenGame.downloadProperties.betaChannel;
                 if (chosenBranch == "disabled")
                 {
-                    chosenBranch = null;
+                    chosenBranch = "";
                 }
                 foreach (var build in builds)
                 {
@@ -93,7 +104,15 @@ namespace GogOssLibraryNS
                             versionNameFirstPart = "";
                         }
                         var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
-                        gameVersions.Add(build.build_id, versionName);
+                        var buildId = build.legacy_build_id;
+                        if (buildId.IsNullOrEmpty())
+                        {
+                            buildId = build.build_id;
+                        }
+                        if (!gameVersions.ContainsKey(buildId))
+                        {
+                            gameVersions.Add(buildId, versionName);
+                        }
                     }
                 }
                 GameVersionCBo.ItemsSource = gameVersions;
@@ -109,18 +128,21 @@ namespace GogOssLibraryNS
                     VersionSP.Visibility = Visibility.Visible;
                 }
             }
-            await SetGameVersion();
+            if (builds.Count > 0)
+            {
+                await SetGameVersion();
+            }
         }
 
         private void RefreshLanguages()
         {
-            var languages = manifest.languages;
             var currentPlayniteLanguage = playniteAPI.ApplicationSettings.Language.Replace("_", "-");
             var currentPlayniteLanguageNativeName = new CultureInfo(currentPlayniteLanguage).NativeName;
+            var languages = manifest.languages;
             var selectedLanguage = "";
+            var gameLanguages = new Dictionary<string, string>();
             if (languages.Count > 1)
             {
-                var gameLanguages = new Dictionary<string, string>();
                 foreach (var language in languages)
                 {
                     var nativeLanguageName = language;
@@ -135,7 +157,10 @@ namespace GogOssLibraryNS
                             logger.Warn(ex, $"Unrecognized language: {language}");
                         }
                     }
-                    gameLanguages.Add(language, nativeLanguageName);
+                    if (!gameLanguages.ContainsKey(language))
+                    {
+                        gameLanguages.Add(language, nativeLanguageName);
+                    }
                 }
                 gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
                 if (!ChosenGame.downloadProperties.language.IsNullOrEmpty() && gameLanguages.ContainsKey(ChosenGame.downloadProperties.language))
@@ -184,8 +209,8 @@ namespace GogOssLibraryNS
                 {
                     foreach (var selectedDlc in ChosenGame.downloadProperties.extraContent)
                     {
-                        var selectedDlcItem = manifest.dlcs.FirstOrDefault(d => d.Key == selectedDlc);
-                        if (selectedDlcItem.Key != null)
+                        var selectedDlcItem = manifest.dlcs[selectedDlc];
+                        if (selectedDlcItem != null)
                         {
                             ExtraContentLB.SelectedItems.Add(selectedDlcItem);
                         }
