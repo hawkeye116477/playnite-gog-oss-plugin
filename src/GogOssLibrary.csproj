@@ -433,7 +433,7 @@
       <Version>2.1.2</Version>
     </PackageReference>
     <PackageReference Include="Google.Protobuf">
-      <Version>3.33.2</Version>
+      <Version>3.34.1</Version>
     </PackageReference>
     <PackageReference Include="IndexRange">
       <Version>1.0.2</Version>
