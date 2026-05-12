@@ -554,9 +554,14 @@ namespace GogOssLibraryNS
                 }
             }
 
-            if (bigDepot.version == 1 && (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency))
+            if (taskData.downloadItemType == DownloadItemType.Game || taskData.downloadItemType == DownloadItemType.Dependency)
             {
-                foreach (var depot in metaManifest.product.depots)
+                var depots = metaManifest.depots;
+                if (metaManifest.version == 1)
+                {
+                    depots = metaManifest.product.depots;
+                }
+                foreach (var depot in depots)
                 {
                     if (!depot.redist.IsNullOrEmpty() && !depot.targetDir.IsNullOrEmpty())
                     {

@@ -1151,6 +1151,10 @@ namespace GogOssLibraryNS
                     else
                     {
                         filePath = Path.Combine(fullInstallPath, depot.path);
+                        if (depot.flags?.Count > 0 && depot.flags.Contains("support"))
+                        {
+                            filePath = Path.Combine(fullInstallPath, "gog-support", depot.product_id, depot.path);
+                        }
                     }
 
                     if (filePath.Contains("__redist"))

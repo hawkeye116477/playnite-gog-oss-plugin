@@ -328,6 +328,22 @@ namespace GogOssLibraryNS.Services
                                 {
                                     manifest.size.Add("*", new GogGameMetaManifest.SizeType());
                                 }
+                                if (manifest.dependencies?.Count > 0)
+                                {
+                                    foreach (var depend in manifest.dependencies)
+                                    {
+                                        var redistManifest = await GetRedistInfo(depend, false, forceRefreshCache);
+                                        if (redistManifest._internal)
+                                        {
+                                            var internalDependDepot = new GogGameMetaManifest.Depot
+                                            {
+                                                redist = depend,
+                                                targetDir = "/"
+                                            };
+                                            depots.Add(internalDependDepot);
+                                        }
+                                    }
+                                }
                                 foreach (var depot in depots)
                                 {
                                     if (!depot.targetDir.IsNullOrEmpty())
@@ -374,7 +390,7 @@ namespace GogOssLibraryNS.Services
                                                     depot.compressedSize;
                                                 manifest.dlcs[depot.productId].size[newLanguage].disk_size += depot.size;
                                             }
-                                            else if (depot.productId == gameId)
+                                            else if (depot.productId == gameId || !depot.redist.IsNullOrEmpty())
                                             {
                                                 manifest.size[newLanguage].download_size += depot.compressedSize;
                                                 manifest.size[newLanguage].disk_size += depot.size;

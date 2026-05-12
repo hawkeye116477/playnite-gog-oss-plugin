@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Playnite.SDK.Data;
+using System.Collections.Generic;
 
 namespace GogOssLibraryNS.Models
 {
@@ -12,7 +13,10 @@ namespace GogOssLibraryNS.Models
             public int compressedSize { get; set; } = 0;
             public string dependencyId { get; set; }
             public Executable executable { get; set; } = new Executable();
+
+            [SerializationPropertyName("internal")]
             public bool _internal { get; set; }
+
             public string[] languages { get; set; }
             public string manifest { get; set; }
             public string readableName { get; set; } = "";
