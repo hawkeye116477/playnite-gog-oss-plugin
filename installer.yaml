@@ -1,5 +1,12 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.7.2
+    RequiredApiVersion: 6.14.0
+    ReleaseDate: 2026-05-12
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.7.2/GogOssLibrary_1_7_2.pext
+    Changelog:
+      - Fixed displaying settings for multi games installation
+      - Fixed installing manifest v2 games with internal depends
   - Version: 1.7.1
     RequiredApiVersion: 6.14.0
     ReleaseDate: 2026-05-10
