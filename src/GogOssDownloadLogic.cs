@@ -203,7 +203,7 @@ namespace GogOssLibraryNS
 
                 // Search for depends
                 var matchingPluginTask = downloadTask;
-                if (matchingPluginTask.downloadItemType == DownloadItemType.Game && matchingPluginTask.depends.Count == 0)
+                if (matchingPluginTask.downloadItemType == DownloadItemType.Game && (matchingPluginTask.depends == null || matchingPluginTask.depends.Count == 0))
                 {
                     var depends = new List<string>();
                     var gameMetaManifest = await gogDownloadApi.GetGameMetaManifest(matchingPluginTask);
@@ -211,9 +211,16 @@ namespace GogOssLibraryNS
                     {
                         depends.Add("ISI");
                     }
-                    if (gameMetaManifest.dependencies.Count > 0)
+                    if (gameMetaManifest.dependencies?.Count > 0)
                     {
-                        matchingPluginTask.depends = gameMetaManifest.dependencies;
+                        foreach (var dependv2 in gameMetaManifest.dependencies)
+                        {
+                            var redistManifest = await GogDownloadApi.GetRedistInfo(dependv2);
+                            if (redistManifest._internal == false)
+                            {
+                                depends.AddMissing(dependv2);
+                            }
+                        }
                     }
                     if (gameMetaManifest.version == 1)
                     {
@@ -221,13 +228,17 @@ namespace GogOssLibraryNS
                         {
                             if (!dependv1.redist.IsNullOrEmpty() && dependv1.targetDir.IsNullOrEmpty())
                             {
-                                matchingPluginTask.depends.Add(dependv1.redist);
+                                depends.AddMissing(dependv1.redist);
                             }
                         }
                     }
-                    foreach (var depend in matchingPluginTask.depends)
+                    if (depends.Count > 1)
                     {
-                        depends.AddMissing(depend);
+                        var nonInstallableDepends = new List<string>
+                        {
+                            "ISI"
+                        };
+                        matchingPluginTask.depends = depends.Except(nonInstallableDepends).ToList();
                     }
                     if (depends.Count > 0)
                     {
@@ -1150,10 +1161,13 @@ namespace GogOssLibraryNS
                     }
                     else
                     {
-                        filePath = Path.Combine(fullInstallPath, depot.path);
                         if (depot.flags?.Count > 0 && depot.flags.Contains("support"))
                         {
                             filePath = Path.Combine(fullInstallPath, "gog-support", depot.product_id, depot.path);
+                        }
+                        else
+                        {
+                            filePath = Path.Combine(fullInstallPath, depot.path);
                         }
                     }
 
@@ -1162,7 +1176,7 @@ namespace GogOssLibraryNS
                         filePath = Path.Combine(GogOss.DependenciesInstallationPath, depot.path);
                     }
 
-                    if (depot.redistTargetDir != "")
+                    if (!depot.redistTargetDir.IsNullOrEmpty())
                     {
                         filePath = Path.Combine(fullInstallPath, depot.path);
                         depotFileType = DepotFileType.Redist;
@@ -2555,17 +2569,13 @@ namespace GogOssLibraryNS
                         language = downloadProperties.language,
                         installed_DLCs = downloadProperties.extraContent
                     };
+                    if (matchingPluginTask.depends?.Count > 0)
+                    {
+                        installedGameInfo.Dependencies = matchingPluginTask.depends;
+                    }
                     if (installedAppList.ContainsKey(gameID))
                     {
                         installedAppList.Remove(gameID);
-                    }
-                    var dependencies = installedGameInfo.Dependencies;
-                    if (matchingPluginTask.depends.Count > 0)
-                    {
-                        foreach (var depend in matchingPluginTask.depends)
-                        {
-                            dependencies.Add(depend);
-                        }
                     }
                     Game game = new();
                     {
