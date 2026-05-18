@@ -1825,30 +1825,6 @@ namespace GogOssLibraryNS
                     {
                         logger.Info($"Found {depotDiffItems.Count} patches to apply concurrently (max {sfcExtractSemaphore.CurrentCount} at a time).");
                         var patchingTasks = new List<Task>();
-
-                        using var reportingCts = CancellationTokenSource.CreateLinkedTokenSource(token);
-                        var reportingToken = reportingCts.Token;
-
-                        var reportingTask = Task.Run(async () =>
-                        {
-                            while (!reportingToken.IsCancellationRequested)
-                            {
-                                try
-                                {
-                                    await Task.Delay(500, reportingToken).ConfigureAwait(false);
-                                }
-                                catch (OperationCanceledException)
-                                {
-                                    break;
-                                }
-                                catch (Exception ex)
-                                {
-                                    logger.Error(ex, $"Error in patching reporting task.");
-                                    await Task.Delay(1000, reportingToken).ConfigureAwait(false);
-                                }
-                            }
-                        }, reportingToken);
-
                         var targetFileSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
                         try
@@ -1949,8 +1925,6 @@ namespace GogOssLibraryNS
                             {
                                 try { semaphore.Dispose(); } catch { }
                             }
-
-                            reportingCts.Cancel();
                         }
                     }
                 }
@@ -2251,18 +2225,20 @@ namespace GogOssLibraryNS
             // Verify and repair files
             if (Directory.Exists(matchingPluginTask.fullInstallPath) && !File.Exists(resumeStatePath) && matchingPluginTask.downloadItemType == DownloadItemType.Game)
             {
+                var reporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
                 if (matchingPluginTask.downloadProperties.downloadAction != DownloadAction.Install)
                 {
-                    var allFiles = Directory.EnumerateFiles(matchingPluginTask.fullInstallPath, "*.*", SearchOption.AllDirectories).ToList();
-                    int countFiles = allFiles.Count;
+                    var allFiles = Directory.EnumerateFiles(matchingPluginTask.fullInstallPath, "*.*", SearchOption.AllDirectories);
+                    int countFiles = allFiles.Count();
 
                     if (countFiles > 0)
                     {
                         wantedUnifiedTask.activity = LocalizationManager.Instance.GetString(LOC.CommonVerifying);
-                        int verifiedFiles = 0;
+                        long verifiedFiles = 0;
                         long totalBytesRead = 0;
 
-                        if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || patchesDepot.items.Count > 0)
+                        bool hasPatches = patchesDepot.items.Count > 0;
+                        if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || hasPatches)
                         {
                             var itemsMap = bigDepot.items.Where(i => !string.IsNullOrEmpty(i.path) && i.chunks?.Sum(c => (long)c.size) > 0)
                                                          .ToDictionary(i => i.path, i => i);
@@ -2273,67 +2249,58 @@ namespace GogOssLibraryNS
                             var patchesMap = patchesDepot.items.Where(p => !string.IsNullOrEmpty(p.path_source))
                                                                .ToDictionary(p => p.path_source, p => p);
 
-                            var perFileProgress = new Progress<int>(bytes =>
-                            {
-                                Interlocked.Add(ref totalBytesRead, bytes);
-                            });
-
-                            var reporterCts = CancellationTokenSource.CreateLinkedTokenSource(linkedCTS.Token);
-
                             var swDelta = new Stopwatch();
-                            try
+                            _ = Task.Run(async () =>
                             {
-                                _ = Task.Run(async () =>
-                                {
-                                    long lastUiUpdate = 0;
-                                    long previousBytes = 0;
-                                    swDelta = Stopwatch.StartNew();
+                                long lastUiUpdate = 0;
+                                long previousBytes = 0;
+                                swDelta = Stopwatch.StartNew();
 
+                                try
+                                {
                                     while (!reporterCts.Token.IsCancellationRequested)
                                     {
-                                        try
+                                        await Task.Delay(500, reporterCts.Token);
+
+                                        long currentBytes = Interlocked.Read(ref totalBytesRead);
+                                        long deltaBytes = currentBytes - previousBytes;
+                                        previousBytes = currentBytes;
+
+                                        double elapsedSec = swDelta.Elapsed.TotalSeconds;
+                                        swDelta.Restart();
+
+                                        long currentVerified = Interlocked.Read(ref verifiedFiles);
+                                        long now = Stopwatch.GetTimestamp();
+
+                                        if (now - lastUiUpdate >= TimeSpan.FromMilliseconds(500).Ticks)
                                         {
-                                            await Task.Delay(500, reporterCts.Token);
-
-                                            long currentBytes = Interlocked.Read(ref totalBytesRead);
-                                            long deltaBytes = currentBytes - previousBytes;
-                                            previousBytes = currentBytes;
-
-                                            double elapsedSec = swDelta.Elapsed.TotalSeconds;
-                                            swDelta.Restart();
-
-                                            long now = Stopwatch.GetTimestamp();
-
-                                            if (now - lastUiUpdate >= TimeSpan.FromMilliseconds(500).Ticks)
+                                            lastUiUpdate = now;
+                                            _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
                                             {
-                                                lastUiUpdate = now;
-                                                _ = Application.Current.Dispatcher?.BeginInvoke((Action)(() =>
-                                                {
-                                                    wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
-                                                    wantedUnifiedTask.elapsed = sw.Elapsed;
-                                                    wantedUnifiedTask.diskWriteSpeedBytes = deltaBytes / elapsedSec;
-                                                    double filesPerSecond = verifiedFiles / sw.Elapsed.TotalSeconds;
-                                                    double remainingFiles = countFiles - verifiedFiles;
-                                                    wantedUnifiedTask.eta = TimeSpan.FromSeconds(remainingFiles / filesPerSecond);
-                                                }));
-                                            }
-                                        }
-                                        catch (TaskCanceledException)
-                                        {
-                                            break;
+                                                wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
+                                                wantedUnifiedTask.elapsed = sw.Elapsed;
+                                                wantedUnifiedTask.diskWriteSpeedBytes = deltaBytes / elapsedSec;
+                                                double filesPerSecond = currentVerified / sw.Elapsed.TotalSeconds;
+                                                double remainingFiles = countFiles - currentVerified;
+                                                wantedUnifiedTask.eta = TimeSpan.FromSeconds(remainingFiles / filesPerSecond);
+                                            }));
                                         }
                                     }
-                                }, reporterCts.Token);
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error(ex.Message);
-                            }
+                                }
+                                catch
+                                {
+
+                                }
+                            }, reporterCts.Token);
 
                             try
                             {
                                 await Task.Run(() =>
                                 {
+                                    var perFileProgress = new Progress<int>(bytes =>
+                                    {
+                                        Interlocked.Add(ref totalBytesRead, bytes);
+                                    });
                                     foreach (var file in allFiles)
                                     {
                                         linkedCTS.Token.ThrowIfCancellationRequested();
@@ -2343,9 +2310,9 @@ namespace GogOssLibraryNS
                                             var newFile = file;
                                             string relativePath = RelativePath.Get(wantedUnifiedTask.fullInstallPath, newFile);
 
-                                            if (patchesDepot.items.Count > 0)
+                                            if (hasPatches)
                                             {
-                                                if (patchesDepot.items.Count > 0 && patchesMap.TryGetValue(relativePath, out var searchedItem))
+                                                if (patchesMap.TryGetValue(relativePath, out var searchedItem))
                                                 {
                                                     string correctChecksum = searchedItem.md5_source;
                                                     string calculatedChecksum = Helpers.GetMD5(file, perFileProgress);
@@ -2469,9 +2436,9 @@ namespace GogOssLibraryNS
                             }
                             finally
                             {
-                                Interlocked.Exchange(ref verifiedFiles, countFiles);
-                                swDelta?.Stop();
                                 reporterCts?.Cancel();
+                                swDelta?.Stop();
+                                Interlocked.Exchange(ref verifiedFiles, countFiles);
                                 Application.Current.Dispatcher?.Invoke(() =>
                                 {
                                     wantedUnifiedTask.activity = $"{LocalizationManager.Instance.GetString(LOC.CommonVerifying)} ({verifiedFiles}/{countFiles})";
