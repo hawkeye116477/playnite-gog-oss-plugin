@@ -194,7 +194,7 @@ namespace GogOssLibraryNS
                             Disk_size = newAsset.Size,
                             DownloadItemType = DownloadItemType.Tools,
                             Title = appTitle,
-                            Title_for_updater = $"{appTitle} {newVersion}",
+                            OldVersion = troubleshootingInformation.CometVersion
                         };
                         appsToUpdate.Add("comet", updateInfo);
                         if (appsToUpdate.Count > 0)
@@ -607,7 +607,9 @@ namespace GogOssLibraryNS
                             Install_path = overlayInstalledInfo.install_path,
                             Version = overlayManifest.overlayVersion,
                             Download_size = downloadSizeNumber,
-                            DownloadItemType = DownloadItemType.Overlay
+                            DownloadItemType = DownloadItemType.Overlay,
+                            Title = $"{LocalizationManager.Instance.GetString(LOC.CommonOverlay)}",
+                            OldVersion = oldOverlayVersion
                         };
                         appsToUpdate.Add("galaxy-overlay", updateInfo);
                     }

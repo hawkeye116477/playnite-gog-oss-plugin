@@ -759,7 +759,7 @@ namespace GogOssLibraryNS
                         Install_path = installedInfo.install_path,
                         Version = newBuild.version_name,
                         Title = installedInfo.title,
-                        Title_for_updater = $"{installedInfo.title} {newVersionName}",
+                        OldVersion = installedInfo.version,
                         Download_size = updateSize.download_size,
                         Disk_size = updateSize.disk_size,
                         Build_id = newBuild.build_id,
