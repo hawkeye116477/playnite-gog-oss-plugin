@@ -21,3 +21,7 @@ gog-oss-top-right = 右上角
 gog-oss-bottom-left = 左下角
 gog-oss-bottom-right = 右下角
 gog-oss-enable-overlay = 启用 GOG叠加层
+gog-oss-import-hidden-games = 导入隐藏游戏
+gog-oss-cdn-order = CDN 的顺序
+gog-oss-show-all-cdns = 显示所有 CDN
+gog-oss-game = 游戏
