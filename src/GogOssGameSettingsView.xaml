@@ -26,7 +26,7 @@
             <Button x:Name="CancelBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}"
                     ContentStringFormat="&#xec4f; {0}"
                     FontFamily="{DynamicResource FontIcoFont}"
-                    IsCancel="True" />
+                    Click="CancelBtn_Click" />
         </StackPanel>
         <TabControl ScrollViewer.VerticalScrollBarVisibility="Disabled"
         HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">

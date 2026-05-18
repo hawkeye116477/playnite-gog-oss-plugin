@@ -45,6 +45,7 @@ third-party-playnite-option-only-manually = Χειροκίνητα μόνο
 third-party-playnite-option-once-a-day = Μία φορά την ημέρα
 third-party-playnite-option-once-a-week = Μία φορά την εβδομάδα
 third-party-playnite-open = Άνοιγμα
+third-party-playnite-unsaved-changes-ask-message = Θέλετε να αποθηκεύσετε τις αλλαγές που κάνατε?
 third-party-gog-settings-import-installed-label = Εισαγωγή εγκατεστημένων παιχνιδιών
 third-party-gog-settings-import-uninstalled-label = Εισαγωγή μη εγκατεστημένων παιχνιδιών
 third-party-gog-settings-connect-account = Σύνδεση λογαριασμού

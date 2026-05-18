@@ -39,3 +39,4 @@ LOCCommonLinksStorePage
 LOCGameUninstallError
 LOCDownloadLabel
 LOCConfigure
+LOCUnsavedChangesAskMessage

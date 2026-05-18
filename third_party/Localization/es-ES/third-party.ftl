@@ -45,6 +45,7 @@ third-party-playnite-option-only-manually = Sólo manualmente
 third-party-playnite-option-once-a-day = Una vez al día
 third-party-playnite-option-once-a-week = Una vez a la semana
 third-party-playnite-open = Abrir
+third-party-playnite-unsaved-changes-ask-message = ¿Quieres guardar los cambios que realizados?
 third-party-gog-settings-import-installed-label = Importar juegos instalados
 third-party-gog-settings-import-uninstalled-label = Importar juegos no instalados
 third-party-gog-settings-connect-account = Conectar cuenta

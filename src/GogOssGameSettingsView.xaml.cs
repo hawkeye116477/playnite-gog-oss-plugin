@@ -21,7 +21,7 @@ namespace GogOssLibraryNS
     public partial class GogOssGameSettingsView : UserControl
     {
         private Game Game => DataContext as Game;
-        public string GameID => Game.GameId;
+        public string GameId => Game.GameId;
         private IPlayniteAPI playniteAPI = API.Instance;
         public GameSettings gameSettings;
         public GogOssCloud gogOssCloud = new GogOssCloud();
@@ -48,7 +48,7 @@ namespace GogOssLibraryNS
             return gameSettings;
         }
 
-        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        public GameSettings PrepareNewGameSettings()
         {
             var globalSettings = GogOssLibrary.GetSettings();
             var newGameSettings = new GameSettings();
@@ -89,12 +89,23 @@ namespace GogOssLibraryNS
             {
                 newGameSettings.EnableOverlay = EnableOverlayChk.IsChecked;
             }
-            var gameSettingsFile = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{GameID}.json");
+            return newGameSettings;
+        }
+
+        private void SaveGameSettings()
+        {
+            var newGameSettings = PrepareNewGameSettings();
+            var gameSettingsFile = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{GameId}.json");
             if (newGameSettings.GetType().GetProperties().Any(p => p.GetValue(newGameSettings) != null) || File.Exists(gameSettingsFile))
             {
                 var commonHelpers = GogOssLibrary.Instance.commonHelpers;
-                commonHelpers.SaveJsonSettingsToFile(newGameSettings, "GamesSettings", GameID, true);
+                commonHelpers.SaveJsonSettingsToFile(newGameSettings, "GamesSettings", GameId, true);
             }
+        }
+
+        private void SaveBtn_Click(object sender, RoutedEventArgs e)
+        {
+            SaveGameSettings();
             Window.GetWindow(this).Close();
         }
 
@@ -145,7 +156,7 @@ namespace GogOssLibraryNS
             AutoSyncPlaytimeChk.IsChecked = globalSettings.SyncPlaytime;
             EnableCometSupportChk.IsChecked = globalSettings.EnableCometSupport;
             EnableOverlayChk.IsChecked = globalSettings.EnableOverlay;
-            gameSettings = LoadGameSettings(GameID);
+            gameSettings = LoadGameSettings(GameId);
             if (gameSettings.EnableCometSupport != null)
             {
                 EnableCometSupportChk.IsChecked = gameSettings.EnableCometSupport;
@@ -207,6 +218,21 @@ namespace GogOssLibraryNS
             {
                 SelectedAlternativeExeTxt.Text = file;
             }
+        }
+
+        private void CancelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var oldGameSettings = LoadGameSettings(GameId);
+            var newGameSettings = PrepareNewGameSettings();
+            if (Serialization.ToJson(newGameSettings) != Serialization.ToJson(oldGameSettings))
+            {
+                var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUnsavedChangesAskMessage), "", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    SaveGameSettings();
+                }
+            }
+            Window.GetWindow(this).Close();
         }
     }
 }

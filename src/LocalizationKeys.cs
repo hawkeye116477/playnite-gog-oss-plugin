@@ -755,6 +755,10 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteOpen = "third-party-playnite-open";
         /// <summary>
+        /// Do you want to save changes you made?
+        /// </summary>
+        public const string ThirdPartyPlayniteUnsavedChangesAskMessage = "third-party-playnite-unsaved-changes-ask-message";
+        /// <summary>
         /// Import installed games
         /// </summary>
         public const string ThirdPartyGogSettingsImportInstalledLabel = "third-party-gog-settings-import-installed-label";
