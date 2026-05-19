@@ -307,7 +307,7 @@ namespace GogOssLibraryNS.Services
             {
                 hiddenFlag = "";
             }
-            var baseUrl = @$"https://www.gog.com/account/getFilteredProducts?{hiddenFlag}mediaType=1&page={0}&sortBy=title";
+            var baseUrl = $"https://www.gog.com/account/getFilteredProducts?{hiddenFlag}mediaType=1&page={{0}}&sortBy=title";
 
             var tokens = LoadTokens();
             httpClient.DefaultRequestHeaders.Clear();
