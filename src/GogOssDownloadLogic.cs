@@ -998,6 +998,10 @@ namespace GogOssLibraryNS
                     }
 
                     var targetDirectory = Path.GetDirectoryName(filePath);
+                    if (file.directory == true)
+                    {
+                        targetDirectory = filePath;
+                    }
                     if (!Directory.Exists(targetDirectory))
                     {
                         Directory.CreateDirectory(targetDirectory);
