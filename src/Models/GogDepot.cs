@@ -59,6 +59,7 @@ namespace GogOssLibraryNS.Models
             public string compressedMd5 { get; set; } = "";
             public double compressedSize { get; set; }
             public long offset { get; internal set; }
+            public string url { get; set; }
         }
         public class Smallfilescontainer
         {

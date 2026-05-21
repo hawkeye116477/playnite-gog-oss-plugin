@@ -1034,7 +1034,8 @@ namespace GogOssLibraryNS
                         offset = file.offset,
                         size = expectedFileSize,
                         compressedSize = expectedFileSize,
-                        compressedMd5 = file.url, // Probably main.bin always?
+                        compressedMd5 = file.hash,
+                        url = file.url
                     };
                     if (currentFileSize != expectedFileSize && !resumeState.IsCompleted(filePath, v1Chunk.compressedMd5))
                     {
@@ -1349,6 +1350,7 @@ namespace GogOssLibraryNS
                     long compressedSize = (long)chunk.compressedSize;
 
                     bool isV1 = bigDepot.version == 1;
+
                     bool isCompressed = !isV1 || job.depotFileType == DepotFileType.Redist;
 
                     var currentSecureLinksDict = new Dictionary<string, List<GogSecureLinks.FinalUrl>>();
@@ -1396,7 +1398,7 @@ namespace GogOssLibraryNS
                             string url;
                             if (isV1 && job.depotFileType != DepotFileType.Redist)
                             {
-                                url = currentSecureLink.formatted_url.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.compressedMd5));
+                                url = currentSecureLink.formatted_url.Replace("{GALAXY_PATH}", Path.GetFileName(chunk.url));
                             }
                             else
                             {
