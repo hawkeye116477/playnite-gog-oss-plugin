@@ -43,6 +43,7 @@ namespace GogOssLibraryNS.Models
             public long size { get; set; }
             public bool support { get; set; } = false;
             public string product_id { get; set; }
+            public bool? directory { get; set; }
         }
 
         public class sfcRef

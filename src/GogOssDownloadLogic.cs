@@ -1002,6 +1002,10 @@ namespace GogOssLibraryNS
                     {
                         Directory.CreateDirectory(targetDirectory);
                     }
+                    if (file.directory == true)
+                    {
+                        continue;
+                    }
                     writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
 
                     long expectedFileSize = file.size;
