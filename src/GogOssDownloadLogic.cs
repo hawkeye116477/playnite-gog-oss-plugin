@@ -952,7 +952,7 @@ namespace GogOssLibraryNS
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
             // Producer-consumer channel
-            var channel = Channel.CreateUnbounded<(string filePath, long offset, byte[] chunkBuffer, int length, string tempFilePath, long allocatedBytes, DepotFileType depotFileType, bool isCompressed, string chunkId)>(
+            var channel = Channel.CreateUnbounded<ChunkData>(
                 );
 
             var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, DepotFileType depotFileType, string productId)>();
@@ -1424,9 +1424,18 @@ namespace GogOssLibraryNS
                                     resumeStartByte = new FileInfo(tempFilePath).Length;
                                     if (resumeStartByte >= compressedSize)
                                     {
-                                        await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.depotFileType, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
+                                        await channel.Writer.WriteAsync(new ChunkData{ 
+                                            FilePath = job.filePath,
+                                            Offset = job.offset,
+                                            Length = (int)compressedSize,
+                                            TempFilePath = tempFilePath,
+                                            AllocatedBytes = 0,
+                                            DepotFileType = job.depotFileType,
+                                            IsCompressed = isCompressed,
+                                            ChunkId = chunk.compressedMd5
+                                        }, token).ConfigureAwait(false);
                                         tempFilePath = null;
-                                        return;
+                                        break;
                                     }
                                     else if (resumeStartByte > 0)
                                     {
@@ -1463,12 +1472,20 @@ namespace GogOssLibraryNS
                                     token.ThrowIfCancellationRequested();
                                     offset += read;
                                 }
-
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, chunkBuffer, offset, null, allocatedBytes, job.depotFileType, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
-
+                                await channel.Writer.WriteAsync(new ChunkData
+                                {
+                                    FilePath = job.filePath,
+                                    Offset = job.offset,
+                                    ChunkBuffer = chunkBuffer,
+                                    Length = (int)compressedSize,
+                                    AllocatedBytes = allocatedBytes,
+                                    DepotFileType = job.depotFileType,
+                                    IsCompressed = isCompressed,
+                                    ChunkId = chunk.compressedMd5
+                                }, token).ConfigureAwait(false);
                                 chunkBuffer = null;
                                 allocatedBytes = 0;
-                                return;
+                                break;
                             }
                             else
                             {
@@ -1489,10 +1506,20 @@ namespace GogOssLibraryNS
                                         await tempFs.FlushAsync(token).ConfigureAwait(false);
                                     }
                                 }).ConfigureAwait(false);
-                                await channel.Writer.WriteAsync((job.filePath, job.offset, null, (int)compressedSize, tempFilePath, 0, job.depotFileType, isCompressed, chunk.compressedMd5), token).ConfigureAwait(false);
-                            }
 
-                            return;
+                                await channel.Writer.WriteAsync(new ChunkData
+                                {
+                                    FilePath = job.filePath,
+                                    Offset = job.offset,
+                                    Length = (int)compressedSize,
+                                    AllocatedBytes = 0,
+                                    TempFilePath = tempFilePath,
+                                    DepotFileType = job.depotFileType,
+                                    IsCompressed = isCompressed,
+                                    ChunkId = chunk.compressedMd5
+                                }, token).ConfigureAwait(false);
+                                break;
+                            }
                         }
                         catch (OperationCanceledException)
                         {
@@ -1573,20 +1600,20 @@ namespace GogOssLibraryNS
                         while (channel.Reader.TryRead(out var item))
                         {
                             token.ThrowIfCancellationRequested();
-                            var fileWriteSemaphore = writeSemaphores[item.filePath];
+                            var fileWriteSemaphore = writeSemaphores[item.FilePath];
                             await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                             Interlocked.Increment(ref activeDiskers);
 
                             try
                             {
                                 Stream sourceStream;
-                                if (item.chunkBuffer != null)
+                                if (item.ChunkBuffer != null)
                                 {
-                                    sourceStream = new MemoryStream(item.chunkBuffer, 0, item.length, writable: false);
+                                    sourceStream = new MemoryStream(item.ChunkBuffer, 0, item.Length, writable: false);
                                 }
                                 else
                                 {
-                                    sourceStream = new FileStream(item.tempFilePath!,
+                                    sourceStream = new FileStream(item.TempFilePath!,
                                                                     FileMode.Open,
                                                                     FileAccess.Read,
                                                                     FileShare.Read,
@@ -1594,18 +1621,18 @@ namespace GogOssLibraryNS
                                                                     FileOptions.SequentialScan);
                                 }
 
-                                bool isSfcContainer = item.filePath.Contains(sfcContainerBaseName) && item.filePath.StartsWith(tempDir) && bigDepot.version == 2;
+                                bool isSfcContainer = item.FilePath.Contains(sfcContainerBaseName) && item.FilePath.StartsWith(tempDir) && bigDepot.version == 2;
 
 
                                 using (sourceStream)
-                                using (var outFs = new FileStream(item.filePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
+                                using (var outFs = new FileStream(item.FilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
                                 {
-                                    outFs.Seek(item.offset, SeekOrigin.Begin);
+                                    outFs.Seek(item.Offset, SeekOrigin.Begin);
 
                                     int bytesRead;
                                     long totalWritten = 0;
 
-                                    if (item.isCompressed)
+                                    if (item.IsCompressed)
                                     {
                                         using (var zlib = new ZlibStream(sourceStream, CompressionMode.Decompress))
                                         {
@@ -1634,24 +1661,24 @@ namespace GogOssLibraryNS
                                         }
                                     }
 
-                                    if (fileExpectedSizes.ContainsKey(item.filePath) && item.offset + totalWritten == fileExpectedSizes[item.filePath])
+                                    if (fileExpectedSizes.ContainsKey(item.FilePath) && item.Offset + totalWritten == fileExpectedSizes[item.FilePath])
                                     {
-                                        if (outFs.Length != fileExpectedSizes[item.filePath])
+                                        if (outFs.Length != fileExpectedSizes[item.FilePath])
                                         {
-                                            outFs.SetLength(fileExpectedSizes[item.filePath]);
+                                            outFs.SetLength(fileExpectedSizes[item.FilePath]);
                                         }
                                     }
-                                    resumeState.MarkCompleted(item.filePath, item.chunkId);
+                                    resumeState.MarkCompleted(item.FilePath, item.ChunkId);
                                 }
-                                if (item.chunkBuffer == null && File.Exists(item.tempFilePath))
+                                if (item.ChunkBuffer == null && File.Exists(item.TempFilePath))
                                 {
                                     try
                                     {
-                                        File.Delete(item.tempFilePath);
+                                        File.Delete(item.TempFilePath);
                                     }
                                     catch (Exception ex)
                                     {
-                                        logger.Warn(ex, $"Couldn't delete temp file {item.tempFilePath}.");
+                                        logger.Warn(ex, $"Couldn't delete temp file {item.TempFilePath}.");
                                     }
                                 }
                             }
@@ -1661,7 +1688,7 @@ namespace GogOssLibraryNS
                             }
                             catch (Exception ex)
                             {
-                                logger.Error(ex, $"Error occurred during writing chunk to file {item.filePath}");
+                                logger.Error(ex, $"Error occurred during writing chunk to file {item.FilePath}");
                                 throw;
                             }
                             finally
@@ -1674,13 +1701,13 @@ namespace GogOssLibraryNS
 
                                 try
                                 {
-                                    if (item.chunkBuffer != null)
+                                    if (item.ChunkBuffer != null)
                                     {
-                                        ArrayPool<byte>.Shared.Return(item.chunkBuffer);
+                                        ArrayPool<byte>.Shared.Return(item.ChunkBuffer);
                                     }
-                                    if (item.allocatedBytes > 0)
+                                    if (item.AllocatedBytes > 0)
                                     {
-                                        memoryLimiter.Release(item.allocatedBytes);
+                                        memoryLimiter.Release(item.AllocatedBytes);
                                     }
                                 }
                                 catch { }

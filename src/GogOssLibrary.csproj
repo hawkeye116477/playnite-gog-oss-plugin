@@ -59,6 +59,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChunkData.cs" />
     <Compile Include="Comet.cs" />
     <Compile Include="Converters\ObservableCollectionToStringConverter.cs" />
     <Compile Include="Enums\DepotFileType.cs" />
