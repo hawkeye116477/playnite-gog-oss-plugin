@@ -39,45 +39,6 @@ namespace GogOssLibraryNS
             }
         }
 
-        public Task WaitAsync(long bytes, CancellationToken token = default)
-        {
-            if (_disposed)
-                throw new ObjectDisposedException(nameof(MemoryLimiter));
-            if (bytes <= 0) return Task.CompletedTask;
-
-            lock (_lock)
-            {
-                if (TryReserve(bytes))
-                    return Task.CompletedTask;
-
-                var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-                _waiters.Enqueue((bytes, tcs));
-
-                if (token.CanBeCanceled)
-                {
-                    token.Register(() =>
-                    {
-                        lock (_lock)
-                        {
-                            var newQueue = new Queue<(long, TaskCompletionSource<bool>)>();
-                            while (_waiters.Count > 0)
-                            {
-                                var item = _waiters.Dequeue();
-                                if (item.tcs != tcs)
-                                    newQueue.Enqueue(item);
-                                else
-                                    tcs.TrySetCanceled(token);
-                            }
-                            while (newQueue.Count > 0)
-                                _waiters.Enqueue(newQueue.Dequeue());
-                        }
-                    });
-                }
-
-                return tcs.Task;
-            }
-        }
-
         public void Release(long bytesToRelease)
         {
             if (_disposed)
@@ -99,7 +60,6 @@ namespace GogOssLibraryNS
                     var (requiredBytes, tcs) = _waiters.Peek();
                     if (_currentUsage + requiredBytes <= _maxBytes)
                     {
-                        Interlocked.Add(ref _currentUsage, requiredBytes);
                         _waiters.Dequeue();
                         ready.Add(tcs);
                     }
@@ -126,7 +86,6 @@ namespace GogOssLibraryNS
                 while (_waiters.Count > 0)
                 {
                     var (_, tcs) = _waiters.Dequeue();
-                    tcs.TrySetCanceled();
                 }
             }
 
