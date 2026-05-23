@@ -1,94 +1,112 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
+
 namespace GogOssLibraryNS
 {
     public sealed class MemoryLimiter : IDisposable
     {
         private readonly long _maxBytes;
         private long _currentUsage;
-        private readonly Queue<(long bytes, TaskCompletionSource<bool> tcs)> _waiters
-            = new Queue<(long bytes, TaskCompletionSource<bool> tcs)>();
-        private readonly object _lock = new object();
-        private bool _disposed;
+        private int _disposed; // 0 = false, 1 = true
+
+        public long CurrentUsage => Interlocked.Read(ref _currentUsage);
+        public long MaxBytes => _maxBytes;
 
         public MemoryLimiter(long maxBytes)
         {
             if (maxBytes <= 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(maxBytes), "MaxBytes must be positive.");
+            }
+
             _maxBytes = maxBytes;
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private struct MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+        }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
         public bool TryReserve(long bytes)
         {
-            if (_disposed)
+            if (Volatile.Read(ref _disposed) == 1)
+            {
                 throw new ObjectDisposedException(nameof(MemoryLimiter));
-            if (bytes <= 0) return true;
+            }
+
+            if (bytes <= 0)
+            {
+                return true;
+            }
 
             while (true)
             {
-                long current = _currentUsage;
+                long current = Interlocked.Read(ref _currentUsage);
                 long newTotal = current + bytes;
 
-                if (newTotal > _maxBytes)
+                MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+                memStatus.dwLength = (uint)Marshal.SizeOf(typeof(MEMORYSTATUSEX));
+
+                long systemAvailBytes = 0;
+
+                if (GlobalMemoryStatusEx(ref memStatus))
+                {
+                    systemAvailBytes = (long)memStatus.ullAvailPhys;
+                }
+
+                if (newTotal > systemAvailBytes || newTotal > _maxBytes)
+                {
                     return false;
+                }
 
                 if (Interlocked.CompareExchange(ref _currentUsage, newTotal, current) == current)
+                {
                     return true;
+                }
             }
         }
 
         public void Release(long bytesToRelease)
         {
-            if (_disposed)
-                throw new ObjectDisposedException(nameof(MemoryLimiter));
-            if (bytesToRelease <= 0) return;
-
-            long newValue = Interlocked.Add(ref _currentUsage, -bytesToRelease);
-
-            if (newValue < 0)
+            if (bytesToRelease <= 0)
             {
-                Interlocked.CompareExchange(ref _currentUsage, 0, newValue);
+                return;
             }
 
-            lock (_lock)
+            while (true)
             {
-                var ready = new List<TaskCompletionSource<bool>>();
-                while (_waiters.Count > 0)
-                {
-                    var (requiredBytes, tcs) = _waiters.Peek();
-                    if (_currentUsage + requiredBytes <= _maxBytes)
-                    {
-                        _waiters.Dequeue();
-                        ready.Add(tcs);
-                    }
-                    else
-                        break;
-                }
+                long current = Interlocked.Read(ref _currentUsage);
+                long newTotal = current - bytesToRelease;
 
-                foreach (var tcs in ready)
-                    tcs.TrySetResult(true);
+                if (newTotal < 0) newTotal = 0;
+
+                if (Interlocked.CompareExchange(ref _currentUsage, newTotal, current) == current)
+                {
+                    break;
+                }
             }
         }
 
-        public long CurrentUsage => Interlocked.Read(ref _currentUsage);
-
-        public long MaxBytes => _maxBytes;
-
         public void Dispose()
         {
-            _disposed = true;
-            Interlocked.Exchange(ref _currentUsage, 0);
-
-            lock (_lock)
+            if (Interlocked.Exchange(ref _disposed, 1) == 0)
             {
-                while (_waiters.Count > 0)
-                {
-                    var (_, tcs) = _waiters.Dequeue();
-                }
+                Interlocked.Exchange(ref _currentUsage, 0);
             }
-
             GC.SuppressFinalize(this);
         }
     }
