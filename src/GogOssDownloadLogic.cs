@@ -1435,7 +1435,7 @@ namespace GogOssLibraryNS
                                             ChunkId = chunk.compressedMd5
                                         }, token).ConfigureAwait(false);
                                         tempFilePath = null;
-                                        break;
+                                        return;
                                     }
                                     else if (resumeStartByte > 0)
                                     {
@@ -1485,7 +1485,7 @@ namespace GogOssLibraryNS
                                 }, token).ConfigureAwait(false);
                                 chunkBuffer = null;
                                 allocatedBytes = 0;
-                                break;
+                                return;
                             }
                             else
                             {
@@ -1518,7 +1518,7 @@ namespace GogOssLibraryNS
                                     IsCompressed = isCompressed,
                                     ChunkId = chunk.compressedMd5
                                 }, token).ConfigureAwait(false);
-                                break;
+                                return;
                             }
                         }
                         catch (OperationCanceledException)
