@@ -46,12 +46,6 @@ Copyright 2021 Daniel Fath
 
 
 ----------------------------------------------------------------------------------------
-ProgressStream - https://github.com/gregyjames/ProgressStream
-MIT License
-Copyright (c) 2023 Greg James
-
-
-----------------------------------------------------------------------------------------
 SharpCompress - https://github.com/adamhathcock/sharpcompress
 The MIT License (MIT)
 Copyright (c) 2014 Adam Hathcock

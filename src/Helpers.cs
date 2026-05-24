@@ -3,6 +3,7 @@ using Playnite.SDK;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 using System;
+using System.Buffers;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -21,33 +22,63 @@ namespace GogOssLibraryNS
 
         public static string GetMD5(string filePath, IProgress<int> progress = null)
         {
-            using (var stream = new FileStream(filePath,
+            var bufferSize = 512 * 1024;
+            using var stream = new FileStream(filePath,
                                                FileMode.Open,
                                                FileAccess.Read,
                                                FileShare.Read,
-                                               bufferSize: 1 * 1024 * 1024,
-                                               options: FileOptions.SequentialScan))
-            using (var progressStream = new ProgressStream.ProgressStream(stream, progress))
-            using (var md5 = MD5.Create())
+                                               bufferSize: bufferSize,
+                                               options: FileOptions.SequentialScan);
+            using var md5 = MD5.Create();
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+            try
             {
-                var hash = md5.ComputeHash(progressStream);
-                return BitConverter.ToString(hash).Replace("-", "");
+                int read;
+                long total = 0;
+
+                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    md5.TransformBlock(buffer, 0, read, null, 0);
+                    total += read;
+                    progress?.Report(read);
+                }
+                md5.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+                return BitConverter.ToString(md5.Hash).Replace("-", "");
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }
 
         public static string GetSHA256(string filePath, IProgress<int> progress = null)
         {
-            using (var stream = new FileStream(filePath,
+            var bufferSize = 512 * 1024;
+            using var stream = new FileStream(filePath,
                                                FileMode.Open,
                                                FileAccess.Read,
                                                FileShare.Read,
-                                               bufferSize: 1 * 1024 * 1024,
-                                               options: FileOptions.SequentialScan))
-            using (var progressStream = new ProgressStream.ProgressStream(stream, progress))
-            using (var sha256 = SHA256.Create())
+                                               bufferSize: bufferSize,
+                                               options: FileOptions.SequentialScan);
+            using var sha256 = SHA256.Create();
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+            try
             {
-                var hash = sha256.ComputeHash(progressStream);
-                return BitConverter.ToString(hash).Replace("-", "");
+                int read;
+                long total = 0;
+
+                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    sha256.TransformBlock(buffer, 0, read, null, 0);
+                    total += read;
+                    progress?.Report(read);
+                }
+                sha256.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+                return BitConverter.ToString(sha256.Hash).Replace("-", "");
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }
 

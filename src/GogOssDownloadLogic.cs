@@ -666,18 +666,16 @@ namespace GogOssLibraryNS
                         await RentAndUsePool(bufferSize, async buffer =>
                         {
                             using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            using var progressStream = new ProgressStream.ProgressStream(networkStream,
-                                new Progress<int>(bytesRead =>
-                                {
-                                    Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                }), null);
-
                             FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
 
-                            using (var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize, FileOptions.Asynchronous))
+                            using (var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan))
                             {
-                                await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
-                                await tempFs.FlushAsync(token).ConfigureAwait(false);
+                                int bytesRead;
+                                while ((bytesRead = await networkStream.ReadAsync(buffer, 0, bufferSize, token).ConfigureAwait(false)) > 0)
+                                {
+                                    Interlocked.Add(ref totalNetworkBytes, bytesRead);
+                                    await tempFs.WriteAsync(buffer, 0, bytesRead, token).ConfigureAwait(false);
+                                }
                                 actualFileSize = tempFs.Length;
                             }
                         }).ConfigureAwait(false);
@@ -1383,6 +1381,7 @@ namespace GogOssLibraryNS
 
                     foreach (var currentSecureLink in availableCdns)
                     {
+                        token.ThrowIfCancellationRequested();
                         bool memoryReserved = false;
                         try
                         {
@@ -1418,13 +1417,13 @@ namespace GogOssLibraryNS
                             if (!memoryReserved)
                             {
                                 tempFilePath = chunkTempPath;
-
                                 if (File.Exists(tempFilePath))
                                 {
                                     resumeStartByte = new FileInfo(tempFilePath).Length;
                                     if (resumeStartByte >= compressedSize)
                                     {
-                                        await channel.Writer.WriteAsync(new ChunkData{ 
+                                        await channel.Writer.WriteAsync(new ChunkData
+                                        {
                                             FilePath = job.filePath,
                                             Offset = job.offset,
                                             Length = (int)compressedSize,
@@ -1432,7 +1431,7 @@ namespace GogOssLibraryNS
                                             AllocatedBytes = 0,
                                             DepotFileType = job.depotFileType,
                                             IsCompressed = isCompressed,
-                                            ChunkId = chunk.compressedMd5
+                                            ChunkId = $"{chunk.compressedMd5}",
                                         }, token).ConfigureAwait(false);
                                         tempFilePath = null;
                                         return;
@@ -1454,23 +1453,34 @@ namespace GogOssLibraryNS
                             using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
                             response.EnsureSuccessStatusCode();
 
+                            if (File.Exists(tempFilePath))
+                            {
+                                await channel.Writer.WriteAsync(new ChunkData
+                                {
+                                    FilePath = job.filePath,
+                                    Offset = job.offset,
+                                    Length = (int)compressedSize,
+                                    AllocatedBytes = 0,
+                                    TempFilePath = tempFilePath,
+                                    DepotFileType = job.depotFileType,
+                                    IsCompressed = isCompressed,
+                                    ChunkId = $"{chunk.compressedMd5}"
+                                }, token).ConfigureAwait(false);
+                                return;
+                            }
+
                             if (memoryReserved)
                             {
                                 chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
-
+                                var chunkBufferLength = chunkBuffer.Length;
                                 using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                                using var progressStream = new ProgressStream.ProgressStream(networkStream,
-                                    new Progress<int>(bytesRead =>
-                                    {
-                                        Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                    }), null);
-
                                 int offset = 0;
-                                int read;
-                                while ((read = await progressStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
+                                int bytesRead;
+                                while ((bytesRead = await networkStream.ReadAsync(chunkBuffer, offset, chunkBufferLength - offset, token).ConfigureAwait(false)) > 0)
                                 {
+                                    Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                     token.ThrowIfCancellationRequested();
-                                    offset += read;
+                                    offset += bytesRead;
                                 }
                                 await channel.Writer.WriteAsync(new ChunkData
                                 {
@@ -1481,7 +1491,7 @@ namespace GogOssLibraryNS
                                     AllocatedBytes = allocatedBytes,
                                     DepotFileType = job.depotFileType,
                                     IsCompressed = isCompressed,
-                                    ChunkId = chunk.compressedMd5
+                                    ChunkId = $"{chunk.compressedMd5}"
                                 }, token).ConfigureAwait(false);
                                 chunkBuffer = null;
                                 allocatedBytes = 0;
@@ -1492,18 +1502,19 @@ namespace GogOssLibraryNS
                                 await RentAndUsePool(bufferSize, async buffer =>
                                 {
                                     using var networkStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                                    using var progressStream = new ProgressStream.ProgressStream(networkStream,
-                                        new Progress<int>(bytesRead =>
-                                        {
-                                            Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                        }), null);
-
                                     FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
 
-                                    using (var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize, FileOptions.Asynchronous))
+                                    using (var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write, FileShare.ReadWrite | FileShare.Delete, bufferSize, FileOptions.Asynchronous | FileOptions.SequentialScan))
                                     {
-                                        await progressStream.CopyToAsync(tempFs, bufferSize, token).ConfigureAwait(false);
-                                        await tempFs.FlushAsync(token).ConfigureAwait(false);
+                                        int bytesRead;
+                                        int bufferLength = buffer.Length;
+                                        {
+                                            while ((bytesRead = await networkStream.ReadAsync(buffer, 0, bufferLength, token).ConfigureAwait(false)) > 0)
+                                            {
+                                                Interlocked.Add(ref totalNetworkBytes, bytesRead);
+                                                await tempFs.WriteAsync(buffer, 0, bytesRead, token).ConfigureAwait(false);
+                                            }
+                                        }
                                     }
                                 }).ConfigureAwait(false);
 
@@ -1516,7 +1527,7 @@ namespace GogOssLibraryNS
                                     TempFilePath = tempFilePath,
                                     DepotFileType = job.depotFileType,
                                     IsCompressed = isCompressed,
-                                    ChunkId = chunk.compressedMd5
+                                    ChunkId = $"{chunk.compressedMd5}"
                                 }, token).ConfigureAwait(false);
                                 return;
                             }
@@ -1533,7 +1544,7 @@ namespace GogOssLibraryNS
                         {
                             if (token.IsCancellationRequested)
                             {
-                                throw new OperationCanceledException(token);
+                                return;
                             }
                             logger.Warn(ex, $"Download failed for chunk {job.chunk.compressedMd5} using {currentSecureLink.endpoint_name} CDN. Trying next CDN...");
 
@@ -1559,9 +1570,9 @@ namespace GogOssLibraryNS
                             }
 
                             tempFilePath = null;
+                            continue;
                         }
                     }
-
                     throw new Exception($"Failed to download chunk {job.chunk.compressedMd5} of file {job.filePath} after trying all available CDNs.");
                 }
                 finally
@@ -1616,7 +1627,7 @@ namespace GogOssLibraryNS
                                     sourceStream = new FileStream(item.TempFilePath!,
                                                                     FileMode.Open,
                                                                     FileAccess.Read,
-                                                                    FileShare.Read,
+                                                                    FileShare.ReadWrite | FileShare.Delete,
                                                                     bufferSize,
                                                                     FileOptions.SequentialScan);
                                 }
@@ -1625,7 +1636,7 @@ namespace GogOssLibraryNS
 
 
                                 using (sourceStream)
-                                using (var outFs = new FileStream(item.FilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, bufferSize, FileOptions.Asynchronous))
+                                using (var outFs = new FileStream(item.FilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read, bufferSize, FileOptions.Asynchronous))
                                 {
                                     outFs.Seek(item.Offset, SeekOrigin.Begin);
 
