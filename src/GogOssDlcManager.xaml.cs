@@ -292,6 +292,7 @@ namespace GogOssLibraryNS
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
             {
                 CloseWindowTab.Visibility = Visibility.Visible;
+                AvailableDlcsTab.Focus();
             }
             CommonHelpers.SetControlBackground(this);
             await RefreshAll();
@@ -411,8 +412,8 @@ namespace GogOssLibraryNS
 
         private async void ReloadABtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), LocalizationManager.Instance.GetString(LOC.CommonReload), MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReload), LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), null, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result.Result)
             {
                 InstallBtn.IsEnabled = false;
                 DownloadSizeTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel);
@@ -427,6 +428,11 @@ namespace GogOssLibraryNS
                 }
                 await RefreshAll();
             }
+        }
+
+        private void GogOssDlcManagerUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }
     }
 }

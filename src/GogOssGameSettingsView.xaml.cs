@@ -209,6 +209,15 @@ namespace GogOssLibraryNS
             };
             ManualSyncSavesCBo.ItemsSource = cloudSyncActions;
             ManualSyncSavesCBo.SelectedIndex = 0;
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                GeneralTab.Focus();
+                StartupArgumentsTxt.Focusable = false;
+                SelectedAlternativeExeTxt.Focusable = false;
+                ChooseAlternativeExeBtn.Focusable = false;
+                SelectedSavePathTxt.Focusable = false;
+                ChooseSavePathBtn.Focusable = false;
+            }
         }
 
         private void ChooseAlternativeExeBtn_Click(object sender, RoutedEventArgs e)
@@ -233,6 +242,11 @@ namespace GogOssLibraryNS
                 }
             }
             Window.GetWindow(this).Close();
+        }
+
+        private void GameSettingsViewUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }
     }
 }

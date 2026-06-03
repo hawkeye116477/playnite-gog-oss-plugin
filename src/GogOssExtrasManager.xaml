@@ -8,7 +8,7 @@
              xmlns:system="clr-namespace:System"
              xmlns:common="clr-namespace:CommonPlugin"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded" PreviewKeyDown="UserControl_PreviewKeyDown">
     <UserControl.Resources>
         <sys:Boolean x:Key="True">True</sys:Boolean>
         <sys:Boolean x:Key="False">False</sys:Boolean>
@@ -20,11 +20,12 @@
         <Style TargetType="Button" BasedOn="{StaticResource HawkeyeButtonStyle}" />
         <Style TargetType="Expander" BasedOn="{StaticResource HawkeyeExpanderStyle}" />
         <Style TargetType="TabControl" BasedOn="{StaticResource HawkeyeTabControlStyle}" />
+        <Style TargetType="CheckBox" BasedOn="{StaticResource HawkeyeCheckBoxStyle}" />
     </UserControl.Resources>
     <DockPanel Margin="10,5,0,5">
         <StackPanel DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0" DockPanel.Dock="Top" x:Name="TopADSP">
-                <Button x:Name="DownloadBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteDownloadLabel}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xef07; {0}"  Margin="0,0,8,0" IsEnabled="False" Click="DownloadBtn_Click" />
+                <Button x:Name="DownloadBtn" Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteDownloadLabel}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xef07; {0}"  Margin="0,0,8,0" IsEnabled="False" Click="DownloadBtn_Click" Focusable="True" />
                 <Button x:Name="SelectAllExtrasBtn" Content="{common:Localize Key={x:Static system:LOC.CommonCheckAllContent}}" FontFamily="{DynamicResource FontIcoFont}" ContentStringFormat="&#xeed9; {0}" Margin="0,0,8,0" Click="SelectAllExtrasBtn_Click"/>
                 <Button x:Name="ReloadABtn" Content="{common:Localize Key={x:Static system:LOC.CommonReload}}" ContentStringFormat="&#xefd1; {0}" FontFamily="{DynamicResource FontIcoFont}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,0" IsEnabled="False" Click="ReloadABtn_Click" />
                 <Button Content="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteCancelLabel}}" ContentStringFormat="&#xec4f; {0}"
@@ -67,7 +68,7 @@
         </Grid>
 
         <StackPanel DockPanel.Dock="Top">
-            <ListBox BorderThickness="0" Name="AvailableExtrasLB" SelectionMode="Multiple" Margin="0,5" SelectionChanged="AvailableExtrasLB_SelectionChanged" MaxHeight="400" ScrollViewer.CanContentScroll="True">
+            <ListBox BorderThickness="0" Name="AvailableExtrasLB" SelectionMode="Multiple" Margin="0,5" SelectionChanged="AvailableExtrasLB_SelectionChanged" MaxHeight="400" ScrollViewer.CanContentScroll="True"  Focusable="False" IsTabStop="False" KeyboardNavigation.TabNavigation="Continue" KeyboardNavigation.DirectionalNavigation="Contained">
                 <ListBox.Resources>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Template">
@@ -77,6 +78,8 @@
                                 </ControlTemplate>
                             </Setter.Value>
                         </Setter>
+                        <Setter Property="IsTabStop" Value="False"/>
+                        <Setter Property="Focusable" Value="False"/>
                     </Style>
                 </ListBox.Resources>
             </ListBox>

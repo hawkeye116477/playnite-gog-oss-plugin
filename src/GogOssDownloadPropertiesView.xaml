@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GogOssLibraryNS" xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:common="clr-namespace:CommonPlugin" xmlns:system="clr-namespace:System"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Name="GogOssDownloadPropertiesUC" Loaded="GogOssDownloadPropertiesUC_Loaded">
+             d:DesignHeight="450" d:DesignWidth="800" Name="GogOssDownloadPropertiesUC" Loaded="GogOssDownloadPropertiesUC_Loaded" PreviewKeyDown="GogOssDownloadPropertiesUC_PreviewKeyDown">
     <UserControl.Resources>
         <sys:Boolean x:Key="True">True</sys:Boolean>
         <sys:Boolean x:Key="False">False</sys:Boolean>
@@ -16,8 +16,11 @@
         <Style TargetType="ListBox" BasedOn="{StaticResource HawkeyeListBoxStyle}" />
         <Style TargetType="TextBlock" BasedOn="{StaticResource HawkeyeTextBlockStyle}" />
         <Style TargetType="Button" BasedOn="{StaticResource HawkeyeButtonStyle}" />
+        <Style TargetType="RepeatButton" BasedOn="{StaticResource HawkeyeRepeatButtonStyle}" />
         <Style TargetType="Expander" BasedOn="{StaticResource HawkeyeExpanderStyle}" />
         <Style TargetType="TabControl" BasedOn="{StaticResource HawkeyeTabControlStyle}" />
+        <Style TargetType="TabItem" BasedOn="{StaticResource HawkeyeTabItemStyle}" />
+        <Style TargetType="CheckBox" BasedOn="{StaticResource HawkeyeCheckBoxStyle}" />
     </UserControl.Resources>
 
     <DockPanel Margin="0,0,0,10">
@@ -57,7 +60,7 @@
             </StackPanel>
         </Grid>
         <TabControl>
-            <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsGeneralLabel}}">
+            <TabItem Header="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSettingsGeneralLabel}}" Name="GeneralTab">
                 <StackPanel Margin="10,5">
                     <StackPanel>
                         <DockPanel Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,5" x:Name="FolderDP">

@@ -1106,5 +1106,19 @@ namespace GogOssLibraryNS
             };
 
         }
+
+        public override void OnControllerButtonStateChanged(OnControllerButtonStateChangedArgs args)
+        {
+            var windows = new HashSet<Type>
+            {
+                typeof(GogOssDownloadPropertiesView),
+                typeof(GogOssGameInstallerView),
+                typeof(GogOssGameSettingsView),
+                typeof(GogOssDlcManager),
+                typeof(GogOssUpdaterView),
+                typeof(GogOssExtrasManager),
+            };
+            CommonControllerHelpers.OnControllerButtonStateChanged(args, windows);
+        }
     }
 }

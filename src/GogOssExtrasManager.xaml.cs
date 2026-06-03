@@ -49,6 +49,16 @@ namespace GogOssLibraryNS
             Game = DataContext as Game;
             CommonHelpers.SetControlBackground(this);
             await RefreshAll();
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                var firstEnabledBtn = LogicalTreeHelper.GetChildren(TopADSP).OfType<Button>().FirstOrDefault(b => b.IsEnabled && b.IsVisible);
+                if (firstEnabledBtn != null)
+                {
+                    firstEnabledBtn.Focus();
+                }
+                SelectedExtrasPathTxt.Focusable = false;
+                ChooseExtrasPathBtn.Focusable = false;
+            }
         }
 
         private void UpdateSpaceInfo(string path)
@@ -120,8 +130,8 @@ namespace GogOssLibraryNS
 
         private async void ReloadABtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), LocalizationManager.Instance.GetString(LOC.CommonReload), MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReload), LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), null, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result.Result)
             {
                 DownloadBtn.IsEnabled = false;
                 DownloadSizeTB.Text = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteLoadingLabel);
@@ -220,6 +230,11 @@ namespace GogOssLibraryNS
                     AvailableExtrasLB.SelectAll();
                 }
             }
+        }
+
+        private void UserControl_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }
     }
 }

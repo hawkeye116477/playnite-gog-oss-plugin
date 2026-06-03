@@ -210,6 +210,10 @@ namespace GogOssLibraryNS
             {
                 FolderDP.IsEnabled = false;
             }
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                GeneralTab.Focus();
+            }
         }
 
         private async Task RefreshVersions()
@@ -414,6 +418,11 @@ namespace GogOssLibraryNS
                 await UpdateSizeInfo();
                 SaveBtn.IsEnabled = true;
             }
+        }
+
+        private void GogOssDownloadPropertiesUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Models;
+using Playnite.SDK;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -14,7 +15,7 @@ namespace GogOssLibraryNS
     public partial class GogOssUpdaterView : UserControl
     {
         public Dictionary<string, UpdateInfo> UpdatesList => (Dictionary<string, UpdateInfo>)DataContext;
-
+        private IPlayniteAPI playniteAPI = API.Instance;
         public GogOssUpdaterView()
         {
             InitializeComponent();
@@ -94,6 +95,14 @@ namespace GogOssLibraryNS
             {
                 ViewChangelogBtn.Visibility = Visibility.Visible;
             }
+            if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
+            {
+                var firstEnabledBtn = LogicalTreeHelper.GetChildren(TopButtonsSP).OfType<Button>().FirstOrDefault(b => b.IsEnabled && b.IsVisible);
+                if (firstEnabledBtn != null)
+                {
+                    firstEnabledBtn.Focus();
+                }
+            }
         }
 
         private void ViewChangelogBtn_Click(object sender, RoutedEventArgs e)
@@ -104,6 +113,11 @@ namespace GogOssLibraryNS
                 var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{selectedOptions[0].Value.Version}";
                 Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
             }
+        }
+
+        private void GogOssUpdaterUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }
     }
 }

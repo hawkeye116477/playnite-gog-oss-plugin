@@ -13,4 +13,10 @@
     <Style x:Key="HawkeyeDataGridCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}"/>
     <Style x:Key="HawkeyeDataGridRowStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource {x:Type DataGridRow}}"/>
     <Style x:Key="HawkeyeDataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}"/>
+    <Style x:Key="HawkeyeCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+    </Style>
+    <Style x:Key="HawkeyeRepeatButtonStyle" TargetType="RepeatButton" BasedOn="{StaticResource {x:Type RepeatButton}}">
+    </Style>
+    <Style x:Key="HawkeyeTabItemStyle" TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+    </Style>
 </ResourceDictionary>
