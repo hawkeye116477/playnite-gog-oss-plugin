@@ -56,7 +56,6 @@ namespace GogOssLibraryNS
                 {
                     var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
                     var request = new HttpRequestMessage(HttpMethod.Get, $"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
-                    request.Headers.Add("User-Agent", UserAgent);
                     using var response = await httpClient.SendAsync(request);
                     if (response.IsSuccessStatusCode)
                     {
@@ -335,7 +334,7 @@ namespace GogOssLibraryNS
                             {
                                 var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
                                 var credentialsResponseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(credentialsResponseContent);
-                                request.Headers.Add("Authorization", $"Bearer {tokens.access_token}");
+                                request.Headers.Add("Authorization", $"Bearer {credentialsResponseJson.access_token}");
                             }
                             else
                             {
