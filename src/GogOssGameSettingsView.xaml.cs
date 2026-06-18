@@ -226,6 +226,8 @@ namespace GogOssLibraryNS
                 ChooseAlternativeExeBtn.Focusable = false;
                 SelectedSavePathTxt.Focusable = false;
                 ChooseSavePathBtn.Focusable = false;
+                ChooseWorkingDirectoryBtn.Focusable = false;
+                StartupArgumentsHelpBtn.Focusable = false;
             }
         }
 
