@@ -1,5 +1,17 @@
 AddonId: GogOssLibrary
 Packages:
+  - Version: 1.10.0
+    RequiredApiVersion: 6.14.0
+    ReleaseDate: 2026-06-18
+    PackageUrl: https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/download/1.10.0/GogOssLibrary_1_10_0.pext
+    Changelog:
+      - Added possibility to use Playnite's variables for startup arguments in "modify
+        launch settings" window
+      - Now official provided arguments by devs won't be included unless typed "{Args}"
+        variable (that variable will be also automatically appended to new edits)
+      - Added possibility to change working directory in "modify launch settings"
+        window
+      - Fixed game install state when uninstalling from control panel
   - Version: 1.9.1
     RequiredApiVersion: 6.14.0
     ReleaseDate: 2026-06-04
