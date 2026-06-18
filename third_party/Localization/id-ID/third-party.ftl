@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Bersihkan Cache?
 third-party-playnite-settings-playtime-import-mode-never = Tidak pernah
 third-party-playnite-login-required = Login dibutuhkan
 third-party-playnite-executable-title = File program (file .exe/.sh/.bat, dll..)
+third-party-playnite-working-dir-title = Direktory Kerja
 third-party-playnite-game-install-dir-title = Direktori Instalasi
 third-party-playnite-library-import-error = Gagal mengimpor game dari { $var0 }
 third-party-playnite-metadata-download-error = Gagal mendownload metadata: { $var0 }

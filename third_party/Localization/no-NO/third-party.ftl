@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Tøm hurtigminne?
 third-party-playnite-settings-playtime-import-mode-never = Aldri
 third-party-playnite-login-required = Godkjennelse er påkrevd
 third-party-playnite-executable-title = Kjørbar fil
+third-party-playnite-working-dir-title = Arbeidsmappe
 third-party-playnite-game-install-dir-title = Installasjonsmappe
 third-party-playnite-library-import-error = Kunne ikke importere spill fra { $var0 }.
 third-party-playnite-metadata-download-error = Kunne ikke laste ned metadata: { $var0 }

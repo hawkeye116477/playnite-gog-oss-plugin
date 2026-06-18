@@ -40,3 +40,4 @@ LOCGameUninstallError
 LOCDownloadLabel
 LOCConfigure
 LOCUnsavedChangesAskMessage
+LOCWorkingDirTitle

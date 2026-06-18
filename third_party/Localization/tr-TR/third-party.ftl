@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Önbelleği Temizle?
 third-party-playnite-settings-playtime-import-mode-never = Asla
 third-party-playnite-login-required = Doğrulama gerekli
 third-party-playnite-executable-title = Uygulama
+third-party-playnite-working-dir-title = Çalışma Dizini
 third-party-playnite-game-install-dir-title = Kurulum Klasörü
 third-party-playnite-library-import-error = { $var0 } konumundan oyun içe aktarılamadı.
 third-party-playnite-metadata-download-error = Üst veriler indirilemedi: { $var0 }

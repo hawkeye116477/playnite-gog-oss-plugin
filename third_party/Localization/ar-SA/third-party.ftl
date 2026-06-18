@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = مسح ذاكرة التخزي
 third-party-playnite-settings-playtime-import-mode-never = ابداً
 third-party-playnite-login-required = يتطلب المصادقة
 third-party-playnite-executable-title = قابل للتنفيذ
+third-party-playnite-working-dir-title = دليل العمل
 third-party-playnite-game-install-dir-title = دليل التثبيت
 third-party-playnite-library-import-error = فشل استيراد الألعاب من { $var0 }.
 third-party-playnite-metadata-download-error = فشل تحميل بيانات التعريف:{ $var0 }

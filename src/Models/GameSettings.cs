@@ -9,6 +9,7 @@ namespace GogOssLibraryNS.Models
         public string CloudSaveFolder { get; set; } = "";
         public bool? AutoSyncPlaytime { get; set; }
         public List<string> StartupArguments { get; set; } = new List<string>();
+        public string WorkingDirectory { get; set; }
         public bool? EnableCometSupport { get; set; }
         public bool? EnableOverlay { get; set; }
         public string OverrideExe { get; set; } = "";

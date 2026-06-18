@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Curățați Cache-ul?
 third-party-playnite-settings-playtime-import-mode-never = Niciodată
 third-party-playnite-login-required = Autentificare necesară
 third-party-playnite-executable-title = Executabil
+third-party-playnite-working-dir-title = Directorul de lucru
 third-party-playnite-game-install-dir-title = Directorul de instalare
 third-party-playnite-library-import-error = Nu s-a putut importa jocuri de la { $var0 }.
 third-party-playnite-metadata-download-error = Nu s-a putut descărca metadata: { $var0 }

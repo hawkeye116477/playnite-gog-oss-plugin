@@ -543,20 +543,49 @@ namespace GogOssLibraryNS
                 {
                     var playArgs = new List<string>();
                     var gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
+                    var providedArgs = new List<string>();
                     if (!task[0].Arguments.IsNullOrEmpty())
                     {
-                        var providedArgs = Helpers.SplitArguments(task[0].Arguments);
-                        playArgs.AddRange(providedArgs);
+                        providedArgs = Helpers.SplitArguments(task[0].Arguments).ToList();
                     }
-                    if (gameSettings.StartupArguments?.Any() == true)
-                    {
-                        playArgs.AddRange(gameSettings.StartupArguments);
-                    }
+
                     if (!gameSettings.OverrideExe.IsNullOrEmpty())
                     {
                         gameExe = gameSettings.OverrideExe;
                         gameExeFullPath = gameExe;
                     }
+
+                    if (gameSettings.StartupArguments?.Any() == true)
+                    {
+                        foreach (var userArg in gameSettings.StartupArguments)
+                        {
+                            if (userArg.Equals("{Args}", StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (providedArgs.Count > 0)
+                                {
+                                    playArgs.AddRange(providedArgs);
+                                }
+                            }
+                            else if (userArg.Contains("{"))
+                            {
+                                playArgs.Add(playniteAPI.ExpandGameVariables(Game, userArg));
+                            }
+                            else
+                            {
+                                playArgs.Add(userArg);
+                            }
+                        }
+                    }
+                    else if (providedArgs.Count > 0)
+                    {
+                        playArgs.AddRange(providedArgs);
+                    }
+
+                    if (!gameSettings.WorkingDirectory.IsNullOrWhiteSpace())
+                    {
+                        workingDir = gameSettings.WorkingDirectory;
+                    }
+
                     if (workingDir.IsNullOrEmpty())
                     {
                         workingDir = Game.InstallDirectory;

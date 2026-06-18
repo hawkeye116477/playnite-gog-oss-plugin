@@ -23,6 +23,7 @@ third-party-playnite-settings-clear-cache-title = Očisti predmemoriju?
 third-party-playnite-settings-playtime-import-mode-never = Nikad
 third-party-playnite-login-required = Autentifikacija potrebna
 third-party-playnite-executable-title = Fajl za pokretanje
+third-party-playnite-working-dir-title = Radni direktorij
 third-party-playnite-game-install-dir-title = Lokacija instalacije
 third-party-playnite-library-import-error = Neuspjeli uvod igara iz { $var0 }.
 third-party-playnite-metadata-download-error = Neuspjelo preuzimanje metapodataka: { $var0 }

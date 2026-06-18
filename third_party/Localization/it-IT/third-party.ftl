@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Ripulire la cache?
 third-party-playnite-settings-playtime-import-mode-never = Mai
 third-party-playnite-login-required = Autenticazione richiesta
 third-party-playnite-executable-title = Eseguibili
+third-party-playnite-working-dir-title = Cartella di lavoro
 third-party-playnite-game-install-dir-title = Cartella d'installazione
 third-party-playnite-library-import-error = Importazione giochi da { $var0 } fallita.
 third-party-playnite-metadata-download-error = Scaricamento del metadata fallito: { $var0 }

@@ -671,6 +671,10 @@ namespace System
         /// </summary>
         public const string ThirdPartyPlayniteExecutableTitle = "third-party-playnite-executable-title";
         /// <summary>
+        /// Working Directory
+        /// </summary>
+        public const string ThirdPartyPlayniteWorkingDirTitle = "third-party-playnite-working-dir-title";
+        /// <summary>
         /// Installation Folder
         /// </summary>
         public const string ThirdPartyPlayniteGameInstallDirTitle = "third-party-playnite-game-install-dir-title";

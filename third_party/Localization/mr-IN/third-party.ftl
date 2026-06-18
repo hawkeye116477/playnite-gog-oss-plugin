@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = कॅश साफ करा�
 third-party-playnite-settings-playtime-import-mode-never = कधीच नाही
 third-party-playnite-login-required = प्रमाणीकरणाची गरज आहे
 third-party-playnite-executable-title = एग्झेक्युटेबल
+third-party-playnite-working-dir-title = वापरातील डिरेक्टरी
 third-party-playnite-game-install-dir-title = स्थापना फोल्डर
 third-party-playnite-library-import-error = { $var0 } पासून गेम आयात करण्यात अपयशी.
 third-party-playnite-metadata-download-error = मेटाडेटा डाउनलोड करण्यात अयशस्वी: { $var0 }

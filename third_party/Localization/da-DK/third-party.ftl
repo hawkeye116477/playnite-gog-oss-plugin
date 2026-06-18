@@ -23,6 +23,7 @@ third-party-playnite-settings-advanced-label = Avanceret
 third-party-playnite-settings-clear-cache-title = Ryd cache?
 third-party-playnite-login-required = Godkendelse krævet
 third-party-playnite-executable-title = Eksekverings-fil
+third-party-playnite-working-dir-title = Arbejdsmappe
 third-party-playnite-uninstalling = Afinstallerer
 third-party-playnite-close = Luk
 third-party-playnite-install-game = Installér

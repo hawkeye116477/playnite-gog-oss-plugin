@@ -25,6 +25,7 @@ namespace GogOssLibraryNS
         private IPlayniteAPI playniteAPI = API.Instance;
         public GameSettings gameSettings;
         public GogOssCloud gogOssCloud = new GogOssCloud();
+        private bool providedArgsAppended = false;
 
         public GogOssGameSettingsView()
         {
@@ -88,6 +89,10 @@ namespace GogOssLibraryNS
             if (EnableOverlayChk.IsChecked != globalSettings.EnableOverlay)
             {
                 newGameSettings.EnableOverlay = EnableOverlayChk.IsChecked;
+            }
+            if (SelectedWorkingDirectoryTxt.Text != "")
+            {
+                newGameSettings.WorkingDirectory = SelectedWorkingDirectoryTxt.Text;
             }
             return newGameSettings;
         }
@@ -177,6 +182,10 @@ namespace GogOssLibraryNS
             {
                 SelectedAlternativeExeTxt.Text = gameSettings.OverrideExe;
             }
+            if (!gameSettings.WorkingDirectory.IsNullOrEmpty())
+            {
+                SelectedWorkingDirectoryTxt.Text = gameSettings.WorkingDirectory;
+            }
             if (gameSettings.AutoSyncSaves != null)
             {
                 AutoSyncSavesChk.IsChecked = gameSettings.AutoSyncSaves;
@@ -247,6 +256,33 @@ namespace GogOssLibraryNS
         private void GameSettingsViewUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
+        }
+
+        private void StartupArgumentsTxt_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (StartupArgumentsTxt.Text != "")
+            {
+                if (StartupArgumentsTxt.Text.Contains("{Args}", StringComparison.OrdinalIgnoreCase))
+                {
+                    providedArgsAppended = true;
+                }
+                if (!providedArgsAppended && SelectedAlternativeExeTxt.Text == "")
+                {
+                    var oldCursorPosition = StartupArgumentsTxt.CaretIndex;
+                    StartupArgumentsTxt.Text = StartupArgumentsTxt.Text.Insert(0, "{Args} ");
+                    StartupArgumentsTxt.CaretIndex = oldCursorPosition + "{Args} ".Length;
+                    providedArgsAppended = true;
+                }
+            }
+        }
+
+        private void ChooseWorkingDirectoryBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var folder = playniteAPI.Dialogs.SelectFolder(Game.InstallDirectory);
+            if (folder != "")
+            {
+                SelectedWorkingDirectoryTxt.Text = folder;
+            }
         }
     }
 }

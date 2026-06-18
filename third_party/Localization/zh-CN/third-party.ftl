@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = 清除缓存？
 third-party-playnite-settings-playtime-import-mode-never = 从未
 third-party-playnite-login-required = 需要身份验证
 third-party-playnite-executable-title = 可执行文件
+third-party-playnite-working-dir-title = 工作目录
 third-party-playnite-game-install-dir-title = 安装目录
 third-party-playnite-library-import-error = 从 { $var0 } 导入游戏失败。
 third-party-playnite-metadata-download-error = 下载资料数据失败：{ $var0 }

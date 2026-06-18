@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Изчистване на ке
 third-party-playnite-settings-playtime-import-mode-never = Никога
 third-party-playnite-login-required = Изисква се удостоверяване
 third-party-playnite-executable-title = Изпълним
+third-party-playnite-working-dir-title = Работна директория
 third-party-playnite-game-install-dir-title = Инсталационна папка
 third-party-playnite-library-import-error = Неуспешно импортиране на игри от { $var0 }.
 third-party-playnite-metadata-download-error = Неуспешно изтегляне на метаданни: { $var0 }

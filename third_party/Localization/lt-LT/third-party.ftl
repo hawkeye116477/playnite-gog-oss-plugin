@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Išvalyti Talpyklą?
 third-party-playnite-settings-playtime-import-mode-never = Niekada
 third-party-playnite-login-required = Reikalinga autentifikacija
 third-party-playnite-executable-title = Programinis failas
+third-party-playnite-working-dir-title = Pasirinkta direktorija
 third-party-playnite-game-install-dir-title = Žaidimo direktorija
 third-party-playnite-library-import-error = Importuoti žaidimus iš { $var0 }.
 third-party-playnite-metadata-download-error = Nepavyko atsisiųsti metadata: { $var0 }

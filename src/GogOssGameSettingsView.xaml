@@ -57,7 +57,7 @@
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonStartupArguments}}" Grid.Column="0"
                             Grid.Row="3" Margin="0,0,8,8" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <TextBox x:Name="StartupArgumentsTxt"
-                            Grid.Column="1" Grid.Row="3" Margin="0,0,0,8" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
+                            Grid.Column="1" Grid.Row="3" Margin="0,0,0,8" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" TextChanged="StartupArgumentsTxt_TextChanged" />
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonAlternativeExe}}" Grid.Column="0" Grid.Row="4"
                                Margin="0,0,8,8" VerticalAlignment="Center" HorizontalAlignment="Left">
                         </TextBlock>
@@ -66,6 +66,11 @@
                         <Button Name="ChooseAlternativeExeBtn"
                             Margin="8,0,0,8" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Grid.Row="4" Grid.Column="2"
                             ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectFileTooltip}}" VerticalAlignment="Center" Click="ChooseAlternativeExeBtn_Click"/>
+                        <TextBlock Text="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteWorkingDirTitle}}" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,8,8" ></TextBlock>
+                        <TextBox x:Name="SelectedWorkingDirectoryTxt" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,8"></TextBox>
+                        <Button Name="ChooseWorkingDirectoryBtn"
+                            Margin="8,0,0,8" Content="&#xec5b;" FontFamily="{DynamicResource FontIcoFont}" Grid.Row="5" Grid.Column="2"
+                            ToolTip="{common:Localize Key={x:Static system:LOC.ThirdPartyPlayniteSelectDirectoryTooltip}}" VerticalAlignment="Center" Click="ChooseWorkingDirectoryBtn_Click" />
                     </Grid>
                 </StackPanel>
             </TabItem>

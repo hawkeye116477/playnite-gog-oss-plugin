@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Esborrar memòria cau?
 third-party-playnite-settings-playtime-import-mode-never = Mai
 third-party-playnite-login-required = Es requereix autenticació
 third-party-playnite-executable-title = Executable
+third-party-playnite-working-dir-title = Directori de treball
 third-party-playnite-game-install-dir-title = Carpeta d'instal·lació
 third-party-playnite-library-import-error = No s’han pogut importar els jocs de { $var0 }.
 third-party-playnite-metadata-download-error = No s'ha pogut descarregar les metadades: { $var0 }

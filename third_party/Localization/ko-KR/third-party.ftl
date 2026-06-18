@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = 캐시를 삭제하시겠습�
 third-party-playnite-settings-playtime-import-mode-never = 가져오지 않음
 third-party-playnite-login-required = 인증이 필요함
 third-party-playnite-executable-title = 실행파일
+third-party-playnite-working-dir-title = 작업 디렉터리
 third-party-playnite-game-install-dir-title = 설치 경로
 third-party-playnite-library-import-error = { $var0 }(으)로부터 게임 불러오기 실패.
 third-party-playnite-metadata-download-error = 메타 데이터 다운로드 실패 : { $var0 }

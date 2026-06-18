@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Leeg Cache?
 third-party-playnite-settings-playtime-import-mode-never = Nooit
 third-party-playnite-login-required = Authenticatie nodig
 third-party-playnite-executable-title = Uitvoerbaar bestand
+third-party-playnite-working-dir-title = Werkmap
 third-party-playnite-game-install-dir-title = Installatie Map
 third-party-playnite-library-import-error = Kan geen spellen importeren van { $var0 }.
 third-party-playnite-metadata-download-error = Downloaden van metadata mislukt: { $var0 }

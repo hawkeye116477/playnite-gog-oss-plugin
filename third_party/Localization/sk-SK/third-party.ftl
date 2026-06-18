@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Vymazať vyrovnávaciu pamäť
 third-party-playnite-settings-playtime-import-mode-never = Nikdy
 third-party-playnite-login-required = Vyžaduje sa overenie
 third-party-playnite-executable-title = Spustiteľný súbor
+third-party-playnite-working-dir-title = Pracovný priečinok
 third-party-playnite-game-install-dir-title = Inštalačný priečinok
 third-party-playnite-library-import-error = Nepodarilo sa importovať hry z { $var0 }.
 third-party-playnite-metadata-download-error = Nepodarilo sa prevziať metadáta: { $var0 }

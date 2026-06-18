@@ -23,6 +23,7 @@ third-party-playnite-settings-clear-cache-title = Tyhjennä välimuisti?
 third-party-playnite-settings-playtime-import-mode-never = Ei koskaan
 third-party-playnite-login-required = Todennus vaaditaan
 third-party-playnite-executable-title = Suoritettava ohjelma
+third-party-playnite-working-dir-title = Työkansio
 third-party-playnite-game-install-dir-title = Asennushakemisto
 third-party-playnite-library-import-error = Pelejä ei voitu tuoda sijainnista { $var0 }.
 third-party-playnite-metadata-download-error = Tietojen lataaminen epäonnistui: { $var0 }

@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = キャッシュをクリアし
 third-party-playnite-settings-playtime-import-mode-never = 常に無効
 third-party-playnite-login-required = 認証が必要です
 third-party-playnite-executable-title = 実行ファイル
+third-party-playnite-working-dir-title = 作業フォルダ
 third-party-playnite-game-install-dir-title = インストールフォルダ
 third-party-playnite-library-import-error = { $var0 } からゲームをインポートできませんでした。
 third-party-playnite-metadata-download-error = メタデータをダウンロードできませんでした: { $var0 }

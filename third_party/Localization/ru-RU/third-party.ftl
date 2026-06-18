@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Очистить кэш?
 third-party-playnite-settings-playtime-import-mode-never = Никогда
 third-party-playnite-login-required = Требуется авторизация
 third-party-playnite-executable-title = Исполняемый файл
+third-party-playnite-working-dir-title = Рабочая директория
 third-party-playnite-game-install-dir-title = Путь установки
 third-party-playnite-library-import-error = Не удалось импортировать игры из { $var0 }.
 third-party-playnite-metadata-download-error = Не удалось скачать метаданные: { $var0 }

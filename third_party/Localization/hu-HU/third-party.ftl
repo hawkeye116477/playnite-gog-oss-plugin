@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Gyorsítótár ürítése?
 third-party-playnite-settings-playtime-import-mode-never = Sosem
 third-party-playnite-login-required = Hitelesítés szükséges
 third-party-playnite-executable-title = Program
+third-party-playnite-working-dir-title = Munkamappa
 third-party-playnite-game-install-dir-title = Telepítési hely
 third-party-playnite-library-import-error = Nem sikerült a { $var0 } játékok importálása.
 third-party-playnite-metadata-download-error = Hiba a metaadatok letöltésekor: { $var0 }

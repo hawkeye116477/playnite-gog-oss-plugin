@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = Tühjenda vahemälu?
 third-party-playnite-settings-playtime-import-mode-never = Mitte kunagi
 third-party-playnite-login-required = Autentimine vajalik
 third-party-playnite-executable-title = Täitmisprogramm
+third-party-playnite-working-dir-title = Töökaust
 third-party-playnite-game-install-dir-title = Paigalduse asukoht
 third-party-playnite-library-import-error = Ei saanud importida mänge kohast { $var0 }.
 third-party-playnite-metadata-download-error = Metaandmete allalaadimine ebaõnnestus: { $var0 }

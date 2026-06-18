@@ -24,6 +24,7 @@ third-party-playnite-settings-clear-cache-title = לנקות מטמון?
 third-party-playnite-settings-playtime-import-mode-never = אף פעם
 third-party-playnite-login-required = נדרש אימות
 third-party-playnite-executable-title = ניתן להרצה
+third-party-playnite-working-dir-title = תיקיית עבודה
 third-party-playnite-game-install-dir-title = תיקיית התקנה
 third-party-playnite-library-import-error = נכשל ביבוא משחקים מ { $var0 }.
 third-party-playnite-metadata-download-error = נכשלה הורדת נתונים: { $var0 }
