@@ -325,7 +325,17 @@ namespace GogOssLibraryNS
                     var content = FileSystem.ReadFileAsStringSafe(installListPath);
                     if (!content.IsNullOrWhiteSpace() && Serialization.TryFromJson(content, out Dictionary<string, Installed> nonEmptyList))
                     {
-                        Instance.installedAppList = nonEmptyList;
+                        foreach (var entry in nonEmptyList)
+                        {
+                            if (!Directory.Exists(entry.Value.install_path))
+                            {
+                                Instance.installedAppListModified = true;
+                            }
+                            else
+                            {
+                                Instance.installedAppList.Add(entry.Key, entry.Value);
+                            }
+                        }
                     }
                 }
             }
