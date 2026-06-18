@@ -7,7 +7,7 @@ Packages:
     Changelog:
       - Added possibility to use Playnite's variables for startup arguments in "modify
         launch settings" window
-      - Now official provided arguments by devs won't be included unless typed "{Args}"
+      - Now official provided arguments by devs won't be appended to custom args unless typed "{Args}"
         variable (that variable will be also automatically appended to new edits)
       - Added possibility to change working directory in "modify launch settings"
         window
