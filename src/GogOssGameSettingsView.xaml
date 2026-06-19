@@ -58,7 +58,7 @@
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonStartupArguments}}" Grid.Column="0"
                             Grid.Row="3" Margin="0,0,8,8" VerticalAlignment="Center" HorizontalAlignment="Left" />
                         <TextBox x:Name="StartupArgumentsTxt"
-                            Grid.Column="1" Grid.Row="3" Margin="0,0,0,8" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" TextChanged="StartupArgumentsTxt_TextChanged" />
+                            Grid.Column="1" Grid.Row="3" Margin="0,0,0,8" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" />
                         <Button x:Name="StartupArgumentsHelpBtn" Grid.Column="2" Grid.Row="3" Margin="8,0,0,8" Content="&#xefca;" FontFamily="{DynamicResource FontIcoFont}" Command="{x:Static pcmd:GlobalCommands.NavigateUrlCommand}"
                         CommandParameter="https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Game-startup-arguments"/>
                         <TextBlock Text="{common:Localize Key={x:Static system:LOC.CommonAlternativeExe}}" Grid.Column="0" Grid.Row="4"

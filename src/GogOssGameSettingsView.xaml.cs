@@ -260,24 +260,6 @@ namespace GogOssLibraryNS
             CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }
 
-        private void StartupArgumentsTxt_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (StartupArgumentsTxt.Text != "")
-            {
-                if (StartupArgumentsTxt.Text.Contains("{Args}", StringComparison.OrdinalIgnoreCase))
-                {
-                    providedArgsAppended = true;
-                }
-                if (!providedArgsAppended && SelectedAlternativeExeTxt.Text == "")
-                {
-                    var oldCursorPosition = StartupArgumentsTxt.CaretIndex;
-                    StartupArgumentsTxt.Text = StartupArgumentsTxt.Text.Insert(0, "{Args} ");
-                    StartupArgumentsTxt.CaretIndex = oldCursorPosition + "{Args} ".Length;
-                    providedArgsAppended = true;
-                }
-            }
-        }
-
         private void ChooseWorkingDirectoryBtn_Click(object sender, RoutedEventArgs e)
         {
             var folder = playniteAPI.Dialogs.SelectFolder(Game.InstallDirectory);
