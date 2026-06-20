@@ -1062,6 +1062,10 @@ namespace GogOssLibraryNS
                 {
                     depotItem.path = depotItem.path.TrimStart('/', '\\');
                     string fullSmallFilePath = Path.Combine(fullInstallPath, depotItem.path);
+                    if (depotItem.flags?.Count > 0 && depotItem.flags.Contains("support"))
+                    {
+                        fullSmallFilePath = Path.Combine(fullInstallPath, "gog-support", depotItem.product_id, depotItem.path);
+                    }
                     string depotHash = depotItem.sfcRef.depotHash;
 
                     bigDepot.items.Remove(depotItem);
