@@ -25,7 +25,6 @@ namespace GogOssLibraryNS
         private IPlayniteAPI playniteAPI = API.Instance;
         public GameSettings gameSettings;
         public GogOssCloud gogOssCloud = new GogOssCloud();
-        private bool providedArgsAppended = false;
 
         public GogOssGameSettingsView()
         {
