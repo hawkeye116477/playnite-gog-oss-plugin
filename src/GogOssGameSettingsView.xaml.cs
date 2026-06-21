@@ -67,7 +67,7 @@ namespace GogOssLibraryNS
             }
             if (StartupArgumentsTxt.Text != "")
             {
-                newGameSettings.StartupArguments = StartupArgumentsTxt.Text.SplitOutsideQuotes(' ').ToList();
+                newGameSettings.StartupArguments = Helpers.SplitArguments(StartupArgumentsTxt.Text).ToList();
             }
             if (SelectedAlternativeExeTxt.Text != "")
             {
@@ -175,7 +175,11 @@ namespace GogOssLibraryNS
             }
             if (gameSettings.StartupArguments != null)
             {
-                StartupArgumentsTxt.Text = string.Join(" ", gameSettings.StartupArguments);
+                StartupArgumentsTxt.Text = string.Join(" ", 
+                    gameSettings.StartupArguments.Select(a =>
+                {
+                    return a.Contains(" ") ? $"\"{a}\"" : a;
+                }));
             }
             if (gameSettings.OverrideExe != null)
             {
