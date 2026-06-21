@@ -67,7 +67,7 @@ namespace GogOssLibraryNS
             }
             if (StartupArgumentsTxt.Text != "")
             {
-                newGameSettings.StartupArguments = Helpers.SplitArguments(StartupArgumentsTxt.Text).ToList();
+                newGameSettings.StartupArguments = CommonHelpers.SplitArguments(StartupArgumentsTxt.Text).ToList();
             }
             if (SelectedAlternativeExeTxt.Text != "")
             {

@@ -546,7 +546,7 @@ namespace GogOssLibraryNS
                     var providedArgs = new List<string>();
                     if (!task[0].Arguments.IsNullOrEmpty())
                     {
-                        providedArgs = Helpers.SplitArguments(task[0].Arguments).ToList();
+                        providedArgs = CommonHelpers.SplitArguments(task[0].Arguments).ToList();
                     }
 
                     if (!gameSettings.OverrideExe.IsNullOrEmpty())
