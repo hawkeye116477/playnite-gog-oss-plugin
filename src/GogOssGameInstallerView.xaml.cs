@@ -197,8 +197,7 @@ namespace GogOssLibraryNS
                 AfterInstallingSP.Visibility = Visibility.Collapsed;
             }
             await RefreshAll();
-            var games = MultiInstallData.Where(i => i.downloadItemType == DownloadItemType.Game);
-            if (settings.UnattendedInstall && (games.First().downloadProperties.downloadAction == DownloadAction.Install))
+            if (settings.UnattendedInstall && MultiInstallData.First().downloadProperties.downloadAction == DownloadAction.Install)
             {
                 await StartTask(DownloadAction.Install, true);
             }
