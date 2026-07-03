@@ -167,7 +167,7 @@ namespace GogOssLibraryNS
             {
                 EnableOverlayChk.IsEnabled = false;
                 OverlaySettingsSP.IsEnabled = false;
-                OverlayUpdateBtn.Visibility = Visibility.Hidden;
+                OverlayUpdateBtn.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -578,6 +578,7 @@ namespace GogOssLibraryNS
                 }
                 OverlayUninstallBtn.Visibility = Visibility.Collapsed;
                 OverlayInstallBtn.Visibility = Visibility.Visible;
+                OverlayUpdateBtn.Visibility = Visibility.Collapsed;
             }
         }
 
