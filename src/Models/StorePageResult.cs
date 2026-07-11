@@ -23,7 +23,7 @@ namespace GogOssLibraryNS.Models
             public List<SluggedName> tags;
             public List<SluggedName> gameTags;
             public List<Feature> features;
-            public string publisher;
+            public List<SluggedName> publishers;
             public List<SluggedName> developers;
             public DateTime? globalReleaseDate;
             public string id;
