@@ -894,8 +894,8 @@ namespace GogOssLibraryNS
                 }
                 if (canUpdate)
                 {
-                    GogOssUpdateController GogOssUpdateController = new GogOssUpdateController();
-                    var gameToUpdate = await GogOssUpdateController.CheckGameUpdates(game.Value.title, gameID);
+                    var gogOssUpdateController = new GogOssUpdateController();
+                    var gameToUpdate = await gogOssUpdateController.CheckGameUpdates(game.Value.title, gameID);
                     if (gameToUpdate.Count > 0)
                     {
                         foreach (var singleGame in gameToUpdate)
