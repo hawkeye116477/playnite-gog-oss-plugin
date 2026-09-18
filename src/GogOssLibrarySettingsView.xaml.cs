@@ -30,7 +30,7 @@ namespace GogOssLibraryNS
         {
             InitializeComponent();
             UpdateAuthStatus();
-            MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
+            MaxWorkersNI.MaxValue = GogOss.MaxMaxWorkers;
         }
 
         private void ChooseGamePathBtn_Click(object sender, RoutedEventArgs e)
