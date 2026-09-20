@@ -2122,7 +2122,7 @@ namespace GogOssLibraryNS
 
             bool foundPatch = false;
             GogDepot.Depot patchesDepot = new();
-            if (matchingPluginTask.downloadProperties.downloadAction == DownloadAction.Update && matchingPluginTask.downloadItemType == DownloadItemType.Game)
+            if (matchingPluginTask.downloadProperties.downloadAction == DownloadAction.Update && matchingPluginTask.downloadItemType == DownloadItemType.Game && VcdiffPatch.CanLoad())
             {
                 var metaManifest = await gogDownloadApi.GetGameMetaManifest(matchingPluginTask);
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
