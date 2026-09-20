@@ -1,14 +1,14 @@
-﻿using CommonPlugin;
-using GogOssLibraryNS.Models;
-using GogOssLibraryNS.Services;
-using Playnite.SDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using CommonPlugin;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
+using Playnite.SDK;
 
 namespace GogOssLibraryNS
 {
@@ -19,6 +19,7 @@ namespace GogOssLibraryNS
     {
         private ILogger logger = LogManager.GetLogger();
         public GogDownloadApi gogDownloadApi = new();
+
         public GogOssExtraInstallationSettingsView()
         {
             InitializeComponent();
@@ -61,18 +62,22 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+
                 if (betaChannels.Count > 0)
                 {
                     BetaChannelCBo.ItemsSource = betaChannels;
                     var selectedBetaChannel = "disabled";
-                    if (!ChosenGame.downloadProperties.betaChannel.IsNullOrEmpty() && buildsManifest.available_branches.Contains(ChosenGame.downloadProperties.betaChannel))
+                    if (!ChosenGame.downloadProperties.betaChannel.IsNullOrEmpty() &&
+                        buildsManifest.available_branches.Contains(ChosenGame.downloadProperties.betaChannel))
                     {
                         selectedBetaChannel = ChosenGame.downloadProperties.betaChannel;
                     }
+
                     BetaChannelCBo.SelectedValue = selectedBetaChannel;
                     BetaChannelSP.Visibility = Visibility.Visible;
                 }
             }
+
             await RefreshVersions();
         }
 
@@ -93,6 +98,7 @@ namespace GogOssLibraryNS
                 {
                     chosenBranch = "";
                 }
+
                 foreach (var build in builds)
                 {
                     if (build.branch == chosenBranch)
@@ -103,24 +109,28 @@ namespace GogOssLibraryNS
                         {
                             versionNameFirstPart = "";
                         }
+
                         var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
                         var buildId = build.legacy_build_id;
                         if (buildId.IsNullOrEmpty())
                         {
                             buildId = build.build_id;
                         }
+
                         if (!gameVersions.ContainsKey(buildId))
                         {
                             gameVersions.Add(buildId, versionName);
                         }
                     }
                 }
+
                 GameVersionCBo.ItemsSource = gameVersions;
                 var selectedVersion = ChosenGame.downloadProperties.buildId;
                 if (selectedVersion.IsNullOrEmpty() || !gameVersions.ContainsKey(selectedVersion))
                 {
                     selectedVersion = gameVersions.FirstOrDefault().Key;
                 }
+
                 GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault(i => i.Key == selectedVersion);
                 manifest = await gogDownloadApi.GetGameMetaManifest(ChosenGame);
                 if (gameVersions.Count > 1)
@@ -128,6 +138,7 @@ namespace GogOssLibraryNS
                     VersionSP.Visibility = Visibility.Visible;
                 }
             }
+
             if (builds.Count > 0)
             {
                 await SetGameVersion();
@@ -157,13 +168,16 @@ namespace GogOssLibraryNS
                             logger.Warn(ex, $"Unrecognized language: {language}");
                         }
                     }
+
                     if (!gameLanguages.ContainsKey(language))
                     {
                         gameLanguages.Add(language, nativeLanguageName);
                     }
                 }
+
                 gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                if (!ChosenGame.downloadProperties.language.IsNullOrEmpty() && gameLanguages.ContainsKey(ChosenGame.downloadProperties.language))
+                if (!ChosenGame.downloadProperties.language.IsNullOrEmpty() &&
+                    gameLanguages.ContainsKey(ChosenGame.downloadProperties.language))
                 {
                     selectedLanguage = ChosenGame.downloadProperties.language;
                 }
@@ -176,12 +190,14 @@ namespace GogOssLibraryNS
                     else
                     {
                         currentPlayniteLanguage = currentPlayniteLanguage.Substring(0, currentPlayniteLanguage.IndexOf("-"));
-                        if (gameLanguages.ContainsKey(currentPlayniteLanguage) || gameLanguages.ContainsKey(currentPlayniteLanguageNativeName))
+                        if (gameLanguages.ContainsKey(currentPlayniteLanguage) ||
+                            gameLanguages.ContainsKey(currentPlayniteLanguageNativeName))
                         {
                             selectedLanguage = currentPlayniteLanguage;
                         }
                     }
                 }
+
                 GameLanguageCBo.ItemsSource = gameLanguages;
                 GameLanguageCBo.SelectedValue = selectedLanguage;
                 LanguageSP.Visibility = Visibility.Visible;
@@ -216,10 +232,12 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+
                 if (settings.DownloadAllDlcs)
                 {
                     ExtraContentLB.SelectAll();
                 }
+
                 if (manifest.dlcs.Count > 1)
                 {
                     AllOrNothingChk.Visibility = Visibility.Visible;
@@ -259,12 +277,14 @@ namespace GogOssLibraryNS
             {
                 ChosenGame.downloadProperties.extraContent.Add(selectedDlc.Key);
             }
+
             if (AllOrNothingChk.IsChecked == true && selectedDlcs.Count() != ExtraContentLB.Items.Count)
             {
                 uncheckedByUser = false;
                 AllOrNothingChk.IsChecked = false;
                 uncheckedByUser = true;
             }
+
             if (AllOrNothingChk.IsChecked == false && selectedDlcs.Count() == ExtraContentLB.Items.Count)
             {
                 checkedByUser = false;

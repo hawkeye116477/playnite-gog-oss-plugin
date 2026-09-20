@@ -1,12 +1,12 @@
-﻿using ByteSizeLib;
-using Playnite.SDK;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
-using System;
+﻿using System;
 using System.Buffers;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using ByteSizeLib;
+using Playnite.SDK;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
 
 namespace GogOssLibraryNS
 {
@@ -24,11 +24,11 @@ namespace GogOssLibraryNS
         {
             var bufferSize = 512 * 1024;
             using var stream = new FileStream(filePath,
-                                               FileMode.Open,
-                                               FileAccess.Read,
-                                               FileShare.Read,
-                                               bufferSize: bufferSize,
-                                               options: FileOptions.SequentialScan);
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: bufferSize,
+                options: FileOptions.SequentialScan);
             using var md5 = MD5.Create();
             byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
             try
@@ -42,6 +42,7 @@ namespace GogOssLibraryNS
                     total += read;
                     progress?.Report(read);
                 }
+
                 md5.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
                 return BitConverter.ToString(md5.Hash).Replace("-", "");
             }
@@ -55,11 +56,11 @@ namespace GogOssLibraryNS
         {
             var bufferSize = 512 * 1024;
             using var stream = new FileStream(filePath,
-                                               FileMode.Open,
-                                               FileAccess.Read,
-                                               FileShare.Read,
-                                               bufferSize: bufferSize,
-                                               options: FileOptions.SequentialScan);
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: bufferSize,
+                options: FileOptions.SequentialScan);
             using var sha256 = SHA256.Create();
             byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
             try
@@ -73,6 +74,7 @@ namespace GogOssLibraryNS
                     total += read;
                     progress?.Report(read);
                 }
+
                 sha256.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
                 return BitConverter.ToString(sha256.Hash).Replace("-", "");
             }

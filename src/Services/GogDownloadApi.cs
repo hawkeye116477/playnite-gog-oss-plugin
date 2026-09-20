@@ -1,15 +1,15 @@
-﻿using CommonPlugin;
-using GogOssLibraryNS.Enums;
-using GogOssLibraryNS.Models;
-using Playnite.Common;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using CommonPlugin;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using Playnite.Common;
+using Playnite.SDK;
+using Playnite.SDK.Data;
 
 namespace GogOssLibraryNS.Services
 {
@@ -33,10 +33,8 @@ namespace GogOssLibraryNS.Services
             {
                 return await GetProductBuilds(downloadInfo.gameID, downloadInfo.downloadProperties.os, forceRefreshCache);
             }
-            else
-            {
-                return new GogBuildsData();
-            }
+
+            return new GogBuildsData();
         }
 
         public async Task<GogBuildsData> GetProductBuilds(string gameId, string platform = "windows", bool forceRefreshCache = false)
@@ -82,7 +80,8 @@ namespace GogOssLibraryNS.Services
 
                 try
                 {
-                    using var response = await Client.GetAsync($"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
+                    using var response =
+                        await Client.GetAsync($"https://content-system.gog.com/products/{gameId}/os/{platform}/builds?generation=2");
                     response.EnsureSuccessStatusCode();
                     content = await response.Content.ReadAsStringAsync();
                     if (!content.IsNullOrWhiteSpace())
@@ -102,6 +101,7 @@ namespace GogOssLibraryNS.Services
                                     newBuildsInfoContent.available_branches.Add(build.branch);
                                 }
                             }
+
                             newBuildsInfoContent.items = newBuildsInfoContent.items.OrderByDescending(p => p.date_published).ToList();
                             var buildsInfoContentString = Serialization.ToJson(newBuildsInfoContent);
                             File.WriteAllText(cacheInfoFile, buildsInfoContentString);
@@ -118,16 +118,22 @@ namespace GogOssLibraryNS.Services
                     newBuildsInfoContent.errorDisplayed = true;
                 }
             }
+
             return newBuildsInfoContent;
         }
 
 
-        public async Task<GogGameMetaManifest> GetGameMetaManifest(DownloadManagerData.Download downloadData, bool forceRefreshCache = false)
+        public async Task<GogGameMetaManifest> GetGameMetaManifest(
+            DownloadManagerData.Download downloadData, bool forceRefreshCache = false)
         {
-            return await GetGameMetaManifest(downloadData.gameID, downloadData.downloadProperties.buildId, downloadData.downloadProperties.betaChannel, downloadData.downloadProperties.os, forceRefreshCache, downloadData.downloadItemType);
+            return await GetGameMetaManifest(downloadData.gameID, downloadData.downloadProperties.buildId,
+                downloadData.downloadProperties.betaChannel, downloadData.downloadProperties.os, forceRefreshCache,
+                downloadData.downloadItemType);
         }
 
-        public async Task<GogGameMetaManifest> GetGameMetaManifest(string gameId, Installed installedInfo, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false, DownloadItemType downloadItemType = DownloadItemType.Game)
+        public async Task<GogGameMetaManifest> GetGameMetaManifest(
+            string gameId, Installed installedInfo, bool skipRefreshing = false, bool silently = false, bool forceRefreshCache = false,
+            DownloadItemType downloadItemType = DownloadItemType.Game)
         {
             var downloadData = new DownloadManagerData.Download
             {
@@ -141,7 +147,8 @@ namespace GogOssLibraryNS.Services
         }
 
         public async Task<GogGameMetaManifest> GetGameMetaManifest(
-            string gameId, string buildId = "", string branch = "", string platform = "windows", bool forceRefreshCache = false, DownloadItemType downloadItemType = DownloadItemType.Game)
+            string gameId, string buildId = "", string branch = "", string platform = "windows", bool forceRefreshCache = false,
+            DownloadItemType downloadItemType = DownloadItemType.Game)
         {
             var manifest = new GogGameMetaManifest();
             var cacheInfoFileName = $"{gameId}.json";
@@ -160,6 +167,7 @@ namespace GogOssLibraryNS.Services
                     {
                         chosenBranch = "";
                     }
+
                     var selectedBuild = builds.items.FirstOrDefault(i => i.branch == chosenBranch);
                     if (selectedBuild != null)
                     {
@@ -168,6 +176,7 @@ namespace GogOssLibraryNS.Services
                         {
                             newBuildId = selectedBuild.build_id;
                         }
+
                         cacheInfoFileName = $"{gameId}_build{newBuildId}.json";
                     }
                 }
@@ -183,6 +192,7 @@ namespace GogOssLibraryNS.Services
                     File.Delete(cacheInfoFile);
                 }
             }
+
             var newManifest = new GogGameMetaManifest();
             if (File.Exists(cacheInfoFile))
             {
@@ -203,6 +213,7 @@ namespace GogOssLibraryNS.Services
                 {
                     Directory.CreateDirectory(cachePath);
                 }
+
                 if (downloadItemType == DownloadItemType.Dependency)
                 {
                     var redistManifest = await GetRedistInfo(gameId, false, forceRefreshCache);
@@ -229,7 +240,10 @@ namespace GogOssLibraryNS.Services
                     {
                         chosenBranch = "";
                     }
-                    var selectedBuild = builds.items.FirstOrDefault(i => i.branch == chosenBranch && (string.IsNullOrEmpty(chosenBuildId) || i.build_id == chosenBuildId || i.legacy_build_id == chosenBuildId));
+
+                    var selectedBuild = builds.items.FirstOrDefault(i =>
+                        i.branch == chosenBranch && (string.IsNullOrEmpty(chosenBuildId) || i.build_id == chosenBuildId ||
+                                                     i.legacy_build_id == chosenBuildId));
                     if (selectedBuild != null)
                     {
                         var newBuildId = selectedBuild.legacy_build_id;
@@ -324,10 +338,12 @@ namespace GogOssLibraryNS.Services
                                 {
                                     depots = manifest.depots;
                                 }
+
                                 if (!manifest.size.ContainsKey("*"))
                                 {
                                     manifest.size.Add("*", new GogGameMetaManifest.SizeType());
                                 }
+
                                 if (manifest.dependencies?.Count > 0)
                                 {
                                     foreach (var depend in manifest.dependencies)
@@ -344,6 +360,7 @@ namespace GogOssLibraryNS.Services
                                         }
                                     }
                                 }
+
                                 foreach (var depot in depots)
                                 {
                                     if (!depot.targetDir.IsNullOrEmpty())
@@ -353,6 +370,7 @@ namespace GogOssLibraryNS.Services
                                         depot.compressedSize = redistManifest.compressedSize;
                                         depot.languages.Add("*");
                                     }
+
                                     foreach (var language in depot.languages.ToList())
                                     {
                                         var newLanguage = language;
@@ -382,8 +400,9 @@ namespace GogOssLibraryNS.Services
                                             {
                                                 if (!manifest.dlcs[depot.productId].size.ContainsKey(newLanguage))
                                                 {
-                                                    manifest.dlcs[depot.productId].size.Add(newLanguage,
-                                                        new GogGameMetaManifest.SizeType());
+                                                    manifest.dlcs[depot.productId]
+                                                            .size.Add(newLanguage,
+                                                                 new GogGameMetaManifest.SizeType());
                                                 }
 
                                                 manifest.dlcs[depot.productId].size[newLanguage].download_size +=
@@ -403,9 +422,11 @@ namespace GogOssLibraryNS.Services
                                             {
                                                 if (!manifest.dlcs[depot.productId].size.ContainsKey(newLanguage))
                                                 {
-                                                    manifest.dlcs[depot.productId].size.Add(newLanguage,
-                                                        new GogGameMetaManifest.SizeType());
+                                                    manifest.dlcs[depot.productId]
+                                                            .size.Add(newLanguage,
+                                                                 new GogGameMetaManifest.SizeType());
                                                 }
+
                                                 manifest.dlcs[depot.productId].size[newLanguage].download_size +=
                                                     depot.size;
                                                 manifest.dlcs[depot.productId].size[newLanguage].disk_size += depot.size;
@@ -449,6 +470,7 @@ namespace GogOssLibraryNS.Services
             {
                 depots = metaManifest.product.depots;
             }
+
             var productIds = new List<string> { taskData.gameID };
             if (taskData.downloadProperties.extraContent != null && taskData.downloadProperties.extraContent.Count > 0)
             {
@@ -460,6 +482,7 @@ namespace GogOssLibraryNS.Services
             {
                 chosenlanguage = metaManifest.languages.FirstOrDefault();
             }
+
             foreach (var depot in depots)
             {
                 if (depot.languages.Count == 0 || depot.languages.Contains(chosenlanguage) || depot.languages.Contains("*"))
@@ -471,6 +494,7 @@ namespace GogOssLibraryNS.Services
                         {
                             depotHashes.Add(depot.productId, new List<string>());
                         }
+
                         depotHashes[depot.productId].Add(manifestHash);
                     }
                     else if (metaManifest.version == 1 && depot.gameIDs.Any(sgame => productIds.Contains(sgame)))
@@ -479,10 +503,12 @@ namespace GogOssLibraryNS.Services
                         {
                             depotHashes.Add(depot.gameIDs[0], new List<string>());
                         }
+
                         depotHashes[depot.gameIDs[0]].Add(manifestHash);
                     }
                 }
             }
+
             return depotHashes;
         }
 
@@ -493,10 +519,12 @@ namespace GogOssLibraryNS.Services
             {
                 galaxyPath = manifestHash[..2] + "/" + manifestHash.Substring(2, 2) + "/" + galaxyPath;
             }
+
             return galaxyPath;
         }
 
-        public async Task<GogDepot> GetDepotInfo(string manifest, DownloadManagerData.Download taskData, int version = 2, bool isPatch = false)
+        public async Task<GogDepot> GetDepotInfo(
+            string manifest, DownloadManagerData.Download taskData, int version = 2, bool isPatch = false)
         {
             var cachePath = GogOssLibrary.Instance.GetCachePath("depot");
             var depotManifest = new GogDepot();
@@ -504,6 +532,7 @@ namespace GogOssLibraryNS.Services
             {
                 manifest = manifest.Replace(".json", "");
             }
+
             var cacheInfoFileName = $"depot_{manifest}.json";
             var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
             bool correctJson = false;
@@ -535,19 +564,21 @@ namespace GogOssLibraryNS.Services
                     Directory.CreateDirectory(cachePath);
                 }
 
-                var url = $"https://cdn.gog.com/content-system/v2/meta";
+                var url = "https://cdn.gog.com/content-system/v2/meta";
                 if (isPatch)
                 {
                     url = $"https://cdn.gog.com/content-system/v{version}/patches/meta";
                 }
                 else if (version == 1 && taskData.downloadItemType == DownloadItemType.Game)
                 {
-                    url = $"https://cdn.gog.com/content-system/v1/manifests/{taskData.gameID}/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
+                    url =
+                        $"https://cdn.gog.com/content-system/v1/manifests/{taskData.gameID}/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
                 }
                 else if (taskData.downloadItemType == DownloadItemType.Dependency)
                 {
                     url = $"https://cdn.gog.com/content-system/v{version}/dependencies/meta";
                 }
+
                 var fullUrl = $"{url}/{GetGalaxyPath(manifest)}";
                 if (version == 1 && taskData.downloadItemType == DownloadItemType.Game)
                 {
@@ -580,6 +611,7 @@ namespace GogOssLibraryNS.Services
                 {
                     return depotManifest;
                 }
+
                 depotManifest = Serialization.FromJson<GogDepot>(result);
                 if (depotManifest.depot.files.Count > 0)
                 {
@@ -588,6 +620,7 @@ namespace GogOssLibraryNS.Services
                         depotFile.path = depotFile.path.TrimStart('/', '\\');
                     }
                 }
+
                 if (depotManifest.depot.items.Count > 0)
                 {
                     foreach (var depotItem in depotManifest.depot.items)
@@ -595,13 +628,15 @@ namespace GogOssLibraryNS.Services
                         depotItem.path = depotItem.path.TrimStart('/', '\\');
                     }
                 }
+
                 File.WriteAllText(cacheInfoFile, Serialization.ToJson(depotManifest));
             }
 
             return depotManifest;
         }
 
-        public async Task<Dictionary<string, List<GogSecureLinks.FinalUrl>>> GetSecureLinksForAllProducts(DownloadManagerData.Download taskData, bool isPatch = false)
+        public async Task<Dictionary<string, List<GogSecureLinks.FinalUrl>>> GetSecureLinksForAllProducts(
+            DownloadManagerData.Download taskData, bool isPatch = false)
         {
             Dictionary<string, List<GogSecureLinks.FinalUrl>> allSecureLinks = new();
             List<string> productIds = new();
@@ -613,6 +648,7 @@ namespace GogOssLibraryNS.Services
                     productIds.Add(dlc);
                 }
             }
+
             foreach (var productId in productIds)
             {
                 var clonedTaskData = Serialization.GetClone(taskData);
@@ -628,6 +664,7 @@ namespace GogOssLibraryNS.Services
                     allSecureLinks.Add(productId, securelinks);
                 }
             }
+
             return allSecureLinks;
         }
 
@@ -641,9 +678,11 @@ namespace GogOssLibraryNS.Services
             {
                 metaManifest = await GetGameMetaManifest(taskData);
             }
+
             if (isPatch)
             {
-                url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&generation=2&path=/&root=/patches/store";
+                url =
+                    $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&generation=2&path=/&root=/patches/store";
             }
             else if (taskData.downloadItemType == DownloadItemType.Game)
             {
@@ -653,12 +692,13 @@ namespace GogOssLibraryNS.Services
                 }
                 else
                 {
-                    url = $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&type=depot&path=/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
+                    url =
+                        $"https://content-system.gog.com/products/{taskData.gameID}/secure_link?_version=2&type=depot&path=/{taskData.downloadProperties.os}/{taskData.downloadProperties.buildId}";
                 }
             }
             else if (taskData.downloadItemType == DownloadItemType.Dependency)
             {
-                url = $"https://content-system.gog.com/open_link?generation=2&_version=2&path=/dependencies/store/";
+                url = "https://content-system.gog.com/open_link?generation=2&_version=2&path=/dependencies/store/";
             }
 
             var gogAccountClient = new GogAccountClient();
@@ -688,6 +728,7 @@ namespace GogOssLibraryNS.Services
                                         {
                                             keyValue += "/{GALAXY_PATH}";
                                         }
+
                                         newUrl = newUrl.Replace('{' + key + '}', keyValue);
                                     }
                                 }
@@ -695,6 +736,7 @@ namespace GogOssLibraryNS.Services
                                 {
                                     newUrl += "/{GALAXY_PATH}";
                                 }
+
                                 var newFinalUrl = new GogSecureLinks.FinalUrl
                                 {
                                     formatted_url = newUrl,
@@ -713,12 +755,14 @@ namespace GogOssLibraryNS.Services
             else
             {
                 playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyGogNotLoggedInError), "");
-                logger.Error($"Can't get secure links, cuz user is not authenticated.");
+                logger.Error("Can't get secure links, cuz user is not authenticated.");
             }
+
             return urls;
         }
 
-        public static async Task<GogRedistManifest.Depot> GetRedistInfo(string dependId, bool skipRefreshing = false, bool forceRefreshCache = false)
+        public static async Task<GogRedistManifest.Depot> GetRedistInfo(
+            string dependId, bool skipRefreshing = false, bool forceRefreshCache = false)
         {
             var version = "2";
             var cacheInfoPath = GogOssLibrary.Instance.GetCachePath("redist");
@@ -739,6 +783,7 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
             if (File.Exists(cacheInfoFile))
             {
                 var content = FileSystem.ReadFileAsStringSafe(cacheInfoFile);
@@ -750,6 +795,7 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
             if (!correctJson)
             {
                 var dependsURL = "https://content-system.gog.com/dependencies/repository?generation=2";
@@ -792,10 +838,12 @@ namespace GogOssLibraryNS.Services
                                 {
                                     correctJson = true;
                                 }
+
                                 if (!Directory.Exists(cacheInfoPath))
                                 {
                                     Directory.CreateDirectory(cacheInfoPath);
                                 }
+
                                 FileSystem.WriteStringToFileSafe(cacheInfoFile, manifestResult);
                             }
                         }
@@ -806,6 +854,7 @@ namespace GogOssLibraryNS.Services
                     logger.Error("An error occured while dowloading depends manifest");
                 }
             }
+
             if (correctJson)
             {
                 var depots = manifest.depots;
@@ -820,6 +869,7 @@ namespace GogOssLibraryNS.Services
                     logger.Error($"Unrecognized dependency: {dependId}. Please clear cache or report that if wont help.");
                 }
             }
+
             return redistManifest;
         }
 
@@ -837,6 +887,7 @@ namespace GogOssLibraryNS.Services
                     File.Delete(cacheInfoFile);
                 }
             }
+
             if (File.Exists(cacheInfoFile))
             {
                 var content = File.ReadAllText(cacheInfoFile);
@@ -849,6 +900,7 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
             if (!correctJson)
             {
                 if (!Directory.Exists(cachePath))
@@ -857,7 +909,7 @@ namespace GogOssLibraryNS.Services
                 }
 
                 using var response = await Client.GetAsync(
-                        $"https://content-system.gog.com/products/{gameId}/patches?_version=4&from_build_id={oldBuildId}&to_build_id={newBuildId}");
+                    $"https://content-system.gog.com/products/{gameId}/patches?_version=4&from_build_id={oldBuildId}&to_build_id={newBuildId}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -877,6 +929,7 @@ namespace GogOssLibraryNS.Services
                                     {
                                         logger.Warn("Empty manifest for patch.");
                                     }
+
                                     manifest = Serialization.FromJson<GogGameMetaManifest>(result);
                                     if (manifest != null)
                                     {
@@ -889,6 +942,7 @@ namespace GogOssLibraryNS.Services
                                             };
                                             return manifest;
                                         }
+
                                         var gogAccountClient = new GogAccountClient();
                                         manifest.size = new Dictionary<string, GogGameMetaManifest.SizeType>();
                                         manifest.languages = new List<string>();
@@ -914,6 +968,7 @@ namespace GogOssLibraryNS.Services
                                         {
                                             manifest.size.Add("*", new GogGameMetaManifest.SizeType());
                                         }
+
                                         foreach (var depot in depots)
                                         {
                                             foreach (var language in depot.languages.ToList())
@@ -943,8 +998,9 @@ namespace GogOssLibraryNS.Services
                                                 {
                                                     if (!manifest.dlcs[depot.productId].size.ContainsKey(newLanguage))
                                                     {
-                                                        manifest.dlcs[depot.productId].size.Add(newLanguage,
-                                                            new GogGameMetaManifest.SizeType());
+                                                        manifest.dlcs[depot.productId]
+                                                                .size.Add(newLanguage,
+                                                                     new GogGameMetaManifest.SizeType());
                                                     }
 
                                                     manifest.dlcs[depot.productId].size[newLanguage].download_size +=
@@ -972,11 +1028,13 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
             if (!correctJson)
             {
                 logger.Info($"No patches found for {gameId} from {oldBuildId} to {newBuildId}.");
                 manifest.errorDisplayed = true;
             }
+
             return manifest;
         }
 
@@ -1003,6 +1061,7 @@ namespace GogOssLibraryNS.Services
                 logger.Error(ex.Message);
                 return componentManifest;
             }
+
             if (!string.IsNullOrWhiteSpace(result))
             {
                 componentManifest = Serialization.FromJson<ComponentManifest>(result);
@@ -1017,8 +1076,8 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
             return componentManifest;
         }
-
     }
 }

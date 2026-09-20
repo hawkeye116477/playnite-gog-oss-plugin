@@ -1,9 +1,4 @@
-﻿using CommonPlugin;
-using CommonPlugin.Enums;
-using GogOssLibraryNS.Models;
-using GogOssLibraryNS.Services;
-using Playnite.SDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -11,6 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
+using Playnite.SDK;
 using UnifiedDownloadManagerApiNS;
 using UnifiedDownloadManagerApiNS.Models;
 
@@ -30,6 +32,7 @@ namespace GogOssLibraryNS
         public string selectedBetaChannel;
         public GogDownloadApi gogDownloadApi = new();
         private ILogger logger = LogManager.GetLogger();
+
         public GogOssDownloadPropertiesView()
         {
             InitializeComponent();
@@ -37,17 +40,20 @@ namespace GogOssLibraryNS
 
         private async void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            var wantedItem = GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == SelectedDownload.gameID);
+            var wantedItem =
+                GogOssLibrary.Instance.pluginDownloadData.downloads.FirstOrDefault(item => item.gameID == SelectedDownload.gameID);
             var installPath = SelectedGamePathTxt.Text;
-            var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+            var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory;
             if (installPath.Contains(playniteDirectoryVariable))
             {
                 installPath = installPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
             }
+
             if (!CommonHelpers.IsDirectoryWritable(installPath, LOC.CommonPermissionError))
             {
                 return;
             }
+
             wantedItem.downloadProperties.installPath = installPath;
             wantedItem.downloadProperties.downloadAction = (DownloadAction)TaskCBo.SelectedValue;
             wantedItem.downloadProperties.maxWorkers = int.Parse(MaxWorkersNI.Value);
@@ -64,6 +70,7 @@ namespace GogOssLibraryNS
                 wantedUnifiedTask.downloadSizeBytes = gameSize.download_size;
                 wantedUnifiedTask.installSizeBytes = gameSize.disk_size;
             }
+
             GogOssLibrary.Instance.SaveDownloadData();
             Window.GetWindow(this).Close();
         }
@@ -77,18 +84,21 @@ namespace GogOssLibraryNS
             {
                 gameInfo.installed_DLCs.Add(selectedDlc.Key);
             }
+
             if (AllOrNothingChk.IsChecked == true && selectedDlcs.Count() != ExtraContentLB.Items.Count)
             {
                 uncheckedByUser = false;
                 AllOrNothingChk.IsChecked = false;
                 uncheckedByUser = true;
             }
+
             if (AllOrNothingChk.IsChecked == false && selectedDlcs.Count() == ExtraContentLB.Items.Count)
             {
                 checkedByUser = false;
                 AllOrNothingChk.IsChecked = true;
                 checkedByUser = true;
             }
+
             await UpdateSizeInfo();
             SaveBtn.IsEnabled = true;
         }
@@ -130,6 +140,7 @@ namespace GogOssLibraryNS
                 MaxWorkersNI.Value = wantedItem.downloadProperties.maxWorkers.ToString();
                 TaskCBo.SelectedValue = wantedItem.downloadProperties.downloadAction;
             }
+
             var downloadActionOptions = new Dictionary<DownloadAction, string>
             {
                 { DownloadAction.Install, LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame) },
@@ -138,7 +149,7 @@ namespace GogOssLibraryNS
             };
             TaskCBo.ItemsSource = downloadActionOptions;
 
-            if (wantedItem.downloadItemType == Enums.DownloadItemType.Game)
+            if (wantedItem.downloadItemType == DownloadItemType.Game)
             {
                 var manifest = await gogDownloadApi.GetProductBuilds(wantedItem);
                 var betaChannels = new Dictionary<string, string>();
@@ -155,14 +166,17 @@ namespace GogOssLibraryNS
                             betaChannels.Add(branch, branch);
                         }
                     }
+
                     if (betaChannels.Count > 0)
                     {
                         BetaChannelCBo.ItemsSource = betaChannels;
                         var selectedBetaChannel = "disabled";
-                        if (!wantedItem.downloadProperties.betaChannel.IsNullOrEmpty() && manifest.available_branches.Contains(wantedItem.downloadProperties.betaChannel))
+                        if (!wantedItem.downloadProperties.betaChannel.IsNullOrEmpty() &&
+                            manifest.available_branches.Contains(wantedItem.downloadProperties.betaChannel))
                         {
                             selectedBetaChannel = wantedItem.downloadProperties.betaChannel;
                         }
+
                         BetaChannelCBo.SelectedValue = selectedBetaChannel;
                         BetaChannelSP.Visibility = Visibility.Visible;
                     }
@@ -174,7 +188,7 @@ namespace GogOssLibraryNS
                 TaskCBo.IsReadOnly = true;
             }
 
-            gameInfo = new Installed()
+            gameInfo = new Installed
             {
                 platform = SelectedDownload.downloadProperties.os,
                 title = SelectedDownload.name,
@@ -185,7 +199,7 @@ namespace GogOssLibraryNS
             };
             selectedBetaChannel = SelectedDownload.downloadProperties.betaChannel;
 
-            if (wantedItem.downloadItemType == Enums.DownloadItemType.Game)
+            if (wantedItem.downloadItemType == DownloadItemType.Game)
             {
                 await RefreshVersions();
             }
@@ -206,10 +220,12 @@ namespace GogOssLibraryNS
                 MaxWorkersNI.IsEnabled = false;
                 SaveBtn.IsEnabled = false;
             }
-            if (wantedItem.downloadItemType == Enums.DownloadItemType.Dependency)
+
+            if (wantedItem.downloadItemType == DownloadItemType.Dependency)
             {
                 FolderDP.IsEnabled = false;
             }
+
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
             {
                 GeneralTab.Focus();
@@ -229,6 +245,7 @@ namespace GogOssLibraryNS
                 {
                     chosenBranch = "";
                 }
+
                 foreach (var build in builds)
                 {
                     if (build.branch == chosenBranch)
@@ -239,22 +256,26 @@ namespace GogOssLibraryNS
                         {
                             versionNameFirstPart = "";
                         }
+
                         var versionName = $"{versionNameFirstPart}{build.date_published.ToLocalTime().ToString("d", formatInfo)}";
                         gameVersions.Add(build.build_id, versionName);
                     }
                 }
+
                 GameVersionCBo.ItemsSource = gameVersions;
                 var selectedVersion = SelectedDownload.downloadProperties.buildId;
                 if (selectedVersion.IsNullOrEmpty() || !gameVersions.ContainsKey(selectedVersion))
                 {
                     selectedVersion = gameVersions.FirstOrDefault().Key;
                 }
+
                 GameVersionCBo.SelectedItem = gameVersions.FirstOrDefault(i => i.Key == selectedVersion);
                 if (gameVersions.Count > 1)
                 {
                     VersionSP.Visibility = Visibility.Visible;
                 }
             }
+
             await SetGameVersion();
         }
 
@@ -287,15 +308,18 @@ namespace GogOssLibraryNS
                     else
                     {
                         currentPlayniteLanguage = currentPlayniteLanguage.Substring(0, currentPlayniteLanguage.IndexOf("-"));
-                        if (gameLanguages.ContainsKey(currentPlayniteLanguage) || gameLanguages.ContainsKey(currentPlayniteLanguageNativeName))
+                        if (gameLanguages.ContainsKey(currentPlayniteLanguage) ||
+                            gameLanguages.ContainsKey(currentPlayniteLanguageNativeName))
                         {
                             newSelectedLanguage = currentPlayniteLanguage;
                         }
                     }
                 }
+
                 GameLanguageCBo.SelectedValue = newSelectedLanguage;
                 LanguageSP.Visibility = Visibility.Visible;
             }
+
             if (manifest.dlcs.Count > 0)
             {
                 var settings = GogOssLibrary.GetSettings();
@@ -312,6 +336,7 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+
                 if (manifest.dlcs.Count > 1)
                 {
                     AllOrNothingChk.Visibility = Visibility.Visible;
@@ -335,7 +360,7 @@ namespace GogOssLibraryNS
                     var nativeLanguageName = language;
                     if (manifest.version > 1)
                     {
-                        try 
+                        try
                         {
                             nativeLanguageName = new CultureInfo(language).NativeName;
                         }
@@ -344,10 +369,13 @@ namespace GogOssLibraryNS
                             logger.Warn(ex, $"Unrecognized language: {language}");
                         }
                     }
+
                     gameLanguages.Add(language, nativeLanguageName);
                 }
+
                 gameLanguages = gameLanguages.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
             }
+
             return gameLanguages;
         }
 
@@ -364,11 +392,12 @@ namespace GogOssLibraryNS
 
         private void UpdateAfterInstallingSize(long availableFreeSpace, double installSizeNumber)
         {
-            double afterInstallSizeNumber = (double)(availableFreeSpace - installSizeNumber);
+            double afterInstallSizeNumber = availableFreeSpace - installSizeNumber;
             if (afterInstallSizeNumber < 0)
             {
                 afterInstallSizeNumber = 0;
             }
+
             AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
@@ -414,13 +443,14 @@ namespace GogOssLibraryNS
                 {
                     selectedBetaChannel = BetaChannelCBo.SelectedValue.ToString();
                 }
+
                 await RefreshVersions();
                 await UpdateSizeInfo();
                 SaveBtn.IsEnabled = true;
             }
         }
 
-        private void GogOssDownloadPropertiesUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void GogOssDownloadPropertiesUC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }

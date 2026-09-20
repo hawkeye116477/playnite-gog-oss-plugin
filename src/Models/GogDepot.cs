@@ -5,6 +5,7 @@ namespace GogOssLibraryNS.Models
     public class GogDepot
     {
         public Depot depot { get; set; } = new();
+
         public class Depot
         {
             public List<Item> items { get; set; } = new List<Item>();
@@ -52,6 +53,7 @@ namespace GogOssLibraryNS.Models
             public double size { get; set; }
             public string depotHash { get; set; }
         }
+
         public class Chunk
         {
             public string md5 { get; set; }
@@ -61,6 +63,7 @@ namespace GogOssLibraryNS.Models
             public long offset { get; internal set; }
             public string url { get; set; }
         }
+
         public class Smallfilescontainer
         {
             public List<Chunk> chunks { get; set; } = new();

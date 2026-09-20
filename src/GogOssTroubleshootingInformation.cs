@@ -1,4 +1,6 @@
-﻿using Playnite.SDK;
+﻿using System.Diagnostics;
+using System.Reflection;
+using Playnite.SDK;
 
 namespace GogOssLibraryNS
 {
@@ -12,15 +14,17 @@ namespace GogOssLibraryNS
                 return playniteAPI.ApplicationInfo.ApplicationVersion.ToString();
             }
         }
+
         public string PluginVersion
         {
             get
             {
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                System.Diagnostics.FileVersionInfo fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                 return fvi.FileVersion;
             }
         }
+
         public string CometVersion { get; set; } = "";
         public string GogdlVersion { get; set; } = "";
         public string CometBinary => Comet.ClientExecPath;

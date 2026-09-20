@@ -1,17 +1,18 @@
-﻿using CliWrap;
-using GogOssLibraryNS.Enums;
-using GogOssLibraryNS.Models;
-using GogOssLibraryNS.Services;
-using Playnite.Common;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CliWrap;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
+using Playnite.Common;
+using Playnite.SDK;
+using Playnite.SDK.Data;
+using WindowsShortcutFactory;
 
 namespace GogOssLibraryNS
 {
@@ -20,8 +21,13 @@ namespace GogOssLibraryNS
         public const string EnStoreLocaleString = "US_USD_en-US";
         public static string TokensPath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "tokens.json");
         public static string EncryptedTokensPath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "tokens_encrypted.json");
-        public static string Icon => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\gogicon.png");
-        public static string UserAgent => @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+
+        public static string Icon =>
+            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Resources\gogicon.png");
+
+        public static string UserAgent =>
+            @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
+
         private static readonly ILogger logger = LogManager.GetLogger();
 
         public static Installed GetInstalledInfo(string gameId)
@@ -36,6 +42,7 @@ namespace GogOssLibraryNS
             {
                 installedInfo.is_fully_installed = true;
             }
+
             return installedInfo;
         }
 
@@ -62,10 +69,12 @@ namespace GogOssLibraryNS
             {
                 langInEnglish = "English";
             }
+
             if (installedInfo.language.IsNullOrEmpty())
             {
                 installedInfo.language = "en-US";
             }
+
             if (metaManifest.version == 1)
             {
                 if (metaManifest.product.support_commands.Count > 0)
@@ -112,6 +121,7 @@ namespace GogOssLibraryNS
                         {
                             continue;
                         }
+
                         var args = new List<string>
                         {
                             "/VERYSILENT",
@@ -131,6 +141,7 @@ namespace GogOssLibraryNS
                         {
                             args.Add($"/supportDir={supportPath}");
                         }
+
                         var isiExe = Path.Combine(isiInstallPath, "scriptinterpreter.exe");
                         if (File.Exists(isiExe))
                         {
@@ -174,17 +185,20 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             var folderName = Path.GetFileName(installedInfo.install_path);
             var startMenuFolderName = $"{folderName} [GOG.com]";
-            var startMenuDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "Programs", startMenuFolderName);
+            var startMenuDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu), "Programs",
+                startMenuFolderName);
             var startMenuShortcut = Path.Combine(startMenuDir, $"{folderName}.lnk");
             if (File.Exists(startMenuShortcut))
             {
                 File.Delete(startMenuShortcut);
             }
+
             var tasks = GogOssLibrary.GetPlayTasks(gameId, installedInfo.install_path);
             var gameExe = tasks[0].Path;
-            using var shortcut = new WindowsShortcutFactory.WindowsShortcut
+            using var shortcut = new WindowsShortcut
             {
                 Path = gameExe,
                 WorkingDirectory = installedInfo.install_path
@@ -194,6 +208,7 @@ namespace GogOssLibraryNS
             {
                 Directory.CreateDirectory(startMenuDir);
             }
+
             shortcut.Save(Path.Combine(startMenuDir, $"{folderName}.lnk"));
 
             // Install dependencies
@@ -216,11 +231,13 @@ namespace GogOssLibraryNS
                                 process.WaitForExit();
                             }
                         }
+
                         installedInfo.Dependencies.Remove(depend);
                         installedDepends.Add(depend);
                         installedDependsModified = true;
                     }
                 }
+
                 if (installedDependsModified)
                 {
                     var installedDependsManifest = new InstalledDepends();
@@ -229,6 +246,7 @@ namespace GogOssLibraryNS
                     commonHelpers.SaveJsonSettingsToFile(installedDependsManifest, "", "installedDepends", true);
                 }
             }
+
             installedInfo.is_fully_installed = true;
             GogOssLibrary.Instance.installedAppListModified = true;
         }
@@ -251,6 +269,7 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             return gameInfo;
         }
 
@@ -273,6 +292,7 @@ namespace GogOssLibraryNS
                     dlcs.Add(dlcInfo.gameId);
                 }
             }
+
             return dlcs;
         }
 
@@ -296,6 +316,7 @@ namespace GogOssLibraryNS
                 {
                     playtimeSyncEnabled = true;
                 }
+
                 return playtimeSyncEnabled;
             }
         }
@@ -340,20 +361,24 @@ namespace GogOssLibraryNS
                     size.download_size += manifest.size["*"].download_size;
                     size.disk_size += manifest.size["*"].disk_size;
                 }
+
                 if (installData.downloadItemType == DownloadItemType.Dependency)
                 {
                     return size;
                 }
+
                 var selectedLanguage = installData.downloadProperties.language;
                 if (manifest.size.Count == 2)
                 {
-                    selectedLanguage = manifest.size.ElementAt(1).Key.ToString();
+                    selectedLanguage = manifest.size.ElementAt(1).Key;
                 }
+
                 if (manifest.size.ContainsKey(selectedLanguage))
                 {
                     size.download_size += manifest.size[selectedLanguage].download_size;
                     size.disk_size += manifest.size[selectedLanguage].disk_size;
                 }
+
                 var selectedDlcs = installData.downloadProperties.extraContent;
                 if (selectedDlcs.Count() > 0)
                 {
@@ -366,6 +391,7 @@ namespace GogOssLibraryNS
                                 size.download_size += dlc.Value.size["*"].download_size;
                                 size.disk_size += dlc.Value.size["*"].disk_size;
                             }
+
                             if (dlc.Value.size.ContainsKey(selectedLanguage))
                             {
                                 size.download_size += dlc.Value.size[selectedLanguage].download_size;
@@ -381,6 +407,7 @@ namespace GogOssLibraryNS
                 size.download_size = dependManifest.compressedSize;
                 size.disk_size = dependManifest.size;
             }
+
             return size;
         }
 
@@ -397,6 +424,7 @@ namespace GogOssLibraryNS
                     depends = installedDependsManifest.InstalledDependsList;
                 }
             }
+
             return depends;
         }
 
@@ -418,9 +446,10 @@ namespace GogOssLibraryNS
                 var playniteAPI = API.Instance;
                 if (playniteAPI.ApplicationInfo.IsPortable)
                 {
-                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory;
                     installPath = Path.Combine(playniteDirectoryVariable, "Games");
                 }
+
                 var savedSettings = GogOssLibrary.GetSettings();
                 if (savedSettings != null)
                 {
@@ -430,6 +459,7 @@ namespace GogOssLibraryNS
                         installPath = savedGamesInstallationPath;
                     }
                 }
+
                 return installPath;
             }
         }
@@ -442,9 +472,10 @@ namespace GogOssLibraryNS
                 var playniteAPI = API.Instance;
                 if (playniteAPI.ApplicationInfo.IsPortable)
                 {
-                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory;
                     installPath = Path.Combine(playniteDirectoryVariable, "GameExtras");
                 }
+
                 return installPath;
             }
         }
@@ -467,6 +498,7 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             if (!correctJson)
             {
                 var taskProperties = new DownloadProperties
@@ -485,6 +517,7 @@ namespace GogOssLibraryNS
                 };
                 bigDepot = await CreateNewBigDepot(taskData);
             }
+
             return bigDepot;
         }
 
@@ -531,10 +564,12 @@ namespace GogOssLibraryNS
                             {
                                 depotItem.sfcRef.depotHash = singleDepotHash;
                             }
+
                             depotItem.product_id = depotHash.Key;
                             bigDepot.items.Add(depotItem);
                         }
                     }
+
                     if (depotManifest.depot.smallFilesContainer?.chunks.Count > 0)
                     {
                         depotManifest.depot.smallFilesContainer.product_id = depotHash.Key;
@@ -543,6 +578,7 @@ namespace GogOssLibraryNS
                             bigDepot.sfcContainersByHash.Add(singleDepotHash, depotManifest.depot.smallFilesContainer);
                         }
                     }
+
                     if (depotManifest.depot.files.Count > 0)
                     {
                         foreach (var depotFile in depotManifest.depot.files)
@@ -561,6 +597,7 @@ namespace GogOssLibraryNS
                 {
                     depots = metaManifest.product.depots;
                 }
+
                 foreach (var depot in depots)
                 {
                     if (!depot.redist.IsNullOrEmpty() && !depot.targetDir.IsNullOrEmpty())
@@ -613,7 +650,8 @@ namespace GogOssLibraryNS
                     var versionInfoContent = await Comet.GetVersionInfoContent();
                     if (versionInfoContent.Tag_name != null)
                     {
-                        var assetUrl = $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe";
+                        var assetUrl =
+                            $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe";
                         var newAsset = versionInfoContent.Assets.FirstOrDefault(a => a.Browser_download_url == assetUrl);
                         if (newAsset != null)
                         {
@@ -630,10 +668,11 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             return bigDepot;
         }
 
-        public static async Task <List<Extra>> GetExtras(string gameId)
+        public static async Task<List<Extra>> GetExtras(string gameId)
         {
             List<Extra> gogExtras = new();
             var dataDir = GogOssLibrary.Instance.GetPluginUserDataPath();
@@ -657,6 +696,7 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             if (!correctJson)
             {
                 var gogApi = new GogAccountClient();
@@ -667,6 +707,7 @@ namespace GogOssLibraryNS
                     File.WriteAllText(extrasFilePath, Serialization.ToJson(gameDetailsInfo));
                 }
             }
+
             gogExtras = gameDetailsInfo.Extras;
             var dlcs = gameDetailsInfo.Dlcs;
             if (dlcs.Count > 0)
@@ -676,6 +717,7 @@ namespace GogOssLibraryNS
                     gogExtras.AddRange(dlc.Extras);
                 }
             }
+
             return gogExtras;
         }
 
@@ -684,7 +726,7 @@ namespace GogOssLibraryNS
             var depotManifest = new GogDepot.Depot();
             bool correctJson = false;
 
-            var cacheInfoFileName = $"galaxy-overlay.json";
+            var cacheInfoFileName = "galaxy-overlay.json";
             var cachePath = GogOssLibrary.Instance.GetCachePath("overlay");
             var cacheInfoFile = Path.Combine(cachePath, cacheInfoFileName);
             if (File.Exists(cacheInfoFile))
@@ -694,6 +736,7 @@ namespace GogOssLibraryNS
                     File.Delete(cacheInfoFile);
                 }
             }
+
             if (File.Exists(cacheInfoFile))
             {
                 var content = File.ReadAllText(cacheInfoFile);
@@ -720,10 +763,12 @@ namespace GogOssLibraryNS
                     {
                         depotManifest.overlayVersion = componentManifest.version;
                     }
+
                     if (component == ComponentChoice.Web)
                     {
                         depotManifest.webVersion = componentManifest.version;
                     }
+
                     foreach (var file in componentManifest.files)
                     {
                         var depotFile = new GogDepot.DepotFile
@@ -737,15 +782,18 @@ namespace GogOssLibraryNS
                         depotManifest.files.Add(depotFile);
                     }
                 }
+
                 if (depotManifest != null)
                 {
                     if (!Directory.Exists(cachePath))
                     {
                         Directory.CreateDirectory(cachePath);
                     }
+
                     File.WriteAllText(cacheInfoFile, Serialization.ToJson(depotManifest));
                 }
             }
+
             return depotManifest;
         }
     }

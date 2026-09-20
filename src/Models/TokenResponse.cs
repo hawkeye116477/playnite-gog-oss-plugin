@@ -18,5 +18,4 @@ namespace GogOssLibraryNS.Models
             public long loginTime;
         }
     }
-
 }

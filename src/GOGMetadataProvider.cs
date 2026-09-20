@@ -1,14 +1,14 @@
-﻿using Playnite.SDK.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Playnite.SDK;
+using System.Text.RegularExpressions;
+using AngleSharp.Dom;
+using AngleSharp.Dom.Html;
+using AngleSharp.Parser.Html;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
-using System.Text.RegularExpressions;
-using AngleSharp.Parser.Html;
-using AngleSharp.Dom.Html;
-using AngleSharp.Dom;
+using Playnite.SDK;
+using Playnite.SDK.Models;
 
 namespace GogOssLibraryNS
 {
@@ -35,29 +35,41 @@ namespace GogOssLibraryNS
                 return null;
             }
 
-            storeData.Name = StringExtensions.NormalizeGameName(storeData.GameDetails.title);
+            storeData.Name = storeData.GameDetails.title.NormalizeGameName();
             storeData.Description = RemoveDescriptionPromos(storeData.GameDetails.description.full).Trim();
             storeData.Links = new List<Link>();
 
             if (!string.IsNullOrEmpty(storeData.GameDetails.links.forum))
             {
-                storeData.Links.Add(new Link(resources.GetString(LOC.ThirdPartyPlayniteCommonLinksForum), storeData.GameDetails.links.forum));
-            };
+                storeData.Links.Add(
+                    new Link(resources.GetString(LOC.ThirdPartyPlayniteCommonLinksForum), storeData.GameDetails.links.forum));
+            }
+
+            ;
 
             if (!string.IsNullOrEmpty(storeData.GameDetails.links.product_card))
             {
-                storeData.Links.Add(new Link(resources.GetString(LOC.ThirdPartyPlayniteCommonLinksStorePage), storeData.GameDetails.links.product_card));
-            };
+                storeData.Links.Add(new Link(resources.GetString(LOC.ThirdPartyPlayniteCommonLinksStorePage),
+                    storeData.GameDetails.links.product_card));
+            }
+
+            ;
 
             storeData.Links.Add(new Link("PCGamingWiki", @"http://pcgamingwiki.com/w/index.php?search=" + storeData.GameDetails.title));
 
             if (storeData.StoreDetails != null)
             {
-                storeData.Genres = storeData.StoreDetails.genres?.Select(a => new MetadataNameProperty(a.name)).ToHashSet<MetadataProperty>();
-                storeData.Features = storeData.StoreDetails.features?.Where(a => a.name != "Overlay").Select(a => new MetadataNameProperty(a.name)).ToHashSet<MetadataProperty>();
-                storeData.Developers = storeData.StoreDetails.developers?.Select(a => new MetadataNameProperty(a.name)).ToHashSet<MetadataProperty>();
-                storeData.Publishers = storeData.StoreDetails.publishers?.Select(a => new MetadataNameProperty(a.name)).ToHashSet<MetadataProperty>();
-                storeData.Tags = storeData.StoreDetails.gameTags?.Select(t => new MetadataNameProperty(t.name)).ToHashSet<MetadataProperty>();
+                storeData.Genres = storeData.StoreDetails.genres?.Select(a => new MetadataNameProperty(a.name))
+                                            .ToHashSet<MetadataProperty>();
+                storeData.Features = storeData.StoreDetails.features?.Where(a => a.name != "Overlay")
+                                              .Select(a => new MetadataNameProperty(a.name))
+                                              .ToHashSet<MetadataProperty>();
+                storeData.Developers = storeData.StoreDetails.developers?.Select(a => new MetadataNameProperty(a.name))
+                                                .ToHashSet<MetadataProperty>();
+                storeData.Publishers = storeData.StoreDetails.publishers?.Select(a => new MetadataNameProperty(a.name))
+                                                .ToHashSet<MetadataProperty>();
+                storeData.Tags = storeData.StoreDetails.gameTags?.Select(t => new MetadataNameProperty(t.name))
+                                          .ToHashSet<MetadataProperty>();
                 if (storeData.ReleaseDate == null && storeData.StoreDetails.globalReleaseDate != null)
                 {
                     storeData.ReleaseDate = new ReleaseDate(storeData.StoreDetails.globalReleaseDate.Value);
@@ -69,7 +81,7 @@ namespace GogOssLibraryNS
                     storeData.InstallSize = (ulong)storeData.StoreDetails.size * 1024UL * 1024UL;
                 }
 
-                if(settings.UseVerticalCovers && storeData.StoreDetails.boxArtImage != null)
+                if (settings.UseVerticalCovers && storeData.StoreDetails.boxArtImage != null)
                 {
                     storeData.CoverImage = new MetadataFile(storeData.StoreDetails.boxArtImage);
                 }
@@ -154,7 +166,8 @@ namespace GogOssLibraryNS
             var htmlElement = firstChild as IHtmlElement;
             var promoUrlsRegex = @"https:\/\/items.gog.com\/(promobanners|autumn|fall|summer|winter)\/";
             var containsPromoImage = htmlElement.QuerySelectorAll("img")
-                        .Any(img => img.HasAttribute("src") && Regex.IsMatch(img.GetAttribute("src"), promoUrlsRegex, RegexOptions.IgnoreCase));
+                                                .Any(img => img.HasAttribute("src") && Regex.IsMatch(img.GetAttribute("src"),
+                                                     promoUrlsRegex, RegexOptions.IgnoreCase));
             if (!containsPromoImage)
             {
                 return originalDescription;

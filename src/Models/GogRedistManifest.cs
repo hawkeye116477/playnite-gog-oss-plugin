@@ -1,5 +1,5 @@
-﻿using Playnite.SDK.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Playnite.SDK.Data;
 
 namespace GogOssLibraryNS.Models
 {

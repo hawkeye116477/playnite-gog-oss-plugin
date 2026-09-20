@@ -1,21 +1,19 @@
-﻿using CommonPlugin;
-using Playnite.SDK.Models;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows;
-using GogOssLibraryNS.Services;
-using System.IO;
-using GogOssLibraryNS.Models;
-using Playnite.SDK.Data;
-using Playnite.SDK;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
-using CommonPlugin.Enums;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using CommonPlugin;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
+using Playnite.SDK;
+using Playnite.SDK.Models;
 using UnifiedDownloadManagerApiNS;
-using UnifiedDownloadManagerApiNS.Models;
-using Linguini.Shared.Types.Bundle;
 
 namespace GogOssLibraryNS
 {
@@ -43,6 +41,7 @@ namespace GogOssLibraryNS
                 Window.GetWindow(this).Close();
                 return;
             }
+
             downloadSizeNumber = 0;
             SelectedExtrasPathTxt.Text = GogOss.ExtrasInstallationPath;
             UpdateSpaceInfo(GogOss.ExtrasInstallationPath);
@@ -51,11 +50,14 @@ namespace GogOssLibraryNS
             await RefreshAll();
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
             {
-                var firstEnabledBtn = LogicalTreeHelper.GetChildren(TopADSP).OfType<Button>().FirstOrDefault(b => b.IsEnabled && b.IsVisible);
+                var firstEnabledBtn = LogicalTreeHelper.GetChildren(TopADSP)
+                                                       .OfType<Button>()
+                                                       .FirstOrDefault(b => b.IsEnabled && b.IsVisible);
                 if (firstEnabledBtn != null)
                 {
                     firstEnabledBtn.Focus();
                 }
+
                 SelectedExtrasPathTxt.Focusable = false;
                 ChooseExtrasPathBtn.Focusable = false;
             }
@@ -69,16 +71,18 @@ namespace GogOssLibraryNS
                 availableFreeSpace = dDrive.AvailableFreeSpace;
                 SpaceTB.Text = CommonHelpers.FormatSize(availableFreeSpace);
             }
+
             UpdateAfterInstallingSize();
         }
 
         private void UpdateAfterInstallingSize()
         {
-            double afterInstallSizeNumber = (double)(availableFreeSpace - downloadSizeNumber);
+            double afterInstallSizeNumber = availableFreeSpace - downloadSizeNumber;
             if (afterInstallSizeNumber < 0)
             {
                 afterInstallSizeNumber = 0;
             }
+
             AfterInstallingTB.Text = CommonHelpers.FormatSize(afterInstallSizeNumber);
         }
 
@@ -98,6 +102,7 @@ namespace GogOssLibraryNS
                     extra.Name = char.ToUpper(extra.Name[0]) + extra.Name[1..];
                 }
             }
+
             if (gogExtras.Count > 0)
             {
                 AvailableExtrasLB.ItemsSource = gogExtras;
@@ -109,6 +114,7 @@ namespace GogOssLibraryNS
             {
                 NoExtrasATB.Visibility = Visibility.Visible;
             }
+
             LoadingATB.Visibility = Visibility.Collapsed;
             ReloadABtn.IsEnabled = true;
         }
@@ -122,6 +128,7 @@ namespace GogOssLibraryNS
                 var selectedItemSize = Helpers.StringSizeToBytes(selectedItem.Size.Replace("B", "iB"));
                 fullDownloadSize += selectedItemSize;
             }
+
             downloadSizeNumber = fullDownloadSize;
             var downloadSize = CommonHelpers.FormatSize(fullDownloadSize);
             DownloadSizeTB.Text = downloadSize;
@@ -130,7 +137,8 @@ namespace GogOssLibraryNS
 
         private async void ReloadABtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReload), LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), null, MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonReload),
+                LocalizationManager.Instance.GetString(LOC.CommonReloadConfirm), null, MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result.Result)
             {
                 DownloadBtn.IsEnabled = false;
@@ -144,6 +152,7 @@ namespace GogOssLibraryNS
                         File.Delete(file);
                     }
                 }
+
                 await RefreshAll();
             }
         }
@@ -163,7 +172,8 @@ namespace GogOssLibraryNS
                 {
                     newInstallPath = GogOss.ExtrasInstallationPath;
                 }
-                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+
+                var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory;
                 if (newInstallPath.Contains(playniteDirectoryVariable))
                 {
                     newInstallPath = newInstallPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
@@ -189,16 +199,17 @@ namespace GogOssLibraryNS
                         gameID = downloadTaskId,
                         name = $"{Game.Name.RemoveTrademarks()} - {selectedItem.Name.RemoveTrademarks()}",
                         downloadSizeNumber = Helpers.StringSizeToBytes(selectedItem.Size),
-                        downloadItemType = Enums.DownloadItemType.Extra,
+                        downloadItemType = DownloadItemType.Extra,
                         fullInstallPath = Path.Combine(newInstallPath, $"{gameManifest.installDirectory}_Extras")
                     };
-                    downloadTask.downloadProperties = new DownloadProperties()
+                    downloadTask.downloadProperties = new DownloadProperties
                     {
                         maxWorkers = maxWorkers,
                         installPath = newInstallPath
                     };
                     tasks.Add(downloadTask);
                 }
+
                 var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
                 if (tasks.Count > 0)
                 {
@@ -232,7 +243,7 @@ namespace GogOssLibraryNS
             }
         }
 
-        private void UserControl_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }

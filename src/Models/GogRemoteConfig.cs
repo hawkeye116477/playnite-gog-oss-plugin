@@ -48,6 +48,5 @@ namespace GogOssLibraryNS.Models
             public string name { get; set; } = "";
             public string location { get; set; } = "";
         }
-
     }
 }

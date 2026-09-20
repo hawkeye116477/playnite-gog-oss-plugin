@@ -1,9 +1,6 @@
-﻿using Playnite.Common;
-using Playnite.SDK;
-using System;
-using System.IO;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
+using Playnite.SDK;
 
 namespace GogOssLibraryNS
 {
@@ -13,7 +10,8 @@ namespace GogOssLibraryNS
         public const string LibraryName = "NativeVcdiffPatch";
 
         [DllImport(LibraryName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "start_patching", CharSet = CharSet.Ansi)]
-        internal static extern int start_patching(string oldFileName, string diffFileName, string outNewFileName, UIntPtr patchCacheSize, ProgressCallback callback);
+        internal static extern int start_patching(
+            string oldFileName, string diffFileName, string outNewFileName, UIntPtr patchCacheSize, ProgressCallback callback);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void ProgressCallback(ulong writtenBytes, ulong totalBytes);
@@ -40,6 +38,7 @@ namespace GogOssLibraryNS
             {
                 FreeLibrary(handle);
             }
+
             return available;
         }
     }

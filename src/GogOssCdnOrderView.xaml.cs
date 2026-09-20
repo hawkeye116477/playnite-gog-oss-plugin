@@ -1,14 +1,15 @@
-﻿using CommonPlugin;
-using GogOssLibraryNS.Enums;
-using GogOssLibraryNS.Models;
-using GogOssLibraryNS.Services;
-using Playnite.SDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using CommonPlugin;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
+using Playnite.SDK;
+using Playnite.SDK.Models;
 
 namespace GogOssLibraryNS
 {
@@ -54,15 +55,16 @@ namespace GogOssLibraryNS
 
         private void ShowAllBtn_Click(object sender, RoutedEventArgs e)
         {
-            GlobalProgressOptions metadataProgressOptions = new(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteProgressMetadata), false);
+            GlobalProgressOptions metadataProgressOptions =
+                new(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteProgressMetadata), false);
             var playniteAPI = API.Instance;
-            playniteAPI.Dialogs.ActivateGlobalProgress((a) =>
+            playniteAPI.Dialogs.ActivateGlobalProgress(a =>
             {
                 _ = (Application.Current.Dispatcher?.BeginInvoke((Action)async delegate
                 {
                     CdnSP.Visibility = Visibility.Collapsed;
                     var taskData = new DownloadManagerData.Download();
-                    var selectedGame = GameCBo.SelectedItem as Playnite.SDK.Models.Game;
+                    var selectedGame = GameCBo.SelectedItem as Game;
                     taskData.gameID = selectedGame.GameId;
                     taskData.downloadItemType = DownloadItemType.Game;
                     GogDownloadApi gogDownloadApi = new();
@@ -73,12 +75,12 @@ namespace GogOssLibraryNS
                     {
                         finalCdns.Add(cdn.endpoint_name);
                     }
+
                     CdnLB.ItemsSource = finalCdns;
                     CdnSP.Visibility = Visibility.Visible;
                     ClearBtn.IsEnabled = true;
                 }));
             }, metadataProgressOptions);
-
         }
 
         private void MoveDownBtn_Click(object sender, RoutedEventArgs e)
@@ -114,6 +116,7 @@ namespace GogOssLibraryNS
                     CdnOrder.Add(cdnItem);
                 }
             }
+
             var thisWindow = Window.GetWindow(this);
             thisWindow.DialogResult = true;
             Window.GetWindow(this).Close();

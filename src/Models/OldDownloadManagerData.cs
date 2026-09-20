@@ -1,7 +1,7 @@
-﻿using CommonPlugin.Enums;
-using GogOssLibraryNS.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
 
 namespace GogOssLibraryNS.Models
 {
@@ -16,6 +16,7 @@ namespace GogOssLibraryNS.Models
             public string fullInstallPath { get; set; }
 
             private double _downloadSizeNumber;
+
             public double downloadSizeNumber
             {
                 get => _downloadSizeNumber;
@@ -23,6 +24,7 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _installSizeNumber;
+
             public double installSizeNumber
             {
                 get => _installSizeNumber;
@@ -32,6 +34,7 @@ namespace GogOssLibraryNS.Models
             public long addedTime { get; set; }
 
             private long _completedTime;
+
             public long completedTime
             {
                 get => _completedTime;
@@ -39,6 +42,7 @@ namespace GogOssLibraryNS.Models
             }
 
             private DownloadStatus _status;
+
             public DownloadStatus status
             {
                 get => _status;
@@ -46,6 +50,7 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _progress;
+
             public double progress
             {
                 get => _progress;
@@ -53,11 +58,13 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _downloadedNumber;
+
             public double downloadedNumber
             {
                 get => _downloadedNumber;
                 set => SetValue(ref _downloadedNumber, value);
             }
+
             public DownloadItemType downloadItemType { get; set; } = DownloadItemType.Game;
             public DownloadProperties downloadProperties { get; set; } = new DownloadProperties();
             public List<string> depends { get; set; } = new List<string>();

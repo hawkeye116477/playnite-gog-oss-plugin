@@ -1,8 +1,8 @@
-﻿using CommonPlugin.Enums;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
 using Playnite.SDK.Data;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace GogOssLibraryNS.Models
 {
@@ -17,6 +17,7 @@ namespace GogOssLibraryNS.Models
             public string fullInstallPath { get; set; }
 
             private double _downloadSizeNumber;
+
             [DontSerialize]
             public double downloadSizeNumber
             {
@@ -25,6 +26,7 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _installSizeNumber;
+
             [DontSerialize]
             public double installSizeNumber
             {
@@ -36,6 +38,7 @@ namespace GogOssLibraryNS.Models
             public long addedTime { get; set; }
 
             private long _completedTime;
+
             [DontSerialize]
             public long completedTime
             {
@@ -44,6 +47,7 @@ namespace GogOssLibraryNS.Models
             }
 
             private DownloadStatus _status;
+
             [DontSerialize]
             public DownloadStatus status
             {
@@ -52,6 +56,7 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _progress;
+
             [DontSerialize]
             public double progress
             {
@@ -60,12 +65,14 @@ namespace GogOssLibraryNS.Models
             }
 
             private double _downloadedNumber;
+
             [DontSerialize]
             public double downloadedNumber
             {
                 get => _downloadedNumber;
                 set => SetValue(ref _downloadedNumber, value);
             }
+
             public DownloadItemType downloadItemType { get; set; } = DownloadItemType.Game;
             public DownloadProperties downloadProperties { get; set; } = new DownloadProperties();
             public List<string> depends { get; set; }

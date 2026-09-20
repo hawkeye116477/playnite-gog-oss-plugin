@@ -12,6 +12,7 @@ namespace GogOssLibraryNS.Models
         public List<Item> items { get; set; } = new List<Item>();
         public bool has_private_branches { get; set; }
         public List<string> available_branches { get; set; } = new List<string>();
+
         public class Item
         {
             public string legacy_build_id { get; set; }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GogOssLibraryNS.Models
 {
@@ -15,6 +11,7 @@ namespace GogOssLibraryNS.Models
         public int product_id { get; set; }
         public string type { get; set; }
         public List<Url> urls { get; set; }
+
         public class Url
         {
             public string endpoint_name { get; set; }

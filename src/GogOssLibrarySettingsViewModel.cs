@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using Playnite.SDK;
-using GogOssLibraryNS.Enums;
-using CommonPlugin.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System;
+using System.Linq;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
+using Playnite.SDK;
 using Tomlet;
 using Tomlet.Attributes;
-using System.Linq;
-using System.Collections.ObjectModel;
 
 namespace GogOssLibraryNS
 {
@@ -26,13 +26,13 @@ namespace GogOssLibraryNS
         public bool UnattendedInstall { get; set; } = false;
         public bool DownloadAllDlcs { get; set; } = false;
         public UpdatePolicy GamesUpdatePolicy { get; set; } = UpdatePolicy.Month;
-        public long NextGamesUpdateTime { get; set; } = 0;
+        public long NextGamesUpdateTime { get; set; }
         public bool AutoUpdateGames { get; set; } = false;
         public UpdatePolicy CometUpdatePolicy { get; set; } = UpdatePolicy.Month;
-        public long NextCometUpdateTime { get; set; } = 0;
+        public long NextCometUpdateTime { get; set; }
         public bool SyncPlaytime { get; set; } = GogOss.DefaultPlaytimeSyncEnabled;
         public ClearCacheTime AutoClearCache { get; set; } = ClearCacheTime.Never;
-        public long NextClearingTime { get; set; } = 0;
+        public long NextClearingTime { get; set; }
         public bool SyncGameSaves { get; set; } = false;
         public ObservableCollection<string> CdnOrder { get; set; }
         public bool EnableOverlay { get; set; } = true;
@@ -77,15 +77,13 @@ namespace GogOssLibraryNS
             public NotificationSettings GameInvite { get; set; } = new();
 
             [TomlNonSerialized]
-            private NotificationSettings[] AllNotifications => new[] { Achievements, Chat, FriendOnline, FriendInvite, FriendGameStart, GameInvite };
+            private NotificationSettings[] AllNotifications =>
+                new[] { Achievements, Chat, FriendOnline, FriendInvite, FriendGameStart, GameInvite };
 
             [TomlNonSerialized]
             public bool MasterSound
             {
-                get
-                {
-                    return AllNotifications.Where(n => n.Enabled).All(n => n.Sound);
-                }
+                get { return AllNotifications.Where(n => n.Enabled).All(n => n.Sound); }
                 set
                 {
                     foreach (var notificationType in AllNotifications)
@@ -112,11 +110,13 @@ namespace GogOssLibraryNS
     public class GogOssLibrarySettingsViewModel : PluginSettingsViewModel<GogOssLibrarySettings, GogOssLibrary>
     {
         public GalaxyOverlaySettings GalaxyOverlaySettings { get; set; }
+
         public GogOssLibrarySettingsViewModel(GogOssLibrary library, IPlayniteAPI api) : base(library, api)
         {
             Settings = LoadSavedSettings() ?? new GogOssLibrarySettings();
             GalaxyOverlaySettings = new GalaxyOverlaySettings();
-            var overlayConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "comet", "config.toml");
+            var overlayConfigFilePath =
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "comet", "config.toml");
             if (File.Exists(overlayConfigFilePath))
             {
                 var content = File.ReadAllText(overlayConfigFilePath);
@@ -136,12 +136,12 @@ namespace GogOssLibraryNS
 
         public Dictionary<string, string> Languages { get; } = new Dictionary<string, string>
         {
-            {"en", "English" },
-            {"de", "Deutsch" },
-            {"fr", "Français" },
-            {"pl", "Polski" },
-            {"ru", "Pусский" },
-            {"zh", "中文(简体)" },
+            { "en", "English" },
+            { "de", "Deutsch" },
+            { "fr", "Français" },
+            { "pl", "Polski" },
+            { "ru", "Pусский" },
+            { "zh", "中文(简体)" },
         };
 
         public override void EndEdit()
@@ -157,6 +157,7 @@ namespace GogOssLibraryNS
                     Settings.NextClearingTime = 0;
                 }
             }
+
             if (EditingClone.GamesUpdatePolicy != Settings.GamesUpdatePolicy)
             {
                 if (Settings.GamesUpdatePolicy != UpdatePolicy.Never)
@@ -168,6 +169,7 @@ namespace GogOssLibraryNS
                     Settings.NextGamesUpdateTime = 0;
                 }
             }
+
             if (EditingClone.CometUpdatePolicy != Settings.CometUpdatePolicy)
             {
                 if (Settings.CometUpdatePolicy != UpdatePolicy.Never)
@@ -186,7 +188,7 @@ namespace GogOssLibraryNS
             {
                 Directory.CreateDirectory(overlayConfigDirectory);
             }
-           
+
             File.WriteAllText(overlayConfigFilePath, TomletMain.TomlStringFrom(GalaxyOverlaySettings));
             base.EndEdit();
         }

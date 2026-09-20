@@ -1,8 +1,8 @@
-﻿using Playnite.SDK;
-using Playnite.SDK.Data;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
+using Playnite.SDK;
+using Playnite.SDK.Data;
 
 namespace GogOssLibraryNS
 {
@@ -72,7 +72,9 @@ namespace GogOssLibraryNS
                     {
                         File.Delete(tmp);
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
             catch (Exception ex)

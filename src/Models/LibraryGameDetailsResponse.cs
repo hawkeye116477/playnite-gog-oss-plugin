@@ -6,6 +6,7 @@ namespace GogOssLibraryNS.Models
     {
         /// <example>The Witcher 3: Wild Hunt - Complete Edition</example>
         public string Title { get; set; } = "";
+
         public List<Extra> Extras { get; set; } = new();
 
         public List<Dlc> Dlcs { get; set; } = new();
@@ -15,7 +16,6 @@ namespace GogOssLibraryNS.Models
             public string Title { get; set; } = "";
             public List<Extra> Extras { get; set; } = new();
         }
-
     }
 
     public class Extra

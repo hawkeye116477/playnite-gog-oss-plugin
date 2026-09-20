@@ -4,7 +4,8 @@ namespace GogOssLibraryNS
 {
     public static class ReplaceExtensions
     {
-        public static string ReplaceFirst(this string source, string oldValue, string newValue, StringComparison comparisonType = StringComparison.Ordinal)
+        public static string ReplaceFirst(
+            this string source, string oldValue, string newValue, StringComparison comparisonType = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(source) || string.IsNullOrEmpty(oldValue))
             {

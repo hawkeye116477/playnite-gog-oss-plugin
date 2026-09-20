@@ -1,18 +1,19 @@
-﻿using CommonPlugin;
-using GogOssLibraryNS.Models;
-using Playnite.Common;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using PlayniteExtensions.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using CommonPlugin;
+using GogOssLibraryNS.Models;
+using Playnite.Common;
+using Playnite.SDK;
+using Playnite.SDK.Data;
+using PlayniteExtensions.Common;
 
 namespace GogOssLibraryNS.Services
 {
@@ -67,6 +68,7 @@ namespace GogOssLibraryNS.Services
                         logger.Error("Can't get auth code from GOG");
                         return;
                     }
+
                     loggedIn = true;
                     webView.Close();
                 }
@@ -77,7 +79,6 @@ namespace GogOssLibraryNS.Services
 
             if (!loggedIn)
             {
-                return;
             }
             else
             {
@@ -102,10 +103,10 @@ namespace GogOssLibraryNS.Services
                         client_id = new Dictionary<string, TokenResponse.TokenResponsePart>()
                     };
                     tokenResponse.client_id.Add(clientId, responseJson);
-                    var strConf = Serialization.ToJson(tokenResponse.client_id, false);
+                    var strConf = Serialization.ToJson(tokenResponse.client_id);
                     FileSystem.CreateDirectory(Path.GetDirectoryName(GogOss.EncryptedTokensPath));
                     Encryption.EncryptToFile(GogOss.EncryptedTokensPath, strConf, Encoding.UTF8,
-                                         WindowsIdentity.GetCurrent().User.Value);
+                        WindowsIdentity.GetCurrent().User.Value);
                 }
                 catch (Exception ex)
                 {
@@ -122,6 +123,7 @@ namespace GogOssLibraryNS.Services
             {
                 query.Add(item.Key, item.Value);
             }
+
             uriBuilder.Query = query.ToString();
             return uriBuilder.Uri.AbsoluteUri;
         }
@@ -138,7 +140,7 @@ namespace GogOssLibraryNS.Services
                 { "refresh_token", refreshToken }
             };
             var newTokenUrl = FormatUrl(urlParams, tokenUrl);
-            
+
             try
             {
                 using var response = await httpClient.GetAsync(newTokenUrl);
@@ -151,14 +153,15 @@ namespace GogOssLibraryNS.Services
                     client_id = new Dictionary<string, TokenResponse.TokenResponsePart>()
                 };
                 tokenResponse.client_id.Add(clientId, responseJson);
-                var strConf = Serialization.ToJson(tokenResponse.client_id, false);
+                var strConf = Serialization.ToJson(tokenResponse.client_id);
                 var tokenFullPath = Path.GetDirectoryName(GogOss.EncryptedTokensPath);
                 if (!Directory.Exists(tokenFullPath))
                 {
                     FileSystem.CreateDirectory(tokenFullPath);
                 }
+
                 Encryption.EncryptToFile(GogOss.EncryptedTokensPath, strConf, Encoding.UTF8,
-                                         WindowsIdentity.GetCurrent().User.Value);
+                    WindowsIdentity.GetCurrent().User.Value);
                 return true;
             }
             catch (Exception ex)
@@ -176,11 +179,13 @@ namespace GogOssLibraryNS.Services
             {
                 return accountInfo;
             }
+
             var tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.EncryptedTokensPath);
             if (File.Exists(GogOss.TokensPath))
             {
                 tokenLastUpdateTime = File.GetLastWriteTimeUtc(GogOss.TokensPath);
             }
+
             var tokenExpirySeconds = tokens.expires_in;
             DateTime tokenExpiryTime = tokenLastUpdateTime.AddSeconds(tokenExpirySeconds);
             if (DateTime.UtcNow > tokenExpiryTime)
@@ -203,7 +208,7 @@ namespace GogOssLibraryNS.Services
                 using var response = await httpClient.GetAsync(@"https://menu.gog.com/v1/account/basic");
                 if (!response.IsSuccessStatusCode)
                 {
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    if (response.StatusCode == HttpStatusCode.Unauthorized)
                     {
                         var renewSuccess = await RenewTokens(tokens.refresh_token);
                         if (renewSuccess)
@@ -212,6 +217,7 @@ namespace GogOssLibraryNS.Services
                         }
                     }
                 }
+
                 var stringInfo = await response.Content.ReadAsStringAsync();
                 accountInfo = Serialization.FromJson<AccountBasicResponse>(stringInfo);
             }
@@ -220,6 +226,7 @@ namespace GogOssLibraryNS.Services
                 logger.Debug("Can't get GOG account info");
                 logger.Debug(ex.Message);
             }
+
             return accountInfo;
         }
 
@@ -229,7 +236,7 @@ namespace GogOssLibraryNS.Services
             {
                 var tokensTxt = File.ReadAllText(GogOss.TokensPath);
                 Encryption.EncryptToFile(GogOss.EncryptedTokensPath, tokensTxt, Encoding.UTF8,
-                                         WindowsIdentity.GetCurrent().User.Value);
+                    WindowsIdentity.GetCurrent().User.Value);
                 File.Delete(GogOss.TokensPath);
             }
 
@@ -238,8 +245,8 @@ namespace GogOssLibraryNS.Services
                 try
                 {
                     var jsonResponse = Serialization.FromJson<Dictionary<string, TokenResponse.TokenResponsePart>>(
-                     Encryption.DecryptFromFile(GogOss.EncryptedTokensPath, Encoding.UTF8,
-                                                WindowsIdentity.GetCurrent().User.Value));
+                        Encryption.DecryptFromFile(GogOss.EncryptedTokensPath, Encoding.UTF8,
+                            WindowsIdentity.GetCurrent().User.Value));
                     var firstKey = jsonResponse.First().Value;
                     return firstKey;
                 }
@@ -248,6 +255,7 @@ namespace GogOssLibraryNS.Services
                     logger.Error(e, "Failed to load saved tokens.");
                 }
             }
+
             return null;
         }
 
@@ -273,6 +281,7 @@ namespace GogOssLibraryNS.Services
                         logger.Error("GOG library content is empty.");
                         return null;
                     }
+
                     games.AddRange(libraryData._embedded.items);
                     if (libraryData.pages > 1)
                     {
@@ -288,6 +297,7 @@ namespace GogOssLibraryNS.Services
                         }
                     }
                 }
+
                 return games;
             }
             catch (Exception e)
@@ -307,6 +317,7 @@ namespace GogOssLibraryNS.Services
             {
                 hiddenFlag = "";
             }
+
             var baseUrl = $"https://www.gog.com/account/getFilteredProducts?{hiddenFlag}mediaType=1&page={{0}}&sortBy=title";
 
             var tokens = LoadTokens();
@@ -328,9 +339,9 @@ namespace GogOssLibraryNS.Services
                     return null;
                 }
 
-                games.AddRange(libraryData.products.Select(a => new LibraryGameResponse()
+                games.AddRange(libraryData.products.Select(a => new LibraryGameResponse
                 {
-                    game = new LibraryGameResponse.Game()
+                    game = new LibraryGameResponse.Game
                     {
                         id = a.id.ToString(),
                         title = a.title,
@@ -349,9 +360,9 @@ namespace GogOssLibraryNS.Services
                         {
                             gamesList = await nextResponse.Content.ReadAsStringAsync();
                             var pageData = libraryData = Serialization.FromJson<GetOwnedGamesResult>(gamesList);
-                            games.AddRange(pageData.products.Select(a => new LibraryGameResponse()
+                            games.AddRange(pageData.products.Select(a => new LibraryGameResponse
                             {
-                                game = new LibraryGameResponse.Game()
+                                game = new LibraryGameResponse.Game
                                 {
                                     id = a.id.ToString(),
                                     title = a.title,
@@ -370,6 +381,7 @@ namespace GogOssLibraryNS.Services
             {
                 games.RemoveAll(a => a.game.title.Contains("goodie", StringComparison.OrdinalIgnoreCase));
             }
+
             return games;
         }
 
@@ -397,6 +409,7 @@ namespace GogOssLibraryNS.Services
                     }
                 }
             }
+
             return ownedList;
         }
 
@@ -416,6 +429,7 @@ namespace GogOssLibraryNS.Services
             {
                 logger.Error($"An error occurred when fetching owned game details: {ex}");
             }
+
             return new LibraryGameDetailsResponse();
         }
     }

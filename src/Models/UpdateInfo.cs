@@ -1,5 +1,5 @@
-﻿using GogOssLibraryNS.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GogOssLibraryNS.Enums;
 
 namespace GogOssLibraryNS.Models
 {

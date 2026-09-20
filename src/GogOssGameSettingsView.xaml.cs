@@ -1,4 +1,11 @@
-﻿using CommonPlugin;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using CommonPlugin;
 using CommonPlugin.Enums;
 using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
@@ -6,12 +13,6 @@ using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace GogOssLibraryNS
 {
@@ -45,6 +46,7 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             return gameSettings;
         }
 
@@ -56,43 +58,53 @@ namespace GogOssLibraryNS
             {
                 newGameSettings.EnableCometSupport = EnableCometSupportChk.IsChecked;
             }
+
             bool globalDisableUpdates = false;
             if (globalSettings.GamesUpdatePolicy == UpdatePolicy.Never)
             {
                 globalDisableUpdates = true;
             }
+
             if (DisableGameUpdateCheckingChk.IsChecked != globalDisableUpdates)
             {
                 newGameSettings.DisableGameVersionCheck = DisableGameUpdateCheckingChk.IsChecked;
             }
+
             if (StartupArgumentsTxt.Text != "")
             {
                 newGameSettings.StartupArguments = CommonHelpers.SplitArguments(StartupArgumentsTxt.Text).ToList();
             }
+
             if (SelectedAlternativeExeTxt.Text != "")
             {
                 newGameSettings.OverrideExe = SelectedAlternativeExeTxt.Text;
             }
+
             if (AutoSyncSavesChk.IsChecked != globalSettings.SyncGameSaves)
             {
                 newGameSettings.AutoSyncSaves = AutoSyncSavesChk.IsChecked;
             }
+
             if (SelectedSavePathTxt.Text != "")
             {
                 newGameSettings.CloudSaveFolder = SelectedSavePathTxt.Text;
             }
+
             if (AutoSyncPlaytimeChk.IsChecked != globalSettings.SyncPlaytime)
             {
                 newGameSettings.AutoSyncPlaytime = AutoSyncPlaytimeChk.IsChecked;
             }
+
             if (EnableOverlayChk.IsChecked != globalSettings.EnableOverlay)
             {
                 newGameSettings.EnableOverlay = EnableOverlayChk.IsChecked;
             }
+
             if (SelectedWorkingDirectoryTxt.Text != "")
             {
                 newGameSettings.WorkingDirectory = SelectedWorkingDirectoryTxt.Text;
             }
+
             return newGameSettings;
         }
 
@@ -115,7 +127,8 @@ namespace GogOssLibraryNS
 
         private void SyncSavesBtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonCloudSaveConfirm), LocalizationManager.Instance.GetString(LOC.CommonCloudSaves), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonCloudSaveConfirm),
+                LocalizationManager.Instance.GetString(LOC.CommonCloudSaves), MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 bool forceCloudSync = (bool)ForceCloudActionChk.IsChecked;
@@ -165,30 +178,33 @@ namespace GogOssLibraryNS
             {
                 EnableCometSupportChk.IsChecked = gameSettings.EnableCometSupport;
             }
+
             if (gameSettings.EnableOverlay != null)
             {
                 EnableOverlayChk.IsChecked = gameSettings.EnableOverlay;
             }
+
             if (gameSettings.DisableGameVersionCheck != null)
             {
                 DisableGameUpdateCheckingChk.IsChecked = gameSettings.DisableGameVersionCheck;
             }
+
             if (gameSettings.StartupArguments != null)
             {
-                StartupArgumentsTxt.Text = string.Join(" ", 
-                    gameSettings.StartupArguments.Select(a =>
-                {
-                    return a.Contains(" ") ? $"\"{a}\"" : a;
-                }));
+                StartupArgumentsTxt.Text = string.Join(" ",
+                    gameSettings.StartupArguments.Select(a => { return a.Contains(" ") ? $"\"{a}\"" : a; }));
             }
+
             if (gameSettings.OverrideExe != null)
             {
                 SelectedAlternativeExeTxt.Text = gameSettings.OverrideExe;
             }
+
             if (!gameSettings.WorkingDirectory.IsNullOrEmpty())
             {
                 SelectedWorkingDirectoryTxt.Text = gameSettings.WorkingDirectory;
             }
+
             if (gameSettings.AutoSyncSaves != null)
             {
                 AutoSyncSavesChk.IsChecked = gameSettings.AutoSyncSaves;
@@ -198,10 +214,12 @@ namespace GogOssLibraryNS
             {
                 SelectedSavePathTxt.Text = gameSettings.CloudSaveFolder;
             }
+
             if (!gameSettings.AutoSyncPlaytime != null)
             {
                 AutoSyncPlaytimeChk.IsChecked = gameSettings.AutoSyncPlaytime;
             }
+
             if (playniteAPI.ApplicationSettings.PlaytimeImportMode == PlaytimeImportMode.Never)
             {
                 AutoSyncPlaytimeChk.IsEnabled = false;
@@ -236,7 +254,8 @@ namespace GogOssLibraryNS
 
         private void ChooseAlternativeExeBtn_Click(object sender, RoutedEventArgs e)
         {
-            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|*.exe", Game.InstallDirectory);
+            var file = playniteAPI.Dialogs.SelectFile(
+                $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|*.exe", Game.InstallDirectory);
             if (file != "")
             {
                 SelectedAlternativeExeTxt.Text = file;
@@ -249,16 +268,19 @@ namespace GogOssLibraryNS
             var newGameSettings = PrepareNewGameSettings();
             if (Serialization.ToJson(newGameSettings) != Serialization.ToJson(oldGameSettings))
             {
-                var result = playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUnsavedChangesAskMessage), "", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = playniteAPI.Dialogs.ShowMessage(
+                    LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUnsavedChangesAskMessage), "", MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
                     SaveGameSettings();
                 }
             }
+
             Window.GetWindow(this).Close();
         }
 
-        private void GameSettingsViewUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void GameSettingsViewUC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }

@@ -28,7 +28,7 @@ namespace GogOssLibraryNS.Models
 
             public GameAction ConvertToGenericTask(string installDirectory)
             {
-                var action = new GameAction()
+                var action = new GameAction
                 {
                     Arguments = arguments,
                     Name = string.IsNullOrEmpty(name) ? "Play" : name,
@@ -66,10 +66,7 @@ namespace GogOssLibraryNS.Models
 
         public Task DefaultTask
         {
-            get
-            {
-                return playTasks.First(a => a.isPrimary);
-            }
+            get { return playTasks.First(a => a.isPrimary); }
         }
     }
 }

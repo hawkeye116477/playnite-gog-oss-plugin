@@ -1,11 +1,14 @@
-﻿using CommonPlugin;
-using CommonPlugin.Enums;
-using GogOssLibraryNS.Models;
-using Playnite.SDK;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Enums;
+using GogOssLibraryNS.Models;
+using Playnite.Commands;
+using Playnite.SDK;
 
 namespace GogOssLibraryNS
 {
@@ -16,6 +19,7 @@ namespace GogOssLibraryNS
     {
         public Dictionary<string, UpdateInfo> UpdatesList => (Dictionary<string, UpdateInfo>)DataContext;
         private IPlayniteAPI playniteAPI = API.Instance;
+
         public GogOssUpdaterView()
         {
             InitializeComponent();
@@ -31,6 +35,7 @@ namespace GogOssLibraryNS
                 initialDownloadSizeNumber += selectedOption.Value.Download_size;
                 initialInstallSizeNumber += selectedOption.Value.Disk_size;
             }
+
             var downloadSize = CommonHelpers.FormatSize(initialDownloadSizeNumber);
             DownloadSizeTB.Text = downloadSize;
             var installSize = CommonHelpers.FormatSize(initialInstallSizeNumber);
@@ -59,6 +64,7 @@ namespace GogOssLibraryNS
                 {
                     maxWorkers = int.Parse(MaxWorkersNI.Value);
                 }
+
                 GogOssUpdateController gogOssUpdateController = new GogOssUpdateController();
                 DownloadProperties downloadProperties = new DownloadProperties
                 {
@@ -71,6 +77,7 @@ namespace GogOssLibraryNS
                 {
                     updatesList.Add(selectedOption.Key, selectedOption.Value);
                 }
+
                 await gogOssUpdateController.UpdateGame(updatesList, "", false, downloadProperties);
             }
         }
@@ -83,6 +90,7 @@ namespace GogOssLibraryNS
                 Window.GetWindow(this).Close();
                 return;
             }
+
             CommonHelpers.SetControlBackground(this);
             UpdatesLB.ItemsSource = UpdatesList;
             UpdatesLB.Visibility = Visibility.Visible;
@@ -90,14 +98,17 @@ namespace GogOssLibraryNS
             var settings = GogOssLibrary.GetSettings();
             MaxWorkersNI.MaxValue = CommonHelpers.CpuThreadsNumber;
             MaxWorkersNI.Value = settings.MaxWorkers.ToString();
-            var isToolExists = UpdatesList.Any(u => u.Value.DownloadItemType == Enums.DownloadItemType.Tools);
+            var isToolExists = UpdatesList.Any(u => u.Value.DownloadItemType == DownloadItemType.Tools);
             if (isToolExists)
             {
                 ViewChangelogBtn.Visibility = Visibility.Visible;
             }
+
             if (playniteAPI.ApplicationInfo.Mode == ApplicationMode.Fullscreen)
             {
-                var firstEnabledBtn = LogicalTreeHelper.GetChildren(TopButtonsSP).OfType<Button>().FirstOrDefault(b => b.IsEnabled && b.IsVisible);
+                var firstEnabledBtn = LogicalTreeHelper.GetChildren(TopButtonsSP)
+                                                       .OfType<Button>()
+                                                       .FirstOrDefault(b => b.IsEnabled && b.IsVisible);
                 if (firstEnabledBtn != null)
                 {
                     firstEnabledBtn.Focus();
@@ -111,11 +122,11 @@ namespace GogOssLibraryNS
             if (selectedOptions[0].Key == "comet")
             {
                 var changelogURL = $"https://github.com/imLinguin/comet/releases/tag/v{selectedOptions[0].Value.Version}";
-                Playnite.Commands.GlobalCommands.NavigateUrl(changelogURL);
+                GlobalCommands.NavigateUrl(changelogURL);
             }
         }
 
-        private void GogOssUpdaterUC_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void GogOssUpdaterUC_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             CommonControllerHelpers.UC_PreviewKeyDown(sender, e);
         }

@@ -6,12 +6,11 @@ namespace GogOssLibraryNS
 {
     public sealed class MemoryLimiter : IDisposable
     {
-        private readonly long _maxBytes;
         private long _currentUsage;
         private int _disposed; // 0 = false, 1 = true
 
         public long CurrentUsage => Interlocked.Read(ref _currentUsage);
-        public long MaxBytes => _maxBytes;
+        public long MaxBytes { get; }
 
         public MemoryLimiter(long maxBytes)
         {
@@ -20,7 +19,7 @@ namespace GogOssLibraryNS
                 throw new ArgumentOutOfRangeException(nameof(maxBytes), "MaxBytes must be positive.");
             }
 
-            _maxBytes = maxBytes;
+            MaxBytes = maxBytes;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -68,7 +67,7 @@ namespace GogOssLibraryNS
                     systemAvailBytes = (long)memStatus.ullAvailPhys;
                 }
 
-                if (newTotal > systemAvailBytes || newTotal > _maxBytes)
+                if (newTotal > systemAvailBytes || newTotal > MaxBytes)
                 {
                     return false;
                 }
@@ -107,8 +106,8 @@ namespace GogOssLibraryNS
             {
                 Interlocked.Exchange(ref _currentUsage, 0);
             }
+
             GC.SuppressFinalize(this);
         }
     }
-
 }

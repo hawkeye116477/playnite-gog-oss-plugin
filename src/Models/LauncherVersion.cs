@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace GogOssLibraryNS.Models
 {
@@ -10,6 +6,7 @@ namespace GogOssLibraryNS.Models
     {
         public string Tag_name { get; set; }
         public List<Asset> Assets { get; set; }
+
         public class Asset
         {
             public long Size { get; set; }

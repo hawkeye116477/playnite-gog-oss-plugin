@@ -1,4 +1,10 @@
-﻿using CliWrap;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using CliWrap;
 using CliWrap.Buffered;
 using CommonPlugin;
 using GogOssLibraryNS.Models;
@@ -6,12 +12,6 @@ using Linguini.Shared.Types.Bundle;
 using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace GogOssLibraryNS
 {
@@ -34,10 +34,8 @@ namespace GogOssLibraryNS
                 {
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
+
+                return true;
             }
         }
 
@@ -47,15 +45,15 @@ namespace GogOssLibraryNS
             {
                 string[] cometExes = { "comet-x86_64-pc-windows-msvc.exe", "comet.exe" };
                 string envPath = Environment.GetEnvironmentVariable("PATH")
-                                            .Split(new char[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries)
+                                            .Split(new[] { Path.PathSeparator }, StringSplitOptions.RemoveEmptyEntries)
                                             .Where(p => p.IndexOfAny(Path.GetInvalidPathChars()) < 0)
                                             .SelectMany(pathEntry => cometExes.Select(nileExe => Path.Combine(pathEntry.Trim(), nileExe)))
                                             .FirstOrDefault(File.Exists);
 
                 var heroicCometBinary = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                                           @"Programs\heroic\resources\app.asar.unpacked\build\bin\x64\win32\comet.exe");
+                    @"Programs\heroic\resources\app.asar.unpacked\build\bin\x64\win32\comet.exe");
                 var launcherPath = "";
-                if (string.IsNullOrWhiteSpace(envPath) == false)
+                if (!string.IsNullOrWhiteSpace(envPath))
                 {
                     launcherPath = envPath;
                 }
@@ -70,6 +68,7 @@ namespace GogOssLibraryNS
                     {
                         pf64 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
                     }
+
                     launcherPath = Path.Combine(pf64, "GOG OSS", "comet-x86_64-pc-windows-msvc.exe");
                     if (!File.Exists(launcherPath))
                     {
@@ -80,11 +79,12 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+
                 var savedSettings = GogOssLibrary.GetSettings();
                 if (savedSettings != null)
                 {
                     var savedLauncherPath = savedSettings.SelectedCometPath;
-                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory.ToString();
+                    var playniteDirectoryVariable = ExpandableVariables.PlayniteDirectory;
                     if (savedLauncherPath != "")
                     {
                         if (savedLauncherPath.Contains(playniteDirectoryVariable))
@@ -92,13 +92,16 @@ namespace GogOssLibraryNS
                             var playniteAPI = API.Instance;
                             savedLauncherPath = savedLauncherPath.Replace(playniteDirectoryVariable, playniteAPI.Paths.ApplicationPath);
                         }
+
                         launcherPath = savedLauncherPath;
                     }
                 }
+
                 if (!File.Exists(launcherPath))
                 {
                     launcherPath = "";
                 }
+
                 return launcherPath;
             }
         }
@@ -118,6 +121,7 @@ namespace GogOssLibraryNS
                     version = versionCmd.StandardOutput.Replace("comet", "").Trim();
                 }
             }
+
             return version;
         }
 
@@ -135,13 +139,16 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             if (!IsInstalled)
             {
-                throw new Exception(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)" Comet" }));
+                throw new Exception(LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled,
+                    new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)" Comet" }));
             }
+
             var cacheVersionPath = GogOssLibrary.Instance.GetCachePath("info");
             if (!Directory.Exists(cacheVersionPath))
             {
                 Directory.CreateDirectory(cacheVersionPath);
             }
+
             var cacheVersionFile = Path.Combine(cacheVersionPath, "cometVersion.json");
             string content = null;
             if (File.Exists(cacheVersionFile))
@@ -151,6 +158,7 @@ namespace GogOssLibraryNS
                     File.Delete(cacheVersionFile);
                 }
             }
+
             if (!File.Exists(cacheVersionFile))
             {
                 var httpClient = new HttpClient();
@@ -163,14 +171,17 @@ namespace GogOssLibraryNS
                     {
                         Directory.CreateDirectory(cacheVersionPath);
                     }
+
                     File.WriteAllText(cacheVersionFile, content);
                 }
+
                 httpClient.Dispose();
             }
             else
             {
                 content = FileSystem.ReadFileAsStringSafe(cacheVersionFile);
             }
+
             if (content.IsNullOrWhiteSpace())
             {
                 logger.Error("An error occurred while downloading Comet's version info.");
@@ -179,6 +190,7 @@ namespace GogOssLibraryNS
             {
                 newVersionInfoContent = versionInfoContent;
             }
+
             return newVersionInfoContent;
         }
     }

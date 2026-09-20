@@ -21,14 +21,13 @@ using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
 using Playnite.SDK.Plugins;
-using UnifiedDownloadManagerApiNS;
-using UnifiedDownloadManagerApiNS.Models;
 
 namespace GogOssLibraryNS
 {
     public class GogOssInstallController : InstallController
     {
         private readonly GogOssLibrary gogLibrary;
+
         public GogOssInstallController(Game game, GogOssLibrary gogLibrary) : base(game)
         {
             this.gogLibrary = gogLibrary;
@@ -63,10 +62,12 @@ namespace GogOssLibraryNS
             {
                 title = LocalizationManager.Instance.GetString(LOC.CommonRepair);
             }
+
             if (installData.Count == 1)
             {
                 title = installData[0].name;
             }
+
             window.Title = title;
             window.ShowDialog();
         }
@@ -75,6 +76,7 @@ namespace GogOssLibraryNS
     public class GogOssUninstallController : UninstallController
     {
         private static ILogger logger = LogManager.GetLogger();
+
         public GogOssUninstallController(Game game) : base(game)
         {
             Name = "Uninstall";
@@ -84,13 +86,18 @@ namespace GogOssLibraryNS
         {
             var playniteAPI = API.Instance;
             string gamesCombined = string.Join(", ", games.Select(item => item.Name));
-            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame), LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)gamesCombined }), LocalizationManager.Instance.GetString(LOC.CommonRemoveGameLaunchSettings), MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageCheckBoxDialog.ShowMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstallGame),
+                LocalizationManager.Instance.GetString(LOC.CommonUninstallGameConfirm,
+                    new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)gamesCombined }),
+                LocalizationManager.Instance.GetString(LOC.CommonRemoveGameLaunchSettings), MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
             if (result.Result)
             {
                 var notUninstalledGames = new List<Game>();
                 var uninstalledGames = new List<Game>();
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
-                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                GlobalProgressOptions globalProgressOptions =
+                    new GlobalProgressOptions($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUninstalling)}... ", false);
+                playniteAPI.Dialogs.ActivateGlobalProgress(async a =>
                 {
                     a.IsIndeterminate = false;
                     a.ProgressMaxValue = games.Count;
@@ -114,6 +121,7 @@ namespace GogOssLibraryNS
                                          .AddCommandToLog()
                                          .ExecuteAsync();
                             }
+
                             try
                             {
                                 if (Directory.Exists(game.InstallDirectory))
@@ -129,21 +137,25 @@ namespace GogOssLibraryNS
                                 a.CurrentProgressValue = counter;
                                 continue;
                             }
+
                             var installedAppList = GogOssLibrary.GetInstalledAppList();
                             if (installedAppList.ContainsKey(game.GameId))
                             {
                                 installedAppList.Remove(game.GameId);
                             }
+
                             GogOssLibrary.Instance.installedAppListModified = true;
 
                             if (result.CheckboxChecked)
                             {
-                                var gameSettingsFile = Path.Combine(Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "GamesSettings", $"{game.GameId}.json"));
+                                var gameSettingsFile = Path.Combine(Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(),
+                                    "GamesSettings", $"{game.GameId}.json"));
                                 if (File.Exists(gameSettingsFile))
                                 {
                                     File.Delete(gameSettingsFile);
                                 }
                             }
+
                             game.IsInstalled = false;
                             game.InstallDirectory = "";
                             game.Version = "";
@@ -152,7 +164,6 @@ namespace GogOssLibraryNS
                             uninstalledGames.Add(game);
                             counter += 1;
                             a.CurrentProgressValue = counter;
-
                         }
                     }
                 }, globalProgressOptions);
@@ -162,7 +173,11 @@ namespace GogOssLibraryNS
                     string uninstalledGamesCombined = uninstalledGames[0].Name;
                     if (uninstalledGames.Count > 1)
                     {
-                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonUninstallSuccess, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)uninstalledGamesCombined, ["count"] = (FluentNumber)uninstalledGames.Count }));
+                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonUninstallSuccess,
+                            new Dictionary<string, IFluentType>
+                            {
+                                ["appName"] = (FluentString)uninstalledGamesCombined, ["count"] = (FluentNumber)uninstalledGames.Count
+                            }));
                         uninstalledGamesCombined = string.Join(", ", uninstalledGames.Select(item => item.Name));
                     }
                 }
@@ -173,11 +188,16 @@ namespace GogOssLibraryNS
                     if (notUninstalledGames.Count == 1)
                     {
                         notUninstalledGamesCombined = string.Join(", ", notUninstalledGames.Select(item => item.Name));
-                        playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameUninstallError, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog) }), notUninstalledGamesCombined);
+                        playniteAPI.Dialogs.ShowErrorMessage(
+                            LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteGameUninstallError,
+                                new Dictionary<string, IFluentType>
+                                    { ["var0"] = (FluentString)LocalizationManager.Instance.GetString(LOC.CommonCheckLog) }),
+                            notUninstalledGamesCombined);
                     }
                     else
                     {
-                        playniteAPI.Dialogs.ShowMessage($"{LocalizationManager.Instance.GetString(LOC.CommonUninstallError, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)notUninstalledGamesCombined, ["count"] = (FluentNumber)notUninstalledGames.Count })} {LocalizationManager.Instance.GetString(LOC.CommonCheckLog)}");
+                        playniteAPI.Dialogs.ShowMessage(
+                            $"{LocalizationManager.Instance.GetString(LOC.CommonUninstallError, new Dictionary<string, IFluentType> { ["appName"] = (FluentString)notUninstalledGamesCombined, ["count"] = (FluentNumber)notUninstalledGames.Count })} {LocalizationManager.Instance.GetString(LOC.CommonCheckLog)}");
                     }
                 }
             }
@@ -202,7 +222,7 @@ namespace GogOssLibraryNS
         public int cometProcessId;
         public int gameProcessId;
         public int primaryProcessId;
-        public bool cometSupportEnabled = false;
+        public bool cometSupportEnabled;
         public GameSettings gameSettings;
         public GogOssLibrarySettings globalSettings = GogOssLibrary.GetSettings();
         private IPlayniteAPI playniteAPI = API.Instance;
@@ -212,7 +232,8 @@ namespace GogOssLibraryNS
 
         public GogOssPlayController(Game game) : base(game)
         {
-            Name = LocalizationManager.Instance.GetString(LOC.ThirdPartyGogStartUsingClient, new Dictionary<string, IFluentType> { ["var0"] = (FluentString)"Comet" });
+            Name = LocalizationManager.Instance.GetString(LOC.ThirdPartyGogStartUsingClient,
+                new Dictionary<string, IFluentType> { ["var0"] = (FluentString)"Comet" });
             gameSettings = GogOssGameSettingsView.LoadGameSettings(Game.GameId);
         }
 
@@ -264,16 +285,17 @@ namespace GogOssLibraryNS
                     activeProcess?.Dispose();
                 }
             }
+
             var installedInfo = GogOss.GetInstalledInfo(Game.GameId);
-            if (installedInfo.is_fully_installed == false)
+            if (!installedInfo.is_fully_installed)
             {
                 var playniteAPI = API.Instance;
-                GlobalProgressOptions installProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false);
-                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
-                {
-                    await GogOss.CompleteInstallation(Game.GameId);
-                }, installProgressOptions);
+                GlobalProgressOptions installProgressOptions =
+                    new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonFinishingInstallation), false);
+                playniteAPI.Dialogs.ActivateGlobalProgress(async a => { await GogOss.CompleteInstallation(Game.GameId); },
+                    installProgressOptions);
             }
+
             gogOssCloud.SyncGameSaves(Game, CloudSyncAction.Download);
         }
 
@@ -284,6 +306,7 @@ namespace GogOssLibraryNS
             {
                 cometSupportEnabled = (bool)gameSettings.EnableCometSupport;
             }
+
             if (cometSupportEnabled && Comet.IsInstalled)
             {
                 // Find game process id, cuz primary process may be launcher
@@ -319,6 +342,7 @@ namespace GogOssLibraryNS
                                             break;
                                         }
                                     }
+
                                     await Task.Delay(1000);
                                 }
                                 catch (Exception ex)
@@ -359,6 +383,7 @@ namespace GogOssLibraryNS
                                     {
                                         overlayEnabled = (bool)gameSettings.EnableOverlay;
                                     }
+
                                     if (overlayEnabled && GalaxyOverlay.IsInstalled)
                                     {
                                         var overlayInstalledInfo = GalaxyOverlay.GetInstalledInfo();
@@ -387,12 +412,14 @@ namespace GogOssLibraryNS
                                                         found = true;
                                                         break;
                                                     }
+
                                                     await Task.Delay(delay);
                                                     if (delay < 1000)
                                                     {
                                                         delay += 100;
                                                     }
                                                 }
+
                                                 swComet.Stop();
                                                 if (found)
                                                 {
@@ -402,10 +429,15 @@ namespace GogOssLibraryNS
                                                 {
                                                     logger.Warn($"Pipe not found within {timeout.TotalSeconds}s. Overlay may not work.");
                                                 }
-                                                var screenshotPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Screenshots", Game.Name);
+
+                                                var screenshotPath =
+                                                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                                                        "Screenshots", Game.Name);
                                                 var overlayWebPath = Path.Combine(overlayInstallPath, "web", "overlay.html");
-                                                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                                                var cacheOverlayPath = Path.Combine(programDataPath, "GOG.com", "Galaxy", "webcache", $"{Game.GameId}-overlay");
+                                                string programDataPath =
+                                                    Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                                                var cacheOverlayPath = Path.Combine(programDataPath, "GOG.com", "Galaxy", "webcache",
+                                                    $"{Game.GameId}-overlay");
                                                 var currentPlayniteLanguage = playniteAPI.ApplicationSettings.Language.Replace("_", "-");
                                                 var overlayArgs = new List<string>
                                                 {
@@ -421,10 +453,12 @@ namespace GogOssLibraryNS
 
                                                 var overlayCmd = Cli.Wrap(overlayExe)
                                                                     .WithArguments(overlayArgs);
-                                                ProcessStarter.StartProcess(overlayExe, overlayCmd.Arguments, Path.Combine(overlayInstallPath, "overlay"));
+                                                ProcessStarter.StartProcess(overlayExe, overlayCmd.Arguments,
+                                                    Path.Combine(overlayInstallPath, "overlay"));
                                             }
                                         }
                                     }
+
                                     break;
                                 case StandardOutputCommandEvent stdOut:
                                     logger.Debug(stdOut.Text);
@@ -454,10 +488,13 @@ namespace GogOssLibraryNS
                 {
                     playtimeSyncEnabled = (bool)gameSettings.AutoSyncPlaytime;
                 }
+
                 if (playtimeSyncEnabled)
                 {
-                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonUploadingPlaytime, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }), false);
-                    playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                    GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                        LocalizationManager.Instance.GetString(LOC.CommonUploadingPlaytime,
+                            new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }), false);
+                    playniteAPI.Dialogs.ActivateGlobalProgress(async a =>
                     {
                         a.IsIndeterminate = true;
                         var gogAccountClient = new GogAccountClient();
@@ -469,7 +506,7 @@ namespace GogOssLibraryNS
                             PlaytimePayload playtimePayload = new PlaytimePayload();
                             DateTimeOffset now = DateTime.UtcNow;
                             var totalSeconds = sessionLength;
-                            var startTime = now.AddSeconds(-(double)totalSeconds);
+                            var startTime = now.AddSeconds(-totalSeconds);
                             playtimePayload.session_date = startTime.ToUnixTimeSeconds();
                             TimeSpan totalTimeSpan = TimeSpan.FromSeconds(totalSeconds);
                             playtimePayload.time = totalTimeSpan.Minutes;
@@ -491,15 +528,18 @@ namespace GogOssLibraryNS
                                 }
                                 catch (Exception ex)
                                 {
-                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonUploadPlaytimeError, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }));
-                                    logger.Error(ex, $"An error occured during uploading playtime to the cloud.");
+                                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(
+                                        LOC.CommonUploadPlaytimeError,
+                                        new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)Game.Name }));
+                                    logger.Error(ex, "An error occured during uploading playtime to the cloud.");
                                 }
                             }
                         }
                         else
                         {
-                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyGogNotLoggedInError), "");
-                            logger.Error($"Can't upload playtime, because user is not authenticated.");
+                            playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyGogNotLoggedInError),
+                                "");
+                            logger.Error("Can't upload playtime, because user is not authenticated.");
                         }
                     }, globalProgressOptions);
                 }
@@ -539,6 +579,7 @@ namespace GogOssLibraryNS
                 {
                     gameExeFullPath = Path.Combine(workingDir, gameExe);
                 }
+
                 if (File.Exists(gameExeFullPath))
                 {
                     var playArgs = new List<string>();
@@ -599,8 +640,9 @@ namespace GogOssLibraryNS
                         logger.Error($"Working directory {workingDir} doesn't exists.");
                         workingDir = Game.InstallDirectory;
                     }
+
                     var primaryProcess = ProcessStarter.StartProcess(gameExeFullPath, cmd.Arguments, workingDir);
-                    InvokeOnStarted(new GameStartedEventArgs() { StartedProcessId = primaryProcess.Id });
+                    InvokeOnStarted(new GameStartedEventArgs { StartedProcessId = primaryProcess.Id });
                     var monitor = new MonitorProcessTree(primaryProcess.Id);
                     StartTracking(() => monitor.IsProcessTreeRunning());
                     primaryProcessId = primaryProcess.Id;
@@ -617,10 +659,11 @@ namespace GogOssLibraryNS
             }
         }
 
-        public void StartTracking(Func<bool> trackingAction,
-                                  Func<int> startupCheck = null,
-                                  int trackingFrequency = 2000,
-                                  int trackingStartDelay = 0)
+        public void StartTracking(
+            Func<bool> trackingAction,
+            Func<int> startupCheck = null,
+            int trackingFrequency = 2000,
+            int trackingStartDelay = 0)
         {
             if (watcherToken != null)
             {
@@ -721,7 +764,6 @@ namespace GogOssLibraryNS
                 }
             });
         }
-
     }
 
     public class GogOssUpdateController
@@ -750,10 +792,12 @@ namespace GogOssLibraryNS
                 {
                     oldBuildBranch = newGameInfo.items.FirstOrDefault(i => i.legacy_build_id == installedInfo.build_id)?.branch;
                 }
+
                 if (!oldBuildBranch.IsNullOrEmpty())
                 {
                     newBuild = newGameInfo.items[0];
                 }
+
                 if (!newBuild.legacy_build_id.IsNullOrEmpty())
                 {
                     if (installedInfo.build_id != newBuild.legacy_build_id)
@@ -772,6 +816,7 @@ namespace GogOssLibraryNS
                 {
                     updateAvailable = true;
                 }
+
                 if (updateAvailable)
                 {
                     var updateSize = await GogOss.CalculateGameSize(gameId, installedInfo);
@@ -781,6 +826,7 @@ namespace GogOssLibraryNS
                     {
                         newVersionName = "";
                     }
+
                     newVersionName = $"{newVersionName}{newBuild.date_published.ToLocalTime().ToString("d", formatInfo)}";
                     var newManifest = await gogDownloadApi.GetGameMetaManifest(newBuild.build_id, newBuild.branch, newBuild.os);
                     var updateInfo = new UpdateInfo
@@ -799,6 +845,7 @@ namespace GogOssLibraryNS
                     {
                         updateInfo.BetaChannel = newBuild.branch;
                     }
+
                     gamesToUpdate.Add(gameId, updateInfo);
                 }
             }
@@ -815,10 +862,13 @@ namespace GogOssLibraryNS
                 };
                 gamesToUpdate.Add(gameId, updateInfo);
             }
+
             return gamesToUpdate;
         }
 
-        public async Task UpdateGame(Dictionary<string, UpdateInfo> gamesToUpdate, string gameTitle = "", bool silently = false, DownloadProperties downloadProperties = null)
+        public async Task UpdateGame(
+            Dictionary<string, UpdateInfo> gamesToUpdate, string gameTitle = "", bool silently = false,
+            DownloadProperties downloadProperties = null)
         {
             var updateTasks = new List<DownloadManagerData.Download>();
             if (gamesToUpdate.Count > 0)
@@ -829,8 +879,10 @@ namespace GogOssLibraryNS
                     if (silently)
                     {
                         var playniteApi = API.Instance;
-                        playniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdates", LocalizationManager.Instance.GetString(LOC.CommonGamesUpdatesUnderway), NotificationType.Info));
+                        playniteApi.Notifications.Add(new NotificationMessage("GogOssGamesUpdates",
+                            LocalizationManager.Instance.GetString(LOC.CommonGamesUpdatesUnderway), NotificationType.Info));
                     }
+
                     var settings = GogOssLibrary.GetSettings();
                     foreach (var gameToUpdate in gamesToUpdate)
                     {
@@ -843,6 +895,7 @@ namespace GogOssLibraryNS
                         {
                             newDownloadProperties = Serialization.GetClone(downloadProperties);
                         }
+
                         newDownloadProperties.buildId = gameToUpdate.Value.Build_id;
                         newDownloadProperties.version = gameToUpdate.Value.Version;
                         newDownloadProperties.language = gameToUpdate.Value.Language;
@@ -853,6 +906,7 @@ namespace GogOssLibraryNS
                         {
                             newDownloadProperties.betaChannel = gameToUpdate.Value.BetaChannel;
                         }
+
                         var updateTask = new DownloadManagerData.Download
                         {
                             gameID = gameToUpdate.Key,
@@ -866,6 +920,7 @@ namespace GogOssLibraryNS
                         updateTask.fullInstallPath = gameToUpdate.Value.Install_path;
                         updateTasks.Add(updateTask);
                     }
+
                     var downloadLogic = (GogOssDownloadLogic)GogOssLibrary.Instance.UnifiedDownloadLogic;
                     if (updateTasks.Count > 0)
                     {
@@ -892,6 +947,7 @@ namespace GogOssLibraryNS
                 {
                     canUpdate = false;
                 }
+
                 if (canUpdate)
                 {
                     var gogOssUpdateController = new GogOssUpdateController();
@@ -905,6 +961,7 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             return gamesToUpdate;
         }
     }

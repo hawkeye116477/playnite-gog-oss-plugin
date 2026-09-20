@@ -1,9 +1,9 @@
-﻿using GogOssLibraryNS.Models;
+﻿using System.Collections.Generic;
+using System.Net;
+using GogOssLibraryNS.Models;
 using Playnite.Common.Web;
 using Playnite.SDK;
 using Playnite.SDK.Data;
-using System.Collections.Generic;
-using System.Net;
 
 namespace GogOssLibraryNS.Services
 {
@@ -11,17 +11,14 @@ namespace GogOssLibraryNS.Services
     {
         private ILogger logger = LogManager.GetLogger();
 
-        public GogApiClient()
-        {
-        }
-
         public StorePageResult.ProductDetails GetGameStoreData(string gameUrl)
         {
             string[] data;
 
             try
             {
-                data = HttpDownloader.DownloadString(gameUrl, new List<System.Net.Cookie>() { new System.Net.Cookie("gog_lc", GogOss.EnStoreLocaleString) }).Split('\n');
+                data = HttpDownloader.DownloadString(gameUrl, new List<Cookie> { new Cookie("gog_lc", GogOss.EnStoreLocaleString) })
+                                     .Split('\n');
             }
             catch (WebException)
             {
@@ -67,7 +64,8 @@ namespace GogOssLibraryNS.Services
 
             try
             {
-                var stringData = HttpDownloader.DownloadString(string.Format(baseUrl, id, locale), new List<Cookie>() { new Cookie("gog_lc", GogOss.EnStoreLocaleString) });
+                var stringData = HttpDownloader.DownloadString(string.Format(baseUrl, id, locale),
+                    new List<Cookie> { new Cookie("gog_lc", GogOss.EnStoreLocaleString) });
                 return Serialization.FromJson<ProductApiDetail>(stringData);
             }
             catch (WebException exc)

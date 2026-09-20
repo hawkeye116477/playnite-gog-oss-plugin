@@ -1,13 +1,4 @@
-﻿using CommonPlugin;
-using CommonPlugin.Enums;
-using GogOssLibraryNS.Models;
-using GogOssLibraryNS.Services;
-using Linguini.Shared.Types.Bundle;
-using Playnite.Common;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using Playnite.SDK.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -16,6 +7,15 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CommonPlugin;
+using CommonPlugin.Enums;
+using GogOssLibraryNS.Models;
+using GogOssLibraryNS.Services;
+using Linguini.Shared.Types.Bundle;
+using Playnite.Common;
+using Playnite.SDK;
+using Playnite.SDK.Data;
+using Playnite.SDK.Models;
 
 namespace GogOssLibraryNS
 {
@@ -25,7 +25,9 @@ namespace GogOssLibraryNS
         public GogDownloadApi gogDownloadApi = new GogDownloadApi();
         private static readonly RetryHandler retryHandler = new(new HttpClientHandler());
         public static readonly HttpClient httpClient = new(retryHandler);
-        public static string UserAgent => "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
+
+        public static string UserAgent =>
+            "GOGGalaxyCommunicationService/2.0.13.27 (Windows_32bit) dont_sync_marker/true installation_source/gog";
 
         static GogOssCloud()
         {
@@ -48,14 +50,17 @@ namespace GogOssLibraryNS
                     }
                 }
             }
+
             if (!File.Exists(cacheCloudFile))
             {
-                GlobalProgressOptions metadataProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteProgressMetadata), false);
+                GlobalProgressOptions metadataProgressOptions =
+                    new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteProgressMetadata), false);
                 var playniteAPI = API.Instance;
-                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                playniteAPI.Dialogs.ActivateGlobalProgress(async a =>
                 {
                     var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
-                    var request = new HttpRequestMessage(HttpMethod.Get, $"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
+                    var request = new HttpRequestMessage(HttpMethod.Get,
+                        $"https://remote-config.gog.com/components/galaxy_client/clients/{gameInfo.clientId}?component_version=2.0.45");
                     using var response = await httpClient.SendAsync(request);
                     if (response.IsSuccessStatusCode)
                     {
@@ -64,6 +69,7 @@ namespace GogOssLibraryNS
                         {
                             Directory.CreateDirectory(cacheCloudPath);
                         }
+
                         File.WriteAllText(cacheCloudFile, content);
                     }
                 }, metadataProgressOptions);
@@ -72,6 +78,7 @@ namespace GogOssLibraryNS
             {
                 content = FileSystem.ReadFileAsStringSafe(cacheCloudFile);
             }
+
             var remoteConfig = new GogRemoteConfig();
             if (content.IsNullOrWhiteSpace())
             {
@@ -81,6 +88,7 @@ namespace GogOssLibraryNS
             {
                 remoteConfig = remoteInfoContent;
             }
+
             return remoteConfig;
         }
 
@@ -96,8 +104,11 @@ namespace GogOssLibraryNS
                 {
                     { "INSTALL", game.InstallDirectory },
                     { "APPLICATION_DATA_LOCAL", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) },
-                    { "APPLICATION_DATA_LOCAL_LOW", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow") },
-                    { "APPLICATION_DATA_ROAMING",  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) },
+                    {
+                        "APPLICATION_DATA_LOCAL_LOW",
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow")
+                    },
+                    { "APPLICATION_DATA_ROAMING", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) },
                     { "DOCUMENTS", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) },
                     { "SAVED_GAMES", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Saved Games") }
                 };
@@ -118,6 +129,7 @@ namespace GogOssLibraryNS
                             logger.Warn($"Unknown variable {variable} in cloud save path");
                         }
                     }
+
                     cloudLocation.location = Path.GetFullPath(cloudLocation.location);
                     calculatedPaths.AddMissing(cloudLocation);
                 }
@@ -128,14 +140,17 @@ namespace GogOssLibraryNS
                 var cloudLocation = new GogRemoteConfig.CloudLocation
                 {
                     name = "__default",
-                    location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GOG.com", "Galaxy", "Applications", gameInfo.clientId, "Storage", "Shared", "Files")
+                    location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GOG.com", "Galaxy",
+                        "Applications", gameInfo.clientId, "Storage", "Shared", "Files")
                 };
                 calculatedPaths.Add(cloudLocation);
             }
+
             return calculatedPaths;
         }
 
-        internal async Task UploadGameSaves(CloudFile localFile, List<CloudFile> cloudFiles, string urlPart, bool force, HttpRequestHeaders requestHeaders)
+        internal async Task UploadGameSaves(
+            CloudFile localFile, List<CloudFile> cloudFiles, string urlPart, bool force, HttpRequestHeaders requestHeaders)
         {
             var data = File.ReadAllBytes(localFile.real_file_path);
             StreamContent compressedData;
@@ -145,6 +160,7 @@ namespace GogOssLibraryNS
                 gzip.Write(data, 0, data.Length);
                 gzip.Close();
             }
+
             outputStream.Position = 0;
             compressedData = new StreamContent(outputStream);
             var compressedStream = await compressedData.ReadAsByteArrayAsync();
@@ -158,12 +174,14 @@ namespace GogOssLibraryNS
                     logger.Warn($"Skipping upload, cuz identical '{localFile.name}' file is already in the cloud.");
                     return;
                 }
-                if (force != true && fileExistsInCloud.timestamp > localFile.timestamp)
+
+                if (!force && fileExistsInCloud.timestamp > localFile.timestamp)
                 {
                     logger.Warn($"Skipping upload, cuz '{localFile.name}' file in the cloud is newer.");
                     return;
                 }
             }
+
             logger.Debug($"Uploading {localFile.real_file_path} ({localFile.name}) file... .");
             compressedData.Headers.Add("Content-Encoding", "gzip");
             try
@@ -176,6 +194,7 @@ namespace GogOssLibraryNS
                 {
                     request.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
+
                 request.Headers.Remove("Accept");
                 request.Headers.Add("Etag", hash);
                 request.Headers.Add("X-Object-Meta-LocalLastModified", localFile.last_modified);
@@ -192,11 +211,12 @@ namespace GogOssLibraryNS
             }
         }
 
-        internal async Task<bool> DownloadGameSaves(CloudFile cloudFile, List<CloudFile> localFiles, string urlPart, bool force, HttpRequestHeaders requestHeaders)
+        internal async Task<bool> DownloadGameSaves(
+            CloudFile cloudFile, List<CloudFile> localFiles, string urlPart, bool force, HttpRequestHeaders requestHeaders)
         {
             bool errorDisplayed = false;
             var fileExistsLocally = localFiles.FirstOrDefault(f => f.name == cloudFile.name);
-            if (fileExistsLocally != null && force != true)
+            if (fileExistsLocally != null && !force)
             {
                 var cloudTimeStamp = cloudFile.timestamp;
                 if (fileExistsLocally.timestamp > cloudTimeStamp)
@@ -204,12 +224,14 @@ namespace GogOssLibraryNS
                     logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' local file is newer.");
                     return errorDisplayed;
                 }
+
                 if (fileExistsLocally.timestamp == cloudTimeStamp)
                 {
                     logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
                     return errorDisplayed;
                 }
             }
+
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, $"https://cloudstorage.gog.com/v1/{urlPart}");
@@ -217,6 +239,7 @@ namespace GogOssLibraryNS
                 {
                     request.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
+
                 request.Headers.Remove("Accept");
                 using var downloadResponse = await httpClient.SendAsync(request);
                 downloadResponse.EnsureSuccessStatusCode();
@@ -230,9 +253,10 @@ namespace GogOssLibraryNS
                 if (fileExistsLocally != null)
                 {
                     var cloudLocalLastModifiedTs = ((DateTimeOffset)cloudLocalLastModified).ToUnixTimeSeconds();
-                    if (force != true && fileExistsLocally.timestamp == cloudLocalLastModifiedTs)
+                    if (!force && fileExistsLocally.timestamp == cloudLocalLastModifiedTs)
                     {
-                        logger.Warn($"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
+                        logger.Warn(
+                            $"Skipping download, cuz '{fileExistsLocally.real_file_path}' file with same date is already available.");
                         return errorDisplayed;
                     }
                 }
@@ -244,14 +268,17 @@ namespace GogOssLibraryNS
                 {
                     Directory.CreateDirectory(neededDirectory);
                 }
+
                 using (GZipStream gzip = new GZipStream(downloadStream, CompressionMode.Decompress, true))
                 {
                     using (var fileStream = File.Create(cloudFile.real_file_path))
                     {
                         gzip.CopyTo(fileStream);
                     }
+
                     gzip.Close();
                 }
+
                 File.SetLastWriteTime(cloudFile.real_file_path, cloudLocalLastModified);
             }
             catch (Exception exception)
@@ -259,10 +286,13 @@ namespace GogOssLibraryNS
                 logger.Error($"An error occured while downloading '{cloudFile.real_file_path}' file: {exception}.");
                 errorDisplayed = true;
             }
+
             return errorDisplayed;
         }
 
-        internal void SyncGameSaves(Game game, CloudSyncAction cloudSyncAction, bool force = false, bool manualSync = false, bool skipRefreshingMetadata = true, string cloudSaveFolder = "")
+        internal void SyncGameSaves(
+            Game game, CloudSyncAction cloudSyncAction, bool force = false, bool manualSync = false, bool skipRefreshingMetadata = true,
+            string cloudSaveFolder = "")
         {
             var logger = LogManager.GetLogger();
             var cloudSyncEnabled = GogOssLibrary.GetSettings().SyncGameSaves;
@@ -271,10 +301,12 @@ namespace GogOssLibraryNS
             {
                 cloudSyncEnabled = (bool)gameSettings.AutoSyncSaves;
             }
+
             if (manualSync)
             {
                 cloudSyncEnabled = true;
             }
+
             var cloudSaveFolders = new List<GogRemoteConfig.CloudLocation>();
             if (cloudSyncEnabled)
             {
@@ -306,8 +338,10 @@ namespace GogOssLibraryNS
                 }
 
                 var playniteAPI = API.Instance;
-                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonSyncing, new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)game.Name }), false);
-                playniteAPI.Dialogs.ActivateGlobalProgress(async (a) =>
+                GlobalProgressOptions globalProgressOptions = new GlobalProgressOptions(
+                    LocalizationManager.Instance.GetString(LOC.CommonSyncing,
+                        new Dictionary<string, IFluentType> { ["gameTitle"] = (FluentString)game.Name }), false);
+                playniteAPI.Dialogs.ActivateGlobalProgress(async a =>
                 {
                     a.IsIndeterminate = true;
                     var gogAccountClient = new GogAccountClient();
@@ -318,7 +352,8 @@ namespace GogOssLibraryNS
                         if (tokens != null)
                         {
                             var gameInfo = GogOss.GetGogGameInfo(game.GameId, game.InstallDirectory);
-                            var request = new HttpRequestMessage(HttpMethod.Get, $"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}");
+                            var request = new HttpRequestMessage(HttpMethod.Get,
+                                $"https://cloudstorage.gog.com/v1/{tokens.user_id}/{gameInfo.clientId}");
                             request.Headers.Add("Accept", "application/json");
                             var metaManifest = await gogDownloadApi.GetGameMetaManifest(game.GameId);
                             var urlParams = new Dictionary<string, string>
@@ -333,13 +368,16 @@ namespace GogOssLibraryNS
                             if (credentialsResponse.IsSuccessStatusCode)
                             {
                                 var credentialsResponseContent = await credentialsResponse.Content.ReadAsStringAsync();
-                                var credentialsResponseJson = Serialization.FromJson<TokenResponse.TokenResponsePart>(credentialsResponseContent);
+                                var credentialsResponseJson =
+                                    Serialization.FromJson<TokenResponse.TokenResponsePart>(credentialsResponseContent);
                                 request.Headers.Add("Authorization", $"Bearer {credentialsResponseJson.access_token}");
                             }
                             else
                             {
-                                logger.Error($"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
+                                logger.Error(
+                                    $"Can't get token for cloud sync: {await credentialsResponse.RequestMessage.Content.ReadAsStringAsync()}.");
                             }
+
                             var cloudFiles = new List<CloudFile>();
                             using var response = await httpClient.SendAsync(request);
                             if (response.IsSuccessStatusCode)
@@ -354,6 +392,7 @@ namespace GogOssLibraryNS
                             {
                                 logger.Error($"{response.ReasonPhrase}: {response.StatusCode}");
                             }
+
                             if (cloudFiles.Count > 0)
                             {
                                 foreach (var cloudFile in cloudFiles.ToList())
@@ -365,13 +404,17 @@ namespace GogOssLibraryNS
                                         cloudFiles.Remove(cloudFile);
                                         continue;
                                     }
+
                                     var wantedItem = cloudSaveFolders.FirstOrDefault(s => cloudFile.name.Contains(s.name));
                                     if (wantedItem != null)
                                     {
-                                        cloudFile.real_file_path = CommonHelpers.NormalizePath(cloudFile.name.ReplaceFirst($"{wantedItem.name}", wantedItem.location));
+                                        cloudFile.real_file_path =
+                                            CommonHelpers.NormalizePath(cloudFile.name.ReplaceFirst($"{wantedItem.name}",
+                                                wantedItem.location));
                                     }
                                 }
                             }
+
                             var localFiles = new List<CloudFile>();
                             foreach (var cloudSaveFolder in cloudSaveFolders)
                             {
@@ -379,6 +422,7 @@ namespace GogOssLibraryNS
                                 {
                                     Directory.CreateDirectory(cloudSaveFolder.location);
                                 }
+
                                 foreach (var fileName in Directory.GetFiles(cloudSaveFolder.location, "*", SearchOption.AllDirectories))
                                 {
                                     if (File.Exists(fileName))
@@ -390,12 +434,14 @@ namespace GogOssLibraryNS
                                             real_file_path = fileName,
                                             timestamp = lastWriteTimeTs,
                                             last_modified = lastWriteTime.ToString("yyyy-MM-ddTHH:mm:sszzz"),
-                                            name = $"{cloudSaveFolder.name}/{RelativePath.Get(cloudSaveFolder.location, fileName).Replace(Path.DirectorySeparatorChar.ToString(), @"/")}"
+                                            name =
+                                                $"{cloudSaveFolder.name}/{RelativePath.Get(cloudSaveFolder.location, fileName).Replace(Path.DirectorySeparatorChar.ToString(), @"/")}"
                                         };
                                         localFiles.Add(newCloudFile);
                                     }
                                 }
                             }
+
                             switch (cloudSyncAction)
                             {
                                 case CloudSyncAction.Upload:
@@ -407,9 +453,11 @@ namespace GogOssLibraryNS
                                     {
                                         foreach (var localFile in localFiles.ToList())
                                         {
-                                            await UploadGameSaves(localFile, cloudFiles, $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force, request.Headers);
+                                            await UploadGameSaves(localFile, cloudFiles,
+                                                $"{tokens.user_id}/{gameInfo.clientId}/{localFile.name}", force, request.Headers);
                                         }
                                     }
+
                                     break;
                                 case CloudSyncAction.Download:
                                     if (cloudFiles.Count == 0)
@@ -422,12 +470,14 @@ namespace GogOssLibraryNS
                                         var gameSettings = GogOssGameSettingsView.LoadGameSettings(game.GameId);
                                         foreach (var cloudFile in cloudFiles)
                                         {
-                                            var result = await DownloadGameSaves(cloudFile, localFiles, $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force, request.Headers);
+                                            var result = await DownloadGameSaves(cloudFile, localFiles,
+                                                $"{tokens.user_id}/{gameInfo.clientId}/{cloudFile.name}", force, request.Headers);
                                             if (result)
                                             {
                                                 errorDisplayed = true;
                                             }
                                         }
+
                                         if (!errorDisplayed)
                                         {
                                             gameSettings.LastCloudSavesDownloadAttempt = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
@@ -435,6 +485,7 @@ namespace GogOssLibraryNS
                                             commonHelpers.SaveJsonSettingsToFile(gameSettings, "GamesSettings", game.GameId, true);
                                         }
                                     }
+
                                     break;
                             }
                         }

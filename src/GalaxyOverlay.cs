@@ -1,20 +1,22 @@
-﻿using Galaxy.Protocols.CommunicationService;
-using GogOssLibraryNS.Models;
-using Google.Protobuf;
-using Playnite.SDK;
-using Playnite.SDK.Data;
-using System;
+﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Galaxy.Protocols.CommunicationService;
+using Gog.Protocols.Pb;
+using GogOssLibraryNS.Models;
+using Google.Protobuf;
+using Playnite.SDK;
+using Playnite.SDK.Data;
 
 namespace GogOssLibraryNS
 {
     public class GalaxyOverlay
     {
         private static ILogger logger = LogManager.GetLogger();
+
         public static OverlayInstalled GetInstalledInfo()
         {
             var overlayInstalledFilePath = Path.Combine(GogOssLibrary.Instance.GetPluginUserDataPath(), "overlay_installed.json");
@@ -23,11 +25,13 @@ namespace GogOssLibraryNS
             if (File.Exists(overlayInstalledFilePath))
             {
                 var overlayFileContent = File.ReadAllText(overlayInstalledFilePath);
-                if (!overlayFileContent.IsNullOrWhiteSpace() && Serialization.TryFromJson<OverlayInstalled>(overlayFileContent, out var newOverlayInstalledJson))
+                if (!overlayFileContent.IsNullOrWhiteSpace() &&
+                    Serialization.TryFromJson<OverlayInstalled>(overlayFileContent, out var newOverlayInstalledJson))
                 {
                     overlayInstalledInfo = newOverlayInstalledJson;
                 }
             }
+
             return overlayInstalledInfo;
         }
 
@@ -40,10 +44,8 @@ namespace GogOssLibraryNS
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
         }
 
@@ -83,7 +85,7 @@ namespace GogOssLibraryNS
                 };
                 byte[] payload = request.ToByteArray();
 
-                var header = new Gog.Protocols.Pb.Header
+                var header = new Header
                 {
                     Size = (uint)payload.Length,
                     Oseq = 1,
@@ -109,6 +111,7 @@ namespace GogOssLibraryNS
                 {
                     logger.Error("Comet closed connection before sending ACK.");
                 }
+
                 return bytesRead > 0;
             }
             catch (Exception ex)
@@ -117,7 +120,5 @@ namespace GogOssLibraryNS
                 return false;
             }
         }
-
     }
-
 }

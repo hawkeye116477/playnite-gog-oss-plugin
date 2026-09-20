@@ -105,6 +105,5 @@ namespace GogOssLibraryNS.Models
             public string title { get; set; }
             public Dictionary<string, SizeType> size { get; set; } = new Dictionary<string, SizeType>();
         }
-
     }
 }

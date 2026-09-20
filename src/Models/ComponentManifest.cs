@@ -29,6 +29,5 @@ namespace GogOssLibraryNS.Models
             public int size { get; set; }
             public string unsignedHash { get; set; }
         }
-
     }
 }
