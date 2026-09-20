@@ -1638,7 +1638,6 @@ namespace GogOssLibraryNS
 
                                 bool isSfcContainer = item.FilePath.Contains(sfcContainerBaseName) && item.FilePath.StartsWith(tempDir) && bigDepot.version == 2;
 
-
                                 using (sourceStream)
                                 using (var outFs = new FileStream(item.FilePath, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read, bufferSize, FileOptions.Asynchronous))
                                 {
@@ -1920,10 +1919,20 @@ namespace GogOssLibraryNS
 
                                         try
                                         {
-                                            var result = await Cli.Wrap(Xdelta.InstallationPath)
-                                                                  .WithArguments(new[] { "-d", "-s", sourcePath, deltaTempPath, patchedTempPath })
-                                                                  .AddCommandToLog()
-                                                                  .ExecuteAsync();
+
+                                            long totalWritten = 0;
+                                        
+                                            VcdiffPatch.ProgressCallback patchCallback = (writtenBytes, totalBytes) =>
+                                            {
+                                                totalWritten = (long)writtenBytes;
+                                                Interlocked.Exchange(ref totalDiskBytes, (long)writtenBytes);
+                                            };
+
+                                            var patchingResult = VcdiffPatch.start_patching(sourcePath, deltaTempPath, patchedTempPath, (UIntPtr)(64 * 1024 * 1024), patchCallback);
+                                            if (patchingResult != 0)
+                                            {
+                                                throw new Exception($"Failed to apply xdelta3 patch for delta '{deltaTempPath}'. Error code: {patchingResult}.");
+                                            }
 
                                             Directory.CreateDirectory(Path.GetDirectoryName(finalTargetPath) ?? fullInstallPath);
 
@@ -2113,7 +2122,7 @@ namespace GogOssLibraryNS
 
             bool foundPatch = false;
             GogDepot.Depot patchesDepot = new();
-            if (matchingPluginTask.downloadProperties.downloadAction == DownloadAction.Update && Xdelta.IsInstalled && matchingPluginTask.downloadItemType == DownloadItemType.Game)
+            if (matchingPluginTask.downloadProperties.downloadAction == DownloadAction.Update && matchingPluginTask.downloadItemType == DownloadItemType.Game)
             {
                 var metaManifest = await gogDownloadApi.GetGameMetaManifest(matchingPluginTask);
                 var installedAppList = GogOssLibrary.GetInstalledAppList();
@@ -2159,13 +2168,6 @@ namespace GogOssLibraryNS
                             }
                         }
                     }
-                }
-            }
-            else
-            {
-                if (!Xdelta.IsInstalled)
-                {
-                    logger.Warn("Xdelta3 isn't installed, so patching isn't possible.");
                 }
             }
 

@@ -133,16 +133,6 @@ namespace GogOssLibraryNS
                 CometUpdatesSP.IsEnabled = false;
             }
 
-            if (!Xdelta.IsInstalled)
-            {
-                var xdeltaFluentArgs = new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Xdelta" };
-                XdeltaBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, xdeltaFluentArgs);
-            }
-            else
-            {
-                XdeltaBinaryTxt.Text = troubleshootingInformation.XdeltaBinary;
-            }
-
             troubleshootingInformation.GogdlVersion = "Not%20needed";
             PlayniteVersionTxt.Text = GogOssTroubleshootingInformation.PlayniteVersion;
             PluginVersionTxt.Text = troubleshootingInformation.PluginVersion;
@@ -419,20 +409,6 @@ namespace GogOssLibraryNS
                     }
                 }
             }, globalProgressOptions);
-        }
-
-        private void ChooseXdeltaBtn_Click(object sender, RoutedEventArgs e)
-        {
-            var file = playniteAPI.Dialogs.SelectFile($"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExecutableTitle)}|xdelta3*.exe");
-            if (file != "")
-            {
-                SelectedXdeltaPathTxt.Text = file;
-            }
-        }
-
-        private void OpenXdeltaBinaryBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Xdelta.StartClient();
         }
 
         private void MigrateRevertGogBtn_Click(object sender, RoutedEventArgs e)

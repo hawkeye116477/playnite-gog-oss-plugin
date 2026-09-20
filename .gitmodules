@@ -1,3 +1,6 @@
 [submodule "third_party/gog_protocols"]
 	path = third_party/gog_protocols
 	url = https://github.com/Yepoleb/gog_protocols.git
+[submodule "third_party/HDiffPatch"]
+	path = third_party/HDiffPatch
+	url = https://github.com/sisong/HDiffPatch.git

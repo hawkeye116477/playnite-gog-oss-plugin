@@ -225,3 +225,8 @@ Tomlet - https://github.com/SamboyCoding/Tomlet
 MIT License
 Copyright (c) 2021 Sam Byass
 
+
+HDiffPatch - https://github.com/sisong/HDiffPatch
+The MIT License (MIT)
+Copyright (c) 2022 HouSisong
+----------------------------------------------------------------------------------------
