@@ -1,5 +1,6 @@
 # playnite-gog-oss-plugin
-GOG library integration for [Playnite](https://github.com/JosefNemec/Playnite) with open-source tools ([Comet](https://github.com/imLinguin/comet), [Xdelta](https://github.com/hawkeye116477/xdelta)) instead of GOG Galaxy. It's based on [GOG library integration plugin](https://github.com/JosefNemec/PlayniteExtensions/tree/master/source/Libraries/GogLibrary).
+GOG library integration for [Playnite](https://github.com/JosefNemec/Playnite) with open-source tools like ([Comet](https://github.com/imLinguin/comet)) instead of GOG Galaxy. 
+It's based on [GOG library integration plugin](https://github.com/JosefNemec/PlayniteExtensions/tree/master/source/Libraries/GogLibrary).
 
 [![Crowdin](https://badges.crowdin.net/playnite-legendary-plugin/localized.svg)](https://crowdin.com/project/playnite-legendary-plugin)
 [![GitHub release (latest by date)](https://img.shields.io/github/downloads/hawkeye116477/playnite-gog-oss-plugin/latest/total)](https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/latest)
