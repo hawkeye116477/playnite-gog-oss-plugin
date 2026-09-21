@@ -92,3 +92,5 @@ common-instance-notice = { $pluginShortName } のインスタンスで一度に�
 common-reload = 再読み込み
 common-reload-confirm = データを再読み込みしてもよろしいですか？{ $updatesSourceName } サーバー付近で地震が発生する可能性があります。
 common-migrating-data = データを移行中... お待ちください。
+common-finish-installation = ゲームのインストールを完了
+common-no-finish-needed = インストールの完了が必要なゲームはありません。

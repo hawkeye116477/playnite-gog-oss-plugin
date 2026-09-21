@@ -21,3 +21,6 @@ gog-oss-top-right = Вверху справа
 gog-oss-bottom-left = Внизу слева
 gog-oss-bottom-right = Внизу справа
 gog-oss-enable-overlay = Включить оверлей Galaxy
+gog-oss-import-hidden-games = Импорт скрытых игр
+gog-oss-show-all-cdns = Показать все CDN
+gog-oss-game = Игра
