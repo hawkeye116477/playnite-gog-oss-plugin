@@ -819,7 +819,6 @@ namespace GogOssLibraryNS
 
                 if (updateAvailable)
                 {
-                    var updateSize = await GogOss.CalculateGameSize(gameId, installedInfo);
                     DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
                     var newVersionName = $"{newBuild.version_name} — ";
                     if (newBuild.version_name.IsNullOrEmpty())
@@ -829,6 +828,7 @@ namespace GogOssLibraryNS
 
                     newVersionName = $"{newVersionName}{newBuild.date_published.ToLocalTime().ToString("d", formatInfo)}";
                     var newManifest = await gogDownloadApi.GetGameMetaManifest(newBuild.build_id, newBuild.branch, newBuild.os);
+                    var updateSize = await GogOss.CalculateGameSize(gameId, installedInfo, newBuild.version_name, newBuild.build_id);
                     var updateInfo = new UpdateInfo
                     {
                         Install_path = installedInfo.install_path,

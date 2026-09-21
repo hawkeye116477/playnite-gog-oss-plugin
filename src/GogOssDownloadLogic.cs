@@ -1345,12 +1345,7 @@ namespace GogOssLibraryNS
                     long expectedFileCompressedSize =
                         depot.sfcRef != null && shouldDownloadSfc ? 0 : depot.chunks.Sum(c => (long)c.compressedSize);
 
-                    long targetSize = expectedFileSize;
-                    if (depot.target_size != 0)
-                    {
-                        targetSize = (long)depot.target_size;
-                    }
-                    totalSize += targetSize;
+                    totalSize += expectedFileSize;
 
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
@@ -2096,7 +2091,8 @@ namespace GogOssLibraryNS
                         foreach (var diff in depotDiffItems)
                         {
                             token.ThrowIfCancellationRequested();
-
+                            totalSize -= diff.chunks.Sum(c => (long)c.size);
+                            totalSize += (long)diff.target_size;
                             var patchTask = Task.Run(async () =>
                             {
                                 string sourceRel = diff.path_source ?? "";
@@ -2195,7 +2191,6 @@ namespace GogOssLibraryNS
                                     targetLock.Release();
                                 }
                             }, token);
-
                             patchingTasks.Add(patchTask);
                         }
 

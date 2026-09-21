@@ -324,7 +324,7 @@ namespace GogOssLibraryNS
         public static int DefaultConnectionTimeout = 10;
         public static int MaxMaxWorkers = 40;
 
-        public static async Task<GogGameMetaManifest.SizeType> CalculateGameSize(string gameId, Installed installedInfo)
+        public static async Task<GogGameMetaManifest.SizeType> CalculateGameSize(string gameId, Installed installedInfo, string version = "", string buildId = "")
         {
             var downloadProperties = new DownloadProperties
             {
@@ -334,6 +334,14 @@ namespace GogOssLibraryNS
                 version = installedInfo.version,
                 os = installedInfo.platform
             };
+            if (buildId != "")
+            {
+                downloadProperties.buildId = buildId;
+            }
+            if (version != "")
+            {
+                downloadProperties.version = version;
+            }
             var downloadData = new DownloadManagerData.Download
             {
                 gameID = gameId,
