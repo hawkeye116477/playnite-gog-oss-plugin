@@ -1,0 +1,15 @@
+gog-oss-language = Nyelv
+gog-oss-beta-channel = Béta csatorna
+gog-oss-notify-about = Értesíts amikor:
+gog-oss-notify-new-message = valaki új üzenetet küld
+gog-oss-notify-friend-invite = valaki baráti meghívót küld
+gog-oss-notify-friend-starts-game = egy barát elindít egy játékot
+gog-oss-notify-sound = Hang lejátszása az értesítésekhez
+gog-oss-notification-volume = Hangerő
+gog-oss-notification-position = Az értesítések helye
+gog-oss-top-left = Bal felül
+gog-oss-top-right = Jobb felül
+gog-oss-bottom-left = Bal alul
+gog-oss-bottom-right = Jobb alul
+gog-oss-import-hidden-games = Rejtett játékok importálása
+gog-oss-game = Játék
