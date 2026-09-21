@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/2571993a388889c024561d1626dfaf2b3fd55da7 and 
-### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
+### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
+### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = Không thể cài đặt trò chơi: { $var0 }
@@ -47,8 +47,8 @@ third-party-playnite-option-once-a-day = Mỗi ngày một lần
 third-party-playnite-option-once-a-week = Mỗi tuần một lần
 third-party-playnite-open = Mở
 third-party-playnite-unsaved-changes-ask-message = Bạn có muốn lưu các thay đổi không?
-third-party-gog-settings-import-installed-label = Nhập vào các trò chơi đã được cài đặt
-third-party-gog-settings-import-uninstalled-label = Nhập vào các trò chơi chưa được cài đặt
+third-party-gog-settings-import-installed-label = Nhập vào các trò chơi đã cài
+third-party-gog-settings-import-uninstalled-label = Nhập vào các trò chơi chưa cài
 third-party-gog-settings-connect-account = Kết nối tài khoản
 third-party-gog-login-checking = Đang kiểm tra trạng thái xác thực…
 third-party-gog-logged-in = Người dùng được xác thực
@@ -58,3 +58,4 @@ third-party-gog-authenticate-label = Xác thực
 third-party-gog-trouble-shooting-issues = Khắc phục sự cố
 third-party-gog-start-using-client = Bắt đầu sử dụng ứng dụng khách { $var0 }
 third-party-gog-metadata-language-label = Ngôn ngữ siêu dữ liệu
+third-party-gog-settings-use-vertical-covers = Dùng ảnh bìa dọc

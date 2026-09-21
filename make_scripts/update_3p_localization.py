@@ -67,12 +67,11 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
     xml_doc = ET.ElementTree(xml_root)
 
     new_filename = filename
-    if filename not in ["LocSource.xaml", "LocalizationKeys.cs", "locstatus.json"]:
-        loc_sub_dir = filename.replace("_", "-").replace(".xaml", "")
-        if filename == "en_US.xaml":
-            new_filename = "LocSource.xaml"
+    if filename not in ["LocalizationKeys.cs", "locstatus.json"]:
+        if filename == "LocSource.xaml":
+            new_filename = "en_US.xaml"
         playnite_loc = ET.parse(pj(main_path, "..", "PlayniteExtensions",
-                                "PlayniteRepo", "source", "Playnite", "Localization", new_filename))
+                                "PlayniteRepo", "source", "Playnite", "Localization", filename))
         for child in playnite_loc.getroot():
             key = child.get(ET.QName(xmlns_x, "Key"))
             if key in playnite_loc_keys:
@@ -85,10 +84,9 @@ for filename in os.listdir(pj(main_path, "..", "PlayniteExtensions", "PlayniteRe
                 if key_text != "":
                     xml_root.append(new_key)
 
-    if filename not in ["LocSource.xaml", "LocalizationKeys.cs", "locstatus.json"]:
-        loc_sub_dir = filename.replace("_", "-").replace(".xaml", "")
+        loc_sub_dir = new_filename.replace("_", "-").replace(".xaml", "")
         gog_file_path = pj(main_path, "..", "PlayniteExtensions",
-                          "source", "Libraries", "GOGLibrary", "Localization", filename)
+                          "source", "Libraries", "GOGLibrary", "Localization", new_filename)
         if os.path.isfile(gog_file_path):               
             gog_loc = ET.parse(gog_file_path)
             for child in gog_loc.getroot():

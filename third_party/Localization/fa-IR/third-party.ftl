@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/2571993a388889c024561d1626dfaf2b3fd55da7 and 
-### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
+### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
+### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = نمی‌توان بازی را نصب کرد: { $var0 }
@@ -47,14 +47,15 @@ third-party-playnite-option-once-a-day = یک بار در روز
 third-party-playnite-option-once-a-week = یکبار در هفته
 third-party-playnite-open = باز کن
 third-party-playnite-unsaved-changes-ask-message = آیا می خواهید تغییراتی را که ایجاد کرده اید ذخیره کنید؟
-third-party-gog-settings-import-installed-label = وارد کردن بازی های نصب شده
-third-party-gog-settings-import-uninstalled-label = واردات بازی های نصب نشده
+third-party-gog-settings-import-installed-label = درون‌برد بازی‌های نصب‌شده
+third-party-gog-settings-import-uninstalled-label = درون‌برد بازی‌های نصب‌نشده
 third-party-gog-settings-connect-account = اتصال حساب
 third-party-gog-login-checking = بررسی وضیعت تایید…
 third-party-gog-logged-in = کاربر تایید شد
-third-party-gog-not-logged-in = نیاز به تائید هویت
-third-party-gog-not-logged-in-error = شکست در تایید کاربر.
+third-party-gog-not-logged-in = نیاز به تأیید هویت
+third-party-gog-not-logged-in-error = ناکامی در تایید کاربر.
 third-party-gog-authenticate-label = احراز هویت
-third-party-gog-trouble-shooting-issues = عیب یابی مشکلات
-third-party-gog-start-using-client = شروع به استفاده از سرویس گیرنده { $var0 } کنید
+third-party-gog-trouble-shooting-issues = عیب‌یابی مشکل‌ها
+third-party-gog-start-using-client = آغاز به‌کارگیری از کارخواه { $var0 }
 third-party-gog-metadata-language-label = زبان فراداده:
+third-party-gog-settings-use-vertical-covers = به‌کارگیری جلد عمودی

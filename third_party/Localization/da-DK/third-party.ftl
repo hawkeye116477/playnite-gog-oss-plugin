@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/2571993a388889c024561d1626dfaf2b3fd55da7 and 
-### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
+### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
+### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = Kan ikke installere spil: { $var0 }
@@ -36,5 +36,6 @@ third-party-gog-logged-in = Brugeren er verificeret
 third-party-gog-not-logged-in = Kræver verificering
 third-party-gog-not-logged-in-error = Det lykkedes ikke at verificere brugeren
 third-party-gog-authenticate-label = Verificering
+third-party-gog-trouble-shooting-issues = Problemer med fejlfinding
 third-party-gog-start-using-client = Begynd at bruge { $var0 } klient
 third-party-gog-metadata-language-label = Metadata sprog:

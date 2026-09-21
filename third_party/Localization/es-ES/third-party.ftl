@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/2571993a388889c024561d1626dfaf2b3fd55da7 and 
-### https://github.com/JosefNemec/Playnite/tree/81a66b1b0cdca691eefcc03095ca20ce627db907. 
+### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
+### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = No se puede instalar el juego: { $var0 }
@@ -24,14 +24,14 @@ third-party-playnite-settings-clear-cache-title = ¿Limpiar cache?
 third-party-playnite-settings-playtime-import-mode-never = Nunca
 third-party-playnite-login-required = Autenticación requerida
 third-party-playnite-executable-title = Ejecutable
-third-party-playnite-working-dir-title = Directorio de Trabajo
+third-party-playnite-working-dir-title = Directorio de trabajo
 third-party-playnite-game-install-dir-title = Directorio de instalación
 third-party-playnite-library-import-error = Error al importar los juegos de { $var0 }.
 third-party-playnite-metadata-download-error = Error al descargar los metadatos: { $var0 }
 third-party-playnite-uninstalling = Desinstalando
 third-party-playnite-close = Cerrar
-third-party-playnite-updater-window-title = Actualización Disponible
-third-party-playnite-updater-install-update = Instalar Actualización
+third-party-playnite-updater-window-title = Actualización disponible
+third-party-playnite-updater-install-update = Descargar e instalar actualización
 third-party-playnite-check-for-updates = Comprobar actualizaciones
 third-party-playnite-update-check-fail-message = Error al comprobar actualizaciones.
 third-party-playnite-install-game = Instalar
@@ -58,3 +58,4 @@ third-party-gog-authenticate-label = Autenticar
 third-party-gog-trouble-shooting-issues = Resolución de problemas
 third-party-gog-start-using-client = Iniciar usando el cliente { $var0 }
 third-party-gog-metadata-language-label = Idioma de metadatos:
+third-party-gog-settings-use-vertical-covers = Usar cubiertas verticales
