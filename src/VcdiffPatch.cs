@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Playnite.SDK;
 
@@ -17,7 +19,7 @@ namespace GogOssLibraryNS
         internal delegate void ProgressCallback(ulong writtenBytes, ulong totalBytes);
 
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         private static extern IntPtr LoadLibrary(string lpFileName);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -26,7 +28,7 @@ namespace GogOssLibraryNS
         public static bool CanLoad()
         {
             bool available = true;
-            var handle = LoadLibrary(LibraryName);
+            var handle = LoadLibrary(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), LibraryName));
 
             if (handle == IntPtr.Zero)
             {
