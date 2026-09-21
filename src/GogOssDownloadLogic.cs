@@ -1321,9 +1321,15 @@ namespace GogOssLibraryNS
                         writeSemaphores.TryAdd(filePath, new SemaphoreSlim(1));
                     }
 
-                    long expectedFileSize = depot.sfcRef != null && shouldDownloadSfc ?
-                        (long)depot.sfcRef.size :
-                        depot.chunks.Sum(c => (long)c.size);
+                    long expectedFileSize;
+                    if (depot.sfcRef != null && shouldDownloadSfc)
+                    {
+                        expectedFileSize = (long)depot.sfcRef.size;
+                    }
+                    else
+                    {
+                        expectedFileSize = depot.chunks.Sum(c => (long)c.size);
+                    }
 
                     if (expectedFileSize == 0)
                     {
@@ -1339,7 +1345,12 @@ namespace GogOssLibraryNS
                     long expectedFileCompressedSize =
                         depot.sfcRef != null && shouldDownloadSfc ? 0 : depot.chunks.Sum(c => (long)c.compressedSize);
 
-                    totalSize += expectedFileSize;
+                    long targetSize = expectedFileSize;
+                    if (depot.target_size != 0)
+                    {
+                        targetSize = (long)depot.target_size;
+                    }
+                    totalSize += targetSize;
 
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
@@ -1545,16 +1556,16 @@ namespace GogOssLibraryNS
                                                              if (resumeStartByte >= compressedSize)
                                                              {
                                                                  await channel.Writer.WriteAsync(new ChunkData
-                                                                               {
-                                                                                   FilePath = job.filePath,
-                                                                                   Offset = job.offset,
-                                                                                   Length = (int)compressedSize,
-                                                                                   TempFilePath = tempFilePath,
-                                                                                   AllocatedBytes = 0,
-                                                                                   DepotFileType = job.depotFileType,
-                                                                                   IsCompressed = isCompressed,
-                                                                                   ChunkId = $"{chunk.compressedMd5}",
-                                                                               }, token)
+                                                                 {
+                                                                     FilePath = job.filePath,
+                                                                     Offset = job.offset,
+                                                                     Length = (int)compressedSize,
+                                                                     TempFilePath = tempFilePath,
+                                                                     AllocatedBytes = 0,
+                                                                     DepotFileType = job.depotFileType,
+                                                                     IsCompressed = isCompressed,
+                                                                     ChunkId = $"{chunk.compressedMd5}",
+                                                                 }, token)
                                                                               .ConfigureAwait(false);
                                                                  tempFilePath = null;
                                                                  return;
@@ -1583,16 +1594,16 @@ namespace GogOssLibraryNS
                                                      if (File.Exists(tempFilePath))
                                                      {
                                                          await channel.Writer.WriteAsync(new ChunkData
-                                                                       {
-                                                                           FilePath = job.filePath,
-                                                                           Offset = job.offset,
-                                                                           Length = (int)compressedSize,
-                                                                           AllocatedBytes = 0,
-                                                                           TempFilePath = tempFilePath,
-                                                                           DepotFileType = job.depotFileType,
-                                                                           IsCompressed = isCompressed,
-                                                                           ChunkId = $"{chunk.compressedMd5}"
-                                                                       }, token)
+                                                         {
+                                                             FilePath = job.filePath,
+                                                             Offset = job.offset,
+                                                             Length = (int)compressedSize,
+                                                             AllocatedBytes = 0,
+                                                             TempFilePath = tempFilePath,
+                                                             DepotFileType = job.depotFileType,
+                                                             IsCompressed = isCompressed,
+                                                             ChunkId = $"{chunk.compressedMd5}"
+                                                         }, token)
                                                                       .ConfigureAwait(false);
                                                          return;
                                                      }
@@ -1616,16 +1627,16 @@ namespace GogOssLibraryNS
                                                          }
 
                                                          await channel.Writer.WriteAsync(new ChunkData
-                                                                       {
-                                                                           FilePath = job.filePath,
-                                                                           Offset = job.offset,
-                                                                           ChunkBuffer = chunkBuffer,
-                                                                           Length = (int)compressedSize,
-                                                                           AllocatedBytes = allocatedBytes,
-                                                                           DepotFileType = job.depotFileType,
-                                                                           IsCompressed = isCompressed,
-                                                                           ChunkId = $"{chunk.compressedMd5}"
-                                                                       }, token)
+                                                         {
+                                                             FilePath = job.filePath,
+                                                             Offset = job.offset,
+                                                             ChunkBuffer = chunkBuffer,
+                                                             Length = (int)compressedSize,
+                                                             AllocatedBytes = allocatedBytes,
+                                                             DepotFileType = job.depotFileType,
+                                                             IsCompressed = isCompressed,
+                                                             ChunkId = $"{chunk.compressedMd5}"
+                                                         }, token)
                                                                       .ConfigureAwait(false);
                                                          chunkBuffer = null;
                                                          allocatedBytes = 0;
@@ -1663,16 +1674,16 @@ namespace GogOssLibraryNS
                                                             .ConfigureAwait(false);
 
                                                          await channel.Writer.WriteAsync(new ChunkData
-                                                                       {
-                                                                           FilePath = job.filePath,
-                                                                           Offset = job.offset,
-                                                                           Length = (int)compressedSize,
-                                                                           AllocatedBytes = 0,
-                                                                           TempFilePath = tempFilePath,
-                                                                           DepotFileType = job.depotFileType,
-                                                                           IsCompressed = isCompressed,
-                                                                           ChunkId = $"{chunk.compressedMd5}"
-                                                                       }, token)
+                                                         {
+                                                             FilePath = job.filePath,
+                                                             Offset = job.offset,
+                                                             Length = (int)compressedSize,
+                                                             AllocatedBytes = 0,
+                                                             TempFilePath = tempFilePath,
+                                                             DepotFileType = job.depotFileType,
+                                                             IsCompressed = isCompressed,
+                                                             ChunkId = $"{chunk.compressedMd5}"
+                                                         }, token)
                                                                       .ConfigureAwait(false);
                                                          return;
                                                      }
@@ -1820,7 +1831,7 @@ namespace GogOssLibraryNS
                                                                            {
                                                                                await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
                                                                                           .ConfigureAwait(false);
-                                                                               if (!isSfcContainer)
+                                                                               if (!isSfcContainer && item.DepotFileType != DepotFileType.Patch)
                                                                                {
                                                                                    Interlocked.Add(ref totalDiskBytes, bytesRead);
                                                                                }
@@ -2122,12 +2133,13 @@ namespace GogOssLibraryNS
 
                                     try
                                     {
-                                        long totalWritten = 0;
+                                        ulong previousWritten = 0;
 
                                         VcdiffPatch.ProgressCallback patchCallback = (writtenBytes, totalBytes) =>
                                         {
-                                            totalWritten = (long)writtenBytes;
-                                            Interlocked.Exchange(ref totalDiskBytes, (long)writtenBytes);
+                                            ulong delta = writtenBytes - previousWritten;
+                                            previousWritten = writtenBytes;
+                                            Interlocked.Add(ref totalDiskBytes, (long)delta);
                                         };
 
                                         var patchingResult = VcdiffPatch.start_patching(sourcePath, deltaTempPath, patchedTempPath,
@@ -2384,6 +2396,25 @@ namespace GogOssLibraryNS
                         }
                     }
                 }
+                if (patchesDepot.items.Count > 0)
+                {
+                    foreach (var item in patchesDepot.items)
+                    {
+                        var searchedItem = bigDepot.items.FirstOrDefault(i => i.path == item.path_target);
+                        if (searchedItem != null)
+                        {
+                            double targetSize = 0;
+                            foreach (var chunk in searchedItem.chunks)
+                            {
+                                targetSize += chunk.size;
+                            }
+                            item.target_size = targetSize;
+                            bigDepot.items.Remove(searchedItem);
+                            bigDepot.items.Add(item);
+                        }
+                    }
+                }
+                patchesDepot = null;
             }
 
             if (foundPatch)
@@ -2514,8 +2545,8 @@ namespace GogOssLibraryNS
                         long verifiedFiles = 0;
                         long totalBytesRead = 0;
 
-                        bool hasPatches = patchesDepot.items.Count > 0;
-                        if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0 || hasPatches)
+
+                        if (bigDepot.items.Count > 0 || bigDepot.files.Count > 0)
                         {
                             var itemsMap = bigDepot.items.Where(i => !string.IsNullOrEmpty(i.path) && i.chunks?.Sum(c => (long)c.size) > 0)
                                                    .ToDictionary(i => i.path, i => i);
@@ -2523,7 +2554,7 @@ namespace GogOssLibraryNS
                             var filesMap = bigDepot.files.Where(f => !string.IsNullOrEmpty(f.path) && f.size > 0)
                                                    .ToDictionary(f => f.path, f => f);
 
-                            var patchesMap = patchesDepot.items.Where(p => !string.IsNullOrEmpty(p.path_source))
+                            var patchesMap = bigDepot.items.Where(p => !string.IsNullOrEmpty(p.path_source))
                                                          .ToDictionary(p => p.path_source, p => p);
 
                             var swDelta = new Stopwatch();
@@ -2584,126 +2615,118 @@ namespace GogOssLibraryNS
                                             var newFile = file;
                                             string relativePath = RelativePath.Get(wantedUnifiedTask.fullInstallPath, newFile);
 
-                                            if (hasPatches)
+                                            if (patchesMap.TryGetValue(relativePath, out var searchedPatchItem))
                                             {
-                                                if (patchesMap.TryGetValue(relativePath, out var searchedItem))
+                                                string correctChecksum = searchedPatchItem.md5_source;
+                                                string calculatedChecksum = Helpers.GetMD5(file, perFileProgress);
+                                                if (calculatedChecksum != null &&
+                                                    !string.Equals(calculatedChecksum, correctChecksum,
+                                                        StringComparison.OrdinalIgnoreCase))
                                                 {
-                                                    string correctChecksum = searchedItem.md5_source;
-                                                    string calculatedChecksum = Helpers.GetMD5(file, perFileProgress);
-                                                    if (calculatedChecksum != null &&
-                                                        !string.Equals(calculatedChecksum, correctChecksum,
-                                                            StringComparison.OrdinalIgnoreCase))
+                                                    try
                                                     {
-                                                        try
-                                                        {
-                                                            File.Delete(file);
-                                                        }
-                                                        catch (Exception)
-                                                        {
-                                                        }
-
-                                                        patchesDepot.items.Remove(searchedItem);
-                                                        GogDepot.Item bigDepotItem = bigDepot.items.FirstOrDefault(i =>
-                                                            i.path == searchedItem.path_source);
-                                                        if (bigDepotItem != null)
-                                                        {
-                                                            patchesDepot.items.Add(bigDepotItem);
-                                                        }
+                                                        File.Delete(file);
+                                                    }
+                                                    catch (Exception)
+                                                    {
+                                                    }
+                                                    bigDepot.items.Remove(searchedPatchItem);
+                                                    GogDepot.Item bigDepotItem = bigDepot.items.FirstOrDefault(i =>
+                                                        i.path == searchedPatchItem.path_source);
+                                                    if (bigDepotItem != null)
+                                                    {
+                                                        bigDepot.items.Add(bigDepotItem);
                                                     }
                                                 }
                                             }
-                                            else
+                                            if (itemsMap.TryGetValue(relativePath, out var searchedItem))
                                             {
-                                                if (itemsMap.TryGetValue(relativePath, out var searchedItem))
+                                                string checksumType = "md5";
+                                                string correctChecksum = "";
+
+                                                if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
                                                 {
-                                                    string checksumType = "md5";
-                                                    string correctChecksum = "";
-
-                                                    if (searchedItem.chunks != null && searchedItem.chunks.Count == 1)
-                                                    {
-                                                        correctChecksum = searchedItem.chunks[0].md5;
-                                                    }
-
-                                                    if (correctChecksum.IsNullOrEmpty())
-                                                    {
-                                                        correctChecksum = searchedItem.md5;
-                                                    }
-
-                                                    if (correctChecksum.IsNullOrEmpty())
-                                                    {
-                                                        correctChecksum = searchedItem.sha256;
-                                                        checksumType = "sha256";
-                                                    }
-
-                                                    if (!string.IsNullOrEmpty(correctChecksum))
-                                                    {
-                                                        try
-                                                        {
-                                                            string calculatedChecksum = checksumType switch
-                                                            {
-                                                                "md5" => Helpers.GetMD5(file, perFileProgress),
-                                                                "sha256" => Helpers.GetSHA256(file, perFileProgress),
-                                                                _ => null
-                                                            };
-
-                                                            if (calculatedChecksum != null &&
-                                                                !string.Equals(calculatedChecksum, correctChecksum,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                                            {
-                                                                try
-                                                                {
-                                                                    File.Delete(file);
-                                                                }
-                                                                catch (Exception)
-                                                                {
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                bigDepot.items.Remove(searchedItem);
-                                                            }
-                                                        }
-                                                        catch (Exception hashEx)
-                                                        {
-                                                            logger.Warn(hashEx, "");
-                                                        }
-                                                    }
+                                                    correctChecksum = searchedItem.chunks[0].md5;
                                                 }
 
-                                                if (filesMap.TryGetValue(relativePath, out var depotFile))
+                                                if (correctChecksum.IsNullOrEmpty())
                                                 {
-                                                    string correctMd5 = depotFile.hash;
-                                                    if (!string.IsNullOrEmpty(correctMd5))
-                                                    {
-                                                        try
-                                                        {
-                                                            string calculatedMd5 = Helpers.GetMD5(file, perFileProgress);
+                                                    correctChecksum = searchedItem.md5;
+                                                }
 
-                                                            if (calculatedMd5 != null &&
-                                                                !string.Equals(calculatedMd5, correctMd5,
-                                                                    StringComparison.OrdinalIgnoreCase))
-                                                            {
-                                                                try
-                                                                {
-                                                                    File.Delete(file);
-                                                                }
-                                                                catch (Exception)
-                                                                {
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                bigDepot.files.Remove(depotFile);
-                                                            }
-                                                        }
-                                                        catch (Exception hashEx)
+                                                if (correctChecksum.IsNullOrEmpty())
+                                                {
+                                                    correctChecksum = searchedItem.sha256;
+                                                    checksumType = "sha256";
+                                                }
+
+                                                if (!string.IsNullOrEmpty(correctChecksum))
+                                                {
+                                                    try
+                                                    {
+                                                        string calculatedChecksum = checksumType switch
                                                         {
-                                                            logger.Warn(hashEx, "");
+                                                            "md5" => Helpers.GetMD5(file, perFileProgress),
+                                                            "sha256" => Helpers.GetSHA256(file, perFileProgress),
+                                                            _ => null
+                                                        };
+
+                                                        if (calculatedChecksum != null &&
+                                                            !string.Equals(calculatedChecksum, correctChecksum,
+                                                                StringComparison.OrdinalIgnoreCase))
+                                                        {
+                                                            try
+                                                            {
+                                                                File.Delete(file);
+                                                            }
+                                                            catch (Exception)
+                                                            {
+                                                            }
                                                         }
+                                                        else
+                                                        {
+                                                            bigDepot.items.Remove(searchedItem);
+                                                        }
+                                                    }
+                                                    catch (Exception hashEx)
+                                                    {
+                                                        logger.Warn(hashEx, "");
                                                     }
                                                 }
                                             }
 
+                                            if (filesMap.TryGetValue(relativePath, out var depotFile))
+                                            {
+                                                string correctMd5 = depotFile.hash;
+                                                if (!string.IsNullOrEmpty(correctMd5))
+                                                {
+                                                    try
+                                                    {
+                                                        string calculatedMd5 = Helpers.GetMD5(file, perFileProgress);
+
+                                                        if (calculatedMd5 != null &&
+                                                            !string.Equals(calculatedMd5, correctMd5,
+                                                                StringComparison.OrdinalIgnoreCase))
+                                                        {
+                                                            try
+                                                            {
+                                                                File.Delete(file);
+                                                            }
+                                                            catch (Exception)
+                                                            {
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            bigDepot.files.Remove(depotFile);
+                                                        }
+                                                    }
+                                                    catch (Exception hashEx)
+                                                    {
+                                                        logger.Warn(hashEx, "");
+                                                    }
+                                                }
+                                            }
                                             Interlocked.Increment(ref verifiedFiles);
                                         }
                                         catch (OperationCanceledException)
@@ -2742,10 +2765,6 @@ namespace GogOssLibraryNS
             }
 
             wantedUnifiedTask.activity = "";
-            if (patchesDepot.items.Count > 0)
-            {
-                bigDepot.items = patchesDepot.items;
-            }
 
             progress = new Progress<ProgressData>(p =>
             {

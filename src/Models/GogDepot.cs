@@ -33,6 +33,7 @@ namespace GogOssLibraryNS.Models
             public string path_source { get; set; } = "";
             public string path_target { get; set; } = "";
             public string product_id { get; set; }
+            public double target_size { get; set; } = 0;
         }
 
         public class DepotFile
