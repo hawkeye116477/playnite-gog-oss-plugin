@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
-### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/src/commit/36b40c2b1e5dc3caf906495dd4905f5abe21a1a5 and 
+### https://codeberg.org/Playnite/Playnite/src/commit/6fbebc4e3183a67f85a30d9248312fee73bb0eee. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = 게임을 설치할 수 없습니다: { $var0 }

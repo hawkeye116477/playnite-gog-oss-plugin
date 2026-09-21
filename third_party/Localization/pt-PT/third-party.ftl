@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
-### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/src/commit/36b40c2b1e5dc3caf906495dd4905f5abe21a1a5 and 
+### https://codeberg.org/Playnite/Playnite/src/commit/6fbebc4e3183a67f85a30d9248312fee73bb0eee. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = Não foi possível instalar o jogo: { $var0 }
@@ -49,10 +49,13 @@ third-party-playnite-open = Abrir
 third-party-playnite-unsaved-changes-ask-message = Deseja guardar as alterações efetuadas?
 third-party-gog-settings-import-installed-label = Importar jogos instalados
 third-party-gog-settings-import-uninstalled-label = Importar jogos não instalados
+third-party-gog-settings-connect-account = Conectar conta
 third-party-gog-login-checking = A verificar estado da autenticação...
 third-party-gog-logged-in = O utilizador já está autenticado
 third-party-gog-not-logged-in = Requer autenticação
 third-party-gog-not-logged-in-error = Falha ao autenticar utilizador.
 third-party-gog-authenticate-label = Autenticar
 third-party-gog-trouble-shooting-issues = Resolução de problemas
+third-party-gog-start-using-client = Comece a usar o { $var0 } cliente
 third-party-gog-metadata-language-label = Idioma dos metadados:
+third-party-gog-settings-use-vertical-covers = Use capas verticais

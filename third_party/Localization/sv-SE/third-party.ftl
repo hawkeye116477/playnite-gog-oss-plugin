@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
-### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/src/commit/36b40c2b1e5dc3caf906495dd4905f5abe21a1a5 and 
+### https://codeberg.org/Playnite/Playnite/src/commit/6fbebc4e3183a67f85a30d9248312fee73bb0eee. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = Kan inte installera spel: { $var0 }
@@ -47,3 +47,15 @@ third-party-playnite-option-once-a-day = En gång om dagen
 third-party-playnite-option-once-a-week = En gång i veckan
 third-party-playnite-open = Öppna
 third-party-playnite-unsaved-changes-ask-message = Vill du spara ändringar du gjorde?
+third-party-gog-settings-import-installed-label = Importera installerade spel
+third-party-gog-settings-import-uninstalled-label = Importera ej installerade spel
+third-party-gog-settings-connect-account = Anslut konto
+third-party-gog-login-checking = Kontrollerar autentiseringsstatus…
+third-party-gog-logged-in = Användaren är autentiserad
+third-party-gog-not-logged-in = Kräver autentisering
+third-party-gog-not-logged-in-error = Det gick inte att autentisera användaren.
+third-party-gog-authenticate-label = Autentisera
+third-party-gog-trouble-shooting-issues = Felsökning av problem
+third-party-gog-start-using-client = Börja använda { $var0 } klient
+third-party-gog-metadata-language-label = Metadata-språk:
+third-party-gog-settings-use-vertical-covers = Använd vertikala omslag

@@ -1,7 +1,7 @@
 ###
 ### Automatically generated via update_3p_localization.py script using files from 
-### https://github.com/JosefNemec/PlayniteExtensions/tree/809eab47a2b3be92fad1017c6f4d92cfd7f421c6 and 
-### https://github.com/JosefNemec/Playnite/tree/76e475b671f2fbb13c8cfa2a1dd85720f39f2775. 
+### https://codeberg.org/CrowIsTaken/PlayniteExtensions/src/commit/36b40c2b1e5dc3caf906495dd4905f5abe21a1a5 and 
+### https://codeberg.org/Playnite/Playnite/src/commit/6fbebc4e3183a67f85a30d9248312fee73bb0eee. 
 ### DO NOT MODIFY, CUZ IT MIGHT BE OVERWRITTEN DURING NEXT RUN!
 ###
 third-party-playnite-game-install-error = Δεν είναι δυνατή η εγκατάσταση του παιχνιδιού: { $var0 }
@@ -50,11 +50,11 @@ third-party-playnite-unsaved-changes-ask-message = Θέλετε να αποθη�
 third-party-gog-settings-import-installed-label = Εισαγωγή εγκατεστημένων παιχνιδιών
 third-party-gog-settings-import-uninstalled-label = Εισαγωγή μη εγκατεστημένων παιχνιδιών
 third-party-gog-settings-connect-account = Σύνδεση λογαριασμού
-third-party-gog-login-checking = Έλεγχος κατάστασης πιστοποίησης...
-third-party-gog-logged-in = Ο χρήστης είναι πιστοποιημένος
-third-party-gog-not-logged-in = Απαιτείται πιστοποίηση
-third-party-gog-not-logged-in-error = Αδυναμία πιστοποίησης του χρήστη
-third-party-gog-authenticate-label = Πιστοποίηση
+third-party-gog-login-checking = Έλεγχος κατάστασης ταυτοποίησης…
+third-party-gog-logged-in = Ο χρήστης είναι ταυτοποιημένος
+third-party-gog-not-logged-in = Απαιτείται ταυτοποίηση
+third-party-gog-not-logged-in-error = Αδυναμία ταυτοποίησης του χρήστη
+third-party-gog-authenticate-label = Ταυτοποίηση
 third-party-gog-trouble-shooting-issues = Αντιμετώπιση προβλημάτων
 third-party-gog-start-using-client = Ξεκινήστε να χρησιμοποιείτε την εφαρμογή { $var0 }
 third-party-gog-metadata-language-label = Γλώσσα μεταδεδόμενων:
