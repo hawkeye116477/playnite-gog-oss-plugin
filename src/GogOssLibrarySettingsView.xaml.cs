@@ -400,7 +400,7 @@ namespace GogOssLibraryNS
                                                     .Where(i => i.PluginId == originalPluginId && i.Source.Name == "GOG")
                                                     .ToList();
                     var migratedGames = new List<string>();
-                    var notImportedGames = new List<string>();
+                    var notImportedGames = 0;
                     if (gamesToMigrate.Count > 0)
                     {
                         var iterator = 0;
@@ -418,6 +418,10 @@ namespace GogOssLibraryNS
                                 migratedGames.Add(game.GameId);
                                 a.CurrentProgressValue = iterator;
                             }
+                            else
+                            {
+                                notImportedGames += 1;
+                            }
                         }
 
                         a.CurrentProgressValue = gamesToMigrate.Count() + 1;
@@ -429,7 +433,7 @@ namespace GogOssLibraryNS
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG to GOG OSS.");
                         }
 
-                        if (notImportedGames.Count > 0)
+                        if (notImportedGames > 0)
                         {
                             logger.Warn($"{notImportedGames} games were already at GOG OSS plugin, so were skipped.");
                         }
@@ -474,7 +478,7 @@ namespace GogOssLibraryNS
                 {
                     var gamesToMigrate = playniteAPI.Database.Games.Where(i => i.PluginId == GogOssLibrary.Instance.Id).ToList();
                     var migratedGames = new List<string>();
-                    var notImportedGames = new List<string>();
+                    var notImportedGames = 0;
                     if (gamesToMigrate.Count > 0)
                     {
                         var iterator = 0;
@@ -492,6 +496,10 @@ namespace GogOssLibraryNS
                                 migratedGames.Add(game.GameId);
                                 a.CurrentProgressValue = iterator;
                             }
+                            else
+                            {
+                                notImportedGames += 1;
+                            }
                         }
 
                         a.CurrentProgressValue = gamesToMigrate.Count() + 1;
@@ -502,7 +510,7 @@ namespace GogOssLibraryNS
                                 MessageBoxImage.Information);
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG OSS to GOG.");
                         }
-                        if (notImportedGames.Count > 0)
+                        if (notImportedGames > 0)
                         {
                             logger.Warn($"{notImportedGames} games were already at original GOG plugin, so were skipped.");
                         }
