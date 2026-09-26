@@ -130,7 +130,7 @@ namespace GogOssLibraryNS
                 var cometFluentArgs = new Dictionary<string, IFluentType> { ["launcherName"] = (FluentString)"Comet" };
                 CometVersionTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, cometFluentArgs);
                 CometBinaryTxt.Text = LocalizationManager.Instance.GetString(LOC.CommonLauncherNotInstalled, cometFluentArgs);
-                CheckForCometUpdatesBtn.IsEnabled = false;
+                CheckForCometUpdatesBtn.Content = LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteInstallGame);
                 OpenCometBinaryBtn.IsEnabled = false;
                 EnableCometSupportChk.IsEnabled = false;
                 CometUpdatesSP.IsEnabled = false;
@@ -168,56 +168,63 @@ namespace GogOssLibraryNS
 
         private async void CheckForCometUpdatesBtn_Click(object sender, RoutedEventArgs e)
         {
-            var versionInfoContent = await Comet.GetVersionInfoContent();
-            if (versionInfoContent.Tag_name != null)
+            if (Comet.IsInstalled)
             {
-                var newVersion = versionInfoContent.Tag_name.Replace("v", "");
-                if (troubleshootingInformation.CometVersion != newVersion)
+                var versionInfoContent = await Comet.GetVersionInfoContent();
+                if (versionInfoContent.Tag_name != null)
                 {
-                    var newAsset = versionInfoContent.Assets.FirstOrDefault(a =>
-                        a.Browser_download_url ==
-                        $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe");
-                    if (newAsset != null)
+                    var newVersion = versionInfoContent.Tag_name.Replace("v", "");
+                    if (troubleshootingInformation.CometVersion != newVersion)
                     {
-                        var appsToUpdate = new Dictionary<string, UpdateInfo>();
-                        var appTitle = "Comet";
-                        var updateInfo = new UpdateInfo
+                        var newAsset = versionInfoContent.Assets.FirstOrDefault(a =>
+                            a.Browser_download_url ==
+                            $"https://github.com/imLinguin/comet/releases/download/{versionInfoContent.Tag_name}/comet-x86_64-pc-windows-msvc.exe");
+                        if (newAsset != null)
                         {
-                            Install_path = Path.GetDirectoryName(Comet.ClientInstallationPath),
-                            Version = newVersion,
-                            Download_size = newAsset.Size,
-                            Disk_size = newAsset.Size,
-                            DownloadItemType = DownloadItemType.Tools,
-                            Title = appTitle,
-                            OldVersion = troubleshootingInformation.CometVersion
-                        };
-                        appsToUpdate.Add("comet", updateInfo);
-                        if (appsToUpdate.Count > 0)
-                        {
-                            Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                            var appsToUpdate = new Dictionary<string, UpdateInfo>();
+                            var appTitle = "Comet";
+                            var updateInfo = new UpdateInfo
                             {
-                                ShowMaximizeButton = false,
-                            });
-                            window.DataContext = appsToUpdate;
-                            window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
-                            window.Content = new GogOssUpdaterView();
-                            window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
-                            window.SizeToContent = SizeToContent.WidthAndHeight;
-                            window.MinWidth = 600;
-                            window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                            window.ShowDialog();
+                                Install_path = Path.GetDirectoryName(Comet.ClientInstallationPath),
+                                Version = newVersion,
+                                Download_size = newAsset.Size,
+                                Disk_size = newAsset.Size,
+                                DownloadItemType = DownloadItemType.Tools,
+                                Title = appTitle,
+                                OldVersion = troubleshootingInformation.CometVersion
+                            };
+                            appsToUpdate.Add("comet", updateInfo);
+                            if (appsToUpdate.Count > 0)
+                            {
+                                Window window = playniteAPI.Dialogs.CreateWindow(new WindowCreationOptions
+                                {
+                                    ShowMaximizeButton = false,
+                                });
+                                window.DataContext = appsToUpdate;
+                                window.Title = $"{LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteExtensionsUpdates)}";
+                                window.Content = new GogOssUpdaterView();
+                                window.Owner = playniteAPI.Dialogs.GetCurrentAppWindow();
+                                window.SizeToContent = SizeToContent.WidthAndHeight;
+                                window.MinWidth = 600;
+                                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                                window.ShowDialog();
+                            }
                         }
+                    }
+                    else
+                    {
+                        playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
                     }
                 }
                 else
                 {
-                    playniteAPI.Dialogs.ShowMessage(LocalizationManager.Instance.GetString(LOC.CommonNoUpdatesAvailable));
+                    playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage),
+                        "Comet");
                 }
             }
             else
             {
-                playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.ThirdPartyPlayniteUpdateCheckFailMessage),
-                    "Comet");
+                GlobalCommands.NavigateUrl("https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Installation-of-needed-tools");
             }
         }
 
