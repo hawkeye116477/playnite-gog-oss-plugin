@@ -451,7 +451,7 @@ namespace GogOssLibraryNS
             {
                 return;
             }
-
+            var originalPluginId = Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E");
             GlobalProgressOptions globalProgressOptions =
                 new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonRevertMigratingGames), false)
                     { IsIndeterminate = false };
@@ -471,10 +471,10 @@ namespace GogOssLibraryNS
                         {
                             iterator++;
                             var alreadyExists = playniteAPI.Database.Games.FirstOrDefault(i =>
-                                i.GameId == game.GameId && i.PluginId == GogOssLibrary.Instance.Id);
+                                i.GameId == game.GameId && i.PluginId == originalPluginId);
                             if (alreadyExists == null)
                             {
-                                game.PluginId = Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E");
+                                game.PluginId = originalPluginId;
                                 playniteAPI.Database.Games.Update(game);
                                 migratedGames.Add(game.GameId);
                                 a.CurrentProgressValue = iterator;
@@ -488,6 +488,10 @@ namespace GogOssLibraryNS
                                 LocalizationManager.Instance.GetString(LOC.CommonRevertMigrateGames), MessageBoxButton.OK,
                                 MessageBoxImage.Information);
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG OSS to GOG.");
+                        }
+                        if (notImportedGames.Count > 0)
+                        {
+                            logger.Info($"{notImportedGames} games were already at original GOG plugin, so were skipped.");
                         }
 
                         if (migratedGames.Count == 0 && notImportedGames.Count == 0)
