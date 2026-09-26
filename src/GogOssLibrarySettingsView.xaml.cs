@@ -435,7 +435,7 @@ namespace GogOssLibraryNS
 
                         if (notMigratedGames > 0)
                         {
-                            logger.Warn($"{notMigratedGames} games were already at GOG OSS plugin, so were skipped.");
+                            logger.Warn($"{notMigratedGames} games were skipped, cuz already exist at GOG OSS plugin.");
                         }
 
                         if (migratedGames == 0)
@@ -512,7 +512,7 @@ namespace GogOssLibraryNS
                         }
                         if (notMigratedGames > 0)
                         {
-                            logger.Warn($"{notMigratedGames} games were already at original GOG plugin, so were skipped.");
+                            logger.Warn($"{notMigratedGames} games were skipped, cuz already exist at original GOG plugin.");
                         }
 
                         if (migratedGames == 0)
