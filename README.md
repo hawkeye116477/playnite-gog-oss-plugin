@@ -1,6 +1,6 @@
 # playnite-gog-oss-plugin
-GOG library integration for [Playnite](https://github.com/JosefNemec/Playnite) with open-source tools like ([Comet](https://github.com/imLinguin/comet)) instead of GOG Galaxy. 
-It's based on [GOG library integration plugin](https://github.com/JosefNemec/PlayniteExtensions/tree/master/source/Libraries/GogLibrary).
+GOG library integration for [Playnite](https://github.com/JosefNemec/Playnite) with open-source tools like [Comet](https://github.com/imLinguin/comet) instead of GOG Galaxy. 
+It's based on [GOG library integration plugin](https://codeberg.org/CrowIsTaken/PlayniteExtensions/src/branch/main10/source/Libraries/GogLibrary).
 
 [![Crowdin](https://badges.crowdin.net/playnite-legendary-plugin/localized.svg)](https://crowdin.com/project/playnite-legendary-plugin)
 [![GitHub release (latest by date)](https://img.shields.io/github/downloads/hawkeye116477/playnite-gog-oss-plugin/latest/total)](https://github.com/hawkeye116477/playnite-gog-oss-plugin/releases/latest)
@@ -9,7 +9,7 @@ It's based on [GOG library integration plugin](https://github.com/JosefNemec/Pla
 If you encounter any bug, then you can report it at [github.com/hawkeye116477/playnite-gog-oss-plugin/issues](https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues), but before opening any ticket you should read [Troubleshooting section on wiki](https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki/Troubleshooting).
 
 ## **New cool features**
-If you want some new feature, then you can say about that at [https://github.com/hawkeye116477/playnite-gog-oss-plugin/issues](https://github.com/hawkeye116477playnite-gog-oss-plugin/issues/new?assignees=&labels=enhancement&projects=&template=features.yml).
+If you want some new feature, then you can say about that at [github.com/hawkeye116477/playnite-gog-oss-plugin/issues](https://github.com/hawkeye116477playnite-gog-oss-plugin/issues/new?assignees=&labels=enhancement&projects=&template=features.yml).
 
 ## **Questions**
 If you read [wiki](https://github.com/hawkeye116477/playnite-gog-oss-plugin/wiki) and still don't know something, then you can ask a question on [forum](https://github.com/hawkeye116477/playnite-gog-oss-plugin/discussions).
