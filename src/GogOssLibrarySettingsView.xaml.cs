@@ -397,7 +397,7 @@ namespace GogOssLibraryNS
                 using (playniteAPI.Database.BufferedUpdate())
                 {
                     var gamesToMigrate = playniteAPI.Database.Games
-                                                    .Where(i => i.PluginId == originalPluginId)
+                                                    .Where(i => i.PluginId == originalPluginId && i.Source.Name == "GOG")
                                                     .ToList();
                     var migratedGames = new List<string>();
                     var notImportedGames = new List<string>();
