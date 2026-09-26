@@ -400,7 +400,7 @@ namespace GogOssLibraryNS
                                                     .Where(i => i.PluginId == originalPluginId && i.Source.Name == "GOG")
                                                     .ToList();
                     var migratedGames = 0;
-                    var notImportedGames = 0;
+                    var notMigratedGames = 0;
                     if (gamesToMigrate.Count > 0)
                     {
                         var iterator = 0;
@@ -420,7 +420,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                notImportedGames += 1;
+                                notMigratedGames += 1;
                             }
                         }
 
@@ -433,9 +433,9 @@ namespace GogOssLibraryNS
                             logger.Info($"Successfully migrated {migratedGames} game(s) from GOG to GOG OSS.");
                         }
 
-                        if (notImportedGames > 0)
+                        if (notMigratedGames > 0)
                         {
-                            logger.Warn($"{notImportedGames} games were already at GOG OSS plugin, so were skipped.");
+                            logger.Warn($"{notMigratedGames} games were already at GOG OSS plugin, so were skipped.");
                         }
 
                         if (migratedGames == 0)
@@ -478,7 +478,7 @@ namespace GogOssLibraryNS
                 {
                     var gamesToMigrate = playniteAPI.Database.Games.Where(i => i.PluginId == GogOssLibrary.Instance.Id).ToList();
                     var migratedGames = 0;
-                    var notImportedGames = 0;
+                    var notMigratedGames = 0;
                     if (gamesToMigrate.Count > 0)
                     {
                         var iterator = 0;
@@ -498,7 +498,7 @@ namespace GogOssLibraryNS
                             }
                             else
                             {
-                                notImportedGames += 1;
+                                notMigratedGames += 1;
                             }
                         }
 
@@ -510,9 +510,9 @@ namespace GogOssLibraryNS
                                 MessageBoxImage.Information);
                             logger.Info($"Successfully migrated {migratedGames} game(s) from GOG OSS to GOG.");
                         }
-                        if (notImportedGames > 0)
+                        if (notMigratedGames > 0)
                         {
-                            logger.Warn($"{notImportedGames} games were already at original GOG plugin, so were skipped.");
+                            logger.Warn($"{notMigratedGames} games were already at original GOG plugin, so were skipped.");
                         }
 
                         if (migratedGames == 0)
