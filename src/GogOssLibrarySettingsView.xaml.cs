@@ -381,6 +381,7 @@ namespace GogOssLibraryNS
                 return;
             }
 
+            var originalPluginId = Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E");
             GlobalProgressOptions globalProgressOptions =
                 new GlobalProgressOptions(LocalizationManager.Instance.GetString(LOC.CommonMigratingGamesOriginal), false)
                     { IsIndeterminate = false };
@@ -389,7 +390,7 @@ namespace GogOssLibraryNS
                 using (playniteAPI.Database.BufferedUpdate())
                 {
                     var gamesToMigrate = playniteAPI.Database.Games
-                                                    .Where(i => i.PluginId == Guid.Parse("AEBE8B7C-6DC3-4A66-AF31-E7375C6B5E9E"))
+                                                    .Where(i => i.PluginId == originalPluginId)
                                                     .ToList();
                     var migratedGames = new List<string>();
                     var notImportedGames = new List<string>();
@@ -421,7 +422,12 @@ namespace GogOssLibraryNS
                             logger.Info("Successfully migrated " + migratedGames.Count + " game(s) from GOG to GOG OSS.");
                         }
 
-                        if (migratedGames.Count == 0 && notImportedGames.Count == 0)
+                        if (notImportedGames.Count > 0)
+                        {
+                            logger.Warn($"{notImportedGames} games were already at GOG OSS plugin, so were skipped.");
+                        }
+
+                        if (migratedGames.Count == 0)
                         {
                             playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationNoGames));
                         }
@@ -491,10 +497,10 @@ namespace GogOssLibraryNS
                         }
                         if (notImportedGames.Count > 0)
                         {
-                            logger.Info($"{notImportedGames} games were already at original GOG plugin, so were skipped.");
+                            logger.Warn($"{notImportedGames} games were already at original GOG plugin, so were skipped.");
                         }
 
-                        if (migratedGames.Count == 0 && notImportedGames.Count == 0)
+                        if (migratedGames.Count == 0)
                         {
                             playniteAPI.Dialogs.ShowErrorMessage(LocalizationManager.Instance.GetString(LOC.CommonMigrationNoGames));
                         }
