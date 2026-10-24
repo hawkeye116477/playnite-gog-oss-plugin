@@ -726,7 +726,7 @@ namespace GogOssLibraryNS
                                                          FileMode fileMode = resumeStartByte > 0 ? FileMode.Append : FileMode.Create;
 
                                                          using (var tempFs = new FileStream(tempFilePath, fileMode, FileAccess.Write,
-                                                                    FileShare.Read, bufferSize,
+                                                                    FileShare.None, bufferSize,
                                                                     FileOptions.Asynchronous | FileOptions.SequentialScan))
                                                          {
                                                              int bytesRead;
@@ -1649,7 +1649,7 @@ namespace GogOssLibraryNS
 
                                                                  using (var tempFs = new FileStream(tempFilePath, fileMode,
                                                                             FileAccess.Write,
-                                                                            FileShare.ReadWrite | FileShare.Delete, bufferSize,
+                                                                            FileShare.None, bufferSize,
                                                                             FileOptions.Asynchronous | FileOptions.SequentialScan))
                                                                  {
                                                                      int bytesRead;
@@ -1795,7 +1795,7 @@ namespace GogOssLibraryNS
                                                                    sourceStream = new FileStream(item.TempFilePath!,
                                                                        FileMode.Open,
                                                                        FileAccess.Read,
-                                                                       FileShare.ReadWrite | FileShare.Delete,
+                                                                       FileShare.Read,
                                                                        bufferSize,
                                                                        FileOptions.SequentialScan);
                                                                }
@@ -1807,7 +1807,7 @@ namespace GogOssLibraryNS
 
                                                                using (sourceStream)
                                                                using (var outFs = new FileStream(item.FilePath, FileMode.OpenOrCreate,
-                                                                          FileAccess.Write, FileShare.Read,
+                                                                          FileAccess.Write, FileShare.None,
                                                                           bufferSize, FileOptions.Asynchronous))
                                                                {
                                                                    outFs.Seek(item.Offset, SeekOrigin.Begin);
