@@ -2146,25 +2146,13 @@ namespace GogOssLibraryNS
                                                 $"Failed to apply xdelta3 patch for delta '{deltaTempPath}'. Error code: {patchingResult}.");
                                         }
 
-                                        Directory.CreateDirectory(Path.GetDirectoryName(finalTargetPath) ?? fullInstallPath);
-
-                                        if (File.Exists(finalTargetPath))
+                                        if (File.Exists(patchedTempPath))
                                         {
-                                            string backupPath = finalTargetPath + ".bak";
-                                            File.Replace(patchedTempPath, finalTargetPath, backupPath, ignoreMetadataErrors: true);
-                                            if (File.Exists(backupPath))
+                                            Directory.CreateDirectory(Path.GetDirectoryName(finalTargetPath) ?? fullInstallPath);
+                                            if (File.Exists(finalTargetPath))
                                             {
-                                                try
-                                                {
-                                                    File.Delete(backupPath);
-                                                }
-                                                catch
-                                                {
-                                                }
+                                                File.Delete(finalTargetPath);
                                             }
-                                        }
-                                        else
-                                        {
                                             File.Move(patchedTempPath, finalTargetPath);
                                         }
                                     }
