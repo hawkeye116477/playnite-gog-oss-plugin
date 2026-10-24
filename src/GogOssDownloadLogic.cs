@@ -2151,8 +2151,10 @@ namespace GogOssLibraryNS
                                             Directory.CreateDirectory(Path.GetDirectoryName(finalTargetPath) ?? fullInstallPath);
                                             if (File.Exists(finalTargetPath))
                                             {
+                                                await Helpers.WaitForFileRelease(finalTargetPath);
                                                 File.Delete(finalTargetPath);
                                             }
+                                            await Helpers.WaitForFileRelease(patchedTempPath);
                                             File.Move(patchedTempPath, finalTargetPath);
                                         }
                                     }

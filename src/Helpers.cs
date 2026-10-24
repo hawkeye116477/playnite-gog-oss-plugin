@@ -105,5 +105,43 @@ namespace GogOssLibraryNS
         {
             return ByteSize.Parse($"{size}").Bytes;
         }
+
+        public static bool IsFileLocked(string filePath)
+        {
+            try
+            {
+                using var inputStream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.None);
+                inputStream.Close();
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static async Task WaitForFileRelease(string filePath)
+        {
+            var logger = LogManager.GetLogger();
+            int delayMs = 1000;
+            for (int i = 0; i < 4; i++)
+            {
+                if (IsFileLocked(filePath))
+                {
+                    logger.Debug($"Waiting for {filePath} file unlock...");
+                    await Task.Delay(delayMs);
+                    delayMs *= 2;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (IsFileLocked(filePath))
+            {
+                logger.Error($"File {filePath} is locked.");
+            }
+        }
+
     }
 }
