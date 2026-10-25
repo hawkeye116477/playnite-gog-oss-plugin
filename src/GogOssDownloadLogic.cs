@@ -1033,6 +1033,7 @@ namespace GogOssLibraryNS
 
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
+            using var patchesSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount));
             using var memoryLimiter = new MemoryLimiter(maxMemoryBytes);
 
             const string sfcContainerBaseName = "smallFilesContainer";
@@ -2082,7 +2083,7 @@ namespace GogOssLibraryNS
                 if (depotDiffItems != null && depotDiffItems.Count > 0)
                 {
                     logger.Info(
-                        $"Found {depotDiffItems.Count} patches to apply concurrently (max {sfcExtractSemaphore.CurrentCount} at a time).");
+                        $"Found {depotDiffItems.Count} patches to apply concurrently (max {patchesSemaphore.CurrentCount} at a time).");
                     var patchingTasks = new List<Task>();
                     var targetFileSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
@@ -2091,8 +2092,10 @@ namespace GogOssLibraryNS
                         foreach (var diff in depotDiffItems)
                         {
                             token.ThrowIfCancellationRequested();
-                            totalSize -= diff.chunks.Sum(c => (long)c.size);
+                            var expectedPatchSize = diff.chunks.Sum(c => (long)c.size);
+                            totalSize -= expectedPatchSize;
                             totalSize += (long)diff.target_size;
+                        
                             var patchTask = Task.Run(async () =>
                             {
                                 string sourceRel = diff.path_source ?? "";
@@ -2106,7 +2109,7 @@ namespace GogOssLibraryNS
 
                                 string patchedTempPath = "";
 
-                                await sfcExtractSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                await patchesSemaphore.WaitAsync(token).ConfigureAwait(false);
                                 await targetLock.WaitAsync(token).ConfigureAwait(false);
 
                                 try
@@ -2117,6 +2120,12 @@ namespace GogOssLibraryNS
                                     if (!File.Exists(deltaTempPath))
                                     {
                                         throw new FileNotFoundException($"Expected delta not found in temp: {deltaTempPath}");
+                                    }
+
+                                    if (new FileInfo(deltaTempPath).Length != expectedPatchSize)
+                                    {
+                                        File.Delete(deltaTempPath);
+                                        throw new Exception($"{deltaTempPath} patch file hasn't expected size, so it was removed. Please restart downloading.");
                                     }
 
                                     if (!File.Exists(sourcePath))
@@ -2177,7 +2186,7 @@ namespace GogOssLibraryNS
                                     {
                                     }
 
-                                    sfcExtractSemaphore.Release();
+                                    patchesSemaphore.Release();
                                     targetLock.Release();
                                 }
                             }, token);
