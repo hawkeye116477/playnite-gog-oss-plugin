@@ -532,7 +532,7 @@ namespace GogOssLibraryNS
                 );
 
             var jobs = new List<(string filePath, long size, string url, string hash)>();
-
+            
             totalCompressedSize = 0;
             long initialNetworkBytesLocal = 0;
             var fileExpectedSizes = new ConcurrentDictionary<string, long>(StringComparer.OrdinalIgnoreCase);
@@ -887,15 +887,17 @@ namespace GogOssLibraryNS
 
                                                                        if (!item.isCompressed &&
                                                                            fileExpectedSizes.TryGetValue(item.filePath,
-                                                                               out long expectedSize))
+                                                                               out long expectedSize) && outFs.Length != expectedSize)
                                                                        {
-                                                                           if (outFs.Length != expectedSize)
-                                                                           {
-                                                                               outFs.SetLength(expectedSize);
-                                                                           }
+                                                                           totalWritten -= outFs.Length;
+                                                                           outFs.SetLength(0);
+                                                                           sourceStream.SetLength(0);
+                                                                           throw new Exception($"File {item.filePath} has invalid size.");
                                                                        }
-
-                                                                       resumeState.MarkCompleted(finalPath, item.hash);
+                                                                       else
+                                                                       {
+                                                                           resumeState.MarkCompleted(finalPath, item.hash);
+                                                                       }
                                                                    }
                                                                }
 
@@ -1363,16 +1365,7 @@ namespace GogOssLibraryNS
                     {
                         if (currentFileSize > expectedFileSize)
                         {
-                            try
-                            {
-                                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
-                                fs.SetLength(expectedFileSize);
-                                logger.Info($"Trimmed file {filePath} from {currentFileSize} to {expectedFileSize} bytes.");
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Warn(ex, $"Failed to trim file {filePath}.");
-                            }
+                            File.Delete(filePath);
                         }
                     }
 
@@ -1854,16 +1847,18 @@ namespace GogOssLibraryNS
                                                                        }
                                                                    }
 
-                                                                   if (fileExpectedSizes.ContainsKey(item.FilePath) &&
-                                                                       item.Offset + totalWritten == fileExpectedSizes[item.FilePath])
+                                                                   if (outFs.Length == fileExpectedSizes[item.FilePath])
                                                                    {
-                                                                       if (outFs.Length != fileExpectedSizes[item.FilePath])
+                                                                       resumeState.MarkCompleted(item.FilePath, item.ChunkId); 
+                                                                   }
+                                                                   else
+                                                                   {
+                                                                       outFs.SetLength(0);
+                                                                       if (sourceStream.CanWrite)
                                                                        {
-                                                                           outFs.SetLength(fileExpectedSizes[item.FilePath]);
+                                                                           sourceStream.SetLength(0);
                                                                        }
                                                                    }
-
-                                                                   resumeState.MarkCompleted(item.FilePath, item.ChunkId);
                                                                }
 
                                                                if (item.ChunkBuffer == null && File.Exists(item.TempFilePath))
@@ -2023,8 +2018,6 @@ namespace GogOssLibraryNS
                                                                                       Interlocked.Add(ref totalDiskBytes, read);
                                                                                       remaining -= read;
                                                                                   }
-
-                                                                                  outFs.SetLength(expectedSize);
                                                                               })
                                                                              .ConfigureAwait(false);
                                                                       }
