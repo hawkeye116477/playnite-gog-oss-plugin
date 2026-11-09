@@ -10,7 +10,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using CliWrap;
@@ -498,6 +497,10 @@ namespace GogOssLibraryNS
             downloadTask.downloadedBytes = finalNetworkBytes;
             var currentPercentProgress = totalSize > 0 ? (double)finalDiskBytes / finalNetworkBytes * 100 : 0;
             downloadTask.progress = currentPercentProgress;
+            if (downloadTask.status == UnifiedDownloadStatus.Completed)
+            {
+                downloadTask.progress = 100.0;
+            }
         }
 
 
@@ -526,13 +529,8 @@ namespace GogOssLibraryNS
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
 
-            // Producer-consumer channel
-            var channel = Channel
-               .CreateUnbounded<(string filePath, long length, string tempFilePath, long allocatedBytes, bool isCompressed, string hash)>(
-                );
-
             var jobs = new List<(string filePath, long size, string url, string hash)>();
-            
+
             totalCompressedSize = 0;
             long initialNetworkBytesLocal = 0;
             var fileExpectedSizes = new ConcurrentDictionary<string, long>(StringComparer.OrdinalIgnoreCase);
@@ -650,7 +648,7 @@ namespace GogOssLibraryNS
             ReportProgress();
 
             //
-            // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
+            // STEP 2: Download
             //
             var downloadTasks = jobs.Select(async job =>
                                      {
@@ -693,10 +691,8 @@ namespace GogOssLibraryNS
                                                      resumeStartByte = new FileInfo(tempFilePath).Length;
                                                      if (resumeStartByte >= compressedSize)
                                                      {
-                                                         await channel.Writer
-                                                                      .WriteAsync(
-                                                                           (job.filePath, resumeStartByte, tempFilePath, 0, isCompressed,
-                                                                            job.hash), token)
+                                                         await WriteFile(job.filePath, resumeStartByte, tempFilePath, 0, isCompressed,
+                                                                            job.hash, token)
                                                                       .ConfigureAwait(false);
                                                          return;
                                                      }
@@ -742,10 +738,8 @@ namespace GogOssLibraryNS
                                                      })
                                                     .ConfigureAwait(false);
 
-                                                 await channel.Writer.WriteAsync(
-                                                                   (effectiveFilePath, actualFileSize, tempFilePath, 0, isCompressed,
-                                                                    job.hash), token)
-                                                              .ConfigureAwait(false);
+                                                 await WriteFile(effectiveFilePath, actualFileSize, tempFilePath, 0, isCompressed,
+                                                     job.hash, token).ConfigureAwait(false);
                                              }
                                              catch (OperationCanceledException)
                                              {
@@ -784,162 +778,151 @@ namespace GogOssLibraryNS
                                      })
                                     .ToList();
 
-
             //
-            // STEP 3: Consumer – Writer (Decompress and write to final file)
+            // STEP 3: Write (Decompress and write to final file)
             //
-            int ioWorkerCount = Math.Min(maxParallel, Environment.ProcessorCount * 2);
-            var ioWorkers = Enumerable.Range(0, ioWorkerCount)
-                                      .Select(_ => Task.Run(async () =>
-                                       {
-                                           await RentAndUsePool(bufferSize, async consumerBuffer =>
-                                               {
-                                                   while (await channel.Reader.WaitToReadAsync(token).ConfigureAwait(false))
-                                                   {
-                                                       while (channel.Reader.TryRead(out var item))
-                                                       {
-                                                           token.ThrowIfCancellationRequested();
-                                                           var fileWriteSemaphore = writeSemaphores[item.filePath];
-                                                           await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
-                                                           Interlocked.Increment(ref activeDiskers);
+            async Task WriteFile(string filePath, long length, string tempFilePath, long allocatedBytes, bool isCompressed, string hash, CancellationToken token)
+            {
+                await RentAndUsePool(bufferSize, async consumerBuffer =>
+                {
+                    token.ThrowIfCancellationRequested();
+                    var fileWriteSemaphore = writeSemaphores[filePath];
+                    await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    Interlocked.Increment(ref activeDiskers);
 
-                                                           try
-                                                           {
-                                                               var finalPath = Path.Combine(fullInstallPath, item.filePath);
-                                                               if (item.isCompressed)
-                                                               {
-                                                                   var tempExtractedPath = Path.Combine(tempDir, item.filePath);
-                                                                   Directory.CreateDirectory(Path.GetDirectoryName(tempExtractedPath));
-                                                                   using (var outFs = new FileStream(tempExtractedPath, FileMode.Create,
-                                                                              FileAccess.Write, FileShare.None,
-                                                                              bufferSize, FileOptions.Asynchronous))
-                                                                   {
-                                                                       using Stream sourceStream = new FileStream(item.tempFilePath!,
-                                                                           FileMode.Open,
-                                                                           FileAccess.Read, FileShare.Read, bufferSize,
-                                                                           FileOptions.SequentialScan);
-                                                                       using (var zip = ZipArchive.Open(sourceStream))
-                                                                       {
-                                                                           var entry = zip.Entries.FirstOrDefault(e => !e.IsDirectory);
-                                                                           if (entry != null)
-                                                                           {
-                                                                               using (var entryStream = entry.OpenEntryStream())
-                                                                               {
-                                                                                   await entryStream.CopyToAsync(outFs, bufferSize, token)
-                                                                                      .ConfigureAwait(false);
-                                                                               }
-                                                                           }
-                                                                       }
-                                                                   }
+                    try
+                    {
+                        var finalPath = Path.Combine(fullInstallPath, filePath);
+                        if (isCompressed)
+                        {
+                            var tempExtractedPath = Path.Combine(tempDir, filePath);
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempExtractedPath));
+                            using (var outFs = new FileStream(tempExtractedPath, FileMode.Create,
+                                       FileAccess.Write, FileShare.None,
+                                       bufferSize, FileOptions.Asynchronous))
+                            {
+                                using Stream sourceStream = new FileStream(tempFilePath!,
+                                    FileMode.Open,
+                                    FileAccess.Read, FileShare.Read, bufferSize,
+                                    FileOptions.SequentialScan);
+                                using (var zip = ZipArchive.Open(sourceStream))
+                                {
+                                    var entry = zip.Entries.FirstOrDefault(e => !e.IsDirectory);
+                                    if (entry != null)
+                                    {
+                                        using (var entryStream = entry.OpenEntryStream())
+                                        {
+                                            await entryStream.CopyToAsync(outFs, bufferSize, token)
+                                               .ConfigureAwait(false);
+                                        }
+                                    }
+                                }
+                            }
 
-                                                                   try
-                                                                   {
-                                                                       if (File.Exists(item.tempFilePath))
-                                                                       {
-                                                                           File.Delete(item.tempFilePath);
-                                                                       }
-                                                                   }
-                                                                   catch (Exception ex)
-                                                                   {
-                                                                       logger.Warn(ex,
-                                                                           $"Couldn't delete original zip file {item.tempFilePath} after extraction.");
-                                                                   }
+                            try
+                            {
+                                if (File.Exists(tempFilePath))
+                                {
+                                    File.Delete(tempFilePath);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Warn(ex,
+                                    $"Couldn't delete original zip file {tempFilePath} after extraction.");
+                            }
 
-                                                                   item.tempFilePath = tempExtractedPath;
-                                                               }
+                            tempFilePath = tempExtractedPath;
+                        }
 
-                                                               if (!CommonHelpers.IsDirectoryWritable(
-                                                                       Path.GetFileName(Path.GetDirectoryName(finalPath))))
-                                                               {
-                                                                   var roboCopyArgs = new List<string>
+                        if (!CommonHelpers.IsDirectoryWritable(
+                                Path.GetFileName(Path.GetDirectoryName(finalPath))))
+                        {
+                            var roboCopyArgs = new List<string>
                                                                    {
-                                                                       Path.GetDirectoryName(item.tempFilePath),
+                                                                       Path.GetDirectoryName(tempFilePath),
                                                                        Path.GetDirectoryName(finalPath),
-                                                                       Path.GetFileName(item.tempFilePath),
+                                                                       Path.GetFileName(tempFilePath),
                                                                        "/R:3",
                                                                        "/COPYALL"
                                                                    };
-                                                                   var roboCopyCmd = Cli.Wrap("robocopy")
-                                                                                        .WithArguments(roboCopyArgs);
-                                                                   var proc = ProcessStarter.StartProcess("robocopy", roboCopyCmd.Arguments,
-                                                                       true);
-                                                                   proc.WaitForExit();
-                                                               }
-                                                               else
-                                                               {
-                                                                   using var sourceStream = new FileStream(item.tempFilePath!,
-                                                                       FileMode.Open, FileAccess.Read,
-                                                                       FileShare.Read, bufferSize, FileOptions.SequentialScan);
-                                                                   using (var outFs = new FileStream(finalPath, FileMode.Create,
-                                                                              FileAccess.Write, FileShare.None,
-                                                                              bufferSize, FileOptions.Asynchronous))
-                                                                   {
-                                                                       int bytesRead;
-                                                                       long totalWritten = 0;
-                                                                       while ((bytesRead = await sourceStream
-                                                                                 .ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token)
-                                                                                 .ConfigureAwait(false)) > 0)
-                                                                       {
-                                                                           await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
-                                                                                      .ConfigureAwait(false);
-                                                                           totalWritten += bytesRead;
-                                                                       }
+                            var roboCopyCmd = Cli.Wrap("robocopy")
+                                                 .WithArguments(roboCopyArgs);
+                            var proc = ProcessStarter.StartProcess("robocopy", roboCopyCmd.Arguments,
+                                true);
+                            proc.WaitForExit();
+                        }
+                        else
+                        {
+                            using var sourceStream = new FileStream(tempFilePath!,
+                                FileMode.Open, FileAccess.Read,
+                                FileShare.Read, bufferSize, FileOptions.SequentialScan);
+                            using (var outFs = new FileStream(finalPath, FileMode.Create,
+                                       FileAccess.Write, FileShare.None,
+                                       bufferSize, FileOptions.Asynchronous))
+                            {
+                                int bytesRead;
+                                long totalWritten = 0;
+                                while ((bytesRead = await sourceStream
+                                          .ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token)
+                                          .ConfigureAwait(false)) > 0)
+                                {
+                                    await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
+                                               .ConfigureAwait(false);
+                                    totalWritten += bytesRead;
+                                }
 
-                                                                       if (!item.isCompressed &&
-                                                                           fileExpectedSizes.TryGetValue(item.filePath,
-                                                                               out long expectedSize) && outFs.Length != expectedSize)
-                                                                       {
-                                                                           totalWritten -= outFs.Length;
-                                                                           outFs.SetLength(0);
-                                                                           sourceStream.SetLength(0);
-                                                                           throw new Exception($"File {item.filePath} has invalid size.");
-                                                                       }
-                                                                       else
-                                                                       {
-                                                                           resumeState.MarkCompleted(finalPath, item.hash);
-                                                                       }
-                                                                   }
-                                                               }
+                                if (!isCompressed &&
+                                    fileExpectedSizes.TryGetValue(filePath,
+                                        out long expectedSize) && outFs.Length != expectedSize)
+                                {
+                                    totalWritten -= outFs.Length;
+                                    outFs.SetLength(0);
+                                    sourceStream.SetLength(0);
+                                    throw new Exception($"File {filePath} has invalid size.");
+                                }
+                                else
+                                {
+                                    resumeState.MarkCompleted(finalPath, hash);
+                                }
+                            }
+                        }
 
-                                                               if (File.Exists(item.tempFilePath))
-                                                               {
-                                                                   try
-                                                                   {
-                                                                       File.Delete(item.tempFilePath);
-                                                                   }
-                                                                   catch (Exception ex)
-                                                                   {
-                                                                       logger.Warn(ex, $"Couldn't delete temp file {item.tempFilePath}.");
-                                                                   }
-                                                               }
-                                                           }
-                                                           catch (OperationCanceledException)
-                                                           {
-                                                               throw;
-                                                           }
-                                                           catch (Exception ex)
-                                                           {
-                                                               logger.Error(ex, $"Error occurred during writing to file {item.filePath}.");
-                                                               throw;
-                                                           }
-                                                           finally
-                                                           {
-                                                               try
-                                                               {
-                                                                   fileWriteSemaphore.Release();
-                                                               }
-                                                               catch
-                                                               {
-                                                               }
+                        if (File.Exists(tempFilePath))
+                        {
+                            try
+                            {
+                                File.Delete(tempFilePath);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.Warn(ex, $"Couldn't delete temp file {tempFilePath}.");
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, $"Error occurred during writing to file {filePath}.");
+                        throw;
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            fileWriteSemaphore.Release();
+                        }
+                        catch
+                        {
+                        }
 
-                                                               Interlocked.Decrement(ref activeDiskers);
-                                                           }
-                                                       }
-                                                   }
-                                               })
-                                              .ConfigureAwait(false);
-                                       }, token))
-                                      .ToList();
+                        Interlocked.Decrement(ref activeDiskers);
+                    }
+                }).ConfigureAwait(false);
+            }
 
 
             try
@@ -948,20 +931,10 @@ namespace GogOssLibraryNS
             }
             catch (OperationCanceledException)
             {
-                channel.Writer.TryComplete();
                 throw;
             }
             finally
             {
-                channel.Writer.TryComplete();
-                try
-                {
-                    await Task.WhenAll(ioWorkers).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                }
-
                 try
                 {
                     resumeState.Save(resumeStatePath);
@@ -1021,7 +994,7 @@ namespace GogOssLibraryNS
             GogSecureLinks allSecureLinks,
             int maxParallel,
             int bufferSize = 512 * 1024,
-            long maxMemoryBytes = 1L * 1024 * 1024 * 1024,
+            long maxMemoryBytes = 512 * 1024 * 1024,
             ObservableCollection<string> cdnOrder = default)
         {
             // STEP 0: Initial Setup
@@ -1033,6 +1006,8 @@ namespace GogOssLibraryNS
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
 
+            int ioWorkerCount = Math.Min(maxParallel, (int)(Environment.ProcessorCount * 0.5));
+            using var ioSemaphore = new SemaphoreSlim(ioWorkerCount);
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
             using var patchesSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount));
@@ -1049,11 +1024,8 @@ namespace GogOssLibraryNS
 
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
-            // Producer-consumer channel
-            var channel = Channel.CreateUnbounded<ChunkData>(
-            );
-
             var jobs = new List<(string filePath, long offset, GogDepot.Chunk chunk, DepotFileType depotFileType, string productId)>();
+
 
             totalSize = 0;
             totalCompressedSize = 0;
@@ -1071,7 +1043,6 @@ namespace GogOssLibraryNS
             var resumeState = new ResumeState();
             string resumeStatePath = Path.Combine(tempDir, "resume-state.json");
             resumeState.Load(resumeStatePath);
-
             //
             // STEP 1.1 / 1.2 / 1.3 - JOB CREATION (UNIFIED LOGIC)
             //
@@ -1139,7 +1110,8 @@ namespace GogOssLibraryNS
                         compressedMd5 = file.hash,
                         url = file.url
                     };
-                    if (currentFileSize != expectedFileSize && !resumeState.IsCompleted(filePath, v1Chunk.compressedMd5))
+
+                    if (currentFileSize != expectedFileSize)
                     {
                         jobs.Add((filePath, 0, v1Chunk, depotFileType, file.product_id));
                     }
@@ -1227,7 +1199,7 @@ namespace GogOssLibraryNS
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = sfcPos;
-                                if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
+                                if (currentSfcSize != chunkSize && !resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
                                     jobs.Add((sfcFilePath, sfcPos, chunk, depotFileType, kvp.Value.product_id));
                                 }
@@ -1240,7 +1212,7 @@ namespace GogOssLibraryNS
                             else
                             {
                                 chunk.offset = sfcPos;
-                                if (!resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
+                                if (currentSfcSize != chunkSize && !resumeState.IsCompleted(sfcFilePath, chunk.compressedMd5))
                                 {
                                     jobs.Add((sfcFilePath, sfcPos, chunk, depotFileType, kvp.Value.product_id));
                                 }
@@ -1361,14 +1333,19 @@ namespace GogOssLibraryNS
                     long pos = 0;
                     bool foundFirstIncompleteChunk = false;
 
+                    bool fileCompleted = false;
+
                     if (File.Exists(filePath))
                     {
                         if (currentFileSize > expectedFileSize)
                         {
                             File.Delete(filePath);
                         }
+                        if (currentFileSize == expectedFileSize)
+                        {
+                            fileCompleted = true;
+                        }
                     }
-
 
                     if (depot.sfcRef == null || !shouldDownloadSfc)
                     {
@@ -1377,10 +1354,12 @@ namespace GogOssLibraryNS
                             long chunkSize = (long)chunk.size;
                             long compressedSize = (long)chunk.compressedSize;
 
+                            string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}");
+                            long currentChunkSize = File.Exists(chunkTempPath) ? new FileInfo(chunkTempPath).Length : 0;
                             if (foundFirstIncompleteChunk)
                             {
                                 chunk.offset = pos;
-                                if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
+                                if (chunkSize != currentChunkSize && fileCompleted != true && !resumeState.IsCompleted(filePath, chunk.compressedMd5))
                                 {
                                     jobs.Add((filePath, pos, chunk, depotFileType, depot.product_id));
                                 }
@@ -1398,7 +1377,7 @@ namespace GogOssLibraryNS
                             else
                             {
                                 chunk.offset = pos;
-                                if (!resumeState.IsCompleted(filePath, chunk.compressedMd5))
+                                if (chunkSize != currentChunkSize && fileCompleted != true && !resumeState.IsCompleted(filePath, chunk.compressedMd5))
                                 {
                                     jobs.Add((filePath, pos, chunk, depotFileType, depot.product_id));
                                 }
@@ -1413,7 +1392,6 @@ namespace GogOssLibraryNS
 
                             pos += chunkSize;
 
-                            string chunkTempPath = Path.Combine(tempDir, $"{chunkTempBaseName}{chunk.compressedMd5}");
                             if (File.Exists(chunkTempPath))
                             {
                                 initialNetworkBytesLocal += Math.Min(new FileInfo(chunkTempPath).Length, compressedSize);
@@ -1440,8 +1418,9 @@ namespace GogOssLibraryNS
             ReportProgress();
 
             //
-            // STEP 2: Producer – Downloader (Fetch and Decompress to Channel)
+            // STEP 2: Download
             //
+            var decompressionTasks = new ConcurrentBag<Task>();
             var downloadTasks = jobs.Select(job => Task.Run(async () =>
                                      {
                                          bool slotAcquired = false;
@@ -1544,7 +1523,7 @@ namespace GogOssLibraryNS
                                                              resumeStartByte = new FileInfo(tempFilePath).Length;
                                                              if (resumeStartByte >= compressedSize)
                                                              {
-                                                                 await channel.Writer.WriteAsync(new ChunkData
+                                                                 var decompressTask = DecompressChunk(new ChunkData
                                                                  {
                                                                      FilePath = job.filePath,
                                                                      Offset = job.offset,
@@ -1554,8 +1533,8 @@ namespace GogOssLibraryNS
                                                                      DepotFileType = job.depotFileType,
                                                                      IsCompressed = isCompressed,
                                                                      ChunkId = $"{chunk.compressedMd5}",
-                                                                 }, token)
-                                                                              .ConfigureAwait(false);
+                                                                 }, token);
+                                                                 decompressionTasks.Add(decompressTask);
                                                                  tempFilePath = null;
                                                                  return;
                                                              }
@@ -1582,7 +1561,7 @@ namespace GogOssLibraryNS
 
                                                      if (File.Exists(tempFilePath))
                                                      {
-                                                         await channel.Writer.WriteAsync(new ChunkData
+                                                         var decompressTask = DecompressChunk(new ChunkData
                                                          {
                                                              FilePath = job.filePath,
                                                              Offset = job.offset,
@@ -1592,8 +1571,8 @@ namespace GogOssLibraryNS
                                                              DepotFileType = job.depotFileType,
                                                              IsCompressed = isCompressed,
                                                              ChunkId = $"{chunk.compressedMd5}"
-                                                         }, token)
-                                                                      .ConfigureAwait(false);
+                                                         }, token);
+                                                         decompressionTasks.Add(decompressTask);
                                                          return;
                                                      }
 
@@ -1615,7 +1594,7 @@ namespace GogOssLibraryNS
                                                              offset += bytesRead;
                                                          }
 
-                                                         await channel.Writer.WriteAsync(new ChunkData
+                                                         var decompressTask = DecompressChunk(new ChunkData
                                                          {
                                                              FilePath = job.filePath,
                                                              Offset = job.offset,
@@ -1625,8 +1604,8 @@ namespace GogOssLibraryNS
                                                              DepotFileType = job.depotFileType,
                                                              IsCompressed = isCompressed,
                                                              ChunkId = $"{chunk.compressedMd5}"
-                                                         }, token)
-                                                                      .ConfigureAwait(false);
+                                                         }, token);
+                                                         decompressionTasks.Add(decompressTask);
                                                          chunkBuffer = null;
                                                          allocatedBytes = 0;
                                                          return;
@@ -1662,7 +1641,7 @@ namespace GogOssLibraryNS
                                                              })
                                                             .ConfigureAwait(false);
 
-                                                         await channel.Writer.WriteAsync(new ChunkData
+                                                         var decompressTask = DecompressChunk(new ChunkData
                                                          {
                                                              FilePath = job.filePath,
                                                              Offset = job.offset,
@@ -1672,8 +1651,8 @@ namespace GogOssLibraryNS
                                                              DepotFileType = job.depotFileType,
                                                              IsCompressed = isCompressed,
                                                              ChunkId = $"{chunk.compressedMd5}"
-                                                         }, token)
-                                                                      .ConfigureAwait(false);
+                                                         }, token);
+                                                         decompressionTasks.Add(decompressTask);
                                                          return;
                                                      }
                                                  }
@@ -1757,167 +1736,157 @@ namespace GogOssLibraryNS
                                      }, token))
                                     .ToList();
 
+
             //
-            // STEP 3: Consumer – Writer (Decompress and Write to File)
+            // STEP 3: Write (Decompress and Write to File)
             //
-            int ioWorkerCount = Math.Min(maxParallel, Environment.ProcessorCount * 2);
-            var ioWorkers = Enumerable.Range(0, ioWorkerCount)
-                                      .Select(_ => Task.Run(async () =>
-                                       {
-                                           await RentAndUsePool(bufferSize, async consumerBuffer =>
-                                               {
-                                                   while (await channel.Reader.WaitToReadAsync(token).ConfigureAwait(false))
-                                                   {
-                                                       token.ThrowIfCancellationRequested();
-                                                       while (channel.Reader.TryRead(out var item))
-                                                       {
-                                                           token.ThrowIfCancellationRequested();
-                                                           var fileWriteSemaphore = writeSemaphores[item.FilePath];
-                                                           await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
-                                                           Interlocked.Increment(ref activeDiskers);
+            async Task DecompressChunk(ChunkData chunkData, CancellationToken token)
+            {
+                if (!token.IsCancellationRequested)
+                {
+                    await ioSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    await RentAndUsePool(bufferSize, async consumerBuffer =>
+                    {
 
-                                                           try
-                                                           {
-                                                               Stream sourceStream;
-                                                               if (item.ChunkBuffer != null)
-                                                               {
-                                                                   sourceStream = new MemoryStream(item.ChunkBuffer, 0, item.Length,
-                                                                       writable: false);
-                                                               }
-                                                               else
-                                                               {
-                                                                   sourceStream = new FileStream(item.TempFilePath!,
-                                                                       FileMode.Open,
-                                                                       FileAccess.Read,
-                                                                       FileShare.Read,
-                                                                       bufferSize,
-                                                                       FileOptions.SequentialScan);
-                                                               }
+                        token.ThrowIfCancellationRequested();
+                        Interlocked.Increment(ref activeDiskers);
 
-                                                               bool isSfcContainer =
-                                                                   item.FilePath.Contains(sfcContainerBaseName) &&
-                                                                   item.FilePath.StartsWith(tempDir) &&
-                                                                   bigDepot.version == 2;
+                        try
+                        {
+                            Stream sourceStream;
+                            if (chunkData.ChunkBuffer != null)
+                            {
+                                sourceStream = new MemoryStream(chunkData.ChunkBuffer, 0, chunkData.Length,
+                                    writable: false);
+                            }
+                            else
+                            {
+                                sourceStream = new FileStream(chunkData.TempFilePath!,
+                                    FileMode.Open,
+                                    FileAccess.Read,
+                                    FileShare.Read,
+                                    bufferSize,
+                                    FileOptions.SequentialScan);
+                            }
 
-                                                               using (sourceStream)
-                                                               using (var outFs = new FileStream(item.FilePath, FileMode.OpenOrCreate,
-                                                                          FileAccess.Write, FileShare.None,
-                                                                          bufferSize, FileOptions.Asynchronous))
-                                                               {
-                                                                   outFs.Seek(item.Offset, SeekOrigin.Begin);
+                            if (chunkData.Length != sourceStream.Length)
+                            {
+                                logger.Error($"Invalid size of {chunkData.ChunkId} chunk.");
+                                if (sourceStream.CanWrite)
+                                {
+                                    sourceStream.SetLength(0);
+                                }
+                                return;
+                            }
 
-                                                                   int bytesRead;
-                                                                   long totalWritten = 0;
+                            bool isSfcContainer =
+                                chunkData.FilePath.Contains(sfcContainerBaseName) &&
+                                chunkData.FilePath.StartsWith(tempDir) &&
+                                bigDepot.version == 2;
 
-                                                                   if (item.IsCompressed)
-                                                                   {
-                                                                       using (var zlib = new ZlibStream(sourceStream,
-                                                                                  CompressionMode.Decompress))
-                                                                       {
-                                                                           while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0,
-                                                                                          consumerBuffer.Length, token)
-                                                                                     .ConfigureAwait(false)) > 0)
-                                                                           {
-                                                                               await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
-                                                                                          .ConfigureAwait(false);
-                                                                               if (!isSfcContainer && item.DepotFileType != DepotFileType.Patch)
-                                                                               {
-                                                                                   Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                                                               }
+                            using (sourceStream)
+                            using (var outFs = new FileStream(chunkData.FilePath, FileMode.OpenOrCreate,
+                                       FileAccess.Write, FileShare.ReadWrite,
+                                       bufferSize, FileOptions.Asynchronous))
+                            {
+                                outFs.Seek(chunkData.Offset, SeekOrigin.Begin);
 
-                                                                               totalWritten += bytesRead;
-                                                                           }
-                                                                       }
-                                                                   }
-                                                                   else
-                                                                   {
-                                                                       while ((bytesRead = await sourceStream
-                                                                                 .ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token)
-                                                                                 .ConfigureAwait(false)) > 0)
-                                                                       {
-                                                                           await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
-                                                                                      .ConfigureAwait(false);
+                                int bytesRead;
+                                long totalWritten = 0;
 
-                                                                           if (!isSfcContainer)
-                                                                           {
-                                                                               Interlocked.Add(ref totalDiskBytes, bytesRead);
-                                                                           }
+                                if (chunkData.IsCompressed)
+                                {
+                                    using (var zlib = new ZlibStream(sourceStream,
+                                               CompressionMode.Decompress))
+                                    {
+                                        while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0,
+                                                       consumerBuffer.Length, token)
+                                                  .ConfigureAwait(false)) > 0)
+                                        {
+                                            await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
+                                                       .ConfigureAwait(false);
+                                            if (!isSfcContainer && chunkData.DepotFileType != DepotFileType.Patch)
+                                            {
+                                                Interlocked.Add(ref totalDiskBytes, bytesRead);
+                                            }
 
-                                                                           totalWritten += bytesRead;
-                                                                       }
-                                                                   }
+                                            totalWritten += bytesRead;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    while ((bytesRead = await sourceStream
+                                              .ReadAsync(consumerBuffer, 0, consumerBuffer.Length, token)
+                                              .ConfigureAwait(false)) > 0)
+                                    {
+                                        await outFs.WriteAsync(consumerBuffer, 0, bytesRead, token)
+                                                   .ConfigureAwait(false);
 
-                                                                   if (outFs.Length == fileExpectedSizes[item.FilePath])
-                                                                   {
-                                                                       resumeState.MarkCompleted(item.FilePath, item.ChunkId); 
-                                                                   }
-                                                                   else
-                                                                   {
-                                                                       outFs.SetLength(0);
-                                                                       if (sourceStream.CanWrite)
-                                                                       {
-                                                                           sourceStream.SetLength(0);
-                                                                       }
-                                                                   }
-                                                               }
+                                        if (!isSfcContainer)
+                                        {
+                                            Interlocked.Add(ref totalDiskBytes, bytesRead);
+                                        }
 
-                                                               if (item.ChunkBuffer == null && File.Exists(item.TempFilePath))
-                                                               {
-                                                                   try
-                                                                   {
-                                                                       File.Delete(item.TempFilePath);
-                                                                   }
-                                                                   catch (Exception ex)
-                                                                   {
-                                                                       logger.Warn(ex, $"Couldn't delete temp file {item.TempFilePath}.");
-                                                                   }
-                                                               }
-                                                           }
-                                                           catch (OperationCanceledException)
-                                                           {
-                                                               throw;
-                                                           }
-                                                           catch (Exception ex)
-                                                           {
-                                                               logger.Error(ex,
-                                                                   $"Error occurred during writing chunk to file {item.FilePath}");
-                                                               throw;
-                                                           }
-                                                           finally
-                                                           {
-                                                               try
-                                                               {
-                                                                   fileWriteSemaphore.Release();
-                                                               }
-                                                               catch
-                                                               {
-                                                               }
+                                        totalWritten += bytesRead;
+                                    }
+                                }
+                            }
+                            resumeState.MarkCompleted(chunkData.FilePath, chunkData.ChunkId);
+                            if (chunkData.ChunkBuffer == null && File.Exists(chunkData.TempFilePath))
+                            {
+                                try
+                                {
+                                    File.Delete(chunkData.TempFilePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.Warn(ex, $"Couldn't delete temp file {chunkData.TempFilePath}.");
+                                }
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error(ex,
+                                $"Error occurred during writing chunk to file {chunkData.FilePath}");
+                            throw;
+                        }
+                        finally
+                        {
+                            try
+                            {
+                                ioSemaphore.Release();
+                            }
+                            catch
+                            {
+                            }
 
-                                                               try
-                                                               {
-                                                                   if (item.ChunkBuffer != null)
-                                                                   {
-                                                                       ArrayPool<byte>.Shared.Return(item.ChunkBuffer);
-                                                                   }
+                            try
+                            {
+                                if (chunkData.ChunkBuffer != null)
+                                {
+                                    ArrayPool<byte>.Shared.Return(chunkData.ChunkBuffer);
+                                }
 
-                                                                   if (item.AllocatedBytes > 0)
-                                                                   {
-                                                                       memoryLimiter.Release(item.AllocatedBytes);
-                                                                   }
-                                                               }
-                                                               catch
-                                                               {
-                                                               }
+                                if (chunkData.AllocatedBytes > 0)
+                                {
+                                    memoryLimiter.Release(chunkData.AllocatedBytes);
+                                }
+                            }
+                            catch
+                            {
+                            }
 
-                                                               Interlocked.Decrement(ref activeDiskers);
-                                                           }
-                                                       }
-                                                   }
-                                               })
-                                              .ConfigureAwait(false);
-                                       }, token))
-                                      .ToList();
+                            Interlocked.Decrement(ref activeDiskers);
+                        }
+                    }).ConfigureAwait(false);
+                }
 
+            }
 
             try
             {
@@ -1925,25 +1894,16 @@ namespace GogOssLibraryNS
             }
             catch (OperationCanceledException)
             {
-                channel.Writer.TryComplete();
                 throw;
             }
-            finally
-            {
-                channel.Writer.TryComplete();
+            finally 
+            { 
                 try
                 {
-                    await Task.WhenAll(ioWorkers).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                }
-
-                try
-                {
+                    await Task.WhenAll(decompressionTasks).ConfigureAwait(false);
                     resumeState.Save(resumeStatePath);
                 }
-                catch (Exception)
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
                 {
                 }
             }
@@ -1971,9 +1931,6 @@ namespace GogOssLibraryNS
                                                                   }
 
                                                                   await sfcExtractSemaphore.WaitAsync(token).ConfigureAwait(false);
-                                                                  SemaphoreSlim fileWriteSemaphore = writeSemaphores[smallFilePath];
-
-                                                                  await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                                                                   Interlocked.Increment(ref activeDiskers);
 
                                                                   try
@@ -1988,7 +1945,7 @@ namespace GogOssLibraryNS
                                                                                  FileAccess.Read, FileShare.Read, bufferSize,
                                                                                  FileOptions.SequentialScan))
                                                                       using (var outFs = new FileStream(smallFilePath, FileMode.Create,
-                                                                                 FileAccess.Write, FileShare.None, bufferSize,
+                                                                                 FileAccess.Write, FileShare.ReadWrite, bufferSize,
                                                                                  FileOptions.Asynchronous))
                                                                       {
                                                                           inFs.Seek(sfcRef.offset, SeekOrigin.Begin);
@@ -2036,14 +1993,6 @@ namespace GogOssLibraryNS
                                                                   {
                                                                       try
                                                                       {
-                                                                          fileWriteSemaphore.Release();
-                                                                      }
-                                                                      catch
-                                                                      {
-                                                                      }
-
-                                                                      try
-                                                                      {
                                                                           sfcExtractSemaphore.Release();
                                                                       }
                                                                       catch
@@ -2088,7 +2037,7 @@ namespace GogOssLibraryNS
                             var expectedPatchSize = diff.chunks.Sum(c => (long)c.size);
                             totalSize -= expectedPatchSize;
                             totalSize += (long)diff.target_size;
-                        
+
                             var patchTask = Task.Run(async () =>
                             {
                                 string sourceRel = diff.path_source ?? "";
