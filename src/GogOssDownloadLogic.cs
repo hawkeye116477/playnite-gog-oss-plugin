@@ -445,7 +445,7 @@ namespace GogOssLibraryNS
                         double avgNetSpeed = (networkBytes - initialNet) / elapsed.TotalSeconds;
                         double avgDiskSpeed = (diskBytes - initialDisk) / elapsed.TotalSeconds;
 
-                        double speedForEta = Math.Max(1, Math.Min(avgNetSpeed, avgDiskSpeed));
+                        double speedForEta = Math.Max(1, Math.Max(avgNetSpeed, avgDiskSpeed));
                         double remaining = totalSize - diskBytes;
 
                         double eta = remaining / speedForEta;
