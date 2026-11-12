@@ -1751,6 +1751,8 @@ namespace GogOssLibraryNS
             {
                 if (!token.IsCancellationRequested)
                 {
+                    var fileWriteSemaphore = writeSemaphores[chunkData.FilePath];
+                    await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
                     await ioSemaphore.WaitAsync(token).ConfigureAwait(false);
                     await RentAndUsePool(bufferSize, async consumerBuffer =>
                     {
@@ -1866,6 +1868,7 @@ namespace GogOssLibraryNS
                         {
                             try
                             {
+                                fileWriteSemaphore.Release();
                                 ioSemaphore.Release();
                             }
                             catch
