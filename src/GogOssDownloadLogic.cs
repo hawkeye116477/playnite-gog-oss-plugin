@@ -526,6 +526,8 @@ namespace GogOssLibraryNS
                 tokens = gogAccountClient.LoadTokens();
             }
 
+            int ioWorkerCount = Math.Min(maxParallel, (int)(Environment.ProcessorCount * 0.5));
+            using var ioSemaphore = new SemaphoreSlim(ioWorkerCount);
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
 
@@ -650,6 +652,7 @@ namespace GogOssLibraryNS
             //
             // STEP 2: Download
             //
+            var writeFileTasks = new ConcurrentBag<Task>();
             var downloadTasks = jobs.Select(async job =>
                                      {
                                          bool slotAcquired = false;
@@ -691,9 +694,9 @@ namespace GogOssLibraryNS
                                                      resumeStartByte = new FileInfo(tempFilePath).Length;
                                                      if (resumeStartByte >= compressedSize)
                                                      {
-                                                         await WriteFile(job.filePath, resumeStartByte, tempFilePath, 0, isCompressed,
-                                                                            job.hash, token)
-                                                                      .ConfigureAwait(false);
+                                                         var writeTask = WriteFile(job.filePath, resumeStartByte, tempFilePath, 0, isCompressed,
+                                                                            job.hash, token);
+                                                         writeFileTasks.Add(writeTask);
                                                          return;
                                                      }
                                                      else if (resumeStartByte > 0)
@@ -738,8 +741,9 @@ namespace GogOssLibraryNS
                                                      })
                                                     .ConfigureAwait(false);
 
-                                                 await WriteFile(effectiveFilePath, actualFileSize, tempFilePath, 0, isCompressed,
-                                                     job.hash, token).ConfigureAwait(false);
+                                                 var writeFileTask = WriteFile(effectiveFilePath, actualFileSize, tempFilePath, 0, isCompressed,
+                                                     job.hash, token);
+                                                 writeFileTasks.Add(writeFileTask);
                                              }
                                              catch (OperationCanceledException)
                                              {
@@ -783,6 +787,7 @@ namespace GogOssLibraryNS
             //
             async Task WriteFile(string filePath, long length, string tempFilePath, long allocatedBytes, bool isCompressed, string hash, CancellationToken token)
             {
+                await ioSemaphore.WaitAsync(token).ConfigureAwait(false);
                 await RentAndUsePool(bufferSize, async consumerBuffer =>
                 {
                     token.ThrowIfCancellationRequested();
@@ -913,6 +918,7 @@ namespace GogOssLibraryNS
                     {
                         try
                         {
+                            ioSemaphore.Release();
                             fileWriteSemaphore.Release();
                         }
                         catch
@@ -937,9 +943,10 @@ namespace GogOssLibraryNS
             {
                 try
                 {
+                    await Task.WhenAll(writeFileTasks).ConfigureAwait(false);
                     resumeState.Save(resumeStatePath);
                 }
-                catch (Exception)
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
                 {
                 }
             }
