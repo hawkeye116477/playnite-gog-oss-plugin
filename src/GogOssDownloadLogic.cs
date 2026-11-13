@@ -526,7 +526,7 @@ namespace GogOssLibraryNS
                 tokens = gogAccountClient.LoadTokens();
             }
 
-            int ioWorkerCount = Math.Min(maxParallel, (int)(Environment.ProcessorCount * 0.5));
+            int ioWorkerCount = Math.Max(2, Math.Min(maxParallel / 2, Environment.ProcessorCount / 2));
             using var ioSemaphore = new SemaphoreSlim(ioWorkerCount);
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             var writeSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>(StringComparer.OrdinalIgnoreCase);
@@ -1001,7 +1001,7 @@ namespace GogOssLibraryNS
             GogSecureLinks allSecureLinks,
             int maxParallel,
             int bufferSize = 512 * 1024,
-            long maxMemoryBytes = 512 * 1024 * 1024,
+            long maxMemoryBytes = 1024 * 1024 * 1024,
             ObservableCollection<string> cdnOrder = default)
         {
             // STEP 0: Initial Setup
@@ -1013,7 +1013,7 @@ namespace GogOssLibraryNS
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", GogDownloadApi.UserAgent);
 
-            int ioWorkerCount = Math.Min(maxParallel, (int)(Environment.ProcessorCount * 0.5));
+            int ioWorkerCount = Math.Max(2, Math.Min(maxParallel / 2, Environment.ProcessorCount / 2));
             using var ioSemaphore = new SemaphoreSlim(ioWorkerCount);
             using var downloadSemaphore = new SemaphoreSlim(maxParallel);
             using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
@@ -1588,9 +1588,8 @@ namespace GogOssLibraryNS
                                                          using var networkStream =
                                                              await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                                                          var compressedChunkStream = new MemoryStream();
-                                                         chunkBuffer = ArrayPool<byte>.Shared.Rent(512 * 1024);
+                                                         chunkBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
                                                          var chunkBufferLength = chunkBuffer.Length;
-                                                         int offset = 0;
                                                          int bytesRead;
                                                          while ((bytesRead = await networkStream.ReadAsync(chunkBuffer, 0, chunkBufferLength, token)
                                                                                   .ConfigureAwait(false)) > 0)
@@ -1905,10 +1904,13 @@ namespace GogOssLibraryNS
                 try
                 {
                     await Task.WhenAll(decompressionTasks).ConfigureAwait(false);
-                    resumeState.Save(resumeStatePath);
                 }
                 catch (OperationCanceledException) when (token.IsCancellationRequested)
                 {
+                }
+                finally
+                {
+                    resumeState.Save(resumeStatePath);
                 }
             }
 
