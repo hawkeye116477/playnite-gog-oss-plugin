@@ -1,4 +1,5 @@
 ﻿using GogOssLibraryNS.Enums;
+using System.IO;
 
 namespace GogOssLibraryNS
 {
@@ -6,7 +7,7 @@ namespace GogOssLibraryNS
     {
         public string FilePath { get; set; }
         public long Offset { get; set; }
-        public byte[] ChunkBuffer { get; set; }
+        public MemoryStream MemoryStream { get; set; }
         public long AllocatedBytes { get; set; }
         public int Length { get; set; }
         public string TempFilePath { get; set; }

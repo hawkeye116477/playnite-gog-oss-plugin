@@ -1585,35 +1585,34 @@ namespace GogOssLibraryNS
 
                                                      if (memoryReserved)
                                                      {
-                                                         chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
-                                                         var chunkBufferLength = chunkBuffer.Length;
                                                          using var networkStream =
                                                              await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                                                         var compressedChunkStream = new MemoryStream();
+                                                         chunkBuffer = ArrayPool<byte>.Shared.Rent(512 * 1024);
+                                                         var chunkBufferLength = chunkBuffer.Length;
                                                          int offset = 0;
                                                          int bytesRead;
-                                                         while ((bytesRead = await networkStream
-                                                                                  .ReadAsync(chunkBuffer, offset,
-                                                                                       chunkBufferLength - offset, token)
+                                                         while ((bytesRead = await networkStream.ReadAsync(chunkBuffer, 0, chunkBufferLength, token)
                                                                                   .ConfigureAwait(false)) > 0)
                                                          {
                                                              Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                                              token.ThrowIfCancellationRequested();
-                                                             offset += bytesRead;
+                                                             await compressedChunkStream.WriteAsync(chunkBuffer, 0, bytesRead, token).ConfigureAwait(false);
                                                          }
+                                                         compressedChunkStream.Position = 0;
 
                                                          var decompressTask = DecompressChunk(new ChunkData
                                                          {
                                                              FilePath = job.filePath,
                                                              Offset = job.offset,
-                                                             ChunkBuffer = chunkBuffer,
                                                              Length = (int)compressedSize,
                                                              AllocatedBytes = allocatedBytes,
                                                              DepotFileType = job.depotFileType,
                                                              IsCompressed = isCompressed,
-                                                             ChunkId = $"{chunk.compressedMd5}"
+                                                             ChunkId = $"{chunk.compressedMd5}",
+                                                             MemoryStream = compressedChunkStream,
                                                          }, token);
                                                          decompressionTasks.Add(decompressTask);
-                                                         chunkBuffer = null;
                                                          allocatedBytes = 0;
                                                          return;
                                                      }
@@ -1763,10 +1762,10 @@ namespace GogOssLibraryNS
                         try
                         {
                             Stream sourceStream;
-                            if (chunkData.ChunkBuffer != null)
+                            if (chunkData.MemoryStream != null)
                             {
-                                sourceStream = new MemoryStream(chunkData.ChunkBuffer, 0, chunkData.Length,
-                                    writable: false);
+                                sourceStream = chunkData.MemoryStream;
+                                sourceStream.Position = 0;
                             }
                             else
                             {
@@ -1842,7 +1841,7 @@ namespace GogOssLibraryNS
                                 }
                             }
                             resumeState.MarkCompleted(chunkData.FilePath, chunkData.ChunkId);
-                            if (chunkData.ChunkBuffer == null && File.Exists(chunkData.TempFilePath))
+                            if (!chunkData.TempFilePath.IsNullOrEmpty() && File.Exists(chunkData.TempFilePath))
                             {
                                 try
                                 {
@@ -1877,11 +1876,6 @@ namespace GogOssLibraryNS
 
                             try
                             {
-                                if (chunkData.ChunkBuffer != null)
-                                {
-                                    ArrayPool<byte>.Shared.Return(chunkData.ChunkBuffer);
-                                }
-
                                 if (chunkData.AllocatedBytes > 0)
                                 {
                                     memoryLimiter.Release(chunkData.AllocatedBytes);
