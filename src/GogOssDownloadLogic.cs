@@ -1516,22 +1516,22 @@ namespace GogOssLibraryNS
                                        .ToList();
                     }
 
+                    bool memoryReserved = false;
+                    if (!memoryReserved && allocatedBytes == 0)
+                    {
+                        var neededSize = (long)(job.chunk.size + bufferSize);
+                        memoryReserved = memoryLimiter.TryReserve(neededSize);
+                        if (memoryReserved)
+                        {
+                            allocatedBytes = neededSize;
+                        }
+                    }
+
                     foreach (var currentSecureLink in availableCdns)
                     {
                         token.ThrowIfCancellationRequested();
-                        bool memoryReserved = false;
                         try
                         {
-                            if (!memoryReserved && allocatedBytes == 0)
-                            {
-                                var neededSize = (long)(job.chunk.size + bufferSize + 1024 * 1024);
-                                memoryReserved = memoryLimiter.TryReserve(neededSize);
-                                if (memoryReserved)
-                                {
-                                    allocatedBytes = neededSize;
-                                }
-                            }
-
                             string url;
                             if (isV1 && job.depotFileType != DepotFileType.Redist)
                             {
