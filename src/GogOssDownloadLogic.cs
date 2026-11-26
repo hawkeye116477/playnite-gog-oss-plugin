@@ -1032,7 +1032,6 @@ namespace GogOssLibraryNS
 
             var downloadWorkerCount = maxParallel;
             int ioWorkerCount = downloadWorkerCount * 2;
-            using var sfcExtractSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount * 2));
             using var patchesSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount));
             using var memoryLimiter = new MemoryLimiter(maxMemoryBytes / 2);
             const string sfcContainerBaseName = "smallFilesContainer";
@@ -1618,13 +1617,10 @@ namespace GogOssLibraryNS
                                 if (memoryReserved)
                                 {
                                     chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
-                                    var chunkBufferLength = chunkBuffer.Length;
                                     int offset = 0;
                                     int bytesRead;
-                                    while ((bytesRead = await networkStream
-                                                             .ReadAsync(chunkBuffer, offset,
-                                                                  (int)compressedSize - offset, token)
-                                                             .ConfigureAwait(false)) > 0)
+                                    while (offset < (int)compressedSize && 
+                                        (bytesRead = await networkStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
                                     {
                                         Interlocked.Add(ref totalNetworkBytes, bytesRead);
                                         token.ThrowIfCancellationRequested();
@@ -1944,6 +1940,7 @@ namespace GogOssLibraryNS
                                                           if (item.ChunkBuffer != null)
                                                           {
                                                               ArrayPool<byte>.Shared.Return(item.ChunkBuffer);
+                                                              item.ChunkBuffer = null;
                                                           }
 
                                                           if (item.AllocatedBytes > 0)
