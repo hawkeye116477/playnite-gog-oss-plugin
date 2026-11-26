@@ -1613,58 +1613,57 @@ namespace GogOssLibraryNS
                                token).ConfigureAwait(false);
                             response.EnsureSuccessStatusCode();
 
-                            if (memoryReserved)
+                            using (var networkStream = await response.Content.ReadAsStreamAsync()
+                                                                            .ConfigureAwait(false))
                             {
-                                chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
-                                var chunkBufferLength = chunkBuffer.Length;
-                                using var networkStream =
-                                    await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                                int offset = 0;
-                                int bytesRead;
-                                while ((bytesRead = await networkStream
-                                                         .ReadAsync(chunkBuffer, offset,
-                                                              (int)compressedSize - offset, token)
-                                                         .ConfigureAwait(false)) > 0)
+                                if (memoryReserved)
                                 {
-                                    Interlocked.Add(ref totalNetworkBytes, bytesRead);
-                                    token.ThrowIfCancellationRequested();
-                                    offset += bytesRead;
-                                }
-
-                                await ioChannel.Writer.WriteAsync(new ChunkData
-                                {
-                                    FilePath = job.filePath,
-                                    Offset = job.offset,
-                                    ChunkBuffer = chunkBuffer,
-                                    Length = (int)compressedSize,
-                                    AllocatedBytes = allocatedBytes,
-                                    DepotFileType = job.depotFileType,
-                                    IsCompressed = isCompressed,
-                                    ChunkId = $"{chunk.compressedMd5}"
-                                }, token).ConfigureAwait(false);
-                                chunkBuffer = null;
-                                allocatedBytes = 0;
-                                return;
-                            }
-                            else
-                            {
-                                using var networkStream = await response.Content.ReadAsStreamAsync()
-                                           .ConfigureAwait(false);
-                                FileMode fileMode = resumeStartByte > 0 ?
-                                    FileMode.Append :
-                                    FileMode.Create;
-                                await RentAndUsePool(bufferSize, async buffer =>
-                                {
-                                    using (var tempFs = new FileStream(tempFilePath, fileMode,
-                                               FileAccess.Write,
-                                               FileShare.None, bufferSize,
-                                               FileOptions.Asynchronous | FileOptions.SequentialScan))
+                                    chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
+                                    var chunkBufferLength = chunkBuffer.Length;
+                                    int offset = 0;
+                                    int bytesRead;
+                                    while ((bytesRead = await networkStream
+                                                             .ReadAsync(chunkBuffer, offset,
+                                                                  (int)compressedSize - offset, token)
+                                                             .ConfigureAwait(false)) > 0)
                                     {
-                                        int bytesRead;
-                                        int bufferLength = buffer.Length;
+                                        Interlocked.Add(ref totalNetworkBytes, bytesRead);
+                                        token.ThrowIfCancellationRequested();
+                                        offset += bytesRead;
+                                    }
+
+                                    await ioChannel.Writer.WriteAsync(new ChunkData
+                                    {
+                                        FilePath = job.filePath,
+                                        Offset = job.offset,
+                                        ChunkBuffer = chunkBuffer,
+                                        Length = (int)compressedSize,
+                                        AllocatedBytes = allocatedBytes,
+                                        DepotFileType = job.depotFileType,
+                                        IsCompressed = isCompressed,
+                                        ChunkId = $"{chunk.compressedMd5}"
+                                    }, token).ConfigureAwait(false);
+                                    chunkBuffer = null;
+                                    allocatedBytes = 0;
+                                    return;
+                                }
+                                else
+                                {
+                                    FileMode fileMode = resumeStartByte > 0 ?
+                                        FileMode.Append :
+                                        FileMode.Create;
+                                    await RentAndUsePool(bufferSize, async buffer =>
+                                    {
+                                        using (var tempFs = new FileStream(tempFilePath, fileMode,
+                                                   FileAccess.Write,
+                                                   FileShare.None, bufferSize,
+                                                   FileOptions.Asynchronous | FileOptions.SequentialScan))
                                         {
+                                            int bytesRead;
+                                            int bufferLength = buffer.Length;
+
                                             while ((bytesRead = await networkStream
-                                                      .ReadAsync(buffer, 0, (int)compressedSize, token)
+                                                      .ReadAsync(buffer, 0, bufferLength, token)
                                                       .ConfigureAwait(false)) > 0)
                                             {
                                                 Interlocked.Add(ref totalNetworkBytes, bytesRead);
@@ -1672,21 +1671,21 @@ namespace GogOssLibraryNS
                                                             .ConfigureAwait(false);
                                             }
                                         }
-                                    }
-                                }).ConfigureAwait(false);
+                                    }).ConfigureAwait(false);
 
-                                await ioChannel.Writer.WriteAsync(new ChunkData
-                                {
-                                    FilePath = job.filePath,
-                                    Offset = job.offset,
-                                    Length = (int)compressedSize,
-                                    AllocatedBytes = 0,
-                                    TempFilePath = tempFilePath,
-                                    DepotFileType = job.depotFileType,
-                                    IsCompressed = isCompressed,
-                                    ChunkId = $"{chunk.compressedMd5}"
-                                }, token).ConfigureAwait(false);
-                                return;
+                                    await ioChannel.Writer.WriteAsync(new ChunkData
+                                    {
+                                        FilePath = job.filePath,
+                                        Offset = job.offset,
+                                        Length = (int)compressedSize,
+                                        AllocatedBytes = 0,
+                                        TempFilePath = tempFilePath,
+                                        DepotFileType = job.depotFileType,
+                                        IsCompressed = isCompressed,
+                                        ChunkId = $"{chunk.compressedMd5}"
+                                    }, token).ConfigureAwait(false);
+                                    return;
+                                }
                             }
                         }
                         catch (OperationCanceledException)
