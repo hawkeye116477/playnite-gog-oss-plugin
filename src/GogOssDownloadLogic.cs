@@ -1865,6 +1865,62 @@ namespace GogOssLibraryNS
                                                               logger.Warn(ex, $"Couldn't delete temp file {item.TempFilePath}.");
                                                           }
                                                       }
+
+                                                      // SFC File Extraction
+                                                      if (isSfcContainer && fileExpectedSizes.TryGetValue(item.FilePath, out long expectedSfcSize) && expectedSfcSize == new FileInfo(item.FilePath).Length)
+                                                      {
+                                                          var sfcDepot = Path.GetFileName(item.FilePath).Replace($"{sfcContainerBaseName}_", "").Replace(".bin", "");
+                                                          var matchingSfcJobs = sfcExtractionJobs.Where(kvp => kvp.Key == sfcDepot);
+
+                                                          using (var inFs = new FileStream(item.FilePath, FileMode.Open,
+                                                                                FileAccess.Read, FileShare.None, bufferSize,
+                                                                                FileOptions.SequentialScan))
+                                                          {
+                                                              foreach (var matchingSfcJob in matchingSfcJobs)
+                                                              {
+                                                                  foreach (var sfcFile in matchingSfcJob.Value)
+                                                                  {
+                                                                      var sfcRef = sfcFile.sfcRef;
+                                                                      using (var outFs = new FileStream(sfcFile.filePath, FileMode.Create,
+                                                                          FileAccess.Write, FileShare.None, bufferSize,
+                                                                          FileOptions.Asynchronous))
+                                                                      {
+                                                                          inFs.Seek(sfcRef.offset, SeekOrigin.Begin);
+
+                                                                          long expectedSize = (long)sfcRef.size;
+                                                                          long remaining = expectedSize;
+
+                                                                          await RentAndUsePool(bufferSize, async consumerBuffer =>
+                                                                          {
+                                                                              while (remaining > 0)
+                                                                              {
+                                                                                  int read = await inFs.ReadAsync(consumerBuffer, 0,
+                                                                                          (int)Math.Min(remaining,
+                                                                                              consumerBuffer.Length),
+                                                                                          token)
+                                                                                     .ConfigureAwait(false);
+
+                                                                                  if (read == 0)
+                                                                                  {
+                                                                                      throw new EndOfStreamException(
+                                                                                          "Unexpected end of container file: Premature EOF encountered.");
+                                                                                  }
+
+                                                                                  await outFs.WriteAsync(consumerBuffer, 0, read, token)
+                                                                                     .ConfigureAwait(false);
+
+                                                                                  Interlocked.Add(ref totalDiskBytes, read);
+                                                                                  remaining -= read;
+                                                                              }
+                                                                          })
+                                                                             .ConfigureAwait(false);
+                                                                      }
+                                                                  }
+                                                              }
+                                                          }
+
+                                                          File.Delete(item.FilePath);
+                                                      }
                                                   }
                                                   catch (OperationCanceledException)
                                                   {
@@ -1936,125 +1992,7 @@ namespace GogOssLibraryNS
                 }
             }
 
-            // STEP 4: SFC File Extraction (V2 only)
-            if (bigDepot.version == 2 && sfcExtractionJobs.Any())
-            {
-                var extractionWorkers = sfcExtractionJobs.Where(kvp => sfcHashesToDownload.Contains(kvp.Key))
-                                                         .SelectMany(kvp =>
-                                                          {
-                                                              string depotHash = kvp.Key;
-                                                              string containerFilePath = sfcFilePathsByHash[depotHash];
-                                                              var orderedJobs = kvp.Value.OrderBy(job => job.sfcRef.offset);
-
-                                                              return orderedJobs.Select(async job =>
-                                                              {
-                                                                  token.ThrowIfCancellationRequested();
-                                                                  string smallFilePath = job.filePath;
-                                                                  GogDepot.sfcRef sfcRef = job.sfcRef;
-
-                                                                  if (File.Exists(smallFilePath) &&
-                                                                      new FileInfo(smallFilePath).Length == sfcRef.size)
-                                                                  {
-                                                                      return;
-                                                                  }
-
-                                                                  await sfcExtractSemaphore.WaitAsync(token).ConfigureAwait(false);
-                                                                  SemaphoreSlim fileWriteSemaphore = writeSemaphores[smallFilePath];
-
-                                                                  await fileWriteSemaphore.WaitAsync(token).ConfigureAwait(false);
-                                                                  Interlocked.Increment(ref activeDiskers);
-
-                                                                  try
-                                                                  {
-                                                                      if (!File.Exists(containerFilePath))
-                                                                      {
-                                                                          throw new FileNotFoundException(
-                                                                              $"Missing SFC container file: {containerFilePath}.");
-                                                                      }
-
-                                                                      using (var inFs = new FileStream(containerFilePath, FileMode.Open,
-                                                                                 FileAccess.Read, FileShare.Read, bufferSize,
-                                                                                 FileOptions.SequentialScan))
-                                                                      using (var outFs = new FileStream(smallFilePath, FileMode.Create,
-                                                                                 FileAccess.Write, FileShare.None, bufferSize,
-                                                                                 FileOptions.Asynchronous))
-                                                                      {
-                                                                          inFs.Seek(sfcRef.offset, SeekOrigin.Begin);
-
-                                                                          long expectedSize = (long)sfcRef.size;
-                                                                          long remaining = expectedSize;
-
-                                                                          await RentAndUsePool(bufferSize, async consumerBuffer =>
-                                                                              {
-                                                                                  while (remaining > 0)
-                                                                                  {
-                                                                                      int read = await inFs.ReadAsync(consumerBuffer, 0,
-                                                                                              (int)Math.Min(remaining,
-                                                                                                  consumerBuffer.Length),
-                                                                                              token)
-                                                                                         .ConfigureAwait(false);
-
-                                                                                      if (read == 0)
-                                                                                      {
-                                                                                          throw new EndOfStreamException(
-                                                                                              "Unexpected end of container file: Premature EOF encountered.");
-                                                                                      }
-
-                                                                                      await outFs.WriteAsync(consumerBuffer, 0, read, token)
-                                                                                         .ConfigureAwait(false);
-
-                                                                                      Interlocked.Add(ref totalDiskBytes, read);
-                                                                                      remaining -= read;
-                                                                                  }
-                                                                              })
-                                                                             .ConfigureAwait(false);
-                                                                      }
-                                                                  }
-                                                                  catch (OperationCanceledException)
-                                                                  {
-                                                                      throw;
-                                                                  }
-                                                                  catch (Exception ex)
-                                                                  {
-                                                                      logger.Error(ex,
-                                                                          $"An error occurred during extraction of {smallFilePath} from container {containerFilePath}");
-                                                                      throw;
-                                                                  }
-                                                                  finally
-                                                                  {
-                                                                      try
-                                                                      {
-                                                                          fileWriteSemaphore.Release();
-                                                                      }
-                                                                      catch
-                                                                      {
-                                                                      }
-
-                                                                      try
-                                                                      {
-                                                                          sfcExtractSemaphore.Release();
-                                                                      }
-                                                                      catch
-                                                                      {
-                                                                      }
-
-                                                                      Interlocked.Decrement(ref activeDiskers);
-                                                                  }
-                                                              });
-                                                          })
-                                                         .ToList();
-
-                try
-                {
-                    await Task.WhenAll(extractionWorkers).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                }
-            }
-
-
-            // STEP 5: Patching
+            // STEP 4: Patching
             var allItems = bigDepot.items.Concat(sfcFiles).ToList();
             if (allItems != null && allItems.Count > 0)
             {
@@ -2196,7 +2134,7 @@ namespace GogOssLibraryNS
 
 
             //
-            // STEP 6: Cleanup
+            // STEP 5: Cleanup
             //
             foreach (var s in writeSemaphores.Values)
             {
