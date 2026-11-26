@@ -1,12 +1,11 @@
-﻿using System;
+﻿using ByteSizeLib;
+using ComponentAce.Compression.Libs.zlib;
+using Playnite.SDK;
+using System;
 using System.Buffers;
 using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using ByteSizeLib;
-using Playnite.SDK;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
 
 namespace GogOssLibraryNS
 {
@@ -89,7 +88,7 @@ namespace GogOssLibraryNS
             var logger = LogManager.GetLogger();
             try
             {
-                using var zlibStream = new ZlibStream(content, CompressionMode.Decompress);
+                using var zlibStream = new ZInputStream(content);
                 using var streamReader = new StreamReader(zlibStream);
                 var result = await streamReader.ReadToEndAsync();
                 return result;

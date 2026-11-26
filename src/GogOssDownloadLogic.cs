@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,6 +17,7 @@ using System.Windows;
 using CliWrap;
 using CommonPlugin;
 using CommonPlugin.Enums;
+using ComponentAce.Compression.Libs.zlib;
 using GogOssLibraryNS.Enums;
 using GogOssLibraryNS.Models;
 using GogOssLibraryNS.Services;
@@ -25,9 +27,6 @@ using Playnite.Common;
 using Playnite.SDK;
 using Playnite.SDK.Data;
 using Playnite.SDK.Models;
-using SharpCompress.Archives.Zip;
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
 using UnifiedDownloadManagerApiNS;
 using UnifiedDownloadManagerApiNS.Interfaces;
 using UnifiedDownloadManagerApiNS.Models;
@@ -818,12 +817,12 @@ namespace GogOssLibraryNS
                                                                            FileMode.Open,
                                                                            FileAccess.Read, FileShare.Read, bufferSize,
                                                                            FileOptions.SequentialScan);
-                                                                       using (var zip = ZipArchive.Open(sourceStream))
+                                                                       using (var zip = new ZipArchive(sourceStream, ZipArchiveMode.Read))
                                                                        {
-                                                                           var entry = zip.Entries.FirstOrDefault(e => !e.IsDirectory);
+                                                                           var entry = zip.Entries.FirstOrDefault(e => !string.IsNullOrEmpty(e.Name));
                                                                            if (entry != null)
                                                                            {
-                                                                               using (var entryStream = entry.OpenEntryStream())
+                                                                               using (var entryStream = entry.Open())
                                                                                {
                                                                                    await entryStream.CopyToAsync(outFs, bufferSize, token)
                                                                                       .ConfigureAwait(false);
@@ -1814,8 +1813,7 @@ namespace GogOssLibraryNS
                                                           {
                                                               if (item.IsCompressed)
                                                               {
-                                                                  using (var zlib = new ZlibStream(sourceStream,
-                                                                             CompressionMode.Decompress))
+                                                                  using (var zlib = new ZInputStream(sourceStream))
                                                                   {
                                                                       while ((bytesRead = await zlib.ReadAsync(consumerBuffer, 0,
                                                                                      consumerBuffer.Length, token)
