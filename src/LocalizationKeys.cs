@@ -226,9 +226,29 @@ namespace System
         /// </summary>
         public const string CommonUninstallSelectedDlcs = "common-uninstall-selected-dlcs";
         /// <summary>
+        /// {$launcherName} Configuration Path
+        /// </summary>
+        public const string CommonLauncherConfigPath = "common-launcher-config-path";
+        /// <summary>
         /// {$launcherName} Path
         /// </summary>
         public const string CommonLauncherCustomPath = "common-launcher-custom-path";
+        /// <summary>
+        /// {$launcherName} version
+        /// </summary>
+        public const string CommonLauncherVersion = "common-launcher-version";
+        /// <summary>
+        /// {$launcherName} binary
+        /// </summary>
+        public const string CommonLauncherBinary = "common-launcher-binary";
+        /// <summary>
+        /// Check for {$launcherName} updates
+        /// </summary>
+        public const string CommonLauncherUpdatePolicy = "common-launcher-update-policy";
+        /// <summary>
+        /// {$launcherName} is not installed.
+        /// </summary>
+        public const string CommonLauncherNotInstalled = "common-launcher-not-installed";
         /// <summary>
         /// Games Installation Path
         /// </summary>
@@ -378,14 +398,6 @@ namespace System
         /// </summary>
         public const string CommonPluginVersion = "common-plugin-version";
         /// <summary>
-        /// {$launcherName} version
-        /// </summary>
-        public const string CommonLauncherVersion = "common-launcher-version";
-        /// <summary>
-        /// {$launcherName} binary
-        /// </summary>
-        public const string CommonLauncherBinary = "common-launcher-binary";
-        /// <summary>
         /// Copy raw data to clipboard
         /// </summary>
         public const string CommonCopyRawDataToClipboard = "common-copy-raw-data-to-clipboard";
@@ -504,14 +516,6 @@ namespace System
         /// Games
         /// </summary>
         public const string CommonGames = "common-games";
-        /// <summary>
-        /// Check for {$launcherName} updates
-        /// </summary>
-        public const string CommonLauncherUpdatePolicy = "common-launcher-update-policy";
-        /// <summary>
-        /// {$launcherName} is not installed.
-        /// </summary>
-        public const string CommonLauncherNotInstalled = "common-launcher-not-installed";
         /// <summary>
         /// {$pluginShortName} Panel
         /// </summary>
