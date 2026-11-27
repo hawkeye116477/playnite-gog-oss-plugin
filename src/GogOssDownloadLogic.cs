@@ -1032,7 +1032,7 @@ namespace GogOssLibraryNS
 
             var downloadWorkerCount = maxParallel;
             int ioWorkerCount = downloadWorkerCount * 2;
-            using var patchesSemaphore = new SemaphoreSlim(Math.Min(maxParallel, Environment.ProcessorCount));
+            var patchesWorkerCount = Math.Min(maxParallel, Environment.ProcessorCount);
             using var memoryLimiter = new MemoryLimiter(maxMemoryBytes / 2);
             const string sfcContainerBaseName = "smallFilesContainer";
             const string chunkTempBaseName = "temp_chunk_";
@@ -1619,7 +1619,7 @@ namespace GogOssLibraryNS
                                     chunkBuffer = ArrayPool<byte>.Shared.Rent((int)compressedSize);
                                     int offset = 0;
                                     int bytesRead;
-                                    while (offset < (int)compressedSize && 
+                                    while (offset < (int)compressedSize &&
                                         (bytesRead = await networkStream.ReadAsync(chunkBuffer, offset, (int)compressedSize - offset, token).ConfigureAwait(false)) > 0)
                                     {
                                         Interlocked.Add(ref totalNetworkBytes, bytesRead);
@@ -1996,33 +1996,43 @@ namespace GogOssLibraryNS
                 if (depotDiffItems != null && depotDiffItems.Count > 0)
                 {
                     logger.Info(
-                        $"Found {depotDiffItems.Count} patches to apply concurrently (max {patchesSemaphore.CurrentCount} at a time).");
-                    var patchingTasks = new List<Task>();
+                        $"Found {depotDiffItems.Count} patches to apply concurrently (max {patchesWorkerCount} at a time).");
                     var targetFileSemaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
 
-                    try
+                    var patchesChannel = Channel.CreateUnbounded<GogDepot.Item>(new UnboundedChannelOptions()
                     {
-                        foreach (var diff in depotDiffItems)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            var expectedPatchSize = diff.chunks.Sum(c => (long)c.size);
-                            totalSize -= expectedPatchSize;
-                            totalSize += (long)diff.target_size;
+                        SingleReader = false,
+                        SingleWriter = false,
+                    });
 
-                            var patchTask = Task.Run(async () =>
+                    foreach (var diff in depotDiffItems)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        var expectedPatchSize = diff.chunks.Sum(c => (long)c.size);
+                        totalSize -= expectedPatchSize;
+                        totalSize += (long)diff.target_size;
+                        await patchesChannel.Writer.WriteAsync(diff).ConfigureAwait(false);
+                    }
+                    patchesChannel.Writer.Complete();
+
+                    var patchesWorkers = Enumerable.Range(0, patchesWorkerCount)
+                    .Select(async workerId =>
+                    {
+                        while (await patchesChannel.Reader.WaitToReadAsync(token).ConfigureAwait(false))
+                        {
+                            while (patchesChannel.Reader.TryRead(out var diff))
                             {
+                                token.ThrowIfCancellationRequested();
                                 string sourceRel = diff.path_source ?? "";
                                 string targetRel = diff.path_target ?? diff.path ?? sourceRel;
 
                                 string sourcePath = Path.Combine(fullInstallPath, sourceRel.TrimStart('\\', '/'));
                                 string finalTargetPath = Path.Combine(fullInstallPath, targetRel.TrimStart('\\', '/'));
 
-
                                 var targetLock = targetFileSemaphores.GetOrAdd(finalTargetPath, _ => new SemaphoreSlim(1, 1));
 
                                 string patchedTempPath = "";
 
-                                await patchesSemaphore.WaitAsync(token).ConfigureAwait(false);
                                 await targetLock.WaitAsync(token).ConfigureAwait(false);
 
                                 try
@@ -2035,6 +2045,7 @@ namespace GogOssLibraryNS
                                         throw new FileNotFoundException($"Expected delta not found in temp: {deltaTempPath}");
                                     }
 
+                                    var expectedPatchSize = diff.chunks.Sum(c => (long)c.size);
                                     if (new FileInfo(deltaTempPath).Length != expectedPatchSize)
                                     {
                                         File.Delete(deltaTempPath);
@@ -2098,23 +2109,27 @@ namespace GogOssLibraryNS
                                     catch
                                     {
                                     }
-
-                                    patchesSemaphore.Release();
                                     targetLock.Release();
                                 }
-                            }, token);
-                            patchingTasks.Add(patchTask);
+                            }
                         }
+                    }).ToArray();
 
-                        await Task.WhenAll(patchingTasks).ConfigureAwait(false);
+                    try
+                    {
+                        await Task.WhenAll(patchesWorkers).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
                     }
                     finally
                     {
-                        foreach (var semaphore in targetFileSemaphores.Values)
+                        foreach (var s in targetFileSemaphores.Values)
                         {
                             try
                             {
-                                semaphore.Dispose();
+                                s.Dispose();
                             }
                             catch
                             {
