@@ -1,4 +1,3 @@
-common-launcher-custom-path = { $launcherName } Yol
 common-games-installation-path = Oyunların Kurulum Yolu
 common-download-size = İndirme Boyutu:
 common-install-size = Kurulum Boyutu:
@@ -36,7 +35,6 @@ common-sign-out = Oturumu kapat
 common-troubleshooting-information = Sorun giderme bilgisi
 common-playnite-version = Playnite sürümü
 common-plugin-version = Eklenti sürümü
-common-launcher-version = { $launcherName } sürüm
 common-copy-raw-data-to-clipboard = Ham verileri panoya kopyala
 common-log-files-path = Günlük Dosyaları Yolu
 common-report-bug = Bir hata bildir
@@ -73,7 +71,6 @@ common-uninstall-error =
        *[other] Aşağıdaki oyunlar kaldırılamıyor: { $appName }.
     }
 common-games = Oyunlar
-common-launcher-not-installed = { $launcherName } kurulu değil.
 common-panel = { $pluginShortName } Paneli
 common-download-already-exists =
     { $count ->

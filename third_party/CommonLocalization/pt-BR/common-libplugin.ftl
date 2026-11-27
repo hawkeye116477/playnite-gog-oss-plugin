@@ -69,7 +69,6 @@ common-uninstall-error =
        *[other] Não é possível desinstalar seguintes jogos: { $appName }.
     }
 common-games = Jogos
-common-launcher-not-installed = { $launcherName } não está instalado.
 common-panel = Painel { $pluginShortName }
 common-download-already-exists =
     { $count ->

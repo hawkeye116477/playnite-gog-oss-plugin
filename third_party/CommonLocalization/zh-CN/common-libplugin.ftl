@@ -1,4 +1,3 @@
-common-launcher-custom-path = { $launcherName } 路径
 common-games-installation-path = 游戏安装路径
 common-download-size = 下载大小：
 common-install-size = 安装大小：
@@ -36,8 +35,6 @@ common-sign-out = 退出登录
 common-troubleshooting-information = 故障排除信息
 common-playnite-version = Playnite 版本
 common-plugin-version = 插件版本
-common-launcher-version = { $launcherName } 版本
-common-launcher-binary = { $launcherName } 二进制文件
 common-copy-raw-data-to-clipboard = 复制原始数据到剪贴板
 common-log-files-path = 日志文件路径
 common-report-bug = 报告错误
@@ -74,8 +71,6 @@ common-uninstall-error =
        *[other] 无法卸载以下游戏：{ $appName }。
     }
 common-games = 游戏
-common-launcher-update-policy = 检查 { $launcherName } 更新
-common-launcher-not-installed = { $launcherName } 未安装。
 common-panel = { $pluginShortName } 面板
 common-download-already-exists =
     { $count ->

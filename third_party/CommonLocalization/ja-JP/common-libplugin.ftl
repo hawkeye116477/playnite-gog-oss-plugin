@@ -1,4 +1,3 @@
-common-launcher-custom-path = { $launcherName } のパス
 common-games-installation-path = ゲームのインストール先
 common-download-size = ダウンロードサイズ：
 common-install-size = インストールサイズ：
@@ -36,8 +35,6 @@ common-sign-out = サインアウト
 common-troubleshooting-information = トラブルシューティング情報
 common-playnite-version = Playnite バージョン
 common-plugin-version = プラグインバージョン
-common-launcher-version = { $launcherName } バージョン
-common-launcher-binary = { $launcherName } バイナリ
 common-copy-raw-data-to-clipboard = 生データをクリップボードにコピー
 common-log-files-path = ログファイルのパス
 common-report-bug = バグを報告
@@ -74,8 +71,6 @@ common-uninstall-error =
        *[other] 次のゲームをアンインストールできません：{ $appName }
     }
 common-games = ゲーム
-common-launcher-update-policy = { $launcherName } の更新を確認
-common-launcher-not-installed = { $launcherName } がインストールされていません。
 common-panel = { $pluginShortName } パネル
 common-download-already-exists =
     { $count ->
