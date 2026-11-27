@@ -1,4 +1,3 @@
-common-launcher-custom-path = { $launcherName } Путь
 common-games-installation-path = Путь установки игр
 common-download-size = Размер загрузки:
 common-install-size = Размер установки:
@@ -35,8 +34,6 @@ common-migration-no-games = Игры для переноса не найдены
 common-sign-out = Выйти
 common-troubleshooting-information = Информация о поиске неисправностей
 common-playnite-version = Версия Playnite
-common-launcher-version = { $launcherName } версия
-common-launcher-binary = { $launcherName } бинарный
 common-copy-raw-data-to-clipboard = Копирование исходных данных в буфер обмена
 common-log-files-path = Путь к файлам журнала
 common-report-bug = Сообщить об ошибке
@@ -73,8 +70,6 @@ common-uninstall-error =
        *[other] Не удается удалить следующие игры: { $appName }.
     }
 common-games = Игры
-common-launcher-update-policy = Проверить наличие { $launcherName } обновлений
-common-launcher-not-installed = { $launcherName } не установлен.
 common-panel = Панель { $pluginShortName }
 common-download-already-exists =
     { $count ->

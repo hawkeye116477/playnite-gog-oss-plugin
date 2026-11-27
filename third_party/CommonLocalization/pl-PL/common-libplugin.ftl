@@ -1,4 +1,3 @@
-common-launcher-custom-path = Ścieżka do { $launcherName }
 common-games-installation-path = Ścieżka instalacji gier
 common-download-size = Rozmiar pobierania:
 common-install-size = Rozmiar instalacji:
@@ -36,8 +35,6 @@ common-sign-out = Wyloguj się
 common-troubleshooting-information = Informacje do rozwiązywania problemów
 common-playnite-version = Wersja Playnite
 common-plugin-version = Wersja wtyczki
-common-launcher-version = Wersja { $launcherName }
-common-launcher-binary = Plik binarny { $launcherName }
 common-copy-raw-data-to-clipboard = Skopiuj nieprzetworzone dane do schowka
 common-log-files-path = Ścieżka do plików log
 common-report-bug = Zgłoś błąd
@@ -74,8 +71,6 @@ common-uninstall-error =
        *[other] Nie można odinstalować następujących gier: { $appName }.
     }
 common-games = Gry
-common-launcher-update-policy = Sprawdzaj aktualizacje { $launcherName }
-common-launcher-not-installed = Program { $launcherName } nie jest zainstalowany.
 common-panel = Panel { $pluginShortName }
 common-download-already-exists =
     { $count ->
